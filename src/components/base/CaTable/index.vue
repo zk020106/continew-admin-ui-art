@@ -123,7 +123,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends DefaultRow">
   import {
     ElButton,
     ElDropdown,
@@ -139,14 +139,17 @@
   import { computed, ref, useTemplateRef, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import TableColumn from './TableColumn.vue'
-  import type { TableProps } from './type'
+  import { DefaultRow, TableProps, TableSlotScope } from './type'
 
-  const props = withDefaults(defineProps<TableProps>(), {
+  const props = withDefaults(defineProps<TableProps<T>>(), {
+    fit: true,
+    showHeader: true,
+    selectOnIndeterminate: true,
+    data: () => [],
     columns: () => [],
     pagination: () => ({}),
     toolbar: () => ({})
   })
-
   const { t } = useI18n()
 
   const attrs = useAttrs()
@@ -159,7 +162,15 @@
 
   // 表格尺寸
   const tableSize = ref<'default' | 'large' | 'small'>('small')
-
+  defineSlots<{
+    append: () => void
+    empty: () => void
+    title: () => void
+    top: () => void
+    'toolbar-left': () => void
+    'toolbar-right': () => void
+    [propsName: string]: (props: TableSlotScope<T>) => void
+  }>()
   // 密度选项
   const sizeOptions = computed(() => {
     return (

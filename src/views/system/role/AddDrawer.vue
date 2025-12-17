@@ -127,11 +127,11 @@
 </template>
 
 <script setup lang="ts">
-  import { ElMessage, ElForm } from 'element-plus'
-  import { useWindowSize } from '@vueuse/core'
+  import { addRole, getRole, updateRole } from '@/apis/system/role'
   import { useResetReactive } from '@/hooks'
   import { useDept } from '@/hooks/business'
-  import { addRole, getRole, updateRole } from '@/apis/system/role'
+  import { useWindowSize } from '@vueuse/core'
+  import { ElForm, ElMessage } from 'element-plus'
 
   const emit = defineEmits<{
     (e: 'save-success'): void
@@ -279,7 +279,7 @@
 
     dataId.value = id
     try {
-      const { data } = await getRole(id)
+      const data = await getRole(id)
       Object.assign(form, data)
 
       // 如果有部门权限，设置选中的部门

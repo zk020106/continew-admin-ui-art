@@ -1,251 +1,134 @@
 <template>
   <div class="permission-container">
     <div class="permission-header">
-      <ElButton type="primary" :disabled="disabled" @click="save">
-        <template #icon>
-          <ElIcon><Check /></ElIcon>
+      <ElButton type="primary" :loading="loading" @click="handleSave"> 保存权限 </ElButton>
+    </div>
+
+    <ElScrollbar height="calc(100vh - 220px)">
+      <ElTree
+        ref="treeRef"
+        :data="processedTreeData"
+        :props="treeProps"
+        node-key="id"
+        show-checkbox
+        :check-strictly="!isCascade"
+        default-expand-all
+        class="permission-tree"
+        :node-class="getNodeClass"
+      >
+        <template #default="{ node }">
+          <span class="tree-label">{{ node.label }}</span>
         </template>
-        保存权限
-      </ElButton>
-
-      <div class="permission-controls">
-        <ElRadioGroup v-model="isCascade" :disabled="disabled">
-          <ElRadioButton :value="true">节点关联</ElRadioButton>
-          <ElRadioButton :value="false">节点独立</ElRadioButton>
-        </ElRadioGroup>
-
-        <ElButton @click="onExpanded">
-          <template #icon>
-            <ElIcon><component :is="isExpanded ? 'Fold' : 'Expand'" /></ElIcon>
-          </template>
-          {{ isExpanded ? '折叠' : '展开' }}
-        </ElButton>
-      </div>
-    </div>
-
-    <div class="permission-content">
-      <ElScrollbar height="calc(100vh - 240px)">
-        <ElTree
-          ref="treeRef"
-          :data="menuTree"
-          :props="treeProps"
-          :default-checked-keys="checkedKeys"
-          :default-expand-all="isExpanded"
-          :check-strictly="!isCascade"
-          :show-checkbox="!disabled"
-          node-key="id"
-          class="permission-tree"
-          @check="handleCheck"
-        >
-          <template #default="{ node, data }">
-            <div class="permission-node">
-              <div class="permission-node-info">
-                <ElIcon v-if="data.icon" class="permission-node-icon">
-                  <component :is="data.icon" />
-                </ElIcon>
-                <span class="permission-node-label">{{ node.label }}</span>
-                <ElTag v-if="data.type === 'button'" size="small" type="info"> 按钮 </ElTag>
-              </div>
-
-              <!-- 权限按钮组 -->
-              <div
-                v-if="data.type === 'menu' && data.permissions?.length"
-                class="permission-node-actions"
-              >
-                <ElCheckboxGroup
-                  v-model="data.checkedPermissions"
-                  :disabled="disabled"
-                  @change="(val) => handlePermissionChange(data, val)"
-                >
-                  <ElCheckbox
-                    v-for="permission in data.permissions"
-                    :key="permission.id"
-                    :value="permission.id"
-                    :label="permission.title"
-                  />
-                </ElCheckboxGroup>
-              </div>
-            </div>
-          </template>
-        </ElTree>
-      </ElScrollbar>
-    </div>
+      </ElTree>
+    </ElScrollbar>
   </div>
 </template>
 
 <script setup lang="ts">
-  import type { RolePermissionResp } from '@/apis/system/role'
-  import { getRole, listRolePermissionTree, updateRolePermission } from '@/apis/system/role'
-  import { Check } from '@element-plus/icons-vue'
+  import {
+    getRole,
+    listRolePermissionTree,
+    RolePermissionResp,
+    updateRolePermission
+  } from '@/apis/system/role'
   import { ElMessage, ElTree } from 'element-plus'
-
-  defineOptions({ name: 'Permission' })
+  import { onMounted, ref, watch } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
   const props = defineProps<{
     roleId: string
   }>()
 
   const treeRef = ref<InstanceType<typeof ElTree>>()
-  const menuTree = ref<RolePermissionResp[]>([])
-  const checkedKeys = ref<string[]>([])
+  const loading = ref(false)
   const isCascade = ref(true)
-  const isExpanded = ref(true)
-  const disabled = ref(false)
+  const treeData = ref<any[]>([])
+  const processedTreeData = ref<any[]>([])
+  const checkedKeys = ref<string[]>([])
 
-  // 树形配置
   const treeProps = {
     label: 'title',
-    children: 'children'
+    children: 'children',
+    isLeaf: (data: any) => data.type === 3
+  }
+  const { t } = useI18n()
+  const getNodeClass = (data: any) => {
+    if (data.type === 2) return 'type-2-node'
+    if (data.type === 3) return 'type-3-node'
+    if (data.horizontalChildren) return 'horizontal-children'
+    return ''
   }
 
-  // 获取菜单权限树
-  const getMenuTree = async () => {
-    try {
-      const data = await listRolePermissionTree()
-      console.log(data)
-
-      menuTree.value = transformMenu(data)
-    } catch (error) {
-      console.error('获取菜单树失败:', error)
-      ElMessage.error('获取菜单树失败')
-    }
-  }
-
-  // 转换菜单数据
-  const transformMenu = (menus: RolePermissionResp[]): RolePermissionResp[] => {
-    return menus.map((item) => {
-      const transformed = { ...item }
-
+  // 处理树数据，标记需要横向排列的节点
+  const processTreeData = (data: RolePermissionResp[], level = 1): any[] => {
+    return data.map((item) => {
+      const newItem = { ...item }
+      if (item.title.startsWith('menus')) {
+        newItem.title = t(item.title)
+      }
       if (item.children && item.children.length > 0) {
-        // 分离权限项和子菜单
-        const permissions = item.children.filter((child) => child.type === 'button')
-        const children = item.children.filter((child) => child.type !== 'button')
+        newItem.children = processTreeData(item.children, level + 1)
 
-        if (permissions.length > 0) {
-          ;(transformed as any).permissions = permissions
-        }
+        // 检查子节点是否需要横向排列
+        const hasLevel3Leaf = newItem.children.some((child: any) => {
+          return (
+            (level === 2 && child.type === 3 && (!child.children || child.children.length === 0)) ||
+            (level === 3 && child.children && child.children.length > 0)
+          )
+        })
 
-        if (children.length > 0) {
-          transformed.children = transformMenu(children)
-        } else {
-          delete transformed.children
+        if (hasLevel3Leaf) {
+          newItem.horizontalChildren = true
         }
       }
 
-      return transformed
+      return newItem
     })
   }
 
-  // 获取角色权限
-  const getRolePermissions = async () => {
-    if (!props.roleId) return
+  // 获取权限树
+  const fetchTree = async () => {
+    try {
+      loading.value = true
+      const data = await listRolePermissionTree()
+      treeData.value = data
+      processedTreeData.value = processTreeData(data)
+
+      // 权限树加载完成后，如果已有checkedKeys，则设置勾选状态
+      if (checkedKeys.value.length > 0) {
+        setCheckedKeys()
+      }
+    } catch (e: any) {
+      console.error('加载权限树失败:', e)
+      ElMessage.error('加载权限树失败')
+    } finally {
+      loading.value = false
+    }
+  }
+
+  // 获取角色权限ID列表
+  const fetchRolePermissions = async () => {
+    if (!props.roleId) {
+      checkedKeys.value = []
+      return
+    }
 
     try {
-      const { data } = await getRole(props.roleId)
-      checkedKeys.value = data.menuIds?.map((id) => String(id)) || []
-      isCascade.value = data.menuCheckStrictly ?? true
-
-      // 处理权限按钮的选中状态
-      updatePermissionCheckedState(menuTree.value, checkedKeys.value)
-    } catch (error) {
-      console.error('获取角色权限失败:', error)
+      const roleDetail = await getRole(props.roleId)
+      checkedKeys.value = roleDetail.menuIds.map(String)
+      setCheckedKeys()
+    } catch (e) {
+      console.error('加载角色权限失败:', e)
     }
   }
 
-  // 更新权限按钮选中状态
-  const updatePermissionCheckedState = (tree: RolePermissionResp[], checkedIds: string[]) => {
-    tree.forEach((item) => {
-      if (item.permissions) {
-        ;(item as any).checkedPermissions = item.permissions
-          .filter((p) => checkedIds.includes(p.id))
-          .map((p) => p.id)
-      }
-
-      if (item.children) {
-        updatePermissionCheckedState(item.children, checkedIds)
-      }
-    })
+  // 设置树组件的勾选状态
+  const setCheckedKeys = () => {
+    if (!treeRef.value) return
+    treeRef.value.setCheckedKeys(checkedKeys.value)
   }
 
-  // 展开/折叠
-  const onExpanded = () => {
-    isExpanded.value = !isExpanded.value
-    const allKeys = getAllNodeKeys(menuTree.value)
-    if (isExpanded.value) {
-      allKeys.forEach((key) => {
-        treeRef.value?.store.nodesMap[key]?.expand()
-      })
-    } else {
-      allKeys.forEach((key) => {
-        treeRef.value?.store.nodesMap[key]?.collapse()
-      })
-    }
-  }
-
-  // 获取所有节点key
-  const getAllNodeKeys = (tree: RolePermissionResp[]): string[] => {
-    const keys: string[] = []
-    tree.forEach((item) => {
-      keys.push(item.id)
-      if (item.children) {
-        keys.push(...getAllNodeKeys(item.children))
-      }
-    })
-    return keys
-  }
-
-  // 处理树节点选中
-  const handleCheck = (data: any, checkState: any) => {
-    // 如果启用了节点关联，同步更新权限按钮状态
-    if (isCascade.value && data.permissions) {
-      if (checkState.checkedKeys.includes(data.id)) {
-        // 选中菜单，选中所有权限
-        ;(data as any).checkedPermissions = data.permissions.map((p: any) => p.id)
-      } else {
-        // 取消选中菜单，清空权限
-        ;(data as any).checkedPermissions = []
-      }
-    }
-  }
-
-  // 处理权限按钮变化
-  const handlePermissionChange = (node: any, checkedValues: string[]) => {
-    if (!isCascade.value) return
-
-    // 根据权限选中状态更新菜单节点
-    if (checkedValues.length > 0 && !checkedKeys.value.includes(node.id)) {
-      // 有权限被选中，但菜单未选中，则选中菜单
-      checkedKeys.value.push(node.id)
-    } else if (checkedValues.length === 0 && checkedKeys.value.includes(node.id)) {
-      // 所有权限都取消选中，移除菜单选中
-      const index = checkedKeys.value.indexOf(node.id)
-      if (index > -1) {
-        checkedKeys.value.splice(index, 1)
-      }
-    }
-  }
-
-  // 获取所有选中的权限ID
-  const getAllCheckedPermissions = (): string[] => {
-    const permissions: string[] = []
-
-    const collectPermissions = (tree: RolePermissionResp[]) => {
-      tree.forEach((item) => {
-        if ((item as any).checkedPermissions) {
-          permissions.push(...(item as any).checkedPermissions)
-        }
-        if (item.children) {
-          collectPermissions(item.children)
-        }
-      })
-    }
-
-    collectPermissions(menuTree.value)
-    return [...new Set(permissions)]
-  }
-
-  // 保存权限
-  const save = async () => {
+  const handleSave = async () => {
     if (!props.roleId) {
       ElMessage.warning('请先选择角色')
       return
@@ -253,122 +136,91 @@
 
     const checkedKeys = treeRef.value?.getCheckedKeys() || []
     const halfCheckedKeys = treeRef.value?.getHalfCheckedKeys() || []
-    const permissionIds = getAllCheckedPermissions()
-    const allCheckedIds = [...checkedKeys, ...halfCheckedKeys, ...permissionIds]
 
-    try {
-      await updateRolePermission(props.roleId, {
-        menuIds: allCheckedIds.map((id) => Number(id)),
-        menuCheckStrictly: isCascade.value
-      })
+    const allKeys = Array.from(new Set([...checkedKeys, ...halfCheckedKeys]))
 
-      ElMessage.success('保存成功')
-    } catch (error) {
-      console.error('保存角色权限失败:', error)
-      ElMessage.error('保存失败')
-    }
+    await updateRolePermission(props.roleId, {
+      menuIds: allKeys.map(Number),
+      menuCheckStrictly: isCascade.value
+    })
+
+    ElMessage.success('保存成功')
   }
 
   // 监听角色ID变化
   watch(
     () => props.roleId,
-    async (val) => {
-      if (val) {
-        await getRolePermissions()
-      } else {
-        checkedKeys.value = []
-        disabled.value = false
+    () => {
+      if (props.roleId && processedTreeData.value.length > 0) {
+        fetchRolePermissions()
       }
-    },
-    { immediate: true }
+    }
   )
 
-  onMounted(() => {
-    getMenuTree()
+  onMounted(async () => {
+    await fetchTree()
+    // 权限树加载完成后，如果已有roleId，则加载角色权限
+    if (props.roleId) {
+      await fetchRolePermissions()
+    }
   })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
   .permission-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
     padding: 16px;
-    background: #fff;
-    border-radius: 4px;
+  }
 
-    &-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 16px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid var(--el-border-color-lighter);
-    }
+  .permission-header {
+    margin-bottom: 12px;
+  }
 
-    &-controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
+  .tree-label {
+    font-size: 14px;
+  }
 
-    &-content {
-      flex: 1;
-    }
+  // 横向排列样式 - 使用更强优先级的选择器
+  .permission-tree {
+    // 第三级节点容器横向排列
+    .el-tree-node .el-tree-node__children .el-tree-node .el-tree-node__children {
+      display: flex !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+      padding-top: 4px !important;
+      padding-left: 60px !important;
 
-    .permission-tree {
-      :deep(.el-tree-node__content) {
-        height: auto;
-        min-height: 40px;
-        padding: 8px 0;
+      .el-tree-node {
+        display: inline-block !important;
+        flex: 0 0 auto !important;
+        min-width: 100px !important;
+        margin-bottom: 4px !important;
 
-        &:hover {
-          background-color: var(--el-fill-color-light);
+        .el-tree-node__content {
+          display: inline-flex !important;
+          align-items: center !important;
+          width: auto !important;
+          height: auto !important;
+          padding: 4px 12px !important;
+          margin: 0 !important;
+          line-height: 1.4 !important;
+          white-space: nowrap !important;
+          border-radius: 4px !important;
+          transition: all 0.3s !important;
+
+          .el-checkbox {
+            margin-right: 6px !important;
+          }
+
+          .el-tree-node__label {
+            font-size: 13px !important;
+            color: #333 !important;
+          }
+        }
+
+        .el-tree-node__expand-icon {
+          display: none !important;
         }
       }
-
-      :deep(.el-tree-node__expand-icon) {
-        padding: 6px;
-      }
-    }
-
-    .permission-node {
-      display: flex;
-      flex: 1;
-      align-items: center;
-      justify-content: space-between;
-      padding-right: 8px;
-
-      &-info {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-
-      &-icon {
-        font-size: 16px;
-        color: var(--el-text-color-regular);
-      }
-
-      &-label {
-        font-size: 14px;
-        font-weight: 500;
-      }
-
-      &-actions {
-        display: flex;
-        gap: 12px;
-      }
-    }
-
-    :deep(.el-checkbox-group) {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    :deep(.el-checkbox) {
-      margin-right: 0;
     }
   }
 </style>

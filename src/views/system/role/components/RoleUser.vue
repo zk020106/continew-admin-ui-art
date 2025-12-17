@@ -108,38 +108,41 @@
   })
 
   // 搜索列配置
-  const searchColumns: FormColumnItem[] = [
-    {
-      label: '昵称',
-      field: 'nickname',
-      type: 'input',
-      span: 6,
-      props: {
-        placeholder: '请输入昵称',
-        clearable: true
-      }
-    },
-    {
-      label: '用户名',
-      field: 'username',
-      type: 'input',
-      span: 6,
-      props: {
-        placeholder: '请输入用户名',
-        clearable: true
-      }
-    },
-    {
-      label: '描述',
-      field: 'description',
-      type: 'input',
-      span: 6,
-      props: {
-        placeholder: '请输入描述',
-        clearable: true
-      }
-    }
-  ]
+  const searchColumns = computed(
+    () =>
+      [
+        {
+          label: '昵称',
+          field: 'nickname',
+          type: 'input',
+          span: 6,
+          props: {
+            placeholder: '请输入昵称',
+            clearable: true
+          }
+        },
+        {
+          label: '用户名',
+          field: 'username',
+          type: 'input',
+          span: 6,
+          props: {
+            placeholder: '请输入用户名',
+            clearable: true
+          }
+        },
+        {
+          label: '描述',
+          field: 'description',
+          type: 'input',
+          span: 6,
+          props: {
+            placeholder: '请输入描述',
+            clearable: true
+          }
+        }
+      ] as FormColumnItem[]
+  )
 
   // 表格列配置
   const columns = [
@@ -229,10 +232,10 @@
         current: pagination.current,
         size: pagination.pageSize
       }
-      listRoleUser(props.roleId, query).then(({ data, total }) => {
-        console.log('111', data, total)
+      listRoleUser(props.roleId, query).then(({ list, total }) => {
+        console.log('111', list, total)
 
-        tableData.value = data
+        tableData.value = list
         pagination.total = total
       })
     } catch (error) {
@@ -363,7 +366,6 @@
     flex-direction: column;
     height: 100%;
     padding: 16px;
-    background: #fff;
     border-radius: 4px;
 
     &-header {

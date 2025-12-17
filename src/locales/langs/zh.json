@@ -245,6 +245,7 @@
     },
     "system": {
       "config": {
+        "index": "系统配置",
         "client": "客户端配置",
         "email": "邮件配置",
         "login": "登录配置",

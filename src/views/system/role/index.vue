@@ -1,12 +1,10 @@
 <template>
-  <div class="role-management">
-    <!-- 左侧角色树 -->
-    <div class="role-left">
+  <GiPageLayout>
+    <template #left>
       <RoleTree @node-click="handleSelectRole" />
-    </div>
+    </template>
 
-    <!-- 右侧内容区 -->
-    <div class="role-right">
+    <div class="role-content">
       <!-- 标签页 -->
       <div class="role-tabs">
         <ElTabs v-model="activeTab" class="role-tabs-container">
@@ -24,12 +22,12 @@
       </div>
 
       <!-- 内容区域 -->
-      <div class="role-content">
+      <div class="tab-content">
         <Permission v-if="activeTab === '1'" :role-id="roleId" />
         <RoleUser v-if="activeTab === '2'" :role-id="roleId" />
       </div>
     </div>
-  </div>
+  </GiPageLayout>
 </template>
 
 <script setup lang="ts">
@@ -50,33 +48,18 @@
 </script>
 
 <style scoped lang="scss">
-  .role-management {
+  .role-content {
     display: flex;
-    gap: 16px;
+    flex-direction: column;
     height: 100%;
-    padding: 16px;
-
-    &-left {
-      flex-shrink: 0;
-      width: 280px;
-      min-width: 280px;
-      height: 100%;
-      overflow: hidden;
-      border-radius: 4px;
-    }
-
-    &-right {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-      border-radius: 4px;
-    }
+    background: var(--el-bg-color);
+    border-radius: 4px;
   }
 
   .role-tabs {
     flex-shrink: 0;
+    padding: 0 16px;
+    background: var(--el-bg-color);
     border-bottom: 1px solid var(--el-border-color-lighter);
 
     &-container {
@@ -84,7 +67,7 @@
         margin: 0;
 
         .el-tabs__nav-wrap {
-          padding: 0 16px;
+          padding: 0;
         }
 
         .el-tabs__item {
@@ -92,7 +75,6 @@
           padding: 0 20px;
           font-weight: 500;
           line-height: 48px;
-          color: var(--el-text-color-regular);
 
           &.is-active {
             font-weight: 600;
@@ -111,8 +93,7 @@
     font-size: 14px;
   }
 
-  .role-content {
-    position: relative;
+  .tab-content {
     flex: 1;
     overflow: hidden;
   }

@@ -71,6 +71,9 @@ export interface RolePermissionResp {
   children?: RolePermissionResp[]
   permissions?: RolePermissionResp[]
   isChecked?: boolean
+  type: number
+  icon?: string
+  horizontalChildren?: boolean
 }
 export interface RoleUserResp {
   id: string

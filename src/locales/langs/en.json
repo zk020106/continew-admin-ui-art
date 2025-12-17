@@ -245,6 +245,7 @@
     },
     "system": {
       "config": {
+        "index": "System configuration",
         "client": "Client configuration",
         "email": "Email configuration",
         "login": "Login configuration",

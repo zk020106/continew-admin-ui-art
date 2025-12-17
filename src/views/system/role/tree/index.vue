@@ -21,6 +21,7 @@
           :highlight-current="true"
           :expand-on-click-node="false"
           :default-expanded-keys="expandedKeys"
+          :current-node-key="selectedKeys?.[0]"
           @node-click="select"
         >
           <template #default="{ data }">
@@ -81,6 +82,11 @@
     }
     selectedKeys.value = [data.id]
     emit('node-click', [data.id])
+
+    // 设置树组件当前选中节点
+    if (treeRef.value) {
+      treeRef.value.setCurrentKey(data.id)
+    }
   }
 
   interface TreeItem extends RoleResp {
@@ -114,7 +120,11 @@
 
       await nextTick(() => {
         if (dataList.value.length > 0) {
-          select([dataList.value[0]?.id])
+          select(dataList.value[0])
+          // 确保树组件正确设置当前节点
+          if (treeRef.value) {
+            treeRef.value.setCurrentKey(dataList.value[0].id)
+          }
         }
       })
     } catch (error) {
