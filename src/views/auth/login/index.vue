@@ -50,6 +50,7 @@
                 :placeholder="$t('login.placeholder.captcha')"
                 :max-length="4"
                 clearable
+                class="custom-height"
                 style="flex: 1 1"
               />
               <div class="captcha-container" @click="getCaptcha">
@@ -157,11 +158,6 @@
     // 设置过期定时器
     timer = setTimeout(() => {
       formData.expired = true
-      ElNotification.warning({
-        title: t('login.warning'),
-        message: t('login.expired'),
-        duration: 3000
-      })
     }, remainingTime)
   }
 

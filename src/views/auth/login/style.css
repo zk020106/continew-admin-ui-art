@@ -25,7 +25,7 @@
 
   /* 验证码容器 */
   .captcha-container {
-    @apply relative ml-2 w-[120px] h-[40px] cursor-pointer overflow-hidden rounded;
+    @apply relative ml-2 cursor-pointer overflow-hidden rounded;
 
     .captcha {
       @apply w-full h-full object-cover;
