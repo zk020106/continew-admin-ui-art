@@ -10,25 +10,21 @@
     <ElRow>
       <slot name="top"></slot>
     </ElRow>
-    <ElRow v-if="showToolbar" justify="space-between" align="middle" class="ca-table__toolbar">
+    <ElRow justify="space-between" align="middle" class="ca-table__toolbar">
       <ElSpace :wrap="true" :size="[8, 8]">
         <slot name="toolbar-left"></slot>
       </ElSpace>
       <ElSpace wrap class="ca-table__toolbar-right" :size="[8, 8]">
         <slot name="toolbar-right"></slot>
         <ElTooltip placement="top" :content="t('table.refresh')">
-          <ElButton v-if="props.toolbar?.showRefresh !== false" @click="handleRefresh">
+          <ElButton v-if="showRefreshBtn" @click="handleRefresh">
             <template #icon>
               <ArtSvgIcon icon="ep:refresh" />
             </template>
           </ElButton>
         </ElTooltip>
 
-        <ElTooltip
-          placement="top"
-          v-if="props.toolbar?.showSize !== false"
-          :content="t('table.size')"
-        >
+        <ElTooltip placement="top" v-if="showSizeBtn" :content="t('table.size')">
           <ElDropdown trigger="click" @command="handleSizeChange">
             <ElButton>
               <template #icon>
@@ -54,17 +50,13 @@
           placement="top"
           :content="isFullscreen ? t('table.exitFullscreen') : t('table.fullscreen')"
         >
-          <ElButton v-if="props.toolbar?.showFullscreen !== false" @click="toggleFullscreen">
+          <ElButton v-if="showFullscreenBtn" @click="toggleFullscreen">
             <ArtSvgIcon :icon="isFullscreen ? 'ri:fullscreen-exit-line' : 'ri:fullscreen-fill'" />
           </ElButton>
         </ElTooltip>
 
-        <ElTooltip
-          placement="top"
-          v-if="props.toolbar?.showColumnSetting !== false"
-          :content="t('table.columnSettings')"
-        >
-          <ElButton :disabled="props.toolbar?.columnSettingDisabled">
+        <ElTooltip placement="top" v-if="showSettingColumnBtn" :content="t('table.columnSettings')">
+          <ElButton>
             <template #icon>
               <ArtSvgIcon icon="ep:setting" />
             </template>
@@ -86,31 +78,6 @@
           <slot :name="slotName" v-bind="scope" />
         </template>
       </TableColumn>
-
-      <!-- 操作列 -->
-      <ElTableColumn
-        v-if="props.actions && props.actions.buttons && props.actions.buttons.length > 0"
-        :label="props.actions.label || t('table.action')"
-        :width="props.actions.width"
-        :fixed="props.actions.fixed"
-        align="center"
-      >
-        <template #default="scope">
-          <ElSpace :wrap="true" :size="[4, 4]">
-            <ElButton
-              v-for="(button, index) in props.actions!.buttons"
-              :key="index"
-              v-show="!button.show || button.show(scope)"
-              :type="button.type"
-              :size="button.size || 'small'"
-              :disabled="button.disabled && button.disabled(scope)"
-              @click="button.onClick && button.onClick(scope)"
-            >
-              {{ button.label }}
-            </ElButton>
-          </ElSpace>
-        </template>
-      </ElTableColumn>
     </ElTable>
 
     <ElRow justify="end" class="ca-table-pagination">
@@ -133,7 +100,6 @@
     ElRow,
     ElSpace,
     ElTable,
-    ElTableColumn,
     ElTooltip
   } from 'element-plus'
   import { computed, ref, useTemplateRef, watch } from 'vue'
@@ -173,26 +139,20 @@
   }>()
   // 密度选项
   const sizeOptions = computed(() => {
-    return (
-      props.toolbar?.sizeOptions || [
-        { labelKey: 'table.sizeOptions.default', value: 'default' },
-        { labelKey: 'table.sizeOptions.small', value: 'small' },
-        { labelKey: 'table.sizeOptions.large', value: 'large' }
-      ]
-    )
+    return [
+      { labelKey: 'table.sizeOptions.default', value: 'default' },
+      { labelKey: 'table.sizeOptions.small', value: 'small' },
+      { labelKey: 'table.sizeOptions.large', value: 'large' }
+    ]
   })
 
-  // 是否显示工具栏
-  const showToolbar = computed(() => {
-    return (
-      props.toolbar?.show !== false &&
-      (props.toolbar?.showRefresh !== false ||
-        props.toolbar?.showSize !== false ||
-        props.toolbar?.showFullscreen !== false ||
-        props.toolbar?.showColumnSetting !== false)
-    )
+  const showRefreshBtn = computed(() => !props.disabledTools?.includes('refresh'))
+  const showSizeBtn = computed(() => !props.disabledTools?.includes('size'))
+  const showFullscreenBtn = computed(() => !props.disabledTools?.includes('fullscreen'))
+  /** 列设置相关逻辑 */
+  const showSettingColumnBtn = computed(() => {
+    return !props.disabledTools?.includes('columnSetting') && Boolean(props.columns?.length)
   })
-
   const tableProps = computed(() => {
     return {
       ...attrs,

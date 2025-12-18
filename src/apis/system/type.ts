@@ -1,10 +1,12 @@
+import { Gender } from '@/types/api/common'
+
 /** 用户类型 */
 export interface UserResp {
   id: string
   username: string
   nickname: string
   avatar: string
-  gender: number
+  gender: Gender
   email: string
   phone: string
   description: string
