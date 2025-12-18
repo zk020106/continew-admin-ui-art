@@ -110,9 +110,6 @@
         const ids: string[] = []
         items.forEach((item) => {
           ids.push(item.id)
-          if (item.children && item.children.length > 0) {
-            ids.push(...getAllNodeIds(item.children as TreeItem[]))
-          }
         })
         return ids
       }

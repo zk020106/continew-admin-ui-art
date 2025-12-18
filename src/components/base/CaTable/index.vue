@@ -58,7 +58,7 @@
         <ColumnSetting
           v-if="showSettingColumnBtn"
           :columns="localColumns"
-          :disabled-keys="props.toolbar?.disabledColumnKeys"
+          :disabled-keys="props.disabledColumnKeys"
           :table-id="autoTableId"
           @update:columns="handleColumnsUpdate"
         />
@@ -72,7 +72,7 @@
       :size="tableSize"
       :height="isFullscreen ? fullscreenHeight : undefined"
     >
-      <TableColumn v-for="item in localColumns" :key="item.prop || item.label" :column="item">
+      <TableColumn v-for="item in visibleColumns" :key="item.prop || item.label" :column="item">
         <!-- 将所有插槽传递给子组件 -->
         <template v-for="(_, slotName) in $slots" :key="slotName" #[slotName]="scope">
           <slot :name="slotName" v-bind="scope" />
@@ -142,6 +142,11 @@
   // 本地列状态
   const localColumns = ref<TableColumnItem[]>([...props.columns])
 
+  // 过滤可见的列
+  const visibleColumns = computed(() => {
+    return localColumns.value.filter((col) => col.visible !== false)
+  })
+
   // 监听父组件传入的列变化
   watch(
     () => props.columns,
@@ -166,21 +171,20 @@
     'update:columns': [columns: TableColumnItem[]]
   }>()
 
-  const showRefreshBtn = computed(() => !props.toolbar?.disabledTools?.includes('refresh'))
-  const showSizeBtn = computed(() => !props.toolbar?.disabledTools?.includes('size'))
-  const showFullscreenBtn = computed(() => !props.toolbar?.disabledTools?.includes('fullscreen'))
+  const showRefreshBtn = computed(() => !props.disabledTools?.includes('refresh'))
+  const showSizeBtn = computed(() => !props.disabledTools?.includes('size'))
+  const showFullscreenBtn = computed(() => !props.disabledTools?.includes('fullscreen'))
   /** 列设置相关逻辑 */
   const showSettingColumnBtn = computed(() => {
-    return (
-      !props.toolbar?.disabledTools?.includes('columnSetting') && Boolean(localColumns.value.length)
-    )
+    return !props.disabledTools?.includes('columnSetting') && Boolean(localColumns.value.length)
   })
 
   // 自动生成 tableId（基于当前路径）
   const autoTableId = computed(() => {
     if (props.tableId) return props.tableId
-    const path = window.location.pathname
-    return path.replace(/\//g, ':').slice(1) // 移除开头的冒号
+    // 没有传入 tableId 时，自动基于当前路径生成
+    const path = window.location.pathname.replace(/^\//, '').replace(/\//g, ':')
+    return path
   })
   const tableProps = computed(() => {
     return {

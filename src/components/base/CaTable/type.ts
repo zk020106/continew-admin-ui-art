@@ -41,21 +41,6 @@ export type TableSlotScope<T extends DefaultRow = any> = {
   expanded: boolean
 }
 
-export interface ToolbarConfig {
-  /** 是否显示工具栏 */
-  show?: boolean
-  /** 禁用工具栏按钮的键名列表（refresh, size, fullscreen, columnSetting） */
-  disabledTools?: Tools[]
-  /** 列设置按钮是否禁用 */
-  columnSettingDisabled?: boolean
-  /** 列设置禁用列的键名列表 */
-  disabledColumnKeys?: string[]
-  /** 表格ID，用于区分不同表格的列设置 */
-  tableId?: string
-  /** 密度选项 */
-  sizeOptions?: Array<{ labelKey: string; value: 'default' | 'large' | 'small' }>
-}
-
 export interface TableProps<T extends DefaultRow = any>
   extends Omit<ExtractPropTypes<ElTableProps<Record<string | number | symbol, any>>>, 'height'> {
   data?: T[]
@@ -67,5 +52,6 @@ export interface TableProps<T extends DefaultRow = any>
   paginationPosition?: PaginationPosition
   title?: string
   tableId?: string | number
-  toolbar?: ToolbarConfig
+  disabledTools?: Tools[]
+  disabledColumnKeys?: string[]
 }

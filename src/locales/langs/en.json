@@ -505,6 +505,7 @@
       "password": "password",
       "phone": "Phone number",
       "role": "Role",
+      "roles": "role management",
       "status": "state",
       "title": "User details",
       "updateTime": "modification time",
@@ -526,39 +527,39 @@
     }
   },
   "role": {
-    "assignUser": "Assign User",
-    "batchUnassign": "Batch Remove",
-    "code": "Role Code",
-    "dataScope": "Data Scope",
-    "description": "Description",
+    "assignUser": "Assign users",
+    "batchUnassign": "Batch removal",
+    "code": "role coding",
+    "dataScope": "Data permissions",
+    "description": "describe",
     "field": {
-      "code": "Role Code",
-      "dataScope": "Data Scope",
-      "description": "Description",
-      "name": "Role Name",
-      "sort": "Sort",
-      "status": "Status"
+      "code": "role coding",
+      "dataScope": "Data permissions",
+      "description": "describe",
+      "name": "Character name",
+      "sort": "sort",
+      "status": "state"
     },
     "page": {
       "title": {
-        "add": "Add Role",
-        "edit": "Edit Role"
+        "add": "Add new role",
+        "edit": "Edit role"
       }
     },
     "permission": {
-      "button": "Button"
+      "button": "button"
     },
     "placeholder": {
-      "code": "Please enter role code",
-      "name": "Please enter role name"
+      "code": "Please enter the role code",
+      "name": "Please enter a role name"
     },
-    "title": "Role Management",
+    "title": "role management",
     "tree": {
-      "placeholder": "Search name/code"
+      "placeholder": "Search name/encoding"
     },
     "tab": {
-      "permission": "Function Permission",
-      "user": "Role Users"
+      "permission": "Function permissions",
+      "user": "role user"
     }
   },
   "worktab": {
