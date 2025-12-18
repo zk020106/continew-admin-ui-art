@@ -438,7 +438,7 @@
 
       &.active {
         color: var(--el-color-primary);
-        background-color: var(--el-color-primary-light-6);
+        background-color: var(--el-color-primary-light-9);
       }
     }
   }

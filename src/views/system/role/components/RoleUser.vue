@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-  import type { RoleUserResp } from '@/apis/system/role'
+  import type { RoleResp, RoleUserResp } from '@/apis/system/role'
   import { listRoleUser, unassignFromUsers } from '@/apis/system/role'
   import CaForm from '@/components/base/CaForm/index.vue'
   import { FormColumnItem } from '@/components/base/CaForm/type'
@@ -90,7 +90,7 @@
   defineOptions({ name: 'RoleUser' })
 
   const props = defineProps<{
-    roleId: string
+    role: RoleResp
   }>()
 
   // const { t } = useI18n()
@@ -218,7 +218,7 @@
 
   // 获取角色用户列表
   const getRoleUserList = async () => {
-    if (!props.roleId) {
+    if (!props.role.id) {
       tableData.value = []
       pagination.total = 0
       return
@@ -232,9 +232,7 @@
         current: pagination.current,
         size: pagination.pageSize
       }
-      listRoleUser(props.roleId, query).then(({ list, total }) => {
-        console.log('111', list, total)
-
+      listRoleUser(props.role.id, query).then(({ list, total }) => {
         tableData.value = list
         pagination.total = total
       })
@@ -261,11 +259,11 @@
 
   // 分配用户
   const handleAssign = () => {
-    if (!props.roleId) {
+    if (!props.role.id) {
       ElMessage.warning('请先选择角色')
       return
     }
-    assignModalRef.value?.onOpen(props.roleId)
+    assignModalRef.value?.onOpen(props.role.id)
   }
 
   // 批量移除用户
@@ -350,7 +348,7 @@
 
   // 监听角色ID变化
   watch(
-    () => props.roleId,
+    () => props.role.id,
     () => {
       pagination.current = 1
       selectedIds.value = []

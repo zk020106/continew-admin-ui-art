@@ -75,7 +75,6 @@ export interface RolePermissionResp {
   isChecked?: boolean
   type: number
   icon?: string
-  horizontalChildren?: boolean
 }
 export interface RoleUserResp {
   id: string

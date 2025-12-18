@@ -1,4 +1,6 @@
 import { listDeptDictTree } from '@/apis/system'
+import type { DeptDictTreeNode } from '@/types/api/system'
+
 import { ref } from 'vue'
 
 /**
@@ -8,7 +10,7 @@ import { ref } from 'vue'
  */
 export function useDept(options?: { onSuccess?: () => void }) {
   const loading = ref(false)
-  const deptList = ref<Record<string, any>[]>([])
+  const deptList = ref<DeptDictTreeNode[]>([])
 
   /**
    * 获取部门列表

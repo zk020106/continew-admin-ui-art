@@ -13,14 +13,11 @@
  * ## 使用示例
  *
  * ```vue
- * <!-- 只有拥有 'add' 权限的用户才能看到新增按钮 -->
- * <el-button v-auth="'add'">新增</el-button>
+ * <!-- 单个权限 - 只有拥有 'system:role:update' 权限的用户才能看到编辑按钮 -->
+ * <el-button v-auth="'system:role:update'">编辑</el-button>
  *
- * <!-- 只有拥有 'edit' 权限的用户才能看到编辑按钮 -->
- * <el-button v-auth="'edit'">编辑</el-button>
- *
- * <!-- 只有拥有 'delete' 权限的用户才能看到删除按钮 -->
- * <el-button v-auth="'delete'">删除</el-button>
+ * <!-- 多个权限 - 拥有其中任一权限即可看到 -->
+ * <el-button v-auth="['home:btn:edit','home:btn:delete']">操作</el-button>
  * ```
  *
  * ## 注意事项
@@ -32,26 +29,31 @@
  * @author Art Design Pro Team
  */
 
-import { useUserStore } from '@/store/modules/user'
+import has from '@/utils/sys/permission'
 import { App, Directive, DirectiveBinding } from 'vue'
 
 interface AuthBinding extends DirectiveBinding {
-  value: string
+  value: string | string[]
 }
 function checkAuthPermission(el: HTMLElement, binding: AuthBinding): void {
-  const userStore = useUserStore()
   const { value } = binding
-  const all_permission = '*:*:*'
+
   if (value && Array.isArray(value) && value.length) {
-    const permissionValues: string[] = value
-    const hasPermission = userStore.getUserInfo.permissions?.some((perm) => {
-      return all_permission === perm || permissionValues.includes(perm)
-    })
+    // 使用工具类的 hasPermOr 方法验证权限
+    const hasPermission = has.hasPermOr(value)
+    if (!hasPermission) {
+      removeElement(el)
+    }
+  } else if (value && typeof value === 'string') {
+    // 单个权限验证
+    const hasPermission = has.hasPerm(value)
     if (!hasPermission) {
       removeElement(el)
     }
   } else {
-    throw new Error(`need permission! Like v-hasPerm="['home:btn:edit','home:btn:delete']"`)
+    throw new Error(
+      `need permission! Like v-auth="'system:role:update'" or v-auth="['home:btn:edit','home:btn:delete']"`
+    )
   }
 }
 

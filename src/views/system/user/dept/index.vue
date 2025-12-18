@@ -61,7 +61,6 @@
     emit('node-click', data.key, data)
   }
 
-  // Element Plus Tree props 配置
   const treeProps = {
     label: 'title', // 后端返回的是 title 字段
     children: 'children'

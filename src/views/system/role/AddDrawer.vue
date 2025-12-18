@@ -105,13 +105,22 @@
             <ElTree
               ref="deptTreeRef"
               :data="deptList"
+              node-key="key"
+              :tree-props="{
+                label: 'title', // 后端返回的是 title 字段
+                children: 'children'
+              }"
               :default-expand-all="isDeptExpanded"
-              :check-strictly="!form.deptCheckStrictly"
-              :props="{ label: 'name', children: 'children' }"
+              highlight-current
               show-checkbox
-              node-key="id"
-              class="dept-tree"
-            />
+              @change="() => console.log(deptList)"
+            >
+              <template #default="{ node }">
+                <span>
+                  <span>{{ node.label }}</span>
+                </span>
+              </template>
+            </ElTree>
           </div>
         </ElFormItem>
       </ElCard>
@@ -342,15 +351,6 @@
       padding-bottom: 12px;
       margin-bottom: 12px;
       border-bottom: 1px solid var(--el-border-color-lighter);
-    }
-  }
-
-  .dept-tree {
-    max-height: 300px;
-    overflow-y: auto;
-
-    :deep(.el-tree-node__content) {
-      height: 32px;
     }
   }
 </style>

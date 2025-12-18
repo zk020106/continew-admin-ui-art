@@ -10,7 +10,7 @@
       :loading="loading"
       :scroll="{ x: '100%', y: '100%', minWidth: 1500 }"
       :pagination="pagination"
-      :disabled-tools="['size']"
+      :disabled-tools="[]"
       :disabled-column-keys="['nickname']"
       @refresh="search"
     >

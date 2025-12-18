@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="search">
-      <ElInput v-model="searchKey" placeholder="搜索名称/编码" clearable>
+      <ElInput v-model="searchKey" placeholder="搜索名称/编码" clearable @input="handleSearch">
         <template #prefix>
           <ElIcon><Search /></ElIcon>
         </template>
@@ -12,116 +12,90 @@
         </template>
       </ElButton>
     </div>
-    <div class="tree-wrapper">
-      <div class="tree">
-        <ElTree
-          ref="treeRef"
-          :data="treeData as unknown as any[]"
-          node-key="id"
-          :highlight-current="true"
-          :expand-on-click-node="false"
-          :default-expanded-keys="expandedKeys"
-          :current-node-key="selectedKeys?.[0]"
-          @node-click="select"
+
+    <div class="role-list-wrapper">
+      <div class="role-list">
+        <div
+          v-for="item in filteredRoleList"
+          :key="item.id"
+          class="role-item"
+          :class="{ active: selectedRole?.id === item.id }"
+          @click="selectRole(item)"
         >
-          <template #default="{ data }">
-            <div class="tree-node">
-              <ElTooltip :content="`${data.name} (${data.code})`" placement="top">
-                <span class="tree-node-label"> {{ data.name }} ({{ data.code }}) </span>
-              </ElTooltip>
-              <ElDropdown
-                v-auth="['system:role:update', 'system:role:delete']"
-                trigger="click"
-                @command="(command) => onMenuItemClick(command, data)"
-              >
-                <ElIcon class="action"><MoreFilled /></ElIcon>
-                <template #dropdown>
-                  <ElDropdownMenu>
-                    <ElDropdownItem v-auth="'system:role:update'" command="update">
-                      修改
-                    </ElDropdownItem>
-                    <ElDropdownItem
-                      v-auth="'system:role:delete'"
-                      command="delete"
-                      :disabled="data.isSystem"
-                    >
-                      <span class="danger">删除</span>
-                    </ElDropdownItem>
-                  </ElDropdownMenu>
-                </template>
-              </ElDropdown>
+          <div class="role-info">
+            <div class="role-name" :title="`${item.name} (${item.code})`">
+              {{ item.name }} ({{ item.code }})
             </div>
-          </template>
-        </ElTree>
+            <div class="role-desc" :title="item.description">
+              {{ item.description || '暂无描述' }}
+            </div>
+          </div>
+          <div v-auth="['system:role:update', 'system:role:delete']">
+            <ElDropdown trigger="click" @command="(command) => onMenuItemClick(command, item)">
+              <ElIcon @click.stop><MoreFilled /></ElIcon>
+              <template #dropdown>
+                <ElDropdownMenu>
+                  <ElDropdownItem command="update">
+                    <span v-auth="['system:role:update']">{{ $t('common.button.edit') }}</span>
+                  </ElDropdownItem>
+                  <ElDropdownItem command="delete" :disabled="item.isSystem">
+                    <span v-auth="['system:role:delete']" class="danger">{{
+                      $t('common.button.delete')
+                    }}</span>
+                  </ElDropdownItem>
+                </ElDropdownMenu>
+              </template>
+            </ElDropdown>
+          </div>
+        </div>
+        <div v-if="filteredRoleList.length === 0" class="empty">
+          <ElEmpty description="暂无数据" />
+        </div>
       </div>
     </div>
 
-    <AddDrawer ref="AddDrawerRef" @save-success="getTreeData" />
+    <AddDrawer ref="AddDrawerRef" @save-success="getRoleList" />
   </div>
 </template>
 
 <script setup lang="ts">
   import { type RoleResp, deleteRole, listRole } from '@/apis/system/role'
+  import { $t } from '@/locales'
   import { MoreFilled, Plus, Search } from '@element-plus/icons-vue'
-  import { ElMessage, ElMessageBox } from 'element-plus'
-  import { mapTree } from 'xe-utils'
+  import { ElEmpty, ElMessage, ElMessageBox } from 'element-plus'
+  import { useI18n } from 'vue-i18n'
   import AddDrawer from '../AddDrawer.vue'
 
   const emit = defineEmits<{
-    (e: 'node-click', keys: Array<any>): void
+    (e: 'node-click', keys: RoleResp): void
   }>()
-
-  const treeRef = ref()
-  const selectedKeys = ref()
-  const expandedKeys = ref<string[]>([])
-
-  // 选中节点
-  const select = (data: any) => {
-    if (selectedKeys.value && selectedKeys.value[0] === data.id) {
-      return
-    }
-    selectedKeys.value = [data.id]
-    emit('node-click', [data.id])
-
-    // 设置树组件当前选中节点
-    if (treeRef.value) {
-      treeRef.value.setCurrentKey(data.id)
-    }
-  }
-
-  interface TreeItem extends RoleResp {
-    popupVisible: boolean
-  }
-  const dataList = ref<TreeItem[]>([])
+  const { t } = useI18n()
+  const selectedRole = ref<RoleResp | null>(null)
+  const roleList = ref<RoleResp[]>([])
   const loading = ref(false)
 
-  // 查询树列表
-  const getTreeData = async () => {
+  // 选中角色
+  const selectRole = (role: RoleResp) => {
+    console.log(selectedRole.value)
+
+    if (selectedRole.value?.id === role.id) {
+      return
+    }
+    selectedRole.value = role
+    emit('node-click', role)
+  }
+
+  // 查询角色列表
+  const getRoleList = async () => {
     try {
       loading.value = true
       const data = await listRole({ sort: ['sort,asc'] })
-      dataList.value = mapTree(data, (i) => ({
-        ...i,
-        popupVisible: false
-      }))
+      roleList.value = data
 
-      // 展开所有节点
-      const getAllNodeIds = (items: TreeItem[]): string[] => {
-        const ids: string[] = []
-        items.forEach((item) => {
-          ids.push(item.id)
-        })
-        return ids
-      }
-      expandedKeys.value = getAllNodeIds(dataList.value)
-
+      // 默认选中第一个角色
       await nextTick(() => {
-        if (dataList.value.length > 0) {
-          select(dataList.value[0])
-          // 确保树组件正确设置当前节点
-          if (treeRef.value) {
-            treeRef.value.setCurrentKey(dataList.value[0].id)
-          }
+        if (roleList.value.length > 0 && !selectedRole.value) {
+          selectRole(roleList.value[0])
         }
       })
     } catch (error) {
@@ -131,51 +105,51 @@
     }
   }
 
-  // 过滤树
+  // 搜索关键词
   const searchKey = ref('')
-  const search = (keyword: string) => {
-    const loop = (data: TreeItem[]) => {
-      const result = [] as TreeItem[]
-      data.forEach((item: TreeItem) => {
-        if (
-          item.name?.toLowerCase().includes(keyword) ||
-          item.code?.toLowerCase().includes(keyword)
-        ) {
-          result.push({ ...item })
-        }
-      })
-      return result
-    }
-    return loop(dataList.value)
+
+  // 搜索处理
+  const handleSearch = (value: string) => {
+    searchKey.value = value
   }
 
-  const treeData = computed(() => {
-    if (!searchKey.value) return dataList.value
-    return search(searchKey.value.toLowerCase())
+  // 过滤后的角色列表
+  const filteredRoleList = computed(() => {
+    if (!searchKey.value) return roleList.value
+    const keyword = searchKey.value.toLowerCase()
+    return roleList.value.filter(
+      (item) =>
+        item.name?.toLowerCase().includes(keyword) || item.code?.toLowerCase().includes(keyword)
+    )
   })
 
-  const AddDrawerRef = ref<InstanceType<typeof AddDrawer>>()
+  const AddDrawerRef = useTemplateRef('AddDrawerRef')
+
   // 新增
   const onAdd = () => {
     AddDrawerRef.value?.onAdd()
   }
 
   // 点击菜单项
-  const onMenuItemClick = async (command: string, node: RoleResp) => {
+  const onMenuItemClick = async (command: string, role: RoleResp) => {
     if (command === 'update') {
-      AddDrawerRef.value?.onUpdate(node.id)
+      AddDrawerRef.value?.onUpdate(role.id)
     } else if (command === 'delete') {
       try {
-        await ElMessageBox.confirm(`是否确定删除角色「${node.name}」？`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
+        await ElMessageBox.confirm(
+          `${t('message.selected')} ${role.name}，${t('message.confirmDelete')}`,
+          '提示',
+          {
+            confirmButtonText: $t('common.confirm'),
+            cancelButtonText: $t('common.cancel'),
+            type: 'warning'
+          }
+        )
 
-        const res = await deleteRole(node.id)
+        const res = await deleteRole(role.id)
         if (res.success) {
           ElMessage.success('删除成功')
-          await getTreeData()
+          await getRoleList()
         }
       } catch {
         // 用户取消或其他错误
@@ -184,50 +158,11 @@
   }
 
   onMounted(() => {
-    getTreeData()
+    getRoleList()
   })
 </script>
 
 <style scoped lang="scss">
-  :deep(.el-tree-node) {
-    margin: 5px 0;
-    line-height: normal;
-    border-radius: var(--el-border-radius-base);
-
-    .action {
-      padding: 4px;
-      margin-right: 8px;
-      cursor: pointer;
-      border-radius: 8px;
-      opacity: 0;
-      transition: all 0.25s;
-
-      &:hover {
-        background-color: var(--el-fill-color);
-      }
-    }
-
-    &:hover {
-      background-color: var(--el-fill-color-light);
-
-      .action {
-        opacity: 1;
-      }
-    }
-
-    .el-tree-node__expand-icon {
-      padding: 6px;
-    }
-  }
-
-  :deep(.el-tree-node.is-current) {
-    font-weight: bold;
-
-    .action {
-      opacity: 1;
-    }
-  }
-
   .container {
     position: relative;
     box-sizing: border-box;
@@ -248,35 +183,74 @@
       }
     }
 
-    .tree-wrapper {
+    .role-list-wrapper {
       position: relative;
       flex: 1;
       height: 100%;
       overflow: hidden;
       background-color: var(--el-bg-color);
 
-      .tree {
+      .role-list {
         position: absolute;
         inset: 0;
-        overflow: auto;
+        padding: 8px;
+        overflow-y: auto;
       }
     }
   }
 
-  .tree-node {
+  .role-item {
     display: flex;
-    flex: 1;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
-    padding-right: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    background-color: var(--el-bg-color);
+    border: 1px solid var(--el-border-color-lighter);
+    border-radius: var(--el-border-radius-base);
+    transition: all 0.25s;
 
-    &-label {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    &:hover {
+      background-color: var(--el-fill-color-light);
+      border-color: var(--el-color-primary);
     }
+
+    &.active {
+      font-weight: 500;
+      background-color: var(--el-color-primary-light-9);
+      border-color: var(--el-color-primary);
+    }
+
+    .role-info {
+      flex: 1;
+      min-width: 0;
+
+      .role-name {
+        margin-bottom: 4px;
+        overflow: hidden;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--el-text-color-primary);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .role-desc {
+        overflow: hidden;
+        font-size: 12px;
+        color: var(--el-text-color-secondary);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  .empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
   }
 
   .danger {

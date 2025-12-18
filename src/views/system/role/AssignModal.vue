@@ -59,14 +59,14 @@
 </template>
 
 <script setup lang="ts">
+  import { assignToUsers } from '@/apis/system/role'
+  import { listUser } from '@/apis/system/user'
   import CaForm from '@/components/base/CaForm/index.vue'
   import { FormColumnItem } from '@/components/base/CaForm/type'
   import CaTable from '@/components/base/CaTable/index.vue'
   import { useResetReactive } from '@/hooks'
   import { useWindowSize } from '@vueuse/core'
   import { ElMessage } from 'element-plus'
-  import { assignToUsers } from '@/apis/system/role'
-  import { listUser } from '@/apis/system/user'
 
   const emit = defineEmits<{
     (e: 'save-success'): void
@@ -89,38 +89,41 @@
   })
 
   // 搜索列配置
-  const searchColumns: FormColumnItem[] = [
-    {
-      label: '用户名',
-      field: 'username',
-      type: 'input',
-      span: 6,
-      props: {
-        placeholder: '请输入用户名',
-        clearable: true
-      }
-    },
-    {
-      label: '昵称',
-      field: 'nickname',
-      type: 'input',
-      span: 6,
-      props: {
-        placeholder: '请输入昵称',
-        clearable: true
-      }
-    },
-    {
-      label: '手机号',
-      field: 'phone',
-      type: 'input',
-      span: 6,
-      props: {
-        placeholder: '请输入手机号',
-        clearable: true
-      }
-    }
-  ]
+  const searchColumns = computed(
+    () =>
+      [
+        {
+          label: '用户名',
+          field: 'username',
+          type: 'input',
+          span: 6,
+          props: {
+            placeholder: '请输入用户名',
+            clearable: true
+          }
+        },
+        {
+          label: '昵称',
+          field: 'nickname',
+          type: 'input',
+          span: 6,
+          props: {
+            placeholder: '请输入昵称',
+            clearable: true
+          }
+        },
+        {
+          label: '手机号',
+          field: 'phone',
+          type: 'input',
+          span: 6,
+          props: {
+            placeholder: '请输入手机号',
+            clearable: true
+          }
+        }
+      ] as FormColumnItem[]
+  )
 
   // 表格列配置
   const columns = [
@@ -196,7 +199,7 @@
         current: pagination.current,
         size: pagination.pageSize
       }
-      const { data } = await listUser(query)
+      const data = await listUser(query)
 
       // TODO: 这里可能需要后端接口支持排除已分配用户的查询
       // 暂时使用所有用户数据

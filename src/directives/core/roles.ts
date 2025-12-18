@@ -44,32 +44,30 @@
  * @author Art Design Pro Team
  */
 
-import { useUserStore } from '@/store/modules/user'
 import { App, Directive, DirectiveBinding } from 'vue'
+import has from '@/utils/sys/permission'
 
 interface RolesBinding extends DirectiveBinding {
   value: string | string[]
 }
 
 function checkRolePermission(el: HTMLElement, binding: RolesBinding): void {
-  const userStore = useUserStore()
-  const userRoles = userStore.getUserInfo.roles
+  const { value } = binding
 
-  // 如果用户角色为空或未定义，移除元素
-  if (!userRoles?.length) {
-    removeElement(el)
-    return
-  }
-
-  // 确保指令值为数组格式
-  const requiredRoles = Array.isArray(binding.value) ? binding.value : [binding.value]
-
-  // 检查用户是否具有所需角色之一
-  const hasPermission = requiredRoles.some((role: string) => userRoles.includes(role))
-
-  // 如果没有权限，安全地移除元素
-  if (!hasPermission) {
-    removeElement(el)
+  if (value && Array.isArray(value) && value.length) {
+    // 使用工具类的 hasRoleOr 方法验证角色
+    const hasPermission = has.hasRoleOr(value)
+    if (!hasPermission) {
+      removeElement(el)
+    }
+  } else if (value && typeof value === 'string') {
+    // 单个角色验证
+    const hasPermission = has.hasRole(value)
+    if (!hasPermission) {
+      removeElement(el)
+    }
+  } else {
+    throw new Error(`need roles! Like v-roles="'R_ADMIN'" or v-roles="['R_SUPER', 'R_ADMIN']"`)
   }
 }
 

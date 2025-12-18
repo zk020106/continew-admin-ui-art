@@ -23,14 +23,15 @@
 
       <!-- 内容区域 -->
       <div class="tab-content">
-        <Permission v-if="activeTab === '1'" :role-id="roleId" />
-        <RoleUser v-if="activeTab === '2'" :role-id="roleId" />
+        <Permission v-if="activeTab === '1'" :role="role" />
+        <RoleUser v-if="activeTab === '2'" :role="role" />
       </div>
     </div>
   </GiPageLayout>
 </template>
 
 <script setup lang="ts">
+  import { RoleResp } from '@/apis'
   import { ElTabPane, ElTabs } from 'element-plus'
   import Permission from './components/Permission.vue'
   import RoleUser from './components/RoleUser.vue'
@@ -39,11 +40,24 @@
   defineOptions({ name: 'SystemRole' })
 
   const activeTab = ref('1')
-  const roleId = ref('')
+  const role = ref<RoleResp>({
+    id: '',
+    name: '',
+    code: '',
+    sort: 0,
+    description: '',
+    dataScope: 0,
+    isSystem: false,
+    createUserString: '',
+    createTime: '',
+    updateUserString: '',
+    updateTime: '',
+    disabled: false
+  })
 
   // 根据选中角色查询
-  const handleSelectRole = (keys: Array<any>) => {
-    roleId.value = keys.length === 1 ? keys[0] : ''
+  const handleSelectRole = (data: RoleResp) => {
+    role.value = data
   }
 </script>
 
