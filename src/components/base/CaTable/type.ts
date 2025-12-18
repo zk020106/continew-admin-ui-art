@@ -29,6 +29,8 @@ export interface TableColumnItem<T extends DefaultRow = any>
   render?: (scope: TableSlotScope<T>) => VNode | VNode[] | string
   /** 是否可拖拽排序 */
   draggable?: boolean
+  /** 是否显示列 */
+  visible?: boolean
 }
 
 export type TableSlotScope<T extends DefaultRow = any> = {

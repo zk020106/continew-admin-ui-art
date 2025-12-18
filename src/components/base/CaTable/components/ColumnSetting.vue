@@ -11,9 +11,14 @@
           <span>列设置</span>
           <ElButton text type="primary" size="small" @click="resetColumns"> 重置 </ElButton>
         </div>
+        <div class="column-actions-bar">
+          <ElButton text size="small" @click="showAllColumns"> 全选 </ElButton>
+          <ElButton text size="small" @click="hideAllColumns"> 全不选 </ElButton>
+        </div>
         <div class="column-list" @dragover="handleDragOver" @drop="handleDrop">
           <ElDropdownItem
             v-for="(column, index) in localColumns"
+            v-show="column.visible !== false"
             :key="column.prop || index"
             :command="`toggle-${column.prop}`"
             draggable="true"
@@ -22,6 +27,10 @@
           >
             <div class="column-item">
               <div class="column-info">
+                <ElCheckbox
+                  :model-value="column.visible !== false"
+                  @change="(val) => setVisible(column, val)"
+                />
                 <ElIcon class="drag-handle">
                   <MoreFilled />
                 </ElIcon>
@@ -36,7 +45,7 @@
                     :class="{ active: column.fixed === 'left' }"
                     @click.stop="setFixed(column, 'left')"
                   >
-                    <PushLeft />
+                    <ArrowLeftBold />
                   </ElIcon>
                 </ElTooltip>
                 <ElTooltip content="固定到右侧" placement="top">
@@ -45,7 +54,7 @@
                     :class="{ active: column.fixed === 'right' }"
                     @click.stop="setFixed(column, 'right')"
                   >
-                    <PushRight />
+                    <ArrowRightBold />
                   </ElIcon>
                 </ElTooltip>
                 <ElTooltip content="取消固定" placement="top">
@@ -67,12 +76,15 @@
 </template>
 
 <script setup lang="ts">
-  import { MoreFilled, PushLeft, PushRight, Switch } from '@element-plus/icons-vue'
+  import { MoreFilled, ArrowLeftBold, ArrowRightBold, Switch } from '@element-plus/icons-vue'
+  import { ElCheckbox } from 'element-plus'
+  import { onMounted } from 'vue'
   import type { TableColumnItem } from '../type'
 
   interface Props {
     columns: TableColumnItem[]
     disabledKeys?: string[]
+    tableId?: string | number
   }
 
   interface Emits {
@@ -87,16 +99,75 @@
 
   // 本地列状态
   const localColumns = ref<TableColumnItem[]>([...props.columns])
+  const originalColumns = ref<TableColumnItem[]>([...props.columns])
   const draggedIndex = ref<number | null>(null)
 
   // 监听父组件传入的列变化
   watch(
     () => props.columns,
     (newColumns) => {
-      localColumns.value = [...newColumns]
+      originalColumns.value = [...newColumns]
+      // 尝试从 localStorage 加载配置
+      loadColumnsFromStorage()
     },
     { deep: true }
   )
+
+  // 生成存储 key
+  const getStorageKey = () => {
+    if (props.tableId) {
+      return `ca-table-columns-${props.tableId}`
+    }
+    // 如果没有传入 tableId，从当前路径生成
+    const path = window.location.pathname.replace(/^\//, '').replace(/\//g, ':')
+    return `ca-table-columns-${path}`
+  }
+
+  // 从 localStorage 加载列配置
+  const loadColumnsFromStorage = () => {
+    try {
+      const key = getStorageKey()
+      const saved = localStorage.getItem(key)
+      if (saved) {
+        const savedColumns = JSON.parse(saved)
+        // 合并保存的配置和当前列
+        const mergedColumns = props.columns.map((col) => {
+          const savedCol = savedColumns.find((sc: TableColumnItem) => sc.prop === col.prop)
+          return savedCol ? { ...col, ...savedCol } : col
+        })
+        localColumns.value = mergedColumns
+        emit('update:columns', mergedColumns)
+      }
+    } catch (error) {
+      console.error('Failed to load column config:', error)
+    }
+  }
+
+  // 保存列配置到 localStorage
+  const saveColumnsToStorage = (columns: TableColumnItem[]) => {
+    try {
+      const key = getStorageKey()
+      const config = columns.map((col) => ({
+        prop: col.prop,
+        label: col.label,
+        visible: col.visible,
+        fixed: col.fixed
+      }))
+      localStorage.setItem(key, JSON.stringify(config))
+    } catch (error) {
+      console.error('Failed to save column config:', error)
+    }
+  }
+
+  // 设置列显示/隐藏
+  const setVisible = (column: TableColumnItem, visible: boolean) => {
+    const index = localColumns.value.findIndex((col) => col.prop === column.prop)
+    if (index > -1) {
+      localColumns.value[index] = { ...localColumns.value[index], visible }
+      emit('update:columns', [...localColumns.value])
+      saveColumnsToStorage(localColumns.value)
+    }
+  }
 
   // 设置列固定
   const setFixed = (column: TableColumnItem, fixed?: boolean | 'left' | 'right') => {
@@ -104,16 +175,45 @@
     if (index > -1) {
       localColumns.value[index] = { ...localColumns.value[index], fixed }
       emit('update:columns', [...localColumns.value])
+      saveColumnsToStorage(localColumns.value)
     }
   }
 
   // 重置列设置
   const resetColumns = () => {
-    localColumns.value = [...props.columns].map((col) => ({
+    localColumns.value = [...originalColumns.value].map((col) => ({
       ...col,
+      visible: true,
       fixed: undefined
     }))
     emit('update:columns', [...localColumns.value])
+    // 删除 localStorage 中的配置
+    try {
+      const key = getStorageKey()
+      localStorage.removeItem(key)
+    } catch (error) {
+      console.error('Failed to remove column config:', error)
+    }
+  }
+
+  // 全选
+  const showAllColumns = () => {
+    localColumns.value = localColumns.value.map((col) => ({
+      ...col,
+      visible: true
+    }))
+    emit('update:columns', [...localColumns.value])
+    saveColumnsToStorage(localColumns.value)
+  }
+
+  // 全不选
+  const hideAllColumns = () => {
+    localColumns.value = localColumns.value.map((col) => ({
+      ...col,
+      visible: false
+    }))
+    emit('update:columns', [...localColumns.value])
+    saveColumnsToStorage(localColumns.value)
   }
 
   // 拖拽开始
@@ -150,6 +250,7 @@
 
       localColumns.value = newColumns
       emit('update:columns', newColumns)
+      saveColumnsToStorage(newColumns)
     }
 
     draggedIndex.value = null
@@ -157,16 +258,19 @@
 
   // 处理下拉菜单命令
   const handleCommand = (command: string) => {
-    // 这里可以处理其他命令
     console.log('Command:', command)
   }
+
+  // 组件挂载时加载配置
+  onMounted(() => {
+    loadColumnsFromStorage()
+  })
 </script>
 
 <style lang="scss" scoped>
   .ca-table-column-setting {
-    min-width: 300px;
-    max-height: 400px;
-    overflow-y: auto;
+    min-width: 320px;
+    max-height: 500px;
   }
 
   .column-setting-header {
@@ -178,8 +282,15 @@
     border-bottom: 1px solid var(--el-border-color-lighter);
   }
 
+  .column-actions-bar {
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--el-border-color-lighter);
+  }
+
   .column-list {
-    max-height: 300px;
+    max-height: 350px;
     overflow-y: auto;
   }
 
@@ -199,7 +310,7 @@
     min-width: 0;
 
     .drag-handle {
-      margin-right: 4px;
+      margin: 0 4px;
       color: var(--el-text-color-secondary);
       cursor: move;
       transition: color 0.2s;

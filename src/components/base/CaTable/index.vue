@@ -59,6 +59,7 @@
           v-if="showSettingColumnBtn"
           :columns="localColumns"
           :disabled-keys="props.toolbar?.disabledColumnKeys"
+          :table-id="autoTableId"
           @update:columns="handleColumnsUpdate"
         />
       </ElSpace>
@@ -173,6 +174,13 @@
     return (
       !props.toolbar?.disabledTools?.includes('columnSetting') && Boolean(localColumns.value.length)
     )
+  })
+
+  // 自动生成 tableId（基于当前路径）
+  const autoTableId = computed(() => {
+    if (props.tableId) return props.tableId
+    const path = window.location.pathname
+    return path.replace(/\//g, ':').slice(1) // 移除开头的冒号
   })
   const tableProps = computed(() => {
     return {
