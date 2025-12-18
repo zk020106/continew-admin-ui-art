@@ -127,6 +127,30 @@
   const isFullscreen = ref(false)
   const fullscreenHeight = ref(0)
 
+  const calculateFullscreenHeight = () => {
+    if (!isFullscreen.value || !tableContainer.value) {
+      return
+    }
+
+    const container = tableContainer.value as HTMLElement
+    const header = container.querySelector('.ca-table-header') as HTMLElement
+    const toolbar = container.querySelector('.ca-table__toolbar') as HTMLElement
+    const pagination = container.querySelector('.ca-table-pagination') as HTMLElement
+
+    let offset = 40
+
+    if (header) {
+      offset += header.offsetHeight
+    }
+    if (toolbar) {
+      offset += toolbar.offsetHeight
+    }
+    if (pagination) {
+      offset += pagination.offsetHeight
+    }
+    fullscreenHeight.value = window.innerHeight - offset
+  }
+
   // 表格尺寸
   const tableSize = ref<'default' | 'large' | 'small'>('small')
   defineSlots<{
@@ -226,8 +250,9 @@
   const toggleFullscreen = () => {
     isFullscreen.value = !isFullscreen.value
     if (isFullscreen.value) {
-      // 计算全屏高度（减去工具栏和分页的高度）
-      fullscreenHeight.value = window.innerHeight - 200
+      nextTick(() => {
+        calculateFullscreenHeight()
+      })
     }
   }
 
@@ -265,6 +290,7 @@
       inset: 0;
       z-index: 9999;
       padding: 20px;
+      background-color: var(--el-bg-color);
     }
 
     :deep(.el-table) {
@@ -272,6 +298,7 @@
     }
 
     &__toolbar {
+      flex-shrink: 0;
       padding: 10px 0;
 
       &-right {
@@ -296,11 +323,13 @@
   }
 
   .ca-table-header {
+    flex-shrink: 0;
     padding: 12px 0;
     border-bottom: 1px solid var(--el-border-color-lighter);
   }
 
   .ca-table-pagination {
+    flex-shrink: 0;
     margin-top: 10px;
   }
 </style>
