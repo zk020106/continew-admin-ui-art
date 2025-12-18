@@ -55,13 +55,12 @@
           </ElButton>
         </ElTooltip>
 
-        <ElTooltip placement="top" v-if="showSettingColumnBtn" :content="t('table.columnSettings')">
-          <ElButton>
-            <template #icon>
-              <ArtSvgIcon icon="ep:setting" />
-            </template>
-          </ElButton>
-        </ElTooltip>
+        <ColumnSetting
+          v-if="showSettingColumnBtn"
+          :columns="localColumns"
+          :disabled-keys="props.toolbar?.disabledColumnKeys"
+          @update:columns="handleColumnsUpdate"
+        />
       </ElSpace>
     </ElRow>
 
@@ -72,7 +71,7 @@
       :size="tableSize"
       :height="isFullscreen ? fullscreenHeight : undefined"
     >
-      <TableColumn v-for="item in props.columns" :key="item.prop || item.label" :column="item">
+      <TableColumn v-for="item in localColumns" :key="item.prop || item.label" :column="item">
         <!-- 将所有插槽传递给子组件 -->
         <template v-for="(_, slotName) in $slots" :key="slotName" #[slotName]="scope">
           <slot :name="slotName" v-bind="scope" />
@@ -105,7 +104,8 @@
   import { computed, ref, useTemplateRef, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import TableColumn from './TableColumn.vue'
-  import { DefaultRow, TableProps, TableSlotScope } from './type'
+  import ColumnSetting from './components/ColumnSetting.vue'
+  import { DefaultRow, TableColumnItem, TableProps, TableSlotScope } from './type'
 
   const props = withDefaults(defineProps<TableProps<T>>(), {
     fit: true,
@@ -137,6 +137,19 @@
     'toolbar-right': () => void
     [propsName: string]: (props: TableSlotScope<T>) => void
   }>()
+
+  // 本地列状态
+  const localColumns = ref<TableColumnItem[]>([...props.columns])
+
+  // 监听父组件传入的列变化
+  watch(
+    () => props.columns,
+    (newColumns) => {
+      localColumns.value = [...newColumns]
+    },
+    { deep: true }
+  )
+
   // 密度选项
   const sizeOptions = computed(() => {
     return [
@@ -146,12 +159,20 @@
     ]
   })
 
-  const showRefreshBtn = computed(() => !props.disabledTools?.includes('refresh'))
-  const showSizeBtn = computed(() => !props.disabledTools?.includes('size'))
-  const showFullscreenBtn = computed(() => !props.disabledTools?.includes('fullscreen'))
+  // 定义事件
+  const emit = defineEmits<{
+    refresh: []
+    'update:columns': [columns: TableColumnItem[]]
+  }>()
+
+  const showRefreshBtn = computed(() => !props.toolbar?.disabledTools?.includes('refresh'))
+  const showSizeBtn = computed(() => !props.toolbar?.disabledTools?.includes('size'))
+  const showFullscreenBtn = computed(() => !props.toolbar?.disabledTools?.includes('fullscreen'))
   /** 列设置相关逻辑 */
   const showSettingColumnBtn = computed(() => {
-    return !props.disabledTools?.includes('columnSetting') && Boolean(props.columns?.length)
+    return (
+      !props.toolbar?.disabledTools?.includes('columnSetting') && Boolean(localColumns.value.length)
+    )
   })
   const tableProps = computed(() => {
     return {
@@ -175,9 +196,13 @@
 
   // 刷新处理
   const handleRefresh = async () => {
-    if (props.toolbar?.onRefresh) {
-      await props.toolbar.onRefresh()
-    }
+    emit('refresh')
+  }
+
+  // 列更新处理
+  const handleColumnsUpdate = (columns: TableColumnItem[]) => {
+    localColumns.value = columns
+    emit('update:columns', columns)
   }
 
   // 尺寸变更处理
