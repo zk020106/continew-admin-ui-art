@@ -288,7 +288,7 @@
     &.ca-table--fullscreen {
       position: fixed;
       inset: 0;
-      z-index: 9999;
+      z-index: 99;
       padding: 20px;
       background-color: var(--el-bg-color);
     }
@@ -298,6 +298,7 @@
     }
 
     &__toolbar {
+      z-index: 100;
       flex-shrink: 0;
       padding: 10px 0;
 
@@ -305,12 +306,6 @@
         .el-dropdown {
           .el-button.is-circle {
             cursor: pointer;
-          }
-        }
-
-        .el-dropdown-menu__item {
-          &.is-active {
-            color: var(--el-color-primary);
           }
         }
       }
@@ -331,5 +326,9 @@
   .ca-table-pagination {
     flex-shrink: 0;
     margin-top: 10px;
+  }
+
+  :deep(.el-dropdown-menu__item.is-active) {
+    color: var(--el-color-primary);
   }
 </style>
