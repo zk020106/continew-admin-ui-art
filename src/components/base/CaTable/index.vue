@@ -1,9 +1,9 @@
 <template>
   <div ref="tableContainer" class="ca-table" :class="{ 'ca-table--fullscreen': isFullscreen }">
-    <ElRow v-if="props.title" justify="space-between" align="middle" class="ca-table-header">
+    <ElRow v-if="props.tableTitle" justify="space-between" align="middle" class="ca-table-header">
       <ElSpace :wrap="true">
-        <slot name="title">
-          <div class="ca-table__header-title">{{ props.title }}</div>
+        <slot name="table-title">
+          <div class="ca-table__header-title">{{ props.tableTitle }}</div>
         </slot>
       </ElSpace>
     </ElRow>
@@ -154,11 +154,11 @@
   }
 
   // 表格尺寸
-  const tableSize = ref<'default' | 'large' | 'small'>(props.size || 'small')
+  const tableSize = ref<'default' | 'large' | 'small'>(props.size || 'default')
   defineSlots<{
     append: () => void
     empty: () => void
-    title: () => void
+    'table-title': () => void
     top: () => void
     'toolbar-left': () => void
     'toolbar-right': () => void

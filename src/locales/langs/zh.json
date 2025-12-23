@@ -42,6 +42,9 @@
     "empty": "暂无",
     "error": "错误",
     "false": "否",
+    "genderFemale": "女",
+    "genderMale": "男",
+    "genderUnknown": "未知",
     "index": "序号",
     "info": "信息",
     "loading": "加载中",
@@ -53,9 +56,6 @@
     "statusDisabled": "禁用",
     "statusEnabled": "启用",
     "success": "成功",
-    "genderMale": "男",
-    "genderFemale": "女",
-    "genderUnknown": "未知",
     "tips": "提示",
     "true": "是",
     "warning": "警告"
@@ -202,6 +202,83 @@
       "captchaExpiringSoon": "验证码即将过期，请及时刷新"
     }
   },
+  "menu": {
+    "button": {
+      "add": "新增",
+      "addChild": "新增子菜单",
+      "clearCache": "清除缓存",
+      "collapse": "折叠",
+      "expand": "展开"
+    },
+    "field": {
+      "component": "组件路径",
+      "componentName": "组件名称",
+      "createTime": "创建时间",
+      "icon": "图标",
+      "isCache": "是否缓存",
+      "isExternal": "是否外链",
+      "isHidden": "是否隐藏",
+      "name": "路由名称",
+      "parentId": "上级菜单",
+      "path": "路由地址",
+      "permission": "权限标识",
+      "redirect": "重定向",
+      "sort": "排序",
+      "status": "状态",
+      "title": "菜单名称",
+      "type": "类型"
+    },
+    "form": {
+      "basicInfo": "基础信息",
+      "routeConfig": "路由配置"
+    },
+    "message": {
+      "addSuccess": "新增成功",
+      "clearCacheSuccess": "清除缓存成功",
+      "confirmClearCache": "确认要清除缓存吗?",
+      "confirmDelete": "确认删除菜单「{title}」吗？",
+      "deleteSuccess": "删除成功",
+      "fetchFailed": "获取菜单信息失败",
+      "hasChildren": "该菜单存在子菜单，不能删除",
+      "updateSuccess": "修改成功"
+    },
+    "page": {
+      "add": "新增菜单",
+      "edit": "编辑菜单"
+    },
+    "placeholder": {
+      "component": "请输入组件路径",
+      "componentName": "请输入组件名称",
+      "icon": "请输入图标",
+      "name": "请输入路由名称",
+      "parentId": "请选择上级菜单",
+      "path": "请输入路由地址",
+      "permission": "请输入权限标识",
+      "redirect": "请输入重定向地址",
+      "title": "请输入菜单名称"
+    },
+    "search": {
+      "title": "搜索菜单标题"
+    },
+    "suggestion": {
+      "componentName": "建议组件名称"
+    },
+    "type": {
+      "button": "按钮",
+      "directory": "目录",
+      "menu": "菜单"
+    },
+    "validate": {
+      "componentRequired": "请输入组件路径",
+      "nameRequired": "请输入组件名称",
+      "parentIdRequired": "请选择上级菜单",
+      "pathRequired": "请输入路由地址",
+      "permissionRequired": "请输入权限标识",
+      "sortRequired": "请输入排序",
+      "titleRequired": "请输入菜单名称",
+      "typeRequired": "请选择菜单类型"
+    }
+  },
   "menus": {
     "dashboard": {
       "console": "工作台",
@@ -250,9 +327,9 @@
     },
     "system": {
       "config": {
-        "index": "系统配置",
         "client": "客户端配置",
         "email": "邮件配置",
+        "index": "系统配置",
         "login": "登录配置",
         "security": "安全配置",
         "sms": "短信配置",
@@ -362,6 +439,121 @@
     "submitBtnText": "注册",
     "title": "创建账号",
     "toLogin": "去登录"
+  },
+  "role": {
+    "assignUser": "分配用户",
+    "batchUnassign": "批量移除",
+    "code": "角色编码",
+    "dataScope": "数据权限",
+    "dataScopeOption": {
+      "all": "全部数据权限",
+      "custom": "自定义数据权限",
+      "dept": "本部门数据权限",
+      "deptAndBelow": "本部门及以下数据权限",
+      "onlySelf": "仅本人数据权限"
+    },
+    "deptCheckStrictly": "父子联动",
+    "deptPermission": "部门权限",
+    "description": "描述",
+    "expandCollapse": "展开/折叠",
+    "field": {
+      "code": "角色编码",
+      "dataScope": "数据权限",
+      "description": "描述",
+      "name": "角色名称",
+      "sort": "排序",
+      "status": "状态"
+    },
+    "form": {
+      "basicInfo": "基础信息",
+      "code": "角色编码",
+      "dataPermission": "数据权限",
+      "name": "角色名称",
+      "remark": "备注",
+      "sort": "排序",
+      "status": "状态"
+    },
+    "message": {
+      "addSuccess": "新增成功",
+      "assignFailed": "分配失败",
+      "assignSuccess": "分配成功",
+      "confirmBatchUnassign": "确认移除选中的 {count} 个用户吗？",
+      "confirmDelete": "确认删除角色「{name}」吗？",
+      "confirmUnassign": "确认移除用户「{nickname}({username})」吗？",
+      "deleteFailed": "删除失败",
+      "deleteSuccess": "删除成功",
+      "fetchFailed": "获取失败",
+      "fetchRoleFailed": "获取角色信息失败",
+      "getUserListFailed": "获取用户列表失败",
+      "loadPermissionTreeFailed": "加载权限树失败",
+      "pleaseSelectRole": "请先选择角色",
+      "pleaseSelectUser": "请选择用户",
+      "pleaseSelectUsers": "请选择要移除的用户",
+      "saveFailed": "保存失败",
+      "saveSuccess": "保存成功",
+      "systemRoleCannotDelete": "该角色为系统内置角色",
+      "systemRoleCannotEdit": "该角色为系统内置角色",
+      "systemUserCannotUnassign": "该用户为系统内置用户不能取消分配",
+      "unassignFailed": "移除失败",
+      "unassignSuccess": "移除成功",
+      "updateSuccess": "修改成功"
+    },
+    "nodeCascade": "节点关联",
+    "nodeIndependent": "节点独立",
+    "page": {
+      "title": {
+        "add": "新增角色",
+        "edit": "编辑角色"
+      },
+      "user": {
+        "search": {
+          "description": "描述",
+          "nickname": "昵称",
+          "username": "用户名"
+        },
+        "table": {
+          "action": "操作",
+          "deptName": "所属部门",
+          "description": "描述",
+          "email": "邮箱",
+          "gender": "性别",
+          "nickname": "昵称",
+          "phone": "手机号",
+          "roleNames": "角色",
+          "status": "状态",
+          "username": "用户名"
+        }
+      }
+    },
+    "permission": {
+      "button": "按钮",
+      "savePermission": "保存权限"
+    },
+    "placeholder": {
+      "code": "请输入角色编码",
+      "dataScope": "请选择数据权限",
+      "name": "请输入角色名称",
+      "nickname": "请输入昵称",
+      "phone": "请输入手机号",
+      "remark": "请输入备注信息",
+      "sort": "请输入排序",
+      "username": "请输入用户名"
+    },
+    "savePermission": "保存权限",
+    "tab": {
+      "permission": "功能权限",
+      "user": "角色用户"
+    },
+    "title": "角色管理",
+    "tree": {
+      "noDescription": "暂无描述",
+      "placeholder": "搜索名称/编码"
+    },
+    "validate": {
+      "codeRequired": "请输入角色编码",
+      "dataScopeRequired": "请选择数据权限",
+      "nameRequired": "请输入角色名称"
+    }
   },
   "search": {
     "exitKeydown": "关闭",
@@ -529,121 +721,6 @@
       "password": "请输入密码",
       "role": "请选择角色",
       "username": "请输入用户名"
-    }
-  },
-  "role": {
-    "assignUser": "分配用户",
-    "batchUnassign": "批量移除",
-    "code": "角色编码",
-    "dataScope": "数据权限",
-    "dataScopeOption": {
-      "all": "全部数据权限",
-      "custom": "自定义数据权限",
-      "dept": "本部门数据权限",
-      "deptAndBelow": "本部门及以下数据权限",
-      "onlySelf": "仅本人数据权限"
-    },
-    "deptCheckStrictly": "父子联动",
-    "deptPermission": "部门权限",
-    "description": "描述",
-    "expandCollapse": "展开/折叠",
-    "field": {
-      "code": "角色编码",
-      "dataScope": "数据权限",
-      "description": "描述",
-      "name": "角色名称",
-      "sort": "排序",
-      "status": "状态"
-    },
-    "form": {
-      "basicInfo": "基础信息",
-      "dataPermission": "数据权限",
-      "name": "角色名称",
-      "code": "角色编码",
-      "sort": "排序",
-      "status": "状态",
-      "remark": "备注"
-    },
-    "message": {
-      "assignFailed": "分配失败",
-      "assignSuccess": "分配成功",
-      "confirmBatchUnassign": "确认移除选中的 {count} 个用户吗？",
-      "confirmDelete": "确认删除角色「{name}」吗？",
-      "confirmUnassign": "确认移除用户「{nickname}({username})」吗？",
-      "deleteFailed": "删除失败",
-      "deleteSuccess": "删除成功",
-      "fetchFailed": "获取失败",
-      "fetchRoleFailed": "获取角色信息失败",
-      "getUserListFailed": "获取用户列表失败",
-      "loadPermissionTreeFailed": "加载权限树失败",
-      "pleaseSelectRole": "请先选择角色",
-      "pleaseSelectUsers": "请选择要移除的用户",
-      "pleaseSelectUser": "请选择用户",
-      "saveFailed": "保存失败",
-      "saveSuccess": "保存成功",
-      "systemRoleCannotDelete": "该角色为系统内置角色",
-      "systemRoleCannotEdit": "该角色为系统内置角色",
-      "systemUserCannotUnassign": "该用户为系统内置用户不能取消分配",
-      "unassignFailed": "移除失败",
-      "unassignSuccess": "移除成功",
-      "updateSuccess": "修改成功",
-      "addSuccess": "新增成功"
-    },
-    "nodeCascade": "节点关联",
-    "nodeIndependent": "节点独立",
-    "page": {
-      "title": {
-        "add": "新增角色",
-        "edit": "编辑角色"
-      },
-      "user": {
-        "search": {
-          "description": "描述",
-          "nickname": "昵称",
-          "username": "用户名"
-        },
-        "table": {
-          "action": "操作",
-          "deptName": "所属部门",
-          "description": "描述",
-          "email": "邮箱",
-          "gender": "性别",
-          "nickname": "昵称",
-          "phone": "手机号",
-          "roleNames": "角色",
-          "status": "状态",
-          "username": "用户名"
-        }
-      }
-    },
-    "permission": {
-      "button": "按钮",
-      "savePermission": "保存权限"
-    },
-    "placeholder": {
-      "code": "请输入角色编码",
-      "dataScope": "请选择数据权限",
-      "name": "请输入角色名称",
-      "nickname": "请输入昵称",
-      "phone": "请输入手机号",
-      "remark": "请输入备注信息",
-      "sort": "请输入排序",
-      "username": "请输入用户名"
-    },
-    "savePermission": "保存权限",
-    "tab": {
-      "permission": "功能权限",
-      "user": "角色用户"
-    },
-    "title": "角色管理",
-    "tree": {
-      "noDescription": "暂无描述",
-      "placeholder": "搜索名称/编码"
-    },
-    "validate": {
-      "nameRequired": "请输入角色名称",
-      "codeRequired": "请输入角色编码",
-      "dataScopeRequired": "请选择数据权限"
     }
   },
   "worktab": {

@@ -50,7 +50,7 @@ export interface TableProps<T extends DefaultRow = any>
   scroll?: ScrollConfig
   /** 分页器位置，默认 'bottom-right' */
   paginationPosition?: PaginationPosition
-  title?: string
+  tableTitle?: string
   tableId?: string | number
   disabledTools?: Tools[]
   disabledColumnKeys?: string[]

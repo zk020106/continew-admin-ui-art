@@ -16,43 +16,53 @@
           </div>
         </template>
 
-        <ElFormItem :label="t('role.form.name')" prop="name">
-          <ElInput
-            v-model="form.name"
-            :placeholder="t('role.placeholder.name')"
-            maxlength="30"
-            show-word-limit
-          />
-        </ElFormItem>
+        <ElRow :gutter="16">
+          <ElCol :span="12">
+            <ElFormItem :label="t('role.form.name')" prop="name">
+              <ElInput
+                v-model="form.name"
+                :placeholder="t('role.placeholder.name')"
+                maxlength="30"
+                show-word-limit
+              />
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="12">
+            <ElFormItem :label="t('role.form.code')" prop="code">
+              <ElInput
+                v-model="form.code"
+                :placeholder="t('role.placeholder.code')"
+                maxlength="30"
+                show-word-limit
+                :disabled="isUpdate"
+              />
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
 
-        <ElFormItem :label="t('role.form.code')" prop="code">
-          <ElInput
-            v-model="form.code"
-            :placeholder="t('role.placeholder.code')"
-            maxlength="30"
-            show-word-limit
-            :disabled="isUpdate"
-          />
-        </ElFormItem>
-
-        <ElFormItem :label="t('role.form.sort')" prop="sort">
-          <ElInputNumber
-            v-model="form.sort"
-            :placeholder="t('role.placeholder.sort')"
-            :min="0"
-            :max="999"
-            :precision="0"
-            controls-position="right"
-            style="width: 100%"
-          />
-        </ElFormItem>
-
-        <ElFormItem :label="t('role.form.status')" prop="status">
-          <ElRadioGroup v-model="form.status">
-            <ElRadio :label="1">{{ t('common.statusEnabled') }}</ElRadio>
-            <ElRadio :label="0">{{ t('common.statusDisabled') }}</ElRadio>
-          </ElRadioGroup>
-        </ElFormItem>
+        <ElRow :gutter="16">
+          <ElCol :span="12">
+            <ElFormItem :label="t('role.form.sort')" prop="sort">
+              <ElInputNumber
+                v-model="form.sort"
+                :placeholder="t('role.placeholder.sort')"
+                :min="0"
+                :max="999"
+                :precision="0"
+                controls-position="right"
+                style="width: 100%"
+              />
+            </ElFormItem>
+          </ElCol>
+          <ElCol :span="12">
+            <ElFormItem :label="t('role.form.status')" prop="status">
+              <ElRadioGroup v-model="form.status">
+                <ElRadio :label="1">{{ t('common.statusEnabled') }}</ElRadio>
+                <ElRadio :label="0">{{ t('common.statusDisabled') }}</ElRadio>
+              </ElRadioGroup>
+            </ElFormItem>
+          </ElCol>
+        </ElRow>
 
         <ElFormItem :label="t('role.form.remark')" prop="remark">
           <ElInput
@@ -93,12 +103,22 @@
         <ElFormItem v-if="form.dataScope === 2" :label="t('role.deptPermission')">
           <div class="dept-tree-container">
             <div class="dept-tree-actions">
-              <ElCheckbox v-model="isDeptExpanded" @change="handleDeptExpand">
-                {{ t('role.expandCollapse') }}
-              </ElCheckbox>
-              <ElCheckbox v-model="form.deptCheckStrictly">
-                {{ t('role.deptCheckStrictly') }}
-              </ElCheckbox>
+              <ElButton-group>
+                <ElButton
+                  :type="isDeptExpanded ? 'primary' : 'default'"
+                  size="small"
+                  @click="handleDeptExpand(true)"
+                >
+                  {{ t('role.expandCollapse') }}
+                </ElButton>
+                <ElButton
+                  :type="form.deptCheckStrictly ? 'primary' : 'default'"
+                  size="small"
+                  @click="form.deptCheckStrictly = !form.deptCheckStrictly"
+                >
+                  {{ t('role.deptCheckStrictly') }}
+                </ElButton>
+              </ElButton-group>
             </div>
 
             <ElTree
@@ -107,7 +127,7 @@
               node-key="key"
               :check-strictly="!form.deptCheckStrictly"
               :tree-props="{
-                label: 'title', // 后端返回的是 title 字段
+                label: 'title',
                 children: 'children'
               }"
               :default-expand-all="isDeptExpanded"
@@ -162,7 +182,14 @@
   // 表单验证规则
   const rules = computed(() => ({
     name: [{ required: true, message: t('role.validate.nameRequired'), trigger: 'blur' }],
-    code: [{ required: true, message: t('role.validate.codeRequired'), trigger: 'blur' }],
+    code: [
+      { required: true, message: t('role.validate.codeRequired'), trigger: 'blur' },
+      {
+        pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
+        message: '角色编码必须以字母开头，只能包含字母、数字和下划线',
+        trigger: 'blur'
+      }
+    ],
     dataScope: [
       { required: true, message: t('role.validate.dataScopeRequired'), trigger: 'change' }
     ]
@@ -186,18 +213,20 @@
   // 重置表单
   const reset = () => {
     saving.value = false
-    isDeptExpanded.value = true
     resetForm()
     nextTick(() => {
       formRef.value?.resetFields()
       deptTreeRef.value?.setCheckedKeys([])
+      // 重置后展开树
+      handleDeptExpand(true)
     })
   }
 
   // 展开/折叠部门树
-  const handleDeptExpand = () => {
+  const handleDeptExpand = (expanded: boolean) => {
+    isDeptExpanded.value = expanded
     const allKeys = getAllDeptKeys(deptList.value)
-    if (isDeptExpanded.value) {
+    if (expanded) {
       allKeys.forEach((key) => {
         deptTreeRef.value?.store.nodesMap[key]?.expand()
       })
@@ -340,8 +369,6 @@
     border-radius: var(--el-border-radius-base);
 
     &-actions {
-      display: flex;
-      gap: 16px;
       padding-bottom: 12px;
       margin-bottom: 12px;
       border-bottom: 1px solid var(--el-border-color-lighter);
