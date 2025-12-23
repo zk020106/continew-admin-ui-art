@@ -2,12 +2,14 @@
   <div class="permission-container">
     <div class="permission-header">
       <div class="header-left">
-        <ElButton type="primary" :loading="loading" @click="handleSave"> 保存权限 </ElButton>
+        <ElButton type="primary" :loading="loading" @click="handleSave">
+          {{ t('role.savePermission') }}
+        </ElButton>
       </div>
       <div class="header-right">
         <ElRadioGroup v-model="isCascade">
-          <ElRadioButton :label="true">节点关联</ElRadioButton>
-          <ElRadioButton :label="false">节点独立</ElRadioButton>
+          <ElRadioButton :label="true">{{ t('role.nodeCascade') }}</ElRadioButton>
+          <ElRadioButton :label="false">{{ t('role.nodeIndependent') }}</ElRadioButton>
         </ElRadioGroup>
       </div>
     </div>
@@ -59,13 +61,14 @@
   const processedTreeData = ref<any[]>([])
   const checkedKeys = ref<string[]>([])
   const disabled = ref(false)
+  const { t } = useI18n()
 
   const treeProps = {
     label: 'title',
     children: 'children',
     isLeaf: (data: any) => data.type === 3
   }
-  const { t } = useI18n()
+
   const getNodeClass = (data: any) => {
     if (data.type === 2) return 'type-2-node'
     if (data.type === 3) return 'type-3-node'
@@ -127,7 +130,7 @@
       }
     } catch (e: any) {
       console.error('加载权限树失败:', e)
-      ElMessage.error('加载权限树失败')
+      ElMessage.error(t('role.message.loadPermissionTreeFailed'))
     } finally {
       loading.value = false
     }
@@ -157,7 +160,7 @@
 
   const handleSave = async () => {
     if (!props.role.id) {
-      ElMessage.warning('请先选择角色')
+      ElMessage.warning(t('role.message.pleaseSelectRole'))
       return
     }
 
@@ -171,7 +174,7 @@
       menuCheckStrictly: isCascade.value
     })
 
-    ElMessage.success('保存成功')
+    ElMessage.success(t('role.message.saveSuccess'))
   }
 
   // 监听角色变化

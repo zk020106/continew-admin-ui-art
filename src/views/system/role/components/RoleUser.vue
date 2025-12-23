@@ -13,13 +13,13 @@
             <template #icon>
               <ElIcon><Plus /></ElIcon>
             </template>
-            分配用户
+            {{ t('role.assignUser') }}
           </ElButton>
           <ElButton type="danger" :disabled="selectedIds.length === 0" @click="handleBatchUnassign">
             <template #icon>
               <ElIcon><Delete /></ElIcon>
             </template>
-            批量移除
+            {{ t('role.batchUnassign') }}
           </ElButton>
         </template>
       </CaForm>
@@ -34,6 +34,7 @@
         :columns="columns"
         :loading="loading"
         :pagination="pagination"
+        size="default"
         @selection-change="handleSelectionChange"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -41,18 +42,15 @@
       >
         <template #status="{ row }">
           <ElTag :type="row.status === 1 ? 'success' : 'danger'">
-            {{ row.status === 1 ? '启用' : '禁用' }}
+            {{ row.status === 1 ? t('common.statusEnabled') : t('common.statusDisabled') }}
           </ElTag>
         </template>
 
         <template #gender="{ row }">
-          <span>{{ row.gender === 1 ? '男' : row.gender === 2 ? '女' : '未知' }}</span>
+          <CaCellGender :gender="row.gender" />
         </template>
-
         <template #roleNames="{ row }">
-          <ElTag v-for="role in row.roleNames" :key="role" size="small" style="margin-right: 4px">
-            {{ role }}
-          </ElTag>
+          <CaCellTags :data="row.roleNames" />
         </template>
 
         <template #action="{ row }">
@@ -61,10 +59,10 @@
             size="small"
             link
             :disabled="row.disabled"
-            :title="row.disabled ? '该用户为系统内置用户不能取消分配' : ''"
+            :title="row.disabled ? t('role.message.systemUserCannotUnassign') : ''"
             @click="handleUnassign(row)"
           >
-            取消分配
+            {{ t('button.unassign') }}
           </ElButton>
         </template>
       </CaTable>
@@ -81,10 +79,11 @@
   import CaForm from '@/components/base/CaForm/index.vue'
   import { FormColumnItem } from '@/components/base/CaForm/type'
   import CaTable from '@/components/base/CaTable/index.vue'
+  import { TableColumnItem } from '@/components/base/CaTable/type'
   import { useResetReactive } from '@/hooks'
   import { Delete, Plus } from '@element-plus/icons-vue'
   import { ElMessage, ElMessageBox } from 'element-plus'
-  // import { useI18n } from 'vue-i18n'
+  import { useI18n } from 'vue-i18n'
   import AssignModal from '../AssignModal.vue'
 
   defineOptions({ name: 'RoleUser' })
@@ -93,7 +92,7 @@
     role: RoleResp
   }>()
 
-  // const { t } = useI18n()
+  const { t } = useI18n()
   const tableRef = ref()
   const assignModalRef = ref()
   const tableData = ref<RoleUserResp[]>([])
@@ -112,32 +111,38 @@
     () =>
       [
         {
-          label: '昵称',
+          label: t('role.page.user.search.nickname'),
           field: 'nickname',
           type: 'input',
           span: 6,
           props: {
-            placeholder: '请输入昵称',
+            placeholder: t('components.form.placeholder.input', {
+              label: t('role.page.user.search.nickname')
+            }),
             clearable: true
           }
         },
         {
-          label: '用户名',
+          label: t('role.page.user.search.username'),
           field: 'username',
           type: 'input',
           span: 6,
           props: {
-            placeholder: '请输入用户名',
+            placeholder: t('components.form.placeholder.input', {
+              label: t('role.page.user.search.username')
+            }),
             clearable: true
           }
         },
         {
-          label: '描述',
+          label: t('role.page.user.search.description'),
           field: 'description',
           type: 'input',
           span: 6,
           props: {
-            placeholder: '请输入描述',
+            placeholder: t('components.form.placeholder.input', {
+              label: t('role.page.user.search.description')
+            }),
             clearable: true
           }
         }
@@ -145,66 +150,60 @@
   )
 
   // 表格列配置
-  const columns = [
-    {
-      type: 'selection',
-      width: 55,
-      align: 'center'
-    },
-    {
-      prop: 'nickname',
-      label: '昵称',
-      width: 130,
-      showOverflowTooltip: true,
-      fixed: 'left'
-    },
-    {
-      prop: 'username',
-      label: '用户名',
-      width: 120,
-      showOverflowTooltip: true
-    },
-    {
-      prop: 'status',
-      label: '状态',
-      width: 100,
-      align: 'center',
-      slot: 'status'
-    },
-    {
-      prop: 'gender',
-      label: '性别',
-      width: 80,
-      align: 'center',
-      slot: 'gender'
-    },
-    {
-      prop: 'deptName',
-      label: '所属部门',
-      width: 140,
-      showOverflowTooltip: true
-    },
-    {
-      prop: 'roleNames',
-      label: '角色',
-      width: 180,
-      slot: 'roleNames'
-    },
-    {
-      prop: 'description',
-      label: '描述',
-      width: 150,
-      showOverflowTooltip: true
-    },
-    {
-      prop: 'action',
-      label: '操作',
-      width: 100,
-      align: 'center',
-      fixed: 'right',
-      slot: 'action'
-    }
-  ]
+  const columns = computed(
+    () =>
+      [
+        {
+          type: 'selection',
+          align: 'center'
+        },
+        {
+          prop: 'nickname',
+          label: t('role.page.user.table.nickname'),
+          showOverflowTooltip: true,
+          fixed: 'left'
+        },
+        {
+          prop: 'username',
+          label: t('role.page.user.table.username'),
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'status',
+          label: t('role.page.user.table.status'),
+          align: 'center',
+          slotName: 'status'
+        },
+        {
+          prop: 'gender',
+          label: t('role.page.user.table.gender'),
+          align: 'center',
+          slotName: 'gender'
+        },
+        {
+          prop: 'deptName',
+          label: t('role.page.user.table.deptName'),
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'roleNames',
+          label: t('role.page.user.table.roleNames'),
+          slotName: 'roleNames'
+        },
+        {
+          prop: 'description',
+          label: t('role.page.user.table.description'),
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'action',
+          label: t('role.page.user.table.action'),
+          align: 'center',
+          fixed: 'right',
+          slotName: 'action'
+        }
+      ] as TableColumnItem[]
+  )
 
   // 分页配置
   const pagination = reactive({
@@ -238,7 +237,7 @@
       })
     } catch (error) {
       console.error('获取角色用户列表失败:', error)
-      ElMessage.error('获取角色用户列表失败')
+      ElMessage.error(t('role.message.unassignFailed'))
     } finally {
       loading.value = false
     }
@@ -260,7 +259,7 @@
   // 分配用户
   const handleAssign = () => {
     if (!props.role.id) {
-      ElMessage.warning('请先选择角色')
+      ElMessage.warning(t('role.message.pleaseSelectRole'))
       return
     }
     assignModalRef.value?.onOpen(props.role.id)
@@ -269,26 +268,30 @@
   // 批量移除用户
   const handleBatchUnassign = async () => {
     if (selectedIds.value.length === 0) {
-      ElMessage.warning('请选择要移除的用户')
+      ElMessage.warning(t('role.message.pleaseSelectUsers'))
       return
     }
 
     try {
-      await ElMessageBox.confirm(`确认移除选中的 ${selectedIds.value.length} 个用户吗？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
+      await ElMessageBox.confirm(
+        t('role.message.confirmBatchUnassign', { count: selectedIds.value.length }),
+        t('common.tips'),
+        {
+          confirmButtonText: t('common.confirm'),
+          cancelButtonText: t('common.cancel'),
+          type: 'warning'
+        }
+      )
 
       await unassignFromUsers(selectedIds.value)
 
-      ElMessage.success('移除成功')
+      ElMessage.success(t('role.message.unassignSuccess'))
       selectedIds.value = []
       getRoleUserList()
     } catch (error) {
       if (error !== 'cancel') {
         console.error('批量移除用户失败:', error)
-        ElMessage.error('移除失败')
+        ElMessage.error(t('role.message.unassignFailed'))
       }
     }
   }
@@ -300,20 +303,24 @@
     }
 
     try {
-      await ElMessageBox.confirm(`确认移除用户"${row.nickname}(${row.username})"吗？`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
+      await ElMessageBox.confirm(
+        t('role.message.confirmUnassign', { nickname: row.nickname, username: row.username }),
+        t('common.tips'),
+        {
+          confirmButtonText: t('common.confirm'),
+          cancelButtonText: t('common.cancel'),
+          type: 'warning'
+        }
+      )
 
       await unassignFromUsers([row.id])
 
-      ElMessage.success('移除成功')
+      ElMessage.success(t('role.message.unassignSuccess'))
       getRoleUserList()
     } catch (error) {
       if (error !== 'cancel') {
         console.error('移除用户失败:', error)
-        ElMessage.error('移除失败')
+        ElMessage.error(t('role.message.unassignFailed'))
       }
     }
   }

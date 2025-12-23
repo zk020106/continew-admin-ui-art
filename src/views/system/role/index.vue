@@ -8,14 +8,14 @@
       <!-- 标签页 -->
       <div class="role-tabs">
         <ElTabs v-model="activeTab" class="role-tabs-container">
-          <ElTabPane label="功能权限" name="1">
+          <ElTabPane :label="t('role.tab.permission')" name="1">
             <template #label>
-              <span class="tab-label"> 功能权限 </span>
+              <span class="tab-label">{{ t('role.tab.permission') }}</span>
             </template>
           </ElTabPane>
-          <ElTabPane label="角色用户" name="2">
+          <ElTabPane :label="t('role.tab.user')" name="2">
             <template #label>
-              <span class="tab-label"> 角色用户 </span>
+              <span class="tab-label">{{ t('role.tab.user') }}</span>
             </template>
           </ElTabPane>
         </ElTabs>
@@ -33,12 +33,14 @@
 <script setup lang="ts">
   import { RoleResp } from '@/apis'
   import { ElTabPane, ElTabs } from 'element-plus'
+  import { useI18n } from 'vue-i18n'
   import Permission from './components/Permission.vue'
   import RoleUser from './components/RoleUser.vue'
   import RoleTree from './tree/index.vue'
 
   defineOptions({ name: 'SystemRole' })
 
+  const { t } = useI18n()
   const activeTab = ref('1')
   const role = ref<RoleResp>({
     id: '',

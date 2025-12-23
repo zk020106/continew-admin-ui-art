@@ -50,7 +50,12 @@
       "status": "请选择状态"
     },
     "status": "状态",
+    "statusDisabled": "禁用",
+    "statusEnabled": "启用",
     "success": "成功",
+    "genderMale": "男",
+    "genderFemale": "女",
+    "genderUnknown": "未知",
     "tips": "提示",
     "true": "是",
     "warning": "警告"
@@ -531,7 +536,17 @@
     "batchUnassign": "批量移除",
     "code": "角色编码",
     "dataScope": "数据权限",
+    "dataScopeOption": {
+      "all": "全部数据权限",
+      "custom": "自定义数据权限",
+      "dept": "本部门数据权限",
+      "deptAndBelow": "本部门及以下数据权限",
+      "onlySelf": "仅本人数据权限"
+    },
+    "deptCheckStrictly": "父子联动",
+    "deptPermission": "部门权限",
     "description": "描述",
+    "expandCollapse": "展开/折叠",
     "field": {
       "code": "角色编码",
       "dataScope": "数据权限",
@@ -540,26 +555,95 @@
       "sort": "排序",
       "status": "状态"
     },
+    "form": {
+      "basicInfo": "基础信息",
+      "dataPermission": "数据权限",
+      "name": "角色名称",
+      "code": "角色编码",
+      "sort": "排序",
+      "status": "状态",
+      "remark": "备注"
+    },
+    "message": {
+      "assignFailed": "分配失败",
+      "assignSuccess": "分配成功",
+      "confirmBatchUnassign": "确认移除选中的 {count} 个用户吗？",
+      "confirmDelete": "确认删除角色「{name}」吗？",
+      "confirmUnassign": "确认移除用户「{nickname}({username})」吗？",
+      "deleteFailed": "删除失败",
+      "deleteSuccess": "删除成功",
+      "fetchFailed": "获取失败",
+      "fetchRoleFailed": "获取角色信息失败",
+      "getUserListFailed": "获取用户列表失败",
+      "loadPermissionTreeFailed": "加载权限树失败",
+      "pleaseSelectRole": "请先选择角色",
+      "pleaseSelectUsers": "请选择要移除的用户",
+      "pleaseSelectUser": "请选择用户",
+      "saveFailed": "保存失败",
+      "saveSuccess": "保存成功",
+      "systemRoleCannotDelete": "该角色为系统内置角色",
+      "systemRoleCannotEdit": "该角色为系统内置角色",
+      "systemUserCannotUnassign": "该用户为系统内置用户不能取消分配",
+      "unassignFailed": "移除失败",
+      "unassignSuccess": "移除成功",
+      "updateSuccess": "修改成功",
+      "addSuccess": "新增成功"
+    },
+    "nodeCascade": "节点关联",
+    "nodeIndependent": "节点独立",
     "page": {
       "title": {
         "add": "新增角色",
         "edit": "编辑角色"
+      },
+      "user": {
+        "search": {
+          "description": "描述",
+          "nickname": "昵称",
+          "username": "用户名"
+        },
+        "table": {
+          "action": "操作",
+          "deptName": "所属部门",
+          "description": "描述",
+          "email": "邮箱",
+          "gender": "性别",
+          "nickname": "昵称",
+          "phone": "手机号",
+          "roleNames": "角色",
+          "status": "状态",
+          "username": "用户名"
+        }
       }
     },
     "permission": {
-      "button": "按钮"
+      "button": "按钮",
+      "savePermission": "保存权限"
     },
     "placeholder": {
       "code": "请输入角色编码",
-      "name": "请输入角色名称"
+      "dataScope": "请选择数据权限",
+      "name": "请输入角色名称",
+      "nickname": "请输入昵称",
+      "phone": "请输入手机号",
+      "remark": "请输入备注信息",
+      "sort": "请输入排序",
+      "username": "请输入用户名"
     },
-    "title": "角色管理",
-    "tree": {
-      "placeholder": "搜索名称/编码"
-    },
+    "savePermission": "保存权限",
     "tab": {
       "permission": "功能权限",
       "user": "角色用户"
+    },
+    "title": "角色管理",
+    "tree": {
+      "noDescription": "暂无描述",
+      "placeholder": "搜索名称/编码"
+    },
+    "validate": {
+      "nameRequired": "请输入角色名称",
+      "codeRequired": "请输入角色编码",
+      "dataScopeRequired": "请选择数据权限"
     }
   },
   "worktab": {

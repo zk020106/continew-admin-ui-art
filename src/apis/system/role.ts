@@ -53,7 +53,7 @@ export function assignToUsers(id: string, userIds: Array<string>) {
 
 /** @desc 取消分配角色给用户 */
 export function unassignFromUsers(userRoleIds: Array<string | number>) {
-  return http.del(`${BASE_URL}/user`, userRoleIds)
+  return http.del(`${BASE_URL}/user`, undefined, { data: userRoleIds })
 }
 
 /** @desc 查询角色关联用户 ID */

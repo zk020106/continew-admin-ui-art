@@ -349,8 +349,7 @@ function createRequest(method: string) {
     const finalConfig: ExtendedAxiosRequestConfig = {
       method,
       url,
-      [method.toLowerCase() === 'get' || method.toLowerCase() === 'delete' ? 'params' : 'data']:
-        params,
+      [method.toLowerCase() === 'get' ? 'params' : 'data']: params,
       ...config
     }
 

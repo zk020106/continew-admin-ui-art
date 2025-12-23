@@ -1,7 +1,7 @@
 <template>
   <ElDialog
     v-model="visible"
-    title="分配用户"
+    :title="t('role.assignUser')"
     :width="width >= 1100 ? 1100 : '90%'"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -34,12 +34,18 @@
         >
           <template #status="{ row }">
             <ElTag :type="row.status === 1 ? 'success' : 'danger'">
-              {{ row.status === 1 ? '启用' : '禁用' }}
+              {{ row.status === 1 ? t('common.statusEnabled') : t('common.statusDisabled') }}
             </ElTag>
           </template>
 
           <template #gender="{ row }">
-            <span>{{ row.gender === 1 ? '男' : row.gender === 2 ? '女' : '未知' }}</span>
+            <span>{{
+              row.gender === 1
+                ? t('common.genderMale')
+                : row.gender === 2
+                  ? t('common.genderFemale')
+                  : t('common.genderUnknown')
+            }}</span>
           </template>
 
           <template #deptName="{ row }">
@@ -50,9 +56,9 @@
     </div>
 
     <template #footer>
-      <ElButton @click="visible = false">取消</ElButton>
+      <ElButton @click="visible = false">{{ t('common.cancel') }}</ElButton>
       <ElButton type="primary" :disabled="selectedIds.length === 0" @click="handleSave">
-        确定
+        {{ t('common.confirm') }}
       </ElButton>
     </template>
   </ElDialog>
@@ -67,11 +73,13 @@
   import { useResetReactive } from '@/hooks'
   import { useWindowSize } from '@vueuse/core'
   import { ElMessage } from 'element-plus'
+  import { useI18n } from 'vue-i18n'
 
   const emit = defineEmits<{
     (e: 'save-success'): void
   }>()
 
+  const { t } = useI18n()
   const { width } = useWindowSize()
 
   const dataId = ref('')
@@ -93,32 +101,32 @@
     () =>
       [
         {
-          label: '用户名',
+          label: t('role.page.user.table.username'),
           field: 'username',
           type: 'input',
           span: 6,
           props: {
-            placeholder: '请输入用户名',
+            placeholder: t('role.placeholder.username'),
             clearable: true
           }
         },
         {
-          label: '昵称',
+          label: t('role.page.user.table.nickname'),
           field: 'nickname',
           type: 'input',
           span: 6,
           props: {
-            placeholder: '请输入昵称',
+            placeholder: t('role.placeholder.nickname'),
             clearable: true
           }
         },
         {
-          label: '手机号',
+          label: t('role.page.user.table.phone'),
           field: 'phone',
           type: 'input',
           span: 6,
           props: {
-            placeholder: '请输入手机号',
+            placeholder: t('role.placeholder.phone'),
             clearable: true
           }
         }
@@ -126,57 +134,60 @@
   )
 
   // 表格列配置
-  const columns = [
-    {
-      type: 'selection',
-      width: 55,
-      align: 'center'
-    },
-    {
-      prop: 'username',
-      label: '用户名',
-      width: 120,
-      showOverflowTooltip: true
-    },
-    {
-      prop: 'nickname',
-      label: '昵称',
-      width: 120,
-      showOverflowTooltip: true
-    },
-    {
-      prop: 'phone',
-      label: '手机号',
-      width: 130
-    },
-    {
-      prop: 'email',
-      label: '邮箱',
-      width: 200,
-      showOverflowTooltip: true
-    },
-    {
-      prop: 'gender',
-      label: '性别',
-      width: 80,
-      align: 'center',
-      slot: 'gender'
-    },
-    {
-      prop: 'status',
-      label: '状态',
-      width: 100,
-      align: 'center',
-      slot: 'status'
-    },
-    {
-      prop: 'deptName',
-      label: '所属部门',
-      width: 140,
-      showOverflowTooltip: true,
-      slot: 'deptName'
-    }
-  ]
+  const columns = computed(
+    () =>
+      [
+        {
+          type: 'selection',
+          width: 55,
+          align: 'center'
+        },
+        {
+          prop: 'username',
+          label: t('role.page.user.table.username'),
+          width: 120,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'nickname',
+          label: t('role.page.user.table.nickname'),
+          width: 120,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'phone',
+          label: t('role.page.user.table.phone'),
+          width: 130
+        },
+        {
+          prop: 'email',
+          label: t('role.page.user.table.email'),
+          width: 200,
+          showOverflowTooltip: true
+        },
+        {
+          prop: 'gender',
+          label: t('role.page.user.table.gender'),
+          width: 80,
+          align: 'center',
+          slotName: 'gender'
+        },
+        {
+          prop: 'status',
+          label: t('role.page.user.table.status'),
+          width: 100,
+          align: 'center',
+          slotName: 'status'
+        },
+        {
+          prop: 'deptName',
+          label: t('role.page.user.table.deptName'),
+          width: 140,
+          showOverflowTooltip: true,
+          slotName: 'deptName'
+        }
+      ] as any[]
+  )
 
   // 分页配置
   const pagination = reactive({
@@ -207,7 +218,7 @@
       pagination.total = data.total
     } catch (error) {
       console.error('获取用户列表失败:', error)
-      ElMessage.error('获取用户列表失败')
+      ElMessage.error(t('role.message.getUserListFailed'))
     } finally {
       loading.value = false
     }
@@ -252,19 +263,19 @@
   // 保存
   const handleSave = async () => {
     if (selectedIds.value.length === 0) {
-      ElMessage.warning('请选择用户')
+      ElMessage.warning(t('role.message.pleaseSelectUser'))
       return
     }
 
     try {
       await assignToUsers(dataId.value, selectedIds.value)
 
-      ElMessage.success('分配成功')
+      ElMessage.success(t('role.message.assignSuccess'))
       visible.value = false
       emit('save-success')
     } catch (error) {
       console.error('分配用户失败:', error)
-      ElMessage.error('分配失败')
+      ElMessage.error(t('role.message.assignFailed'))
     }
   }
 

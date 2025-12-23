@@ -12,33 +12,33 @@
       <ElCard class="form-card" shadow="never">
         <template #header>
           <div class="card-header">
-            <span>基础信息</span>
+            <span>{{ t('role.form.basicInfo') }}</span>
           </div>
         </template>
 
-        <ElFormItem label="角色名称" prop="name">
+        <ElFormItem :label="t('role.form.name')" prop="name">
           <ElInput
             v-model="form.name"
-            placeholder="请输入角色名称"
+            :placeholder="t('role.placeholder.name')"
             maxlength="30"
             show-word-limit
           />
         </ElFormItem>
 
-        <ElFormItem label="角色编码" prop="code">
+        <ElFormItem :label="t('role.form.code')" prop="code">
           <ElInput
             v-model="form.code"
-            placeholder="请输入角色编码"
+            :placeholder="t('role.placeholder.code')"
             maxlength="30"
             show-word-limit
             :disabled="isUpdate"
           />
         </ElFormItem>
 
-        <ElFormItem label="排序" prop="sort">
+        <ElFormItem :label="t('role.form.sort')" prop="sort">
           <ElInputNumber
             v-model="form.sort"
-            placeholder="请输入排序"
+            :placeholder="t('role.placeholder.sort')"
             :min="0"
             :max="999"
             :precision="0"
@@ -47,18 +47,18 @@
           />
         </ElFormItem>
 
-        <ElFormItem label="状态" prop="status">
+        <ElFormItem :label="t('role.form.status')" prop="status">
           <ElRadioGroup v-model="form.status">
-            <ElRadio :label="1">启用</ElRadio>
-            <ElRadio :label="0">禁用</ElRadio>
+            <ElRadio :label="1">{{ t('common.statusEnabled') }}</ElRadio>
+            <ElRadio :label="0">{{ t('common.statusDisabled') }}</ElRadio>
           </ElRadioGroup>
         </ElFormItem>
 
-        <ElFormItem label="备注" prop="remark">
+        <ElFormItem :label="t('role.form.remark')" prop="remark">
           <ElInput
             v-model="form.remark"
             type="textarea"
-            placeholder="请输入备注信息"
+            :placeholder="t('role.placeholder.remark')"
             maxlength="500"
             show-word-limit
             :rows="3"
@@ -71,41 +71,41 @@
       <ElCard class="form-card" shadow="never">
         <template #header>
           <div class="card-header">
-            <span>数据权限</span>
+            <span>{{ t('role.form.dataPermission') }}</span>
           </div>
         </template>
 
-        <ElFormItem label="数据权限" prop="dataScope">
+        <ElFormItem :label="t('role.dataScope')" prop="dataScope">
           <ElSelect
             v-model="form.dataScope"
-            placeholder="请选择数据权限"
+            :placeholder="t('role.placeholder.dataScope')"
             :disabled="form.isSystem"
             style="width: 100%"
           >
-            <ElOption label="全部数据权限" :value="1" />
-            <ElOption label="自定义数据权限" :value="2" />
-            <ElOption label="本部门数据权限" :value="3" />
-            <ElOption label="本部门及以下数据权限" :value="4" />
-            <ElOption label="仅本人数据权限" :value="5" />
+            <ElOption :label="t('role.dataScopeOption.all')" :value="1" />
+            <ElOption :label="t('role.dataScopeOption.custom')" :value="2" />
+            <ElOption :label="t('role.dataScopeOption.dept')" :value="3" />
+            <ElOption :label="t('role.dataScopeOption.deptAndBelow')" :value="4" />
+            <ElOption :label="t('role.dataScopeOption.onlySelf')" :value="5" />
           </ElSelect>
         </ElFormItem>
 
-        <ElFormItem v-if="form.dataScope === 2" label="部门权限">
+        <ElFormItem v-if="form.dataScope === 2" :label="t('role.deptPermission')">
           <div class="dept-tree-container">
             <div class="dept-tree-actions">
               <ElCheckbox v-model="isDeptExpanded" @change="handleDeptExpand">
-                展开/折叠
+                {{ t('role.expandCollapse') }}
               </ElCheckbox>
-              <ElCheckbox v-model="isDeptCheckAll" @change="handleDeptCheckAll">
-                全选/全不选
+              <ElCheckbox v-model="form.deptCheckStrictly">
+                {{ t('role.deptCheckStrictly') }}
               </ElCheckbox>
-              <ElCheckbox v-model="form.deptCheckStrictly"> 父子联动 </ElCheckbox>
             </div>
 
             <ElTree
               ref="deptTreeRef"
               :data="deptList"
               node-key="key"
+              :check-strictly="!form.deptCheckStrictly"
               :tree-props="{
                 label: 'title', // 后端返回的是 title 字段
                 children: 'children'
@@ -113,12 +113,9 @@
               :default-expand-all="isDeptExpanded"
               highlight-current
               show-checkbox
-              @change="() => console.log(deptList)"
             >
-              <template #default="{ node }">
-                <span>
-                  <span>{{ node.label }}</span>
-                </span>
+              <template #default="{ data }">
+                <span>{{ data.title }}</span>
               </template>
             </ElTree>
           </div>
@@ -128,8 +125,10 @@
 
     <template #footer>
       <div class="drawer-footer">
-        <ElButton @click="visible = false">取消</ElButton>
-        <ElButton type="primary" :loading="saving" @click="handleSave"> 确定 </ElButton>
+        <ElButton @click="visible = false">{{ t('common.cancel') }}</ElButton>
+        <ElButton type="primary" :loading="saving" @click="handleSave">
+          {{ t('common.confirm') }}
+        </ElButton>
       </div>
     </template>
   </ElDrawer>
@@ -141,27 +140,33 @@
   import { useDept } from '@/hooks/business'
   import { useWindowSize } from '@vueuse/core'
   import { ElForm, ElMessage } from 'element-plus'
+  import { useI18n } from 'vue-i18n'
 
   const emit = defineEmits<{
     (e: 'save-success'): void
   }>()
 
+  const { t } = useI18n()
   const { width } = useWindowSize()
 
   const dataId = ref('')
   const visible = ref(false)
   const saving = ref(false)
   const isUpdate = computed(() => !!dataId.value)
-  const title = computed(() => (isUpdate.value ? '修改角色' : '新增角色'))
+  const title = computed(() =>
+    isUpdate.value ? t('role.page.title.edit') : t('role.page.title.add')
+  )
   const formRef = useTemplateRef('formRef')
   const { deptList, getDeptList } = useDept()
 
   // 表单验证规则
-  const rules = reactive({
-    name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-    code: [{ required: true, message: '请输入角色编码', trigger: 'blur' }],
-    dataScope: [{ required: true, message: '请选择数据权限', trigger: 'change' }]
-  })
+  const rules = computed(() => ({
+    name: [{ required: true, message: t('role.validate.nameRequired'), trigger: 'blur' }],
+    code: [{ required: true, message: t('role.validate.codeRequired'), trigger: 'blur' }],
+    dataScope: [
+      { required: true, message: t('role.validate.dataScopeRequired'), trigger: 'change' }
+    ]
+  }))
 
   // 表单数据
   const [form, resetForm] = useResetReactive({
@@ -177,13 +182,11 @@
 
   const deptTreeRef = ref()
   const isDeptExpanded = ref(true)
-  const isDeptCheckAll = ref(false)
 
   // 重置表单
   const reset = () => {
     saving.value = false
     isDeptExpanded.value = true
-    isDeptCheckAll.value = false
     resetForm()
     nextTick(() => {
       formRef.value?.resetFields()
@@ -205,21 +208,11 @@
     }
   }
 
-  // 全选/全不选部门
-  const handleDeptCheckAll = () => {
-    if (isDeptCheckAll.value) {
-      const allKeys = getAllDeptKeys(deptList.value)
-      deptTreeRef.value?.setCheckedKeys(allKeys)
-    } else {
-      deptTreeRef.value?.setCheckedKeys([])
-    }
-  }
-
   // 获取所有部门ID
   const getAllDeptKeys = (depts: any[]): string[] => {
     const keys: string[] = []
     depts.forEach((dept) => {
-      keys.push(dept.id)
+      keys.push(dept.key)
       if (dept.children && dept.children.length > 0) {
         keys.push(...getAllDeptKeys(dept.children))
       }
@@ -252,18 +245,18 @@
       }
 
       if (isUpdate.value) {
-        await updateRole(dataId.value, params)
-        ElMessage.success('修改成功')
+        await updateRole(params, dataId.value)
+        ElMessage.success(t('role.message.updateSuccess'))
       } else {
         await addRole(params)
-        ElMessage.success('新增成功')
+        ElMessage.success(t('role.message.addSuccess'))
       }
 
       visible.value = false
       emit('save-success')
     } catch (error) {
       console.error('保存角色失败:', error)
-      ElMessage.error('保存失败')
+      ElMessage.error(t('role.message.saveFailed'))
     } finally {
       saving.value = false
     }
@@ -287,6 +280,7 @@
     }
 
     dataId.value = id
+    console.log('dataId', dataId.value)
     try {
       const data = await getRole(id)
       Object.assign(form, data)
@@ -299,7 +293,7 @@
       }
     } catch (error) {
       console.error('获取角色详情失败:', error)
-      ElMessage.error('获取角色信息失败')
+      ElMessage.error(t('role.message.fetchRoleFailed'))
     }
 
     visible.value = true

@@ -80,7 +80,7 @@ export interface RoleUserResp {
   id: string
   username: string
   nickname: string
-  gender: number
+  gender: Gender
   description: string
   status: 1 | 2
   isSystem?: boolean

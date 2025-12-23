@@ -1,16 +1,16 @@
 <template>
   <div class="container">
     <div class="search">
-      <ElInput v-model="searchKey" placeholder="搜索名称/编码" clearable @input="handleSearch">
+      <ElInput
+        v-model="searchKey"
+        :placeholder="t('role.tree.placeholder')"
+        clearable
+        @input="handleSearch"
+      >
         <template #prefix>
           <ElIcon><Search /></ElIcon>
         </template>
       </ElInput>
-      <ElButton type="primary" @click="onAdd">
-        <template #icon>
-          <ElIcon><Plus /></ElIcon>
-        </template>
-      </ElButton>
     </div>
 
     <div class="role-list-wrapper">
@@ -27,7 +27,7 @@
               {{ item.name }} ({{ item.code }})
             </div>
             <div class="role-desc" :title="item.description">
-              {{ item.description || '暂无描述' }}
+              {{ item.description || t('role.tree.noDescription') }}
             </div>
           </div>
           <div v-auth="['system:role:update', 'system:role:delete']">
@@ -36,11 +36,11 @@
               <template #dropdown>
                 <ElDropdownMenu>
                   <ElDropdownItem command="update">
-                    <span v-auth="['system:role:update']">{{ $t('common.button.edit') }}</span>
+                    <span v-auth="['system:role:update']">{{ t('common.button.edit') }}</span>
                   </ElDropdownItem>
                   <ElDropdownItem command="delete" :disabled="item.isSystem">
                     <span v-auth="['system:role:delete']" class="danger">{{
-                      $t('common.button.delete')
+                      t('common.button.delete')
                     }}</span>
                   </ElDropdownItem>
                 </ElDropdownMenu>
@@ -49,7 +49,7 @@
           </div>
         </div>
         <div v-if="filteredRoleList.length === 0" class="empty">
-          <ElEmpty description="暂无数据" />
+          <ElEmpty :description="t('common.empty')" />
         </div>
       </div>
     </div>
@@ -60,8 +60,7 @@
 
 <script setup lang="ts">
   import { type RoleResp, deleteRole, listRole } from '@/apis/system/role'
-  import { $t } from '@/locales'
-  import { MoreFilled, Plus, Search } from '@element-plus/icons-vue'
+  import { MoreFilled, Search } from '@element-plus/icons-vue'
   import { ElEmpty, ElMessage, ElMessageBox } from 'element-plus'
   import { useI18n } from 'vue-i18n'
   import AddDrawer from '../AddDrawer.vue'
@@ -69,6 +68,7 @@
   const emit = defineEmits<{
     (e: 'node-click', keys: RoleResp): void
   }>()
+
   const { t } = useI18n()
   const selectedRole = ref<RoleResp | null>(null)
   const roleList = ref<RoleResp[]>([])
@@ -125,11 +125,6 @@
 
   const AddDrawerRef = useTemplateRef('AddDrawerRef')
 
-  // 新增
-  const onAdd = () => {
-    AddDrawerRef.value?.onAdd()
-  }
-
   // 点击菜单项
   const onMenuItemClick = async (command: string, role: RoleResp) => {
     if (command === 'update') {
@@ -138,17 +133,17 @@
       try {
         await ElMessageBox.confirm(
           `${t('message.selected')} ${role.name}，${t('message.confirmDelete')}`,
-          '提示',
+          t('common.tips'),
           {
-            confirmButtonText: $t('common.confirm'),
-            cancelButtonText: $t('common.cancel'),
+            confirmButtonText: t('common.confirm'),
+            cancelButtonText: t('common.cancel'),
             type: 'warning'
           }
         )
 
         const res = await deleteRole(role.id)
         if (res.success) {
-          ElMessage.success('删除成功')
+          ElMessage.success(t('role.message.deleteSuccess'))
           await getRoleList()
         }
       } catch {
@@ -176,26 +171,21 @@
       display: flex;
       justify-content: start;
       margin-bottom: 10px;
-
-      .el-button {
-        padding: 0 15px;
-        margin-left: 8px;
-      }
     }
+  }
 
-    .role-list-wrapper {
-      position: relative;
-      flex: 1;
-      height: 100%;
-      overflow: hidden;
-      background-color: var(--el-bg-color);
+  .role-list-wrapper {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--el-bg-color);
 
-      .role-list {
-        position: absolute;
-        inset: 0;
-        padding: 8px;
-        overflow-y: auto;
-      }
+    .role-list {
+      position: absolute;
+      inset: 0;
+      padding: 8px;
+      overflow-y: auto;
     }
   }
 

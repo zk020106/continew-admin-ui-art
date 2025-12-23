@@ -1,22 +1,27 @@
 <template>
   <a-menu class="right-menu">
-    <a-menu-item v-permission="['system:role:update']" title="修改" @click="onClick('update')">
-      <span>修改</span>
+    <a-menu-item
+      v-permission="['system:role:update']"
+      :title="t('common.button.edit')"
+      @click="onClick('update')"
+    >
+      <span>{{ t('common.button.edit') }}</span>
     </a-menu-item>
     <a-menu-item
       v-permission="['system:role:delete']"
       class="danger"
       :disabled="data.isSystem"
-      :title="data.isSystem ? '该角色为系统内置角色' : '删除'"
+      :title="data.isSystem ? t('role.message.systemRoleCannotEdit') : t('common.button.delete')"
       @click="onClick('delete')"
     >
-      <span>删除</span>
+      <span>{{ t('common.button.delete') }}</span>
     </a-menu-item>
   </a-menu>
 </template>
 
 <script setup lang="ts">
   import type { RoleResp } from '@/apis/system/role'
+  import { useI18n } from 'vue-i18n'
 
   interface Props {
     data: RoleResp
@@ -27,6 +32,8 @@
   const emit = defineEmits<{
     (e: 'on-menu-item-click', mode: string, data: RoleResp): void
   }>()
+
+  const { t } = useI18n()
 
   // 点击菜单项
   const onClick = (mode: string) => {

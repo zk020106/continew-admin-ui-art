@@ -10,10 +10,12 @@
     <ElRow>
       <slot name="top"></slot>
     </ElRow>
-    <ElRow justify="space-between" align="middle" class="ca-table__toolbar">
-      <ElSpace :wrap="true" :size="[8, 8]">
-        <slot name="toolbar-left"></slot>
-      </ElSpace>
+    <div class="ca-table__toolbar">
+      <div class="ca-table__toolbar-left">
+        <ElSpace :wrap="true" :size="[8, 8]">
+          <slot name="toolbar-left"></slot>
+        </ElSpace>
+      </div>
       <ElSpace wrap class="ca-table__toolbar-right" :size="[8, 8]">
         <slot name="toolbar-right"></slot>
         <ElTooltip placement="top" :content="t('table.refresh')">
@@ -63,7 +65,7 @@
           @update:columns="handleColumnsUpdate"
         />
       </ElSpace>
-    </ElRow>
+    </div>
 
     <ElTable
       v-bind="tableProps"
@@ -152,7 +154,7 @@
   }
 
   // 表格尺寸
-  const tableSize = ref<'default' | 'large' | 'small'>('small')
+  const tableSize = ref<'default' | 'large' | 'small'>(props.size || 'small')
   defineSlots<{
     append: () => void
     empty: () => void
@@ -299,10 +301,21 @@
 
     &__toolbar {
       z-index: 100;
+      display: flex;
       flex-shrink: 0;
+      align-items: center;
+      justify-content: space-between;
       padding: 10px 0;
 
+      &-left {
+        flex: 1;
+        min-width: 0;
+      }
+
       &-right {
+        flex-shrink: 0;
+        margin-left: auto;
+
         .el-dropdown {
           .el-button.is-circle {
             cursor: pointer;
