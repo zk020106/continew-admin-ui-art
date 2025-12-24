@@ -42,6 +42,9 @@
     "empty": "None yet",
     "error": "mistake",
     "false": "no",
+    "genderFemale": "female",
+    "genderMale": "male",
+    "genderUnknown": "unknown",
     "index": "serial number",
     "info": "information",
     "loading": "loading",
@@ -53,9 +56,6 @@
     "statusDisabled": "Disable",
     "statusEnabled": "enable",
     "success": "success",
-    "genderMale": "male",
-    "genderFemale": "female",
-    "genderUnknown": "unknown",
     "tips": "hint",
     "true": "yes",
     "warning": "warn"
@@ -82,15 +82,19 @@
       "selectIcon": "Select icon"
     },
     "icon": {
-      "recent": "Recent",
-      "local": "Local",
-      "online": "Online",
-      "noRecent": "No recent icons",
-      "noResult": "No matching icon"
+      "recent": "Recently used",
+      "local": "local icon",
+      "online": "online icon",
+      "noRecent": "There are no recently used icons",
+      "noResult": "No matching icon found"
     },
     "component": {
-      "noComponents": "No available components"
+      "noComponents": "No components available yet"
     },
+    "common": {
+      "search": "search"
+    },
+    "loading": "loading...",
     "inputSearch": {
       "placeholder": "Please select"
     },
@@ -135,7 +139,7 @@
     "403": "Sorry, you do not have permission to access this page",
     "404": "Sorry, the page you visited does not exist",
     "500": "Sorry, there was a server error",
-    "gohome": "Return to home page"
+    "gohome": "Return to homepage"
   },
   "forgetPassword": {
     "backBtnText": "return",
@@ -212,6 +216,141 @@
       "captchaExpiringSoon": "The verification code is about to expire, please refresh it in time"
     }
   },
+  "menu": {
+    "button": {
+      "add": "New",
+      "addChild": "Add submenu",
+      "clearCache": "clear cache",
+      "collapse": "fold",
+      "expand": "Expand"
+    },
+    "field": {
+      "component": "component path",
+      "componentName": "Component name",
+      "createTime": "creation time",
+      "icon": "icon",
+      "isCache": "Whether to cache",
+      "isExternal": "Whether to external link",
+      "isHidden": "Whether to hide",
+      "name": "Route name",
+      "parentId": "Previous menu",
+      "path": "routing address",
+      "permission": "Permission ID",
+      "redirect": "Redirect",
+      "sort": "sort",
+      "status": "state",
+      "title": "Menu name",
+      "type": "type"
+    },
+    "form": {
+      "basicInfo": "Basic information",
+      "routeConfig": "Routing configuration"
+    },
+    "message": {
+      "addSuccess": "Added successfully",
+      "clearCacheSuccess": "Clear cache successfully",
+      "confirmClearCache": "Are you sure you want to clear cache?",
+      "confirmDelete": "Are you sure to delete menu \"{title}\"?",
+      "deleteSuccess": "Delete successfully",
+      "fetchFailed": "Failed to obtain menu information",
+      "hasChildren": "This menu has submenus and cannot be deleted",
+      "updateSuccess": "Modification successful"
+    },
+    "page": {
+      "add": "New menu",
+      "edit": "Edit menu"
+    },
+    "placeholder": {
+      "component": "Please select component path",
+      "componentName": "Please enter the component name",
+      "icon": "Please select an icon",
+      "name": "Please enter a route name",
+      "parentId": "Please select the upper level menu",
+      "path": "Please enter routing address",
+      "permission": "Please enter permission ID",
+      "redirect": "Please enter redirect address",
+      "title": "Please enter a menu name"
+    },
+    "search": {
+      "title": "Search menu title"
+    },
+    "suggestion": {
+      "componentName": "Suggested component name"
+    },
+    "type": {
+      "button": "button",
+      "directory": "Table of contents",
+      "menu": "menu"
+    },
+    "validate": {
+      "componentRequired": "Please enter component path",
+      "nameRequired": "Please enter the component name",
+      "parentIdRequired": "Please select the upper level menu",
+      "pathRequired": "Please enter routing address",
+      "permissionRequired": "Please enter permission ID",
+      "sortRequired": "Please enter sorting",
+      "titleRequired": "Please enter a menu name",
+      "typeRequired": "Please select menu type"
+    }
+  },
+  "dept": {
+    "button": {
+      "add": "New",
+      "addChild": "Add new sub-department",
+      "collapse": "fold",
+      "expand": "Expand"
+    },
+    "menu": {
+      "add": "Add department",
+      "edit": "Editorial Department",
+      "delete": "Delete department"
+    },
+    "organization": {
+      "empty": "No data yet",
+      "root": "Organizational structure"
+    },
+    "tab": {
+      "chart": "Organization chart",
+      "list": "table view"
+    },
+    "field": {
+      "createTime": "creation time",
+      "description": "describe",
+      "isSystem": "System built-in",
+      "name": "Department name",
+      "parentId": "superior department",
+      "sort": "sort",
+      "status": "state"
+    },
+    "form": {
+      "basicInfo": "Basic information"
+    },
+    "message": {
+      "addSuccess": "Added successfully",
+      "confirmDelete": "Are you sure you want to delete department \"{name}\"?",
+      "deleteSuccess": "Delete successfully",
+      "fetchFailed": "Failed to obtain department information",
+      "hasChildren": "This department has sub-departments and cannot be deleted.",
+      "systemCannotDelete": "System built-in data cannot be deleted",
+      "updateSuccess": "Modification successful"
+    },
+    "page": {
+      "add": "Add new department",
+      "edit": "Editorial Department"
+    },
+    "placeholder": {
+      "description": "Please enter a description",
+      "name": "Please enter department name",
+      "parentId": "Please select the parent department"
+    },
+    "search": {
+      "title": "Search department name"
+    },
+    "validate": {
+      "nameRequired": "Please enter department name",
+      "sortRequired": "Please enter sorting"
+    }
+  },
   "menus": {
     "dashboard": {
       "console": "workbench",
@@ -260,9 +399,9 @@
     },
     "system": {
       "config": {
-        "index": "System configuration",
         "client": "Client configuration",
         "email": "Email configuration",
+        "index": "System configuration",
         "login": "Login configuration",
         "security": "Security configuration",
         "sms": "SMS configuration",
@@ -372,6 +511,121 @@
     "submitBtnText": "register",
     "title": "Create account",
     "toLogin": "Go to login"
+  },
+  "role": {
+    "assignUser": "Assign users",
+    "batchUnassign": "Batch removal",
+    "code": "role coding",
+    "dataScope": "Data permissions",
+    "dataScopeOption": {
+      "all": "All data permissions",
+      "custom": "Custom data permissions",
+      "dept": "Data permissions of this department",
+      "deptAndBelow": "Data permissions for this department and the following",
+      "onlySelf": "Only personal data permissions"
+    },
+    "deptCheckStrictly": "Father and son linkage",
+    "deptPermission": "Department authority",
+    "description": "describe",
+    "expandCollapse": "expand/collapse",
+    "field": {
+      "code": "role coding",
+      "dataScope": "Data permissions",
+      "description": "describe",
+      "name": "Character name",
+      "sort": "sort",
+      "status": "state"
+    },
+    "form": {
+      "basicInfo": "Basic information",
+      "code": "role coding",
+      "dataPermission": "Data permissions",
+      "name": "Character name",
+      "remark": "Remark",
+      "sort": "sort",
+      "status": "state"
+    },
+    "message": {
+      "addSuccess": "Added successfully",
+      "assignFailed": "Allocation failed",
+      "assignSuccess": "Allocation successful",
+      "confirmBatchUnassign": "Are you sure you want to remove {count} selected users?",
+      "confirmDelete": "Are you sure to delete the character \"{name}\"?",
+      "confirmUnassign": "Are you sure to remove user \"{nickname}({username})\"?",
+      "deleteFailed": "Delete failed",
+      "deleteSuccess": "Delete successfully",
+      "fetchFailed": "Failed to obtain",
+      "fetchRoleFailed": "Failed to obtain role information",
+      "getUserListFailed": "Failed to get user list",
+      "loadPermissionTreeFailed": "Failed to load permission tree",
+      "pleaseSelectRole": "Please select a role first",
+      "pleaseSelectUser": "Please select user",
+      "pleaseSelectUsers": "Please select users to remove",
+      "saveFailed": "Save failed",
+      "saveSuccess": "Saved successfully",
+      "systemRoleCannotDelete": "This role is a built-in role in the system",
+      "systemRoleCannotEdit": "This role is a built-in role in the system",
+      "systemUserCannotUnassign": "This user is a built-in user in the system and cannot be unassigned",
+      "unassignFailed": "Removal failed",
+      "unassignSuccess": "Removed successfully",
+      "updateSuccess": "Modification successful"
+    },
+    "nodeCascade": "Node association",
+    "nodeIndependent": "Node independent",
+    "page": {
+      "title": {
+        "add": "Add new role",
+        "edit": "Edit role"
+      },
+      "user": {
+        "search": {
+          "description": "describe",
+          "nickname": "Nick name",
+          "username": "username"
+        },
+        "table": {
+          "action": "operate",
+          "deptName": "Department",
+          "description": "describe",
+          "email": "Mail",
+          "gender": "gender",
+          "nickname": "Nick name",
+          "phone": "Phone number",
+          "roleNames": "Role",
+          "status": "state",
+          "username": "username"
+        }
+      }
+    },
+    "permission": {
+      "button": "button",
+      "savePermission": "save permissions"
+    },
+    "placeholder": {
+      "code": "Please enter the role code",
+      "dataScope": "Please select data permissions",
+      "name": "Please enter a role name",
+      "nickname": "Please enter a nickname",
+      "phone": "Please enter mobile phone number",
+      "remark": "Please enter remark information",
+      "sort": "Please enter sorting",
+      "username": "Please enter username"
+    },
+    "savePermission": "save permissions",
+    "tab": {
+      "permission": "Function permissions",
+      "user": "role user"
+    },
+    "title": "role management",
+    "tree": {
+      "noDescription": "No description yet",
+      "placeholder": "Search name/encoding"
+    },
+    "validate": {
+      "codeRequired": "Please enter the role code",
+      "dataScopeRequired": "Please select data permissions",
+      "nameRequired": "Please enter a role name"
+    }
   },
   "search": {
     "exitKeydown": "closure",
@@ -503,7 +757,7 @@
       "github": "Github",
       "lockScreen": "lock screen",
       "logout": "Log out",
-      "userCenter": "Personal center"
+      "userCenter": "Personal Center"
     }
   },
   "user": {
@@ -539,121 +793,6 @@
       "password": "Please enter password",
       "role": "Please select a role",
       "username": "Please enter username"
-    }
-  },
-  "role": {
-    "assignUser": "Assign users",
-    "batchUnassign": "Batch removal",
-    "code": "role coding",
-    "dataScope": "Data permissions",
-    "dataScopeOption": {
-      "all": "All data permissions",
-      "custom": "Custom data permissions",
-      "dept": "Data permissions of this department",
-      "deptAndBelow": "Data permissions for this department and the following",
-      "onlySelf": "Only personal data permissions"
-    },
-    "deptCheckStrictly": "Father and son linkage",
-    "deptPermission": "Department authority",
-    "description": "describe",
-    "expandCollapse": "expand/collapse",
-    "field": {
-      "code": "role coding",
-      "dataScope": "Data permissions",
-      "description": "describe",
-      "name": "Character name",
-      "sort": "sort",
-      "status": "state"
-    },
-    "form": {
-      "basicInfo": "Basic information",
-      "dataPermission": "Data permissions",
-      "name": "Character name",
-      "code": "role coding",
-      "sort": "sort",
-      "status": "state",
-      "remark": "Remark"
-    },
-    "message": {
-      "assignFailed": "Allocation failed",
-      "assignSuccess": "Allocation successful",
-      "confirmBatchUnassign": "Are you sure you want to remove {count} selected users?",
-      "confirmDelete": "Are you sure to delete the character \"{name}\"?",
-      "confirmUnassign": "Are you sure to remove user \"{nickname}({username})\"?",
-      "deleteFailed": "Delete failed",
-      "deleteSuccess": "Delete successfully",
-      "fetchFailed": "Failed to obtain",
-      "fetchRoleFailed": "Failed to obtain role information",
-      "getUserListFailed": "Failed to get user list",
-      "loadPermissionTreeFailed": "Failed to load permission tree",
-      "pleaseSelectRole": "Please select a role first",
-      "pleaseSelectUsers": "Please select users to remove",
-      "pleaseSelectUser": "Please select user",
-      "saveFailed": "Save failed",
-      "saveSuccess": "Saved successfully",
-      "systemRoleCannotDelete": "This role is a built-in role in the system",
-      "systemRoleCannotEdit": "This role is a built-in role in the system",
-      "systemUserCannotUnassign": "This user is a built-in user in the system and cannot be unassigned",
-      "unassignFailed": "Removal failed",
-      "unassignSuccess": "Removed successfully",
-      "updateSuccess": "Modification successful",
-      "addSuccess": "Added successfully"
-    },
-    "nodeCascade": "Node association",
-    "nodeIndependent": "Node independent",
-    "page": {
-      "title": {
-        "add": "Add new role",
-        "edit": "Edit role"
-      },
-      "user": {
-        "search": {
-          "description": "describe",
-          "nickname": "Nick name",
-          "username": "username"
-        },
-        "table": {
-          "action": "operate",
-          "deptName": "Department",
-          "description": "describe",
-          "email": "Mail",
-          "gender": "gender",
-          "nickname": "Nick name",
-          "phone": "Phone number",
-          "roleNames": "Role",
-          "status": "state",
-          "username": "username"
-        }
-      }
-    },
-    "permission": {
-      "button": "button",
-      "savePermission": "save permissions"
-    },
-    "placeholder": {
-      "code": "Please enter the role code",
-      "dataScope": "Please select data permissions",
-      "name": "Please enter a role name",
-      "nickname": "Please enter a nickname",
-      "phone": "Please enter mobile phone number",
-      "remark": "Please enter remark information",
-      "sort": "Please enter sorting",
-      "username": "Please enter username"
-    },
-    "savePermission": "save permissions",
-    "tab": {
-      "permission": "Function permissions",
-      "user": "role user"
-    },
-    "title": "role management",
-    "tree": {
-      "noDescription": "No description yet",
-      "placeholder": "Search name/encoding"
-    },
-    "validate": {
-      "nameRequired": "Please enter a role name",
-      "codeRequired": "Please enter the role code",
-      "dataScopeRequired": "Please select data permissions"
     }
   },
   "worktab": {
