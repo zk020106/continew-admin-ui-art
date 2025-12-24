@@ -94,6 +94,7 @@
     "common": {
       "search": "搜索"
     },
+    "loading": "加载中...",
     "inputSearch": {
       "placeholder": "请选择"
     },
@@ -290,6 +291,64 @@
       "sortRequired": "请输入排序",
       "titleRequired": "请输入菜单名称",
       "typeRequired": "请选择菜单类型"
+    }
+  },
+  "dept": {
+    "button": {
+      "add": "新增",
+      "addChild": "新增子部门",
+      "collapse": "折叠",
+      "expand": "展开"
+    },
+    "menu": {
+      "add": "添加部门",
+      "edit": "编辑部门",
+      "delete": "删除部门"
+    },
+    "organization": {
+      "empty": "暂无数据",
+      "root": "组织架构"
+    },
+    "tab": {
+      "chart": "组织架构图",
+      "list": "表格视图"
+    },
+    "field": {
+      "createTime": "创建时间",
+      "description": "描述",
+      "isSystem": "系统内置",
+      "name": "部门名称",
+      "parentId": "上级部门",
+      "sort": "排序",
+      "status": "状态"
+    },
+    "form": {
+      "basicInfo": "基础信息"
+    },
+    "message": {
+      "addSuccess": "新增成功",
+      "confirmDelete": "确认删除部门「{name}」吗？",
+      "deleteSuccess": "删除成功",
+      "fetchFailed": "获取部门信息失败",
+      "hasChildren": "该部门存在子部门，不能删除",
+      "systemCannotDelete": "系统内置数据不能删除",
+      "updateSuccess": "修改成功"
+    },
+    "page": {
+      "add": "新增部门",
+      "edit": "编辑部门"
+    },
+    "placeholder": {
+      "description": "请输入描述",
+      "name": "请输入部门名称",
+      "parentId": "请选择上级部门"
+    },
+    "search": {
+      "title": "搜索部门名称"
+    },
+    "validate": {
+      "nameRequired": "请输入部门名称",
+      "sortRequired": "请输入排序"
     }
   },
   "menus": {

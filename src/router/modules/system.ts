@@ -55,6 +55,16 @@ export const systemRoutes: AppRouteRecord = {
           { title: '删除', authMark: 'delete' }
         ]
       }
+    },
+    {
+      path: 'dept',
+      name: 'Dept',
+      component: '/system/dept',
+      meta: {
+        title: 'menus.system.dept',
+        keepAlive: true,
+        roles: ['R_SUPER', 'R_ADMIN']
+      }
     }
   ]
 }
