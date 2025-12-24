@@ -12,7 +12,7 @@
       <ElDivider content-position="left">{{ t('menu.form.basicInfo') }}</ElDivider>
 
       <ElFormItem :label="t('menu.field.type')" prop="type">
-        <ElRadioGroup v-model="form.type" @change="handleTypeChange">
+        <ElRadioGroup v-model="form.type" :disabled="mode === 'edit'" @change="handleTypeChange">
           <ElRadioButton :label="1">{{ t('menu.type.directory') }}</ElRadioButton>
           <ElRadioButton :label="2">{{ t('menu.type.menu') }}</ElRadioButton>
           <ElRadioButton :label="3">{{ t('menu.type.button') }}</ElRadioButton>
@@ -61,11 +61,11 @@
       <ElRow v-if="[1, 2].includes(form.type)" :gutter="16">
         <ElCol :span="12">
           <ElFormItem :label="t('menu.field.icon')" prop="icon">
-            <ElInput v-model="form.icon" :placeholder="t('menu.placeholder.icon')" clearable>
-              <template #prefix>
-                <ArtSvgIcon v-if="form.icon" :icon="form.icon" />
-              </template>
-            </ElInput>
+            <CaIconPicker
+              :model-value="form.icon"
+              :placeholder="t('menu.placeholder.icon')"
+              @update:model-value="form.icon = $event"
+            />
           </ElFormItem>
         </ElCol>
         <ElCol :span="12">
@@ -85,39 +85,23 @@
         </ElInput>
       </ElFormItem>
 
-      <ElFormItem
-        v-if="form.type === 2 && !form.isExternal"
-        :label="t('menu.field.component')"
-        prop="component"
-      >
-        <div class="component-input-wrapper">
-          <span class="input-prefix">/</span>
-          <ElAutocomplete
+      <ElFormItem v-if="form.type === 2" :label="t('menu.field.component')" prop="component">
+        <template v-if="form.isExternal">
+          <ElInput
             v-model="form.component"
-            :fetch-suggestions="fetchComponentSuggestions"
             :placeholder="t('menu.placeholder.component')"
             clearable
-            style="width: 100%"
-            @select="handleComponentSelect"
           >
-            <template #default="{ item }">
-              <div class="component-suggestion">
-                <span class="value">{{ item.value }}</span>
-                <span class="label">{{ item.label }}</span>
-              </div>
-            </template>
-          </ElAutocomplete>
-        </div>
-      </ElFormItem>
-
-      <ElFormItem
-        v-if="form.type === 2 && form.isExternal"
-        :label="t('menu.field.component')"
-        prop="component"
-      >
-        <ElInput v-model="form.component" :placeholder="t('menu.placeholder.component')" clearable>
-          <template #prepend>iframe</template>
-        </ElInput>
+            <template #prepend>iframe</template>
+          </ElInput>
+        </template>
+        <template v-else>
+          <CaComponentPicker
+            :model-value="form.component"
+            :placeholder="t('menu.placeholder.component')"
+            @update:model-value="form.component = $event"
+          />
+        </template>
       </ElFormItem>
 
       <ElRow v-if="[1, 2].includes(form.type)" :gutter="16">
@@ -180,13 +164,13 @@
       <ElRow v-if="[1, 2].includes(form.type)" :gutter="16">
         <ElCol :span="8">
           <ElFormItem :label="t('menu.field.isExternal')" prop="isExternal">
-            <ElRadioGroup size="small" v-model="form.isExternal">
+            <ElRadioGroup size="small" v-model="form.isExternal" @change="handleExternalChange">
               <ElRadioButton :label="true">{{ t('common.true') }}</ElRadioButton>
               <ElRadioButton :label="false">{{ t('common.false') }}</ElRadioButton>
             </ElRadioGroup>
           </ElFormItem>
         </ElCol>
-        <ElCol :span="8">
+        <ElCol v-if="form.type === 2" :span="8">
           <ElFormItem :label="t('menu.field.isCache')" prop="isCache">
             <ElRadioGroup size="small" v-model="form.isCache">
               <ElRadioButton :label="true">{{ t('common.true') }}</ElRadioButton>
@@ -216,9 +200,9 @@
 
 <script setup lang="ts">
   import { addMenu, getMenu, listMenu, type MenuResp, updateMenu } from '@/apis/system/menu'
-  import { useComponentPaths } from '@/hooks/core/useComponentPaths'
+  import CaComponentPicker from '@/components/base/CaComponentPicker/index.vue'
+  import CaIconPicker from '@/components/base/CaIconPicker/index.vue'
   import { transformPathToName } from '@/utils/route/string'
-  import type { AutocompleteFetchSuggestionsCallback } from 'element-plus'
   import { ElMessage } from 'element-plus'
   import { useI18n } from 'vue-i18n'
 
@@ -229,7 +213,6 @@
   }>()
 
   const { t } = useI18n()
-  const { componentPathPrefixes } = useComponentPaths()
   const formRef = ref()
   const treeSelectRef = ref()
   const visible = ref(false)
@@ -316,9 +299,6 @@
             trigger: 'blur'
           }
         ],
-        permission: [
-          { required: true, message: t('menu.validate.permissionRequired'), trigger: 'blur' }
-        ],
         name: [{ required: true, message: t('menu.validate.nameRequired'), trigger: 'blur' }]
       }
     }
@@ -348,23 +328,6 @@
     }
   }
 
-  // 组件路径自动完成建议
-  const fetchComponentSuggestions = (
-    queryString: string,
-    cb: AutocompleteFetchSuggestionsCallback
-  ) => {
-    const suggestions = componentPathPrefixes.value
-    const results = queryString
-      ? suggestions.filter((item) => item.value.toLowerCase().includes(queryString.toLowerCase()))
-      : suggestions
-    cb(results)
-  }
-
-  // 组件路径选择
-  const handleComponentSelect = (item: Record<string, any>) => {
-    form.component = item.value
-  }
-
   // 路径输入处理
   const handlePathInput = () => {
     // 当路径变化时，自动更新建议的组件名
@@ -383,6 +346,12 @@
   const handleTypeChange = () => {
     // 清除相关字段的验证
     formRef.value?.clearValidate(['permission', 'path', 'component', 'name'])
+  }
+
+  // 外链切换处理
+  const handleExternalChange = () => {
+    form.component = ''
+    formRef.value?.clearValidate(['component'])
   }
 
   // 重置表单
@@ -448,6 +417,10 @@
         isCache: data.isCache !== false,
         isHidden: data.isHidden || false
       })
+      // 清除验证状态
+      nextTick(() => {
+        formRef.value?.clearValidate()
+      })
       visible.value = true
     } catch (error) {
       console.error('获取菜单详情失败:', error)
@@ -506,50 +479,6 @@
   :deep(.el-input-group__prepend) {
     color: var(--el-text-color-regular);
     background-color: var(--el-fill-color-light);
-  }
-
-  .component-input-wrapper {
-    display: flex;
-    align-items: center;
-    width: 100%;
-
-    .input-prefix {
-      box-sizing: border-box;
-      flex-shrink: 0;
-      height: 32px;
-      padding: 0 12px;
-      font-size: 14px;
-      line-height: 32px;
-      color: var(--el-text-color-regular);
-      background-color: var(--el-fill-color-light);
-      border: 1px solid var(--el-border-color);
-      border-right: none;
-      border-radius: 4px 0 0 4px;
-    }
-
-    :deep(.el-autocomplete) {
-      flex: 1;
-
-      .el-input__wrapper {
-        border-radius: 0 4px 4px 0;
-      }
-    }
-  }
-
-  .component-suggestion {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    .value {
-      font-weight: 500;
-      color: var(--el-text-color-primary);
-    }
-
-    .label {
-      font-size: 12px;
-      color: var(--el-text-color-secondary);
-    }
   }
 
   .name-suggestion {

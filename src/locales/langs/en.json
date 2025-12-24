@@ -81,6 +81,16 @@
       "searchPlaceholder": "search icon",
       "selectIcon": "Select icon"
     },
+    "icon": {
+      "recent": "Recent",
+      "local": "Local",
+      "online": "Online",
+      "noRecent": "No recent icons",
+      "noResult": "No matching icon"
+    },
+    "component": {
+      "noComponents": "No available components"
+    },
     "inputSearch": {
       "placeholder": "Please select"
     },

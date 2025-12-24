@@ -314,6 +314,7 @@
       menuList.value = data
     } catch (error) {
       console.error('获取菜单列表失败:', error)
+      ElMessage.error(t('menu.message.fetchFailed'))
     }
   }
 
@@ -324,7 +325,7 @@
 
   // 新增子菜单
   const handleAddChild = (row: MenuResp) => {
-    addDrawerRef.value?.onAdd(row.id)
+    addDrawerRef.value?.onAddChild(row.id, t(row.title))
   }
 
   // 编辑菜单
