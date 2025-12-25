@@ -881,6 +881,7 @@
       "title": "File statistics",
       "totalFiles": "document",
       "totalUsage": "Total occupied {size}",
+      "totalUsageLabel": "Storage",
       "image": "picture",
       "video": "video",
       "audio": "Audio",

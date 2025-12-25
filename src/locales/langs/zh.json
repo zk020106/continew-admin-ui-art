@@ -881,6 +881,7 @@
       "title": "文件统计",
       "totalFiles": "文件",
       "totalUsage": "共占用 {size}",
+      "totalUsageLabel": "存储量",
       "image": "图片",
       "video": "视频",
       "audio": "音频",

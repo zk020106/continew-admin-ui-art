@@ -1,7 +1,7 @@
 import type { FileItem } from '@/apis/system/file'
 
 /** 视图模式 */
-export type ViewMode = 'list' | 'grid' | 'tree'
+export type ViewMode = 'list' | 'grid'
 
 /** 文件项类型（扩展 API 类型） */
 export interface FileNode extends FileItem {

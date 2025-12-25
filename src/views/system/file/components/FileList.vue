@@ -610,7 +610,17 @@
   }
 
   .item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
     margin-bottom: 8px;
+
+    :deep(.art-svg-icon) {
+      width: 64px !important;
+      height: 64px !important;
+    }
 
     .grid-thumbnail {
       width: 64px;
@@ -623,6 +633,13 @@
         object-fit: cover;
         border-radius: 4px;
       }
+    }
+
+    .image-placeholder {
+      width: 64px;
+      height: 64px;
+      background: var(--el-fill-color-light);
+      border-radius: 4px;
     }
   }
 
