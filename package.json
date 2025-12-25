@@ -56,6 +56,9 @@
     "@element-plus/icons-vue": "^2.3.2",
     "@iconify/vue": "^5.0.0",
     "@tailwindcss/vite": "^4.1.14",
+    "@vue-office/docx": "^1.6.3",
+    "@vue-office/excel": "^1.7.14",
+    "@vue-office/pdf": "^2.0.10",
     "@vue/reactivity": "^3.5.21",
     "@vueuse/core": "^13.9.0",
     "@wangeditor/editor": "^5.1.23",
@@ -129,5 +132,13 @@
     "vue-demi": "^0.14.9",
     "vue-img-cutter": "^3.0.5",
     "vue-tsc": "~2.1.6"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@vue-office/docx",
+      "@vue-office/excel",
+      "@vue-office/pdf",
+      "vue-demi"
+    ]
   }
 }

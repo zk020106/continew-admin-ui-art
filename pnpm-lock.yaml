@@ -16,6 +16,15 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.14
         version: 4.1.14(vite@7.1.7(@types/node@24.8.1)(jiti@2.6.0)(lightningcss@1.30.1)(sass@1.93.2)(terser@5.44.0)(tsx@4.20.6)(yaml@2.8.1))
+      '@vue-office/docx':
+        specifier: ^1.6.3
+        version: 1.6.3(vue-demi@0.14.10(vue@3.5.22(typescript@5.6.3)))(vue@3.5.22(typescript@5.6.3))
+      '@vue-office/excel':
+        specifier: ^1.7.14
+        version: 1.7.14(vue-demi@0.14.10(vue@3.5.22(typescript@5.6.3)))(vue@3.5.22(typescript@5.6.3))
+      '@vue-office/pdf':
+        specifier: ^2.0.10
+        version: 2.0.10(vue-demi@0.14.10(vue@3.5.22(typescript@5.6.3)))(vue@3.5.22(typescript@5.6.3))
       '@vue/reactivity':
         specifier: ^3.5.21
         version: 3.5.22
@@ -1867,6 +1876,45 @@ packages:
       {
         integrity: sha512-lAB5zJghWxVPqfcStmAP1ZqQacMpe90UrP5RJ3arDyrhy4aCUQqmxPPLB2PWDKugvylmO41ljK7vZ+t6INMTag==
       }
+
+  '@vue-office/docx@1.6.3':
+    resolution:
+      {
+        integrity: sha512-Cs+3CAaRBOWOiW4XAhTwwxJ0dy8cPIf6DqfNvYcD3YACiLwO4kuawLF2IAXxyijhbuOeoFsfvoVbOc16A/4bZA==
+      }
+    peerDependencies:
+      '@vue/composition-api': ^1.7.1
+      vue: ^2.0.0 || >=3.0.0
+      vue-demi: ^0.14.6
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+
+  '@vue-office/excel@1.7.14':
+    resolution:
+      {
+        integrity: sha512-pVUgt+emDQUnW7q22CfnQ+jl43mM/7IFwYzOg7lwOwPEbiVB4K4qEQf+y/bc4xGXz75w1/e3Kz3G6wAafmFBFg==
+      }
+    peerDependencies:
+      '@vue/composition-api': ^1.7.1
+      vue: ^2.0.0 || >=3.0.0
+      vue-demi: ^0.14.6
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+
+  '@vue-office/pdf@2.0.10':
+    resolution:
+      {
+        integrity: sha512-yHVLrMAKpMPBkhBwofFyGEtEeJF0Zd7oGmf56Pe5aj/xObdRq3E1CIZqTqhWJNgHV8oLQqaX0vs4p5T1zq+GIA==
+      }
+    peerDependencies:
+      '@vue/composition-api': ^1.7.1
+      vue: ^2.0.0 || >=3.0.0
+      vue-demi: ^0.14.6
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
 
   '@vue/babel-helper-vue-transform-on@1.5.0':
     resolution:
@@ -7440,6 +7488,21 @@ snapshots:
       '@volar/language-core': 2.4.23
       path-browserify: 1.0.1
       vscode-uri: 3.1.0
+
+  '@vue-office/docx@1.6.3(vue-demi@0.14.10(vue@3.5.22(typescript@5.6.3)))(vue@3.5.22(typescript@5.6.3))':
+    dependencies:
+      vue: 3.5.22(typescript@5.6.3)
+      vue-demi: 0.14.10(vue@3.5.22(typescript@5.6.3))
+
+  '@vue-office/excel@1.7.14(vue-demi@0.14.10(vue@3.5.22(typescript@5.6.3)))(vue@3.5.22(typescript@5.6.3))':
+    dependencies:
+      vue: 3.5.22(typescript@5.6.3)
+      vue-demi: 0.14.10(vue@3.5.22(typescript@5.6.3))
+
+  '@vue-office/pdf@2.0.10(vue-demi@0.14.10(vue@3.5.22(typescript@5.6.3)))(vue@3.5.22(typescript@5.6.3))':
+    dependencies:
+      vue: 3.5.22(typescript@5.6.3)
+      vue-demi: 0.14.10(vue@3.5.22(typescript@5.6.3))
 
   '@vue/babel-helper-vue-transform-on@1.5.0': {}
 

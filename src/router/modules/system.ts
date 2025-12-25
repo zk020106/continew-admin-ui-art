@@ -65,6 +65,16 @@ export const systemRoutes: AppRouteRecord = {
         keepAlive: true,
         roles: ['R_SUPER', 'R_ADMIN']
       }
+    },
+    {
+      path: 'file',
+      name: 'File',
+      component: '/system/file',
+      meta: {
+        title: 'menus.system.file',
+        keepAlive: true,
+        roles: ['R_SUPER', 'R_ADMIN']
+      }
     }
   ]
 }

@@ -139,7 +139,7 @@
     "403": "Sorry, you do not have permission to access this page",
     "404": "Sorry, the page you visited does not exist",
     "500": "Sorry, there was a server error",
-    "gohome": "Return to homepage"
+    "gohome": "Return to home page"
   },
   "forgetPassword": {
     "backBtnText": "return",
@@ -757,7 +757,7 @@
       "github": "Github",
       "lockScreen": "lock screen",
       "logout": "Log out",
-      "userCenter": "Personal Center"
+      "userCenter": "Personal center"
     }
   },
   "user": {
@@ -804,6 +804,124 @@
       "fixed": "fixed",
       "refresh": "refresh",
       "unfixed": "Unpin"
+    }
+  },
+  "file": {
+    "title": "File management",
+    "breadcrumb": {
+      "root": "root directory"
+    },
+    "header": {
+      "upload": "upload",
+      "newFolder": "Create new folder",
+      "searchPlaceholder": "Search for files...",
+      "sort": "sort",
+      "sortOptions": {
+        "name": "name",
+        "size": "size",
+        "type": "type",
+        "updateTime": "modification time"
+      },
+      "detailPanel": "Details panel",
+      "refresh": "refresh",
+      "selectAll": "Select all",
+      "clearFilters": "Clear filters"
+    },
+    "sidebar": {
+      "quickAccess": "quick access",
+      "recentAccess": "recent visits",
+      "allFiles": "All files",
+      "images": "picture",
+      "documents": "document",
+      "videos": "video",
+      "music": "music",
+      "rootDirectory": "root directory"
+    },
+    "list": {
+      "fileName": "file name",
+      "size": "size",
+      "type": "type",
+      "modifyTime": "modification time",
+      "folder": "folder",
+      "empty": {
+        "root": "There are no files yet. Click to upload or create a new folder to start.",
+        "folder": "This folder is empty"
+      },
+      "dragUpload": "Drag and drop files here to upload"
+    },
+    "contextMenu": {
+      "open": "Open",
+      "download": "download",
+      "preview": "Preview",
+      "rename": "Rename",
+      "move": "move",
+      "copy": "copy",
+      "delete": "delete",
+      "share": "share"
+    },
+    "detail": {
+      "title": "Document details",
+      "fileInfo": "File information",
+      "type": "type",
+      "size": "size",
+      "location": "Location",
+      "createTime": "creation time",
+      "modifyTime": "modification time",
+      "sha256": "SHA256",
+      "selectFile": "Select file to view details",
+      "image": "picture",
+      "video": "video",
+      "audio": "Audio",
+      "pdf": "PDF document",
+      "code": "code file",
+      "document": "document",
+      "archive": "Compressed package"
+    },
+    "statistics": {
+      "title": "File statistics",
+      "totalFiles": "document",
+      "totalUsage": "Total occupied {size}",
+      "image": "picture",
+      "video": "video",
+      "audio": "Audio",
+      "document": "document",
+      "archive": "Compressed package",
+      "code": "code",
+      "folder": "folder",
+      "other": "other"
+    },
+    "modal": {
+      "newFolder": {
+        "title": "Create new folder",
+        "placeholder": "Please enter a folder name",
+        "confirm": "Sure",
+        "cancel": "Cancel",
+        "validate": {
+          "required": "Please enter a folder name",
+          "invalidChars": "Folder names cannot contain / \\ : * ? \" < > | characters",
+          "lengthRange": "Folder name length should be between 1 and 100 characters"
+        }
+      },
+      "rename": {
+        "folderTitle": "Rename folder",
+        "fileTitle": "Rename file",
+        "placeholder": "Please enter a new name",
+        "confirm": "Sure",
+        "cancel": "Cancel",
+        "validate": {
+          "required": "Please enter a new name",
+          "invalidChars": "Name cannot contain / \\ : * ? \" < > | characters",
+          "keepExtension": "Please keep the file extension .{extension}"
+        }
+      }
+    },
+    "preview": {
+      "unsupported": "This file type does not currently support preview"
+    },
+    "filter": {
+      "keyword": "keywords",
+      "type": "type",
+      "extension": "extension"
     }
   }
 }
