@@ -806,6 +806,96 @@
       "unfixed": "取消固定"
     }
   },
+  "dict": {
+    "button": {
+      "add": "新增字典"
+    },
+    "list": {
+      "title": "字典列表",
+      "searchPlaceholder": "搜索字典名称/编码/描述"
+    },
+    "field": {
+      "name": "字典名称",
+      "code": "字典编码",
+      "description": "描述",
+      "createTime": "创建时间",
+      "isSystem": "系统内置"
+    },
+    "form": {
+      "basicInfo": "基础信息",
+      "codeTip": "字典编码，用于获取字典数据"
+    },
+    "message": {
+      "addSuccess": "新增成功",
+      "updateSuccess": "修改成功",
+      "deleteSuccess": "删除成功",
+      "fetchFailed": "获取字典信息失败",
+      "confirmDelete": "确认删除字典「{name}」吗？",
+      "confirmClearCache": "确认清除字典「{code}」的缓存吗？",
+      "clearCacheSuccess": "清除缓存成功",
+      "systemCannotDelete": "系统内置数据不能删除"
+    },
+    "page": {
+      "add": "新增字典",
+      "edit": "编辑字典"
+    },
+    "placeholder": {
+      "name": "请输入字典名称",
+      "code": "请输入字典编码",
+      "description": "请输入描述"
+    },
+    "validate": {
+      "nameRequired": "请输入字典名称",
+      "codeRequired": "请输入字典编码",
+      "codeFormat": "字典编码只能包含字母、数字和下划线，且以字母或下划线开头"
+    },
+    "item": {
+      "tab": {
+        "title": "字典项"
+      },
+      "button": {
+        "add": "新增字典项"
+      },
+      "selectDict": "请先选择字典",
+      "searchPlaceholder": "搜索字典项标签/值/描述",
+      "field": {
+        "label": "字典标签",
+        "value": "字典值",
+        "color": "颜色",
+        "sort": "排序",
+        "status": "状态",
+        "description": "描述",
+        "createTime": "创建时间"
+      },
+      "form": {
+        "basicInfo": "基础信息",
+        "noColor": "未设置颜色"
+      },
+      "message": {
+        "addSuccess": "新增成功",
+        "updateSuccess": "修改成功",
+        "deleteSuccess": "删除成功",
+        "fetchFailed": "获取字典项信息失败",
+        "confirmDelete": "确认删除字典项「{label}」吗？",
+        "selectDictFirst": "请先选择字典"
+      },
+      "page": {
+        "add": "新增字典项",
+        "edit": "编辑字典项"
+      },
+      "placeholder": {
+        "label": "请输入字典标签",
+        "value": "请输入字典值",
+        "color": "请选择或输入颜色值",
+        "description": "请输入描述"
+      },
+      "validate": {
+        "labelRequired": "请输入字典标签",
+        "valueRequired": "请输入字典值",
+        "sortRequired": "请输入排序"
+      }
+    }
+  },
   "file": {
     "title": "文件管理",
     "breadcrumb": {

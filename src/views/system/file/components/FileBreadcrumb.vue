@@ -64,8 +64,8 @@
 <style lang="scss" scoped>
   .file-breadcrumb {
     padding: 12px 16px;
-    background: var(--el-fill-color-light);
-    border-bottom: 1px solid var(--el-border-color-lighter);
+    // background: var(--el-fill-color-light);
+    // border-bottom: 1px solid var(--el-border-color-lighter);
   }
 
   .breadcrumb-root {

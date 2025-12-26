@@ -71,7 +71,7 @@ export const DEFAULT_CONTEXT_MENU_ITEMS: ContextMenuItem[] = [
   // { label: '复制到', icon: 'ri:file-copy-line', action: ContextMenuAction.COPY },
   // { label: 'divider-2', icon: '', action: ContextMenuAction.INFO, divider: true },
   // { label: '分享', icon: 'ri:share-line', action: ContextMenuAction.SHARE },
-  { label: '收藏', icon: 'ri:star-line', action: ContextMenuAction.FAVORITE },
+  // { label: '收藏', icon: 'ri:star-line', action: ContextMenuAction.FAVORITE },
   { label: 'divider-2', icon: '', action: ContextMenuAction.INFO, divider: true },
   { label: '删除', icon: 'ri:delete-bin-line', action: ContextMenuAction.DELETE, danger: true }
 ]
@@ -84,7 +84,7 @@ export const FOLDER_CONTEXT_MENU_ITEMS: ContextMenuItem[] = [
   // { label: '移动到', icon: 'ri:folder-transfer-line', action: ContextMenuAction.MOVE },
   // { label: 'divider-2', icon: '', action: ContextMenuAction.INFO, divider: true },
   // { label: '分享', icon: 'ri:share-line', action: ContextMenuAction.SHARE },
-  { label: '收藏', icon: 'ri:star-line', action: ContextMenuAction.FAVORITE },
+  // { label: '收藏', icon: 'ri:star-line', action: ContextMenuAction.FAVORITE },
   { label: 'divider-2', icon: '', action: ContextMenuAction.INFO, divider: true },
   { label: '删除', icon: 'ri:delete-bin-line', action: ContextMenuAction.DELETE, danger: true }
 ]

@@ -1,6 +1,6 @@
 <template>
   <ElForm ref="formRef" :class="getClass" v-bind="formProps" :model="props.modelValue">
-    <Grid
+    <CaGrid
       class="w-full ca-form-grid"
       :col-gap="12"
       v-bind="props.gridProps"
@@ -113,7 +113,7 @@
           </div>
         </ElFormItem>
       </GridItem>
-    </Grid>
+    </CaGrid>
   </ElForm>
 </template>
 
@@ -122,7 +122,6 @@
   import type { FormInstance } from 'element-plus'
   import * as El from 'element-plus'
   import { ElButton, ElForm, ElFormItem, ElSpace, ElText } from 'element-plus'
-  import { Grid, GridItem } from 'gi-component/packages/components/grid'
   import { computed, getCurrentInstance, onMounted, ref, toRaw, useAttrs, useId, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import InputSearch from '../CaInputSearch/index.vue'

@@ -806,6 +806,96 @@
       "unfixed": "Unpin"
     }
   },
+  "dict": {
+    "button": {
+      "add": "New Dictionary"
+    },
+    "list": {
+      "title": "Dictionary List",
+      "searchPlaceholder": "Search dictionary name/code/description"
+    },
+    "field": {
+      "name": "Dictionary Name",
+      "code": "Dictionary Code",
+      "description": "Description",
+      "createTime": "Creation Time",
+      "isSystem": "System Built-in"
+    },
+    "form": {
+      "basicInfo": "Basic Info",
+      "codeTip": "Dictionary code, used to get dictionary data"
+    },
+    "message": {
+      "addSuccess": "Added successfully",
+      "updateSuccess": "Updated successfully",
+      "deleteSuccess": "Deleted successfully",
+      "fetchFailed": "Failed to get dictionary information",
+      "confirmDelete": "Are you sure to delete dictionary「{name}」?",
+      "confirmClearCache": "Are you sure to clear the cache of dictionary「{code}」?",
+      "clearCacheSuccess": "Cache cleared successfully",
+      "systemCannotDelete": "System built-in data cannot be deleted"
+    },
+    "page": {
+      "add": "New Dictionary",
+      "edit": "Edit Dictionary"
+    },
+    "placeholder": {
+      "name": "Please enter dictionary name",
+      "code": "Please enter dictionary code",
+      "description": "Please enter description"
+    },
+    "validate": {
+      "nameRequired": "Please enter dictionary name",
+      "codeRequired": "Please enter dictionary code",
+      "codeFormat": "Dictionary code can only contain letters, numbers and underscores, and start with a letter or underscore"
+    },
+    "item": {
+      "tab": {
+        "title": "Dictionary Items"
+      },
+      "button": {
+        "add": "New Dictionary Item"
+      },
+      "selectDict": "Please select a dictionary first",
+      "searchPlaceholder": "Search dictionary item label/value/description",
+      "field": {
+        "label": "Dictionary Label",
+        "value": "Dictionary Value",
+        "color": "Color",
+        "sort": "Sort",
+        "status": "Status",
+        "description": "Description",
+        "createTime": "Creation Time"
+      },
+      "form": {
+        "basicInfo": "Basic Info",
+        "noColor": "No color set"
+      },
+      "message": {
+        "addSuccess": "Added successfully",
+        "updateSuccess": "Updated successfully",
+        "deleteSuccess": "Deleted successfully",
+        "fetchFailed": "Failed to get dictionary item information",
+        "confirmDelete": "Are you sure to delete dictionary item「{label}」?",
+        "selectDictFirst": "Please select a dictionary first"
+      },
+      "page": {
+        "add": "New Dictionary Item",
+        "edit": "Edit Dictionary Item"
+      },
+      "placeholder": {
+        "label": "Please enter dictionary label",
+        "value": "Please enter dictionary value",
+        "color": "Please select or enter color value",
+        "description": "Please enter description"
+      },
+      "validate": {
+        "labelRequired": "Please enter dictionary label",
+        "valueRequired": "Please enter dictionary value",
+        "sortRequired": "Please enter sort"
+      }
+    }
+  },
   "file": {
     "title": "File management",
     "breadcrumb": {

@@ -1,5 +1,5 @@
 <template>
-  <GiPageLayout class="file-page">
+  <CaPageLayout class="file-page">
     <template #left>
       <FileSidebar :current-path="currentPath" :statistics="statistics" @navigate="navigateTo" />
     </template>
@@ -126,13 +126,13 @@
         </div>
       </div>
     </el-dialog>
-  </GiPageLayout>
+  </CaPageLayout>
 </template>
 
 <script setup lang="ts">
-  import { useI18n } from 'vue-i18n'
   import type { FileItem, FileStatisticsResp } from '@/apis/system/file'
   import * as fileApi from '@/apis/system/file'
+  import { useI18n } from 'vue-i18n'
   import { useFileContextMenu } from '../hooks/useFileContextMenu'
   import { useFileNavigation } from '../hooks/useFileNavigation'
   import { useFileOperations } from '../hooks/useFileOperations'

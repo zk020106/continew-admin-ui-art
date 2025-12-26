@@ -1,5 +1,5 @@
 <template>
-  <GiPageLayout>
+  <CaPageLayout>
     <template #left>
       <RoleTree @node-click="handleSelectRole" />
     </template>
@@ -27,7 +27,7 @@
         <RoleUser v-if="activeTab === '2'" :role="role" />
       </div>
     </div>
-  </GiPageLayout>
+  </CaPageLayout>
 </template>
 
 <script setup lang="ts">

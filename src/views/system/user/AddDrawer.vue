@@ -7,7 +7,7 @@
     :size="width >= 500 ? 500 : '100%'"
     @close="reset"
   >
-    <GiForm ref="formRef" v-model="form" :columns="columns" />
+    <CaForm ref="formRef" v-model="form" :columns="columns" />
     <template #footer>
       <CaButton type="cancel" @click="visible = false" />
       <CaButton type="confirm" @click="save" />
@@ -18,13 +18,13 @@
 <script setup lang="ts">
   import { addUser, getUser, updateUser } from '@/apis/system/user'
   import CaButton from '@/components/base/CaButton/index.vue'
+  import { FormColumnItem } from '@/components/base/CaForm/type'
   import { GenderList } from '@/constant/common'
   import { useResetReactive } from '@/hooks'
   import { useDept, useRole } from '@/hooks/business'
   import { EnableStatus, Gender } from '@/types/api/common'
   import { encryptByRsa } from '@/utils/encrypt'
   import { useWindowSize } from '@vueuse/core'
-  import { FormColumnItem } from 'gi-component'
   import { useI18n } from 'vue-i18n'
 
   const emit = defineEmits<{

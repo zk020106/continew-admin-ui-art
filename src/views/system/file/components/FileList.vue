@@ -239,9 +239,9 @@
 </template>
 
 <script setup lang="ts">
-  import { useI18n } from 'vue-i18n'
   import type { FileItem } from '@/apis/system/file'
   import { MoreFilled } from '@element-plus/icons-vue'
+  import { useI18n } from 'vue-i18n'
   import type { SortField, SortOrder, ViewMode } from '../types'
   import { getFileIconByType, isImageFile } from '../utils/fileIcons'
 
@@ -525,8 +525,8 @@
       display: flex;
       justify-content: flex-end;
       padding: 12px 16px;
-      background: var(--el-fill-color-light);
-      border-top: 1px solid var(--el-border-color-lighter);
+      // background: var(--el-fill-color-light);
+      // border-top: 1px solid var(--el-border-color-lighter);
     }
 
     .file-name-cell {

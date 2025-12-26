@@ -1,5 +1,5 @@
 <template>
-  <GiPageLayout>
+  <CaPageLayout>
     <template #left>
       <DeptTree @node-click="handleSelectDept" />
     </template>
@@ -77,18 +77,18 @@
     <DetailDrawer ref="DetailDrawerRef" />
     <PwdResetModal ref="PwdResetModalRef" />
     <RoleUpdateModal ref="RoleUpdateModalRef" @save-success="search" />
-  </GiPageLayout>
+  </CaPageLayout>
 </template>
 
 <script setup lang="ts">
   import { UserQuery, UserResp } from '@/apis'
   import { deleteUser, exportUser, listUser } from '@/apis/system/user'
+  import { FormColumnItem } from '@/components/base/CaForm/type'
   import { TableColumnItem } from '@/components/base/CaTable/type'
   import { DisEnableStatusList } from '@/constant/common'
   import { useDevice, useDownload, useResetReactive, useTable } from '@/hooks'
   import { MoreFilled } from '@element-plus/icons-vue'
   import { ElSpace } from 'element-plus'
-  import { FormColumnItem } from 'gi-component'
   import { useI18n } from 'vue-i18n'
   import AddDrawer from './AddDrawer.vue'
   import DeptTree from './dept/index.vue'

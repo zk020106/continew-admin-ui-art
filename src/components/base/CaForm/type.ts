@@ -1,7 +1,7 @@
+import { GridItemProps, GridProps } from '@/components/base/CaGrid/interface'
 import { MergeMultiple } from '@/types/component/tools'
 import type * as El from 'element-plus'
 import type { FormProps as ElFormProps } from 'element-plus'
-import { GridItemProps, GridProps } from 'gi-component/packages/components/grid'
 import type { VNode } from 'vue'
 import { InputSearchInstance } from '../CaInputSearch/type'
 

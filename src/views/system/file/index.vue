@@ -1,7 +1,7 @@
 <template>
-  <GiPageLayout class="file-page">
+  <CaPageLayout class="file-page">
     <FileMain />
-  </GiPageLayout>
+  </CaPageLayout>
 </template>
 
 <script setup lang="ts">
