@@ -50,3 +50,28 @@ export interface JobLogQuery {
   datetimeRange?: Array<string>
 }
 export interface JobLogPageQuery extends JobLogQuery, PageQuery {}
+
+/** 任务新增/修改请求 */
+export interface JobReq {
+  groupName: string
+  jobName: string
+  description?: string
+  triggerType: number
+  triggerInterval?: string
+  executorType: number
+  taskType: number
+  executorInfo?: string
+  argsStr?: string
+  argsType?: string
+  routeKey: number
+  blockStrategy: number
+  executorTimeout?: number
+  maxRetryTimes?: number
+  retryInterval?: number
+  parallelNum?: number
+}
+
+/** 任务状态修改请求 */
+export interface JobStatusReq {
+  jobStatus: number
+}

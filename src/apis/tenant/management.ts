@@ -16,12 +16,12 @@ export function getTenant(id: string) {
 }
 
 /** @desc 新增租户 */
-export function addTenant(data: any) {
+export function addTenant(data: T.TenantReq) {
   return http.post(`${BASE_URL}`, data)
 }
 
 /** @desc 修改租户 */
-export function updateTenant(data: any, id: string) {
+export function updateTenant(data: T.TenantReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 
@@ -31,6 +31,6 @@ export function deleteTenant(id: string) {
 }
 
 /** @desc 修改租户管理员密码 */
-export const updateTenantAdminUserPwd = (data: any, id: string) => {
+export const updateTenantAdminUserPwd = (data: T.TenantAdminPwdReq, id: string) => {
   return http.put(`${BASE_URL}/${id}/admin/pwd`, data)
 }

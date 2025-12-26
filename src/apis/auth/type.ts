@@ -88,3 +88,12 @@ export interface LoginResp {
 export interface SocialAuthAuthorizeResp {
   authorizeUrl: string
 }
+
+/** 第三方登录请求参数 */
+export interface SocialLoginReq {
+  source: string
+  code: string
+  state?: string
+  clientId?: string
+  authType?: AuthType
+}

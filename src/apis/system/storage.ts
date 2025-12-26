@@ -16,12 +16,12 @@ export function getStorage(id: string) {
 }
 
 /** @desc 新增存储 */
-export function addStorage(data: any) {
+export function addStorage(data: T.StorageReq) {
   return http.post(`${BASE_URL}`, data)
 }
 
 /** @desc 修改存储 */
-export function updateStorage(data: any, id: string) {
+export function updateStorage(data: T.StorageReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 
@@ -31,7 +31,7 @@ export function deleteStorage(id: string) {
 }
 
 /** @desc 修改存储状态 */
-export function updateStorageStatus(data: any, id: string) {
+export function updateStorageStatus(data: T.StorageStatusReq, id: string) {
   return http.put(`${BASE_URL}/${id}/status`, data)
 }
 

@@ -16,12 +16,12 @@ export function getSmsConfig(id: string) {
 }
 
 /** @desc 新增短信配置 */
-export function addSmsConfig(data: any) {
+export function addSmsConfig(data: T.SmsConfigReq) {
   return http.post(`${BASE_URL}`, data)
 }
 
 /** @desc 修改短信配置 */
-export function updateSmsConfig(data: any, id: string) {
+export function updateSmsConfig(data: T.SmsConfigReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 

@@ -17,7 +17,7 @@
         </template>
 
         <ElRow :gutter="16">
-          <ElCol :span="12">
+          <ElCol :span="24">
             <ElFormItem :label="t('role.form.name')" prop="name">
               <ElInput
                 v-model="form.name"
@@ -27,7 +27,7 @@
               />
             </ElFormItem>
           </ElCol>
-          <ElCol :span="12">
+          <ElCol :span="24">
             <ElFormItem :label="t('role.form.code')" prop="code">
               <ElInput
                 v-model="form.code"
@@ -41,7 +41,7 @@
         </ElRow>
 
         <ElRow :gutter="16">
-          <ElCol :span="12">
+          <ElCol :span="24">
             <ElFormItem :label="t('role.form.sort')" prop="sort">
               <ElInputNumber
                 v-model="form.sort"
@@ -54,7 +54,7 @@
               />
             </ElFormItem>
           </ElCol>
-          <ElCol :span="12">
+          <ElCol :span="24">
             <ElFormItem :label="t('role.form.status')" prop="status">
               <ElRadioGroup v-model="form.status">
                 <ElRadio :label="1">{{ t('common.statusEnabled') }}</ElRadio>

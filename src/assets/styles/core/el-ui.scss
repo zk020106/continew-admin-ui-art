@@ -1,6 +1,9 @@
 // 优化 Element Plus 组件库默认样式
 
 :root {
+  // 页面内容区域内边距
+  --page-content-padding: 10px 10px;
+
   // 系统主色
   --main-color: var(--el-color-primary);
   --el-color-white: white !important;

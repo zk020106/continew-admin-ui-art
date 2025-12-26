@@ -23,7 +23,7 @@ export function getFile(id: string) {
 }
 
 /** @desc 修改文件 */
-export function updateFile(data: any, id: string) {
+export function updateFile(data: T.FileReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 

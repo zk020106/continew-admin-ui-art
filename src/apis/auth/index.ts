@@ -34,7 +34,7 @@ export function phoneLogin(req: T.PhoneLoginReq, tenantCode?: string) {
 }
 
 /** @desc 三方账号登录 */
-export function socialLogin(req: any) {
+export function socialLogin(req: T.SocialLoginReq) {
   return http.post<T.LoginResp>(`${BASE_URL}/login`, req)
 }
 

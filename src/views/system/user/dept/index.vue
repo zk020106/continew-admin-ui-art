@@ -1,5 +1,5 @@
 <template>
-  <div class="pr-1">
+  <div class="pr-1 p-[var(--page-content-padding)]">
     <div class="mb-1">
       <ElInput v-model="searchKey" :placeholder="t('components.tree.searchPlaceholder')" clearable>
         <template #prefix>

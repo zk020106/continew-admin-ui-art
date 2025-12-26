@@ -16,12 +16,12 @@ export function getNotice(id: string) {
 }
 
 /** @desc 新增公告 */
-export function addNotice(data: any) {
+export function addNotice(data: T.NoticeReq) {
   return http.post(BASE_URL, data)
 }
 
 /** @desc 修改公告 */
-export function updateNotice(data: any, id: string) {
+export function updateNotice(data: T.NoticeReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 

@@ -369,7 +369,7 @@
 <style scoped lang="scss">
   .menu-container {
     height: 100%;
-    padding: 16px;
+    padding: var(--page-content-padding);
   }
 
   .icon-cell {

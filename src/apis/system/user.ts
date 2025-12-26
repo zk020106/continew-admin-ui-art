@@ -20,12 +20,12 @@ export function getUser(id: string) {
 }
 
 /** @desc 新增用户 */
-export function addUser(data: any) {
+export function addUser(data: T.UserReq) {
   return http.post(`${BASE_URL}`, data)
 }
 
 /** @desc 修改用户 */
-export function updateUser(data: any, id: string) {
+export function updateUser(data: T.UserReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 
@@ -50,12 +50,12 @@ export function parseImportUser(data: FormData) {
 }
 
 /** @desc 导入用户 */
-export function importUser(data: any) {
+export function importUser(data: T.UserImportReq) {
   return http.post(`${BASE_URL}/import`, data)
 }
 
 /** @desc 重置密码 */
-export function resetUserPwd(data: any, id: string) {
+export function resetUserPwd(data: T.UserResetPwdReq, id: string) {
   return http.patch(`${BASE_URL}/${id}/password`, data)
 }
 

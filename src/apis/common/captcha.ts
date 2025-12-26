@@ -25,11 +25,11 @@ export function getEmailCaptcha(email: string, captchaReq: T.BehaviorCaptchaReq)
 }
 
 /** @desc 获取行为验证码 */
-export function getBehaviorCaptcha(req: any) {
+export function getBehaviorCaptcha(req?: T.BehaviorCaptchaReq) {
   return http.get<T.BehaviorCaptchaResp>(`${BASE_URL}/behavior`, req)
 }
 
 /** @desc 校验行为验证码 */
-export function checkBehaviorCaptcha(req: any) {
+export function checkBehaviorCaptcha(req: T.BehaviorCaptchaReq) {
   return http.post<T.CheckBehaviorCaptchaResp>(`${BASE_URL}/behavior`, req)
 }

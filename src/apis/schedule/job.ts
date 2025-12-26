@@ -16,17 +16,17 @@ export function listJob(query: T.JobPageQuery) {
 }
 
 /** @desc 新增任务 */
-export function addJob(data: any) {
+export function addJob(data: T.JobReq) {
   return http.post(`${BASE_URL}`, data)
 }
 
 /** @desc 修改任务 */
-export function updateJob(data: any, id: number) {
+export function updateJob(data: T.JobReq, id: number) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 
 /** @desc 修改任务状态 */
-export function updateJobStatus(data: any, id: number) {
+export function updateJobStatus(data: T.JobStatusReq, id: number) {
   return http.patch(`${BASE_URL}/${id}/status`, data)
 }
 

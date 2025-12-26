@@ -17,12 +17,12 @@ export function getDept(id: string) {
 }
 
 /** @desc 新增部门 */
-export function addDept(data: any) {
+export function addDept(data: T.DeptReq) {
   return http.post<boolean>(`${BASE_URL}`, data)
 }
 
 /** @desc 修改部门 */
-export function updateDept(data: any, id: string) {
+export function updateDept(data: T.DeptReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 

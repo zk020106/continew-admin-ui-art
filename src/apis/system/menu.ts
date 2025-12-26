@@ -17,12 +17,12 @@ export function getMenu(id: string) {
 }
 
 /** @desc 新增菜单 */
-export function addMenu(data: any) {
+export function addMenu(data: T.MenuReq) {
   return http.post<boolean>(`${BASE_URL}`, data)
 }
 
 /** @desc 修改菜单 */
-export function updateMenu(data: any, id: string) {
+export function updateMenu(data: T.MenuReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 

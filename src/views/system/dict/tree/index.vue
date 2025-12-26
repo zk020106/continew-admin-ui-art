@@ -3,7 +3,7 @@
     <div class="search">
       <ElInput
         v-model="searchKey"
-        :placeholder="t('role.tree.placeholder')"
+        :placeholder="t('dict.list.searchPlaceholder')"
         clearable
         @input="handleSearch"
       >
@@ -14,33 +14,31 @@
       <ElButton @click="handleAdd" :icon="Plus" type="primary" />
     </div>
 
-    <div class="role-list-wrapper">
-      <div class="role-list">
+    <div class="dict-list-wrapper">
+      <div class="dict-list">
         <div
-          v-for="item in filteredRoleList"
+          v-for="item in filteredDictList"
           :key="item.id"
-          class="role-item"
-          :class="{ active: selectedRole?.id === item.id }"
-          @click="selectRole(item)"
+          class="dict-item"
+          :class="{ active: selectedDict?.id === item.id }"
+          @click="selectDict(item)"
         >
-          <div class="role-info">
-            <div class="role-name" :title="`${item.name} (${item.code})`">
-              {{ item.name }} ({{ item.code }})
+          <div class="dict-info">
+            <div class="dict-name" :title="item.name">
+              {{ item.name }}
             </div>
-            <div class="role-desc" :title="item.description">
-              {{ item.description || t('role.tree.noDescription') }}
-            </div>
+            <div class="dict-desc" :title="item.code"> ({{ item.code }}) </div>
           </div>
-          <div v-auth="['system:role:update', 'system:role:delete']">
+          <div v-auth="['system:dict:update', 'system:dict:delete']">
             <ElDropdown trigger="click" @command="(command) => onMenuItemClick(command, item)">
               <ElButton size="small" text :icon="MoreFilled" @click.stop> </ElButton>
               <template #dropdown>
                 <ElDropdownMenu>
                   <ElDropdownItem command="update">
-                    <span v-auth="['system:role:update']">{{ t('common.button.edit') }}</span>
+                    <span v-auth="['system:dict:update']">{{ t('common.button.edit') }}</span>
                   </ElDropdownItem>
                   <ElDropdownItem command="delete" :disabled="item.isSystem">
-                    <span v-auth="['system:role:delete']" class="danger">{{
+                    <span v-auth="['system:dict:delete']" class="danger">{{
                       t('common.button.delete')
                     }}</span>
                   </ElDropdownItem>
@@ -49,58 +47,56 @@
             </ElDropdown>
           </div>
         </div>
-        <div v-if="filteredRoleList.length === 0" class="empty">
+        <div v-if="filteredDictList.length === 0" class="empty">
           <ElEmpty :description="t('common.empty')" />
         </div>
       </div>
     </div>
 
-    <AddDrawer ref="AddDrawerRef" @save-success="getRoleList" />
+    <AddDrawer ref="AddDrawerRef" @save-success="getDictList" />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { type RoleResp, deleteRole, listRole } from '@/apis/system/role'
+  import { type DictResp, clearDictCache, deleteDict, listDict } from '@/apis/system/dict'
   import { MoreFilled, Plus, Search } from '@element-plus/icons-vue'
   import { ElEmpty, ElMessage, ElMessageBox } from 'element-plus'
   import { useI18n } from 'vue-i18n'
   import AddDrawer from '../AddDrawer.vue'
 
   const emit = defineEmits<{
-    (e: 'node-click', keys: RoleResp): void
+    (e: 'node-click', keys: DictResp): void
   }>()
 
   const { t } = useI18n()
-  const selectedRole = ref<RoleResp | null>(null)
-  const roleList = ref<RoleResp[]>([])
+  const selectedDict = ref<DictResp | null>(null)
+  const dictList = ref<DictResp[]>([])
   const loading = ref(false)
 
-  // 选中角色
-  const selectRole = (role: RoleResp) => {
-    console.log(selectedRole.value)
-
-    if (selectedRole.value?.id === role.id) {
+  // 选中字典
+  const selectDict = (dictItem: DictResp) => {
+    if (selectedDict.value?.id === dictItem.id) {
       return
     }
-    selectedRole.value = role
-    emit('node-click', role)
+    selectedDict.value = dictItem
+    emit('node-click', dictItem)
   }
 
-  // 查询角色列表
-  const getRoleList = async () => {
+  // 查询字典列表
+  const getDictList = async () => {
     try {
       loading.value = true
-      const data = await listRole({ sort: ['sort,asc'] })
-      roleList.value = data
+      const data = await listDict({ sort: ['createTime,desc'] })
+      dictList.value = data
 
-      // 默认选中第一个角色
+      // 默认选中第一个字典
       await nextTick(() => {
-        if (roleList.value.length > 0 && !selectedRole.value) {
-          selectRole(roleList.value[0])
+        if (dictList.value.length > 0 && !selectedDict.value) {
+          selectDict(dictList.value[0])
         }
       })
     } catch (error) {
-      console.error('获取角色列表失败:', error)
+      console.error('获取字典列表失败:', error)
     } finally {
       loading.value = false
     }
@@ -114,31 +110,33 @@
     searchKey.value = value
   }
 
-  // 过滤后的角色列表
-  const filteredRoleList = computed(() => {
-    if (!searchKey.value) return roleList.value
+  // 过滤后的字典列表
+  const filteredDictList = computed(() => {
+    if (!searchKey.value) return dictList.value
     const keyword = searchKey.value.toLowerCase()
-    return roleList.value.filter(
+    return dictList.value.filter(
       (item) =>
-        item.name?.toLowerCase().includes(keyword) || item.code?.toLowerCase().includes(keyword)
+        item.name?.toLowerCase().includes(keyword) ||
+        item.code?.toLowerCase().includes(keyword) ||
+        item.description?.toLowerCase().includes(keyword)
     )
   })
 
   const AddDrawerRef = useTemplateRef('AddDrawerRef')
 
-  // 新增角色
+  // 新增字典
   const handleAdd = () => {
     AddDrawerRef.value?.onAdd()
   }
 
   // 点击菜单项
-  const onMenuItemClick = async (command: string, role: RoleResp) => {
+  const onMenuItemClick = async (command: string, dictItem: DictResp) => {
     if (command === 'update') {
-      AddDrawerRef.value?.onUpdate(role.id)
+      AddDrawerRef.value?.onUpdate(dictItem.id)
     } else if (command === 'delete') {
       try {
         await ElMessageBox.confirm(
-          `${t('message.selected')} ${role.name}，${t('message.confirmDelete')}`,
+          `${t('message.selected')} ${dictItem.name}，${t('message.confirmDelete')}`,
           t('common.tips'),
           {
             confirmButtonText: t('common.confirm'),
@@ -147,10 +145,29 @@
           }
         )
 
-        const res = await deleteRole(role.id)
+        const res = await deleteDict(dictItem.id)
         if (res.success) {
-          ElMessage.success(t('role.message.deleteSuccess'))
-          await getRoleList()
+          ElMessage.success(t('dict.message.deleteSuccess'))
+          await getDictList()
+        }
+      } catch {
+        // 用户取消或其他错误
+      }
+    } else if (command === 'clearCache') {
+      try {
+        await ElMessageBox.confirm(
+          t('dict.message.confirmClearCache', { code: dictItem.code }),
+          t('common.tips'),
+          {
+            confirmButtonText: t('common.confirm'),
+            cancelButtonText: t('common.cancel'),
+            type: 'warning'
+          }
+        )
+
+        const res = await clearDictCache(dictItem.code)
+        if (res.success) {
+          ElMessage.success(t('dict.message.clearCacheSuccess'))
         }
       } catch {
         // 用户取消或其他错误
@@ -159,7 +176,7 @@
   }
 
   onMounted(() => {
-    getRoleList()
+    getDictList()
   })
 </script>
 
@@ -179,42 +196,24 @@
       gap: 8px;
       align-items: center;
       margin-bottom: 10px;
-
-      // .search-add-btn {
-      //   flex-shrink: 0;
-      //   width: 32px;
-      //   height: 32px;
-      //   padding: 6px;
-      //   cursor: pointer;
-      //   color: var(--el-text-color-regular);
-      //   background-color: var(--el-fill-color-light);
-      //   border-radius: var(--el-border-radius-base);
-      //   transition: all 0.2s;
-
-      //   &:hover {
-      //     color: var(--el-color-primary);
-      //     background-color: var(--el-color-primary-light-9);
-      //   }
-      // }
     }
   }
 
-  .role-list-wrapper {
+  .dict-list-wrapper {
     position: relative;
     flex: 1;
     height: 100%;
     overflow: hidden;
     background-color: var(--el-bg-color);
 
-    .role-list {
+    .dict-list {
       position: absolute;
       inset: 0;
-      padding: 8px;
       overflow-y: auto;
     }
   }
 
-  .role-item {
+  .dict-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -237,11 +236,11 @@
       border-color: var(--el-color-primary);
     }
 
-    .role-info {
+    .dict-info {
       flex: 1;
       min-width: 0;
 
-      .role-name {
+      .dict-name {
         margin-bottom: 4px;
         overflow: hidden;
         font-size: 14px;
@@ -251,7 +250,7 @@
         white-space: nowrap;
       }
 
-      .role-desc {
+      .dict-desc {
         overflow: hidden;
         font-size: 12px;
         color: var(--el-text-color-secondary);

@@ -111,6 +111,7 @@
 
   .tab-content {
     flex: 1;
+    padding: var(--page-content-padding);
     overflow: hidden;
   }
 </style>

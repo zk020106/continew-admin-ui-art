@@ -17,12 +17,12 @@ export function getRole(id: string) {
 }
 
 /** @desc 新增角色 */
-export function addRole(data: any) {
+export function addRole(data: T.RoleReq) {
   return http.post(`${BASE_URL}`, data)
 }
 
 /** @desc 修改角色 */
-export function updateRole(data: any, id: string) {
+export function updateRole(data: T.RoleReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 
@@ -37,7 +37,7 @@ export function listRolePermissionTree() {
 }
 
 /** @desc 修改角色权限 */
-export function updateRolePermission(id: string, data: any) {
+export function updateRolePermission(id: string, data: T.RolePermissionReq) {
   return http.put(`${BASE_URL}/${id}/permission`, data)
 }
 

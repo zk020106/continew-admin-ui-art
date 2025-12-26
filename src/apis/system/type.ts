@@ -44,6 +44,33 @@ export interface UserQuery {
 }
 export interface UserPageQuery extends UserQuery, PageQuery {}
 
+/** 用户新增/修改请求 */
+export interface UserReq {
+  username: string
+  nickname: string
+  avatar?: string
+  gender?: Gender
+  email?: string
+  phone?: string
+  description?: string
+  status?: 1 | 2
+  deptId: string
+  roleIds: Array<string>
+  password?: string
+}
+
+/** 用户导入请求 */
+export interface UserImportReq {
+  importKey: string
+  roleIds: Array<string>
+}
+
+/** 用户重置密码请求 */
+export interface UserResetPwdReq {
+  password: string
+  confirmPassword: string
+}
+
 /** 角色类型 */
 export interface RoleResp {
   id: string
@@ -100,6 +127,23 @@ export interface RoleUserQuery {
 }
 export interface RoleUserPageQuery extends RoleUserQuery, PageQuery {}
 
+/** 角色新增/修改请求 */
+export interface RoleReq {
+  name: string
+  code: string
+  sort?: number
+  description?: string
+  dataScope?: number
+}
+
+/** 角色权限修改请求 */
+export interface RolePermissionReq {
+  menuIds: Array<number>
+  menuCheckStrictly?: boolean
+  deptIds?: Array<number>
+  deptCheckStrictly?: boolean
+}
+
 /** 菜单类型 */
 export interface MenuResp {
   id: string
@@ -128,6 +172,24 @@ export interface MenuQuery {
   status?: number
 }
 
+/** 菜单新增/修改请求 */
+export interface MenuReq {
+  title: string
+  parentId?: string
+  type: 1 | 2 | 3
+  path?: string
+  name?: string
+  component?: string
+  redirect?: string
+  icon?: string
+  isExternal?: boolean
+  isCache?: boolean
+  isHidden?: boolean
+  permission?: string
+  sort?: number
+  status?: 1 | 2
+}
+
 /** 部门类型 */
 export interface DeptResp {
   id: string
@@ -146,6 +208,15 @@ export interface DeptResp {
 export interface DeptQuery {
   description?: string
   status?: number
+}
+
+/** 部门新增/修改请求 */
+export interface DeptReq {
+  name: string
+  parentId?: string
+  sort?: number
+  status?: 1 | 2
+  description?: string
 }
 
 /** 字典类型 */
@@ -186,6 +257,24 @@ export interface DictItemQuery {
 }
 export interface DictItemPageQuery extends DictItemQuery, PageQuery {}
 
+/** 字典新增/修改请求 */
+export interface DictReq {
+  name: string
+  code: string
+  description?: string
+}
+
+/** 字典项新增/修改请求 */
+export interface DictItemReq {
+  label: string
+  value: string
+  color?: string
+  sort?: number
+  description?: string
+  status?: 1 | 2
+  dictId: string
+}
+
 /** 公告类型 */
 export interface NoticeResp {
   id?: string
@@ -213,6 +302,18 @@ export interface NoticeQuery {
   sort: Array<string>
 }
 export interface NoticePageQuery extends NoticeQuery, PageQuery {}
+
+/** 公告新增/修改请求 */
+export interface NoticeReq {
+  title: string
+  type: string
+  content: string
+  noticeScope: number
+  noticeMethods?: Array<number>
+  isTiming?: boolean
+  publishTime?: string
+  isTop?: boolean
+}
 
 /** 文件类型 */
 export interface FileItem {
@@ -242,10 +343,16 @@ export interface FileItem {
 /** 文件资源统计信息 */
 export interface FileStatisticsResp {
   type: string
-  size: any
+  size: number
   number: number
   unit: string
   data: Array<FileStatisticsResp>
+}
+
+/** 文件新增/修改请求 */
+export interface FileReq {
+  originalName: string
+  parentPath?: string
 }
 /** 文件夹计算大小信息 */
 export interface FileDirCalcSizeResp {
@@ -283,6 +390,27 @@ export interface StorageQuery {
   description?: string
   type?: number
   sort: Array<string>
+}
+
+/** 存储新增/修改请求 */
+export interface StorageReq {
+  name: string
+  code: string
+  type: number
+  accessKey: string
+  secretKey: string
+  endpoint: string
+  bucketName: string
+  domain?: string
+  description?: string
+  isDefault?: boolean
+  sort?: number
+  status?: number
+}
+
+/** 存储状态修改请求 */
+export interface StorageStatusReq {
+  status: number
 }
 
 /** 客户端类型 */
@@ -329,6 +457,21 @@ export interface ClientQuery {
   sort: Array<string>
 }
 export interface ClientPageQuery extends ClientQuery, PageQuery {}
+
+/** 客户端新增/修改请求 */
+export interface ClientReq {
+  clientId: string
+  clientType: string
+  authType: string
+  activeTimeout?: string
+  timeout?: string
+  status?: string
+  isConcurrent?: number
+  isShare?: number
+  maxLoginCount?: number
+  replacedRange?: string
+  overflowLogoutMode?: string
+}
 
 /** 系统参数类型 */
 export interface OptionResp {
@@ -422,6 +565,23 @@ export interface SmsConfigQuery {
   sort: Array<string>
 }
 export interface SmsConfigPageQuery extends SmsConfigQuery, PageQuery {}
+
+/** 短信配置新增/修改请求 */
+export interface SmsConfigReq {
+  name: string
+  supplier: string
+  accessKey: string
+  secretKey: string
+  signature: string
+  templateId: string
+  weight?: string
+  retryInterval?: string
+  maxRetries?: string
+  maximum?: string
+  supplierConfig?: string
+  status?: number
+  isDefault?: boolean
+}
 
 /** 短信日志类型 */
 export interface SmsLogResp {

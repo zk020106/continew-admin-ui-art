@@ -17,12 +17,12 @@ export function getTenantPackage(id: string) {
 }
 
 /** @desc 新增租户套餐 */
-export function addTenantPackage(data: any) {
+export function addTenantPackage(data: T.TenantPackageReq) {
   return http.post(`${BASE_URL}`, data)
 }
 
 /** @desc 修改租户套餐 */
-export function updateTenantPackage(data: any, id: string) {
+export function updateTenantPackage(data: T.TenantPackageReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 
@@ -38,5 +38,5 @@ export function listTenantPackageDict(query?: { description: string; status: num
 
 /** @desc 查询套餐菜单 */
 export function listTenantPackageMenu() {
-  return http.get<any>(`${BASE_URL}/menu/tree`)
+  return http.get<T.TenantPackageMenuResp[]>(`${BASE_URL}/menu/tree`)
 }

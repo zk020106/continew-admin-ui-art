@@ -16,12 +16,12 @@ export function getDict(id: string) {
 }
 
 /** @desc 新增字典 */
-export function addDict(data: any) {
+export function addDict(data: T.DictReq) {
   return http.post(`${BASE_URL}`, data)
 }
 
 /** @desc 修改字典 */
-export function updateDict(data: any, id: string) {
+export function updateDict(data: T.DictReq, id: string) {
   return http.put(`${BASE_URL}/${id}`, data)
 }
 
@@ -46,12 +46,12 @@ export function getDictItem(id: string) {
 }
 
 /** @desc 新增字典项 */
-export function addDictItem(data: any) {
+export function addDictItem(data: T.DictItemReq) {
   return http.post(`${BASE_URL}/item`, data)
 }
 
 /** @desc 修改字典项 */
-export function updateDictItem(data: any, id: string) {
+export function updateDictItem(data: T.DictItemReq, id: string) {
   return http.put(`${BASE_URL}/item/${id}`, data)
 }
 

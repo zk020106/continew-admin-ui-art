@@ -321,7 +321,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: 16px;
+    padding: var(--page-content-padding);
 
     .dept-tabs {
       display: flex;
