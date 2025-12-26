@@ -33,7 +33,6 @@
   import { useResetReactive } from '@/hooks'
   import { useWindowSize } from '@vueuse/core'
   import { ElButton, ElDrawer, ElMessage, ElTooltip } from 'element-plus'
-  import { h } from 'vue'
   import { useI18n } from 'vue-i18n'
 
   const emit = defineEmits<{
@@ -72,12 +71,11 @@
         },
         {
           type: 'input',
-          labelRender: () =>
-            h(
-              ElTooltip,
-              { content: t('dict.form.codeTip'), placement: 'top' },
-              { default: () => t('dict.field.code') }
-            ),
+          labelRender: () => (
+            <ElTooltip content={t('dict.form.codeTip')} placement="top">
+              {t('dict.field.code')}
+            </ElTooltip>
+          ),
           field: 'code',
           props: {
             placeholder: t('dict.placeholder.code'),

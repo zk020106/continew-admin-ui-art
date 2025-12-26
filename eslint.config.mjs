@@ -60,11 +60,23 @@ export default [
       'no-unexpected-multiline': 'error' // 禁止空余的多行
     }
   },
-  // vue 规则
+  // vue 规则（支持TSX）
   {
     files: ['**/*.vue'],
     languageOptions: {
-      parserOptions: { parser: tseslint.parser }
+      parserOptions: {
+        parser: tseslint.parser,
+        extraFileExtensions: ['.vue'],
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: __dirname,
+        ecmaFeatures: {
+          jsx: true
+        }
+      }
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off'
     }
   },
   // 忽略文件
