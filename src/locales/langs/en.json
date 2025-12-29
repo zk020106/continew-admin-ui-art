@@ -896,6 +896,29 @@
       }
     }
   },
+  "config": {
+    "site": {
+      "title": "System Name",
+      "titleRequired": "Please enter system name",
+      "titlePlaceholder": "Please enter system name",
+      "titleTip": "System name displayed in browser tab title",
+      "description": "System Description",
+      "descriptionRequired": "Please enter system description",
+      "descriptionPlaceholder": "Please enter system description for SEO meta description",
+      "descriptionTip": "System description for SEO meta description",
+      "logo": "System LOGO",
+      "logoTip": "Displayed on login page and system navigation bar (recommended .svg format)",
+      "favicon": "System Icon",
+      "faviconTip": "Displayed in browser tab (recommended .ico format)",
+      "copyright": "Copyright Notice",
+      "copyrightRequired": "Please enter copyright notice",
+      "copyrightPlaceholder": "Please enter copyright notice",
+      "copyrightTip": "Copyright notice displayed at page bottom",
+      "beian": "ICP License",
+      "beianPlaceholder": "Please enter ICP license number",
+      "beianTip": "Website ICP license number displayed at page bottom"
+    }
+  },
   "file": {
     "title": "File management",
     "breadcrumb": {

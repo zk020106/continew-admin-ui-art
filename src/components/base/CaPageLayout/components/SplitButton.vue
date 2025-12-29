@@ -98,6 +98,10 @@
       overflow: hidden;
       border-radius: 50%;
       box-shadow: 0 4px 10px rgb(0 0 0 / 10%);
+
+      &.ca-split-button--collapsed {
+        left: -6px;
+      }
     }
   }
 </style>

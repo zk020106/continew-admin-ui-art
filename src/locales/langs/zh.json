@@ -896,6 +896,29 @@
       }
     }
   },
+  "config": {
+    "site": {
+      "title": "系统名称",
+      "titleRequired": "请输入系统名称",
+      "titlePlaceholder": "请输入系统名称",
+      "titleTip": "系统名称，显示在浏览器标签页标题",
+      "description": "系统描述",
+      "descriptionRequired": "请输入系统描述",
+      "descriptionPlaceholder": "请输入系统描述，用于 SEO 的网站元描述",
+      "descriptionTip": "系统描述，用于 SEO 的网站元描述",
+      "logo": "系统 LOGO",
+      "logoTip": "显示在登录页面和系统导航栏的网站图标（建议 .svg 格式）",
+      "favicon": "系统图标",
+      "faviconTip": "浏览器标签页显示的网站图标（建议 .ico 格式）",
+      "copyright": "版权声明",
+      "copyrightRequired": "请输入版权声明",
+      "copyrightPlaceholder": "请输入版权声明",
+      "copyrightTip": "版权声明，显示在页面底部",
+      "beian": "备案号",
+      "beianPlaceholder": "请输入备案号，如：京ICP备12345678号",
+      "beianTip": "网站备案号，显示在页面底部"
+    }
+  },
   "file": {
     "title": "文件管理",
     "breadcrumb": {

@@ -48,12 +48,30 @@ export class RouteTransformer {
       this.handleNormalRoute(converted, component as string)
     }
 
-    // 递归处理子路由
+    // 递归处理子路由，过滤掉使用相同 path 但仅通过 query 参数区分的子菜单
+    // 这种子菜单仅用于菜单显示，实际由父组件内部处理 tab 切换
     if (children?.length) {
-      converted.children = children.map((child) => this.transform(child, depth + 1))
+      const validChildren = this.filterValidChildren(children, route.path || '')
+      if (validChildren.length > 0) {
+        converted.children = validChildren.map((child) => this.transform(child, depth + 1))
+      }
     }
 
     return converted
+  }
+
+  /**
+   * 过滤有效的子路由
+   * 如果子路由的 path（不含 query 和 hash）与父路由相同，则不将其作为嵌套路由注册
+   */
+  private filterValidChildren(children: AppRouteRecord[], parentPath: string): AppRouteRecord[] {
+    return children.filter((child) => {
+      const childPath = child.path || ''
+      // 移除 query 参数和 hash
+      const basePath = childPath.split('?')[0].split('#')[0]
+      // 只有子路由 path（不含 query）与父路由不同时，才作为嵌套路由
+      return basePath !== parentPath
+    })
   }
 
   /**
