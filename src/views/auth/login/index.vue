@@ -97,7 +97,9 @@
 
 <script setup lang="ts">
   import { getImageCaptcha } from '@/apis'
+  import { listOption } from '@/apis/system'
   import AppConfig from '@/config'
+  import { useAppStore } from '@/store/modules/app'
   import { useUserStore } from '@/store/modules/user'
   import { encryptByRsa } from '@/utils/encrypt'
   import { HttpError } from '@/utils/http/error'
@@ -115,6 +117,7 @@
   })
 
   const userStore = useUserStore()
+  const appStore = useAppStore()
   const router = useRouter()
   const route = useRoute()
   const captchaImgBase64 = ref<string>()
@@ -178,6 +181,18 @@
     formData.expired = false
     // 启动过期定时器
     startTimer(expireTime, Date.now())
+  }
+
+  // 获取站点信息（版权、备案号）
+  const getSiteInfo = async () => {
+    try {
+      const data = await listOption({ category: 'SITE' })
+      const copyright = data.find((item: any) => item.code === 'SITE_COPYRIGHT')?.value || ''
+      const beian = data.find((item: any) => item.code === 'SITE_BEIAN')?.value || ''
+      appStore.setSiteInfo({ copyright, beian })
+    } catch (error) {
+      console.error('[Login] 获取站点信息失败:', error)
+    }
   }
   // 登录
   const handleSubmit = async () => {
@@ -253,6 +268,7 @@
   }
   onMounted(() => {
     getCaptcha()
+    getSiteInfo()
   })
 </script>
 

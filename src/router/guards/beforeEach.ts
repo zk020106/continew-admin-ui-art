@@ -136,7 +136,7 @@ async function handleRouteGuard(
 
   // 2. 处理动态路由注册
   if (!routeRegistry?.isRegistered() && userStore.isLogin) {
-    await handleDynamicRoutes(to, next, router)
+    await handleDynamicRoutes(to, next, router, userStore)
     return
   }
 
@@ -210,37 +210,40 @@ function isStaticRoute(path: string): boolean {
 async function handleDynamicRoutes(
   to: RouteLocationNormalized,
   next: NavigationGuardNext,
-  router: Router
+  router: Router,
+  userStore: ReturnType<typeof useUserStore>
 ): Promise<void> {
   // 显示 loading
   pendingLoading = true
   loadingService.showLoading()
 
   try {
-    // 1. 获取用户信息
-    await fetchUserInfo()
-    // 2. 获取菜单数据
-    const menuList = await menuProcessor.getMenuList()
-    // 3. 验证菜单数据
+    // 1. 并行获取用户信息和菜单数据
+    const [userInfoData, menuList] = await Promise.all([getUserInfo(), menuProcessor.getMenuList()])
+
+    // 2. 保存用户信息
+    userStore.setUserInfo(userInfoData)
+    userStore.checkAndClearWorktabs()
+    // 4. 验证菜单数据
     if (!menuProcessor.validateMenuList(menuList)) {
       throw new Error('获取菜单列表失败，请重新登录')
     }
 
-    // 4. 注册动态路由
+    // 5. 注册动态路由
     routeRegistry?.register(menuList)
 
-    // 5. 保存菜单数据到 store
+    // 6. 保存菜单数据到 store
     const menuStore = useMenuStore()
     menuStore.setMenuList(menuList)
     menuStore.addRemoveRouteFns(routeRegistry?.getRemoveRouteFns() || [])
 
-    // 6. 保存 iframe 路由
+    // 7. 保存 iframe 路由
     IframeRouteManager.getInstance().save()
 
-    // 7. 验证工作标签页
+    // 8. 验证工作标签页
     useWorktabStore().validateWorktabs(router)
 
-    // 8. 验证目标路径权限
+    // 9. 验证目标路径权限
     const { homePath } = useCommon()
     const { path: validatedPath, hasPermission } = RoutePermissionValidator.validatePath(
       to.path,
@@ -248,7 +251,7 @@ async function handleDynamicRoutes(
       homePath.value || '/'
     )
 
-    // 9. 重新导航到目标路由
+    // 10. 重新导航到目标路由
     if (!hasPermission) {
       // 无权限访问，跳转到首页
       closeLoading()
@@ -292,23 +295,6 @@ async function handleDynamicRoutes(
     // 其他错误：跳转到 500 页面
     next({ name: 'Exception500' })
   }
-}
-
-/**
- * 获取用户信息
- *
- * 注意：每次动态路由注册时都会重新获取用户信息，确保数据最新
- * 这样可以避免以下问题：
- * 1. 用户信息过期但仍使用 localStorage 中的旧数据
- * 2. 权限变更后不能及时更新
- * 3. 用户信息在后台被修改后前端不同步
- */
-async function fetchUserInfo(): Promise<void> {
-  const userStore = useUserStore()
-  const data = await getUserInfo()
-  userStore.setUserInfo(data)
-  // 检查并清理工作台标签页（如果是不同用户登录）
-  userStore.checkAndClearWorktabs()
 }
 
 /**

@@ -84,18 +84,18 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, ref, watch, nextTick, onUnmounted } from 'vue'
-  import { LocationQueryRaw, useRoute, useRouter } from 'vue-router'
-  import { useI18n } from 'vue-i18n'
   import { storeToRefs } from 'pinia'
+  import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+  import { useI18n } from 'vue-i18n'
+  import { LocationQueryRaw, useRoute, useRouter } from 'vue-router'
 
-  import { useWorktabStore } from '@/store/modules/worktab'
-  import { useUserStore } from '@/store/modules/user'
-  import { formatMenuTitle } from '@/utils/router'
-  import { useSettingStore } from '@/store/modules/setting'
-  import { MenuItemType } from '../../others/art-menu-right/index.vue'
   import { useCommon } from '@/hooks/core/useCommon'
+  import { useSettingStore } from '@/store/modules/setting'
+  import { useUserStore } from '@/store/modules/user'
+  import { useWorktabStore } from '@/store/modules/worktab'
   import { WorkTab } from '@/types'
+  import { formatMenuTitle } from '@/utils/router'
+  import { MenuItemType } from '../../others/art-menu-right/index.vue'
 
   defineOptions({ name: 'ArtWorkTab' })
 
@@ -225,6 +225,10 @@
 
   // 滚动逻辑
   const useScrolling = () => {
+    // 缓存布局计算结果，避免重复读取触发回流
+    let cachedPositions: ReturnType<typeof calculateScrollPosition> | null = null
+    let cacheValid = false
+
     const setTransition = () => {
       scrollState.value.transition = 'transform 0.5s cubic-bezier(0.15, 0, 0.15, 1)'
       setTimeout(() => {
@@ -237,13 +241,13 @@
     }
 
     const calculateScrollPosition = () => {
-      if (!scrollRef.value || !tabsRef.value) return
+      if (!scrollRef.value || !tabsRef.value) return null
 
       const scrollWidth = scrollRef.value.offsetWidth
       const ulWidth = tabsRef.value.offsetWidth
       const curTabEl = getCurrentTabElement()
 
-      if (!curTabEl) return
+      if (!curTabEl) return null
 
       const { offsetLeft, clientWidth } = curTabEl
       const curTabRight = offsetLeft + clientWidth
@@ -259,8 +263,22 @@
       }
     }
 
+    const getCachedOrCalculate = () => {
+      if (!cacheValid) {
+        cachedPositions = calculateScrollPosition()
+        cacheValid = true
+      }
+      return cachedPositions
+    }
+
+    const invalidateCache = () => {
+      cacheValid = false
+      cachedPositions = null
+    }
+
     const autoPositionTab = () => {
-      const positions = calculateScrollPosition()
+      // 使用缓存的位置信息，避免重复读取布局
+      const positions = getCachedOrCalculate()
       if (!positions) return
 
       const { scrollWidth, ulWidth, offsetLeft, curTabRight, targetLeft } = positions
@@ -278,11 +296,14 @@
         } else if (offsetLeft < Math.abs(scrollState.value.translateX)) {
           scrollState.value.translateX = -offsetLeft
         }
+        // 动画完成后使缓存失效
+        setTimeout(invalidateCache, 300)
       })
     }
 
     const adjustPositionAfterClose = () => {
-      const positions = calculateScrollPosition()
+      // 使用缓存的位置信息
+      const positions = getCachedOrCalculate()
       if (!positions) return
 
       const { scrollWidth, ulWidth, offsetLeft, clientWidth } = positions
@@ -290,13 +311,16 @@
 
       requestAnimationFrame(() => {
         scrollState.value.translateX = curTabLeft > scrollWidth ? scrollWidth - ulWidth : 0
+        // 动画完成后使缓存失效
+        setTimeout(invalidateCache, 300)
       })
     }
 
     return {
       setTransition,
       autoPositionTab,
-      adjustPositionAfterClose
+      adjustPositionAfterClose,
+      invalidateCache
     }
   }
 
@@ -443,11 +467,47 @@
 
   // 组合所有逻辑
   const { menuItems } = useContextMenu()
-  const { setTransition, autoPositionTab } = useScrolling()
-  const { setupEventListeners, cleanupEventListeners, adjustPositionAfterClose } =
-    useEventHandlers()
-  const { clickTab, closeWorktab, showMenu, handleSelect } =
-    useTabOperations(adjustPositionAfterClose)
+  const { setTransition, autoPositionTab, adjustPositionAfterClose, invalidateCache } =
+    useScrolling()
+  const {
+    setupEventListeners,
+    cleanupEventListeners,
+    adjustPositionAfterClose: adjustPosition
+  } = useEventHandlers()
+  const { clickTab, closeWorktab, showMenu, handleSelect } = useTabOperations(adjustPosition)
+
+  // 监听器 - 在DOM更新后使缓存失效
+  watch(
+    () => list.value.length,
+    () => {
+      nextTick(() => {
+        invalidateCache()
+        autoPositionTab()
+      })
+    }
+  )
+
+  watch(
+    () => currentRoute.value,
+    () => {
+      setTransition()
+      nextTick(() => {
+        invalidateCache()
+        autoPositionTab()
+      })
+    }
+  )
+
+  watch(
+    () => userStore.language,
+    () => {
+      scrollState.value.translateX = 0
+      nextTick(() => {
+        invalidateCache()
+        autoPositionTab()
+      })
+    }
+  )
 
   // 生命周期
   onMounted(() => {
@@ -458,25 +518,6 @@
   onUnmounted(() => {
     cleanupEventListeners()
   })
-
-  // 监听器
-  watch(
-    () => currentRoute.value,
-    () => {
-      setTransition()
-      autoPositionTab()
-    }
-  )
-
-  watch(
-    () => userStore.language,
-    () => {
-      scrollState.value.translateX = 0
-      nextTick(() => {
-        autoPositionTab()
-      })
-    }
-  )
 </script>
 
 <style scoped>

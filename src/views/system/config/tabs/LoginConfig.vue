@@ -1,41 +1,54 @@
 <template>
-  <ElForm :model="formData" label-width="180px" class="config-form">
-    <ElFormItem label="开启验证码">
-      <ElSwitch v-model="formData.captchaEnabled" />
-      <div class="form-tip">登录时是否需要输入验证码</div>
-    </ElFormItem>
-
-    <ElFormItem label="最大登录数量">
-      <ElInputNumber v-model="formData.maxLoginCount" :min="1" :max="10" />
-      <div class="form-tip">同一账号最大同时在线数量</div>
-    </ElFormItem>
-
-    <ElFormItem label="强制下线">
-      <ElSwitch v-model="formData.forceLogout" />
-      <div class="form-tip">新登录是否踢掉之前的登录</div>
-    </ElFormItem>
-  </ElForm>
+  <div class="login-config-wrapper">
+    <div class="config-actions">
+      <ElButton type="primary" @click="toggleDisabled">
+        {{ isDisabled ? '启用编辑' : '修改默认禁用' }}
+      </ElButton>
+      <ElButton @click="resetToDefault">恢复默认</ElButton>
+    </div>
+    <ElForm :model="formData" label-width="180px" class="config-form">
+      <ElFormItem label="是否启用验证码">
+        <ElSwitch v-model="formData.captchaEnabled" :disabled="isDisabled" />
+      </ElFormItem>
+    </ElForm>
+  </div>
 </template>
 
 <script setup lang="ts">
-  import { reactive } from 'vue'
+  import { reactive, ref } from 'vue'
+
+  const isDisabled = ref(false)
+
+  const defaultData = {
+    captchaEnabled: true
+  }
 
   const formData = reactive({
-    captchaEnabled: true,
-    maxLoginCount: 5,
-    forceLogout: false
+    ...defaultData
   })
+
+  const toggleDisabled = () => {
+    isDisabled.value = !isDisabled.value
+  }
+
+  const resetToDefault = () => {
+    Object.assign(formData, defaultData)
+    isDisabled.value = false
+  }
 </script>
 
 <style scoped lang="scss">
-  .config-form {
-    max-width: 600px;
-    padding-top: 20px;
+  .login-config-wrapper {
+    padding: var(--page-content-padding);
   }
 
-  .form-tip {
-    margin-top: 4px;
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
+  .config-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .config-form {
+    max-width: 600px;
   }
 </style>

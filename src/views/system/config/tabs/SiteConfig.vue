@@ -1,5 +1,11 @@
 <template>
   <div class="site-config-page">
+    <div class="config-actions">
+      <ElButton type="primary" @click="toggleDisabled">
+        {{ isDisabled ? '启用编辑' : '修改默认禁用' }}
+      </ElButton>
+      <ElButton @click="resetToDefault">恢复默认</ElButton>
+    </div>
     <ElForm ref="formRef" :model="formData" :rules="rules" class="config-form" label-width="140px">
       <!-- Logo -->
       <ElFormItem prop="logo">
@@ -65,6 +71,7 @@
           :show-word-limit="true"
           :placeholder="t('config.site.titlePlaceholder')"
           class="form-input"
+          :disabled="isDisabled"
         />
       </ElFormItem>
 
@@ -86,6 +93,7 @@
           :show-word-limit="true"
           :placeholder="t('config.site.descriptionPlaceholder')"
           class="form-input"
+          :disabled="isDisabled"
         />
       </ElFormItem>
 
@@ -105,6 +113,7 @@
           :show-word-limit="true"
           :placeholder="t('config.site.copyrightPlaceholder')"
           class="form-input"
+          :disabled="isDisabled"
         />
       </ElFormItem>
 
@@ -124,6 +133,7 @@
           :show-word-limit="true"
           :placeholder="t('config.site.beianPlaceholder')"
           class="form-input"
+          :disabled="isDisabled"
         />
       </ElFormItem>
     </ElForm>
@@ -140,15 +150,29 @@
 
   const formRef = ref()
   const loading = ref(false)
+  const isDisabled = ref(false)
 
-  const formData = reactive({
+  const defaultData = {
     logo: '',
     favicon: '',
     title: '',
     description: '',
     copyright: '',
     beian: ''
+  }
+
+  const formData = reactive({
+    ...defaultData
   })
+
+  const toggleDisabled = () => {
+    isDisabled.value = !isDisabled.value
+  }
+
+  const resetToDefault = () => {
+    Object.assign(formData, defaultData)
+    isDisabled.value = false
+  }
 
   const siteConfig = ref<SiteConfig>({
     SITE_FAVICON: {} as OptionResp,
@@ -201,6 +225,12 @@
 <style scoped lang="scss">
   .site-config-page {
     padding: var(--page-content-padding);
+  }
+
+  .config-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
   }
 
   .config-form {

@@ -116,17 +116,25 @@ export class RouteTransformer {
   private handleFirstLevelRoute(
     converted: ConvertedRoute,
     route: AppRouteRecord,
-    component: string | undefined
+    component: string | (() => Promise<any>) | undefined
   ): void {
     converted.component = this.componentLoader.loadLayout()
     converted.path = this.extractFirstSegment(route.path || '')
     converted.name = ''
     route.meta.isFirstLevel = true
 
+    // 处理 component：如果是函数形式直接使用，否则通过 loader 加载
+    const resolvedComponent =
+      typeof component === 'function'
+        ? component
+        : component
+          ? this.componentLoader.load(component)
+          : undefined
+
     converted.children = [
       {
         ...route,
-        component: component ? this.componentLoader.load(component) : undefined
+        component: resolvedComponent
       } as ConvertedRoute
     ]
   }
@@ -134,9 +142,17 @@ export class RouteTransformer {
   /**
    * 处理普通路由
    */
-  private handleNormalRoute(converted: ConvertedRoute, component: string | undefined): void {
+  private handleNormalRoute(
+    converted: ConvertedRoute,
+    component: string | (() => Promise<any>) | undefined
+  ): void {
     if (component) {
-      converted.component = this.componentLoader.load(component)
+      // 如果 component 是函数形式（懒加载组件），直接使用
+      if (typeof component === 'function') {
+        converted.component = component
+      } else {
+        converted.component = this.componentLoader.load(component)
+      }
     }
   }
 
