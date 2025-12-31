@@ -318,6 +318,7 @@
 
 <style scoped lang="scss">
   .dept-container {
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     height: 100%;

@@ -1,7 +1,12 @@
 <template>
   <CaPageLayout class="file-page">
     <template #left>
-      <FileSidebar :current-path="currentPath" :statistics="statistics" @navigate="navigateTo" />
+      <FileSidebar
+        :current-path="currentPath"
+        :statistics="statistics"
+        :loading="statisticsLoading"
+        @navigate="navigateTo"
+      />
     </template>
 
     <div class="file-content">
@@ -201,6 +206,7 @@
 
   // 状态
   const fileList = ref<FileItem[]>([])
+  const statisticsLoading = ref(false)
   const statistics = ref<FileStatisticsResp>({
     size: 0,
     number: 0,
@@ -241,7 +247,7 @@
   })
 
   // 选中文件的总大小（供模板使用）
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const selectedTotalSize = computed(() => getSelectedTotalSize(fileList.value))
 
   const previewInfo = computed((): PreviewInfo => {
@@ -282,11 +288,14 @@
 
   // 加载文件统计数据
   const loadStatistics = async () => {
+    statisticsLoading.value = true
     try {
       const res = await fileApi.getFileStatistics()
       statistics.value = res
     } catch (error: any) {
       console.error('加载统计数据失败:', error)
+    } finally {
+      statisticsLoading.value = false
     }
   }
 
@@ -481,7 +490,7 @@
   }
 
   // 格式化文件大小（供模板使用）
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const formatSize = (bytes: number): string => {
     if (bytes === 0) return '0 B'
     const k = 1024

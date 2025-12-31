@@ -113,6 +113,9 @@
   }
 
   .ca-page-layout__header {
+    --padding-x: 16px;
+    --padding-y: 10px;
+
     box-sizing: border-box;
     padding: var(--padding-x);
     padding-bottom: 0;
@@ -120,6 +123,9 @@
   }
 
   .ca-page-layout__tool {
+    --padding-x: 16px;
+    --padding-y: 10px;
+
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -130,6 +136,9 @@
   }
 
   .ca-page-layout__body {
+    --padding-x: 16px;
+    --padding-y: 10px;
+
     box-sizing: border-box;
     display: flex;
     flex: 1;

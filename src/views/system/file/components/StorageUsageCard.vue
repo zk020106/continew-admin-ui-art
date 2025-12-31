@@ -19,27 +19,23 @@
       </div>
 
       <!-- 扇形图 -->
-      <div class="pie-chart-wrapper">
-        <div class="pie-chart" :style="{ background: pieGradient }">
-          <div class="pie-center">
-            <span class="total-count">{{ statistics.number }}</span>
-          </div>
-        </div>
-        <!-- 图例 -->
-        <div class="pie-legend">
-          <div v-for="item in visibleTypeList" :key="item.type" class="legend-item">
-            <span class="legend-color" :style="{ background: item.color }" />
-            <span class="legend-label">{{ item.label }}</span>
-            <span class="legend-value">{{ item.number }}</span>
-          </div>
-        </div>
-      </div>
+      <ArtRingChart
+        :data="chartData"
+        :height="'180px'"
+        :radius="['0%', '70%']"
+        :border-radius="0"
+        :show-legend="true"
+        :legend-position="'right'"
+        :colors="chartColors"
+        :show-tooltip="true"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { FileStatisticsResp } from '@/apis'
+  import ArtRingChart from '@/components/core/charts/art-ring-chart/index.vue'
   import { useI18n } from 'vue-i18n'
 
   const { t } = useI18n()
@@ -48,19 +44,19 @@
     statistics: FileStatisticsResp
   }>()
 
-  // 文件类型枚举
+  // 文件类型枚举（使用数字，与 API 返回类型一致）
   enum FileType {
-    IMAGE = '1',
-    VIDEO = '2',
-    AUDIO = '3',
-    DOCUMENT = '5',
-    ARCHIVE = '6',
-    CODE = '7',
-    FOLDER = '0'
+    FOLDER = 0,
+    IMAGE = 1,
+    VIDEO = 2,
+    AUDIO = 3,
+    DOCUMENT = 5,
+    ARCHIVE = 6,
+    CODE = 7
   }
 
-  // 类型配置：颜色预设
-  const typeConfig: Record<string, { label: string; color: string }> = {
+  // 类型配置
+  const typeConfig: Record<number, { label: string; color: string }> = {
     [FileType.IMAGE]: { label: t('file.statistics.image'), color: '#409EFF' },
     [FileType.VIDEO]: { label: t('file.statistics.video'), color: '#67C23A' },
     [FileType.AUDIO]: { label: t('file.statistics.audio'), color: '#E6A23C' },
@@ -70,52 +66,28 @@
     [FileType.FOLDER]: { label: t('file.statistics.folder'), color: '#FFA000' }
   }
 
-  // 所有文件类型值
-  const allTypeValues: string[] = [
-    FileType.IMAGE,
-    FileType.VIDEO,
-    FileType.AUDIO,
-    FileType.DOCUMENT,
-    FileType.ARCHIVE,
-    FileType.CODE,
-    FileType.FOLDER
-  ]
+  // 图表数据
+  const chartData = computed(() => {
+    const config = props.statistics.data || []
+    const total = props.statistics.number || 1
 
-  // 过滤出有数据的类型
-  const visibleTypeList = computed(() => {
-    const config = props.statistics.data
-
-    return allTypeValues
-      .map((type) => {
-        const stat = config.find((item) => item.type === type)
-        const typeConf = typeConfig[type]
+    const data = config
+      .map((item) => {
+        const typeConf = typeConfig[Number(item.type)]
         return {
-          type,
-          size: stat?.size || 0,
-          number: stat?.number || 0,
-          label: typeConf?.label || t('file.statistics.other'),
-          color: typeConf?.color || '#C0C4CC'
+          name: typeConf?.label || t('file.statistics.other'),
+          value: item.number,
+          itemStyle: { color: typeConf?.color }
         }
       })
-      .filter((item) => item.number > 0)
-      .sort((a, b) => b.number - a.number)
+      .filter((item) => item.value > 0)
+      .sort((a, b) => b.value - a.value)
+    return data
   })
 
-  // 饼图渐变背景
-  const pieGradient = computed(() => {
-    const list = visibleTypeList.value
-    if (list.length === 0) return 'conic-gradient(#E5E7EB 0deg, #E5E7EB 360deg)'
-
-    let currentAngle = 0
-    const gradients: string[] = []
-
-    for (const item of list) {
-      const angle = (item.number / props.statistics.number) * 360
-      gradients.push(`${item.color} ${currentAngle}deg ${currentAngle + angle}deg`)
-      currentAngle += angle
-    }
-
-    return `conic-gradient(${gradients.join(', ')})`
+  // 图表颜色
+  const chartColors = computed(() => {
+    return chartData.value.map((item) => item.itemStyle?.color as string)
   })
 
   // 格式化文件大小
@@ -175,72 +147,5 @@
       font-weight: 600;
       color: var(--el-text-color-primary);
     }
-  }
-
-  // 扇形图
-  .pie-chart-wrapper {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-  }
-
-  .pie-chart {
-    position: relative;
-    flex-shrink: 0;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    transition: background 0.3s ease;
-  }
-
-  .pie-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 60px;
-    height: 60px;
-    background: var(--el-bg-color);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-
-    .total-count {
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--el-text-color-primary);
-    }
-  }
-
-  .pie-legend {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .legend-item {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    font-size: 12px;
-  }
-
-  .legend-color {
-    flex-shrink: 0;
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-  }
-
-  .legend-label {
-    flex: 1;
-    color: var(--el-text-color-secondary);
-  }
-
-  .legend-value {
-    font-weight: 500;
-    color: var(--el-text-color-primary);
   }
 </style>

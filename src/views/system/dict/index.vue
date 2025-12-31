@@ -44,7 +44,6 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: var(--page-content-padding);
     background: var(--el-bg-color);
     border-radius: 4px;
   }

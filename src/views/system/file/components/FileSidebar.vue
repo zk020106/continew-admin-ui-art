@@ -1,7 +1,10 @@
 <template>
   <div class="file-sidebar">
     <!-- 存储空间卡片 -->
-    <StorageUsageCard class="storage-card" :statistics="statistics" />
+    <StorageUsageCard v-if="!loading" class="storage-card" :statistics="statistics" />
+    <div v-else class="storage-card storage-loading">
+      <ElSkeleton :rows="3" animated />
+    </div>
 
     <!-- 快速访问 -->
     <div class="sidebar-section">
@@ -44,6 +47,7 @@
 
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n'
+  import { ElSkeleton } from 'element-plus'
   import { FileStatisticsResp } from '@/apis'
   import { STORAGE_KEYS } from '../utils/constants'
   import StorageUsageCard from './StorageUsageCard.vue'
@@ -53,6 +57,7 @@
   defineProps<{
     currentPath: string
     statistics: FileStatisticsResp
+    loading?: boolean
   }>()
   defineEmits<{
     (e: 'navigate', path: string): void
@@ -110,6 +115,10 @@
     flex-shrink: 0;
     padding: 16px;
     border-bottom: 1px solid var(--el-border-color-lighter);
+  }
+
+  .storage-loading {
+    padding: 16px;
   }
 
   .sidebar-section {

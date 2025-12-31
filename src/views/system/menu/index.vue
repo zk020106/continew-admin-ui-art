@@ -368,6 +368,7 @@
 
 <style scoped lang="scss">
   .menu-container {
+    box-sizing: border-box;
     height: 100%;
     padding: var(--page-content-padding);
   }
