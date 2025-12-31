@@ -72,6 +72,7 @@
       ref="tableRef"
       :data="props.data as any[]"
       :size="tableSize"
+      v-loading="props.loading"
       :height="isFullscreen ? fullscreenHeight : undefined"
     >
       <TableColumn v-for="item in visibleColumns" :key="item.prop || item.label" :column="item">

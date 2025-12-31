@@ -54,4 +54,6 @@ export interface TableProps<T extends DefaultRow = any>
   tableId?: string | number
   disabledTools?: Tools[]
   disabledColumnKeys?: string[]
+  /** 加载状态 */
+  loading?: boolean
 }
