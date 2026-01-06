@@ -1,4 +1,5 @@
 import '@styles/core/tailwind.css'; // tailwind
+import '@styles/json-viewer.css'; // json viewer
 import '@styles/index.scss'; // 样式
 import '@utils/sys/console.ts'; // 控制台输出内容
 import '@utils/ui/iconify-loader'; // 离线图标加载

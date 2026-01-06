@@ -1,22 +1,19 @@
 /** 在线用户类型 */
 export interface OnlineUserResp {
-  id: string
-  description: string
-  module: string
-  timeTaken: number
+  token: string
+  nickname: string
+  username: string
   ip: string
   address: string
   browser: string
   os: string
-  status: number
-  errorMsg: string
-  createUserString: string
-  createTime: string
+  loginTime: string
+  lastActiveTime: string
 }
 export interface OnlineUserQuery {
   nickname?: string
-  loginTime?: string
-  sort: Array<string>
+  loginTime?: string[] | string
+  sort?: Array<string>
 }
 export interface OnlineUserPageQuery extends OnlineUserQuery, PageQuery {}
 
@@ -50,8 +47,8 @@ export interface LogQuery {
   module?: string
   ip?: string
   createUserString?: string
-  createTime: Array<string>
+  createTime?: Array<string>
   status?: number
-  sort: Array<string>
+  sort?: Array<string>
 }
 export interface LogPageQuery extends LogQuery, PageQuery {}

@@ -489,6 +489,78 @@
         "username": "username"
       },
       "title": "User management"
+    },
+    "onlineUser": {
+      "title": "Online User",
+      "field": {
+        "index": "Index",
+        "nickname": "Nickname",
+        "username": "Username",
+        "ip": "Login IP",
+        "address": "Login Location",
+        "browser": "Browser",
+        "os": "OS",
+        "loginTime": "Login Time",
+        "lastActiveTime": "Last Active Time",
+        "action": "Action"
+      },
+      "search": {
+        "nickname": "Username/Nickname",
+        "nicknamePlaceholder": "Please enter username/nickname",
+        "loginTime": "Login Time"
+      },
+      "button": {
+        "kickout": "Kickout"
+      },
+      "message": {
+        "confirmKickout": "Are you sure to kickout this user?",
+        "kickoutSuccess": "Kickout successfully",
+        "cannotKickoutSelf": "Cannot kickout yourself"
+      }
+    },
+    "systemLog": {
+      "loginTab": "Login Log",
+      "operationTab": "Operation Log",
+      "field": {
+        "index": "Index",
+        "ip": "Login IP",
+        "address": "Login Location",
+        "browser": "Browser",
+        "os": "OS",
+        "status": "Status",
+        "createTime": "Operation Time",
+        "createUserString": "Operator",
+        "timeTaken": "Time Taken",
+        "action": "Action"
+      },
+      "login": {
+        "field": {
+          "ip": "Login IP",
+          "address": "Login Location"
+        }
+      },
+      "operation": {
+        "field": {
+          "module": "Module",
+          "description": "Description",
+          "id": "Log ID",
+          "traceId": "Trace ID",
+          "requestUri": "Request URI"
+        },
+        "detailTitle": "Log Detail",
+        "requestInfo": "Request Info",
+        "responseInfo": "Response Info",
+        "requestHeaders": "Request Headers",
+        "requestBody": "Request Body",
+        "responseHeaders": "Response Headers",
+        "responseBody": "Response Body"
+      },
+      "search": {
+        "ipPlaceholder": "Please enter login IP",
+        "createUserPlaceholder": "Please enter operator",
+        "modulePlaceholder": "Please enter operation module",
+        "descriptionPlaceholder": "Please enter operation description"
+      }
     }
   },
   "register": {

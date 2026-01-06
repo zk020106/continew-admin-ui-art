@@ -39,6 +39,7 @@
     "cancel": "取消",
     "confirm": "确定",
     "createTime": "创建时间",
+    "detail": "详情",
     "empty": "暂无",
     "error": "错误",
     "false": "否",
@@ -489,6 +490,78 @@
         "username": "用户名"
       },
       "title": "用户管理"
+    },
+    "onlineUser": {
+      "title": "在线用户",
+      "field": {
+        "index": "序号",
+        "nickname": "用户昵称",
+        "username": "用户名",
+        "ip": "登录IP",
+        "address": "登录地点",
+        "browser": "浏览器",
+        "os": "终端系统",
+        "loginTime": "登录时间",
+        "lastActiveTime": "最后活跃时间",
+        "action": "操作"
+      },
+      "search": {
+        "nickname": "用户名/昵称",
+        "nicknamePlaceholder": "请输入用户名/昵称",
+        "loginTime": "登录时间"
+      },
+      "button": {
+        "kickout": "强退"
+      },
+      "message": {
+        "confirmKickout": "是否确定强退该用户？",
+        "kickoutSuccess": "强退成功",
+        "cannotKickoutSelf": "不能强退自己"
+      }
+    },
+    "systemLog": {
+      "loginTab": "登录日志",
+      "operationTab": "操作日志",
+      "field": {
+        "index": "序号",
+        "ip": "登录IP",
+        "address": "登录地点",
+        "browser": "浏览器",
+        "os": "终端系统",
+        "status": "状态",
+        "createTime": "操作时间",
+        "createUserString": "操作人",
+        "timeTaken": "耗时",
+        "action": "操作"
+      },
+      "login": {
+        "field": {
+          "ip": "登录IP",
+          "address": "登录地点"
+        }
+      },
+      "operation": {
+        "field": {
+          "module": "操作模块",
+          "description": "操作描述",
+          "id": "日志 ID",
+          "traceId": "Trace ID",
+          "requestUri": "请求 URI"
+        },
+        "detailTitle": "日志详情",
+        "requestInfo": "请求信息",
+        "responseInfo": "响应信息",
+        "requestHeaders": "请求头",
+        "requestBody": "请求体",
+        "responseHeaders": "响应头",
+        "responseBody": "响应体"
+      },
+      "search": {
+        "ipPlaceholder": "请输入登录IP",
+        "createUserPlaceholder": "请输入操作人",
+        "modulePlaceholder": "请输入操作模块",
+        "descriptionPlaceholder": "请输入操作描述"
+      }
     }
   },
   "register": {

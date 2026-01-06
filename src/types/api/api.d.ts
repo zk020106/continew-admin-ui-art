@@ -49,8 +49,8 @@ interface PageRes<T> {
 
 /** 分页请求数据格式 */
 interface PageQuery {
-  page: number
-  size: number
+  page?: number
+  size?: number
 }
 
 /** 键值对类型 */
