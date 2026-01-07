@@ -39,3 +39,12 @@
     background-color: var(--art-gray-300) !important;
   }
 }
+
+/* 抑制 ResizeObserver 循环完成警告 */
+.resize-observer {
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}

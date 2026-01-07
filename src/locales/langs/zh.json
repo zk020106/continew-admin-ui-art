@@ -61,6 +61,7 @@
     "success": "成功",
     "tips": "提示",
     "true": "是",
+    "updateTime": "修改时间",
     "warning": "警告"
   },
   "components": {
@@ -660,6 +661,7 @@
     }
   },
   "message": {
+    "addSuccess": "新增成功",
     "batchDelete": "批量删除",
     "batchDeleteSuccess": "批量删除成功",
     "cancel": "取消",
@@ -669,9 +671,11 @@
     "deleteSuccess": "删除成功",
     "items": "个项目",
     "loadFailed": "加载失败",
+    "noMoreActions": "没有更多操作",
     "prompt": "提示",
     "selectDeleteData": "请选择要删除的数据",
-    "selected": "已选择"
+    "selected": "已选择",
+    "updateSuccess": "修改成功"
   },
   "notice": {
     "bar": ["通知", "消息", "代办"],
@@ -823,6 +827,54 @@
         "username": "用户名"
       },
       "title": "用户管理"
+    },
+    "tenantManagement": {
+      "button": {
+        "updateAdminPwd": "修改管理员密码"
+      },
+      "field": {
+        "adminUsername": "管理员用户",
+        "code": "编码",
+        "createTime": "创建时间",
+        "createUser": "创建人",
+        "description": "描述",
+        "domain": "域名",
+        "expireTime": "过期时间",
+        "name": "名称",
+        "neverExpire": "永不过期",
+        "notSet": "未设置",
+        "package": "套餐",
+        "status": "状态",
+        "updateTime": "修改时间",
+        "updateUser": "修改人"
+      },
+      "message": {
+        "confirmDelete": "是否确定删除租户「{name}({code})」？"
+      },
+      "search": {
+        "description": "名称/描述",
+        "descriptionPlaceholder": "请输入名称/描述",
+        "package": "套餐",
+        "packagePlaceholder": "请选择套餐"
+      },
+      "title": "租户管理"
+    },
+    "tenantPackage": {
+      "field": {
+        "description": "描述",
+        "name": "名称",
+        "sort": "排序",
+        "status": "状态",
+        "createUser": "创建人",
+        "updateUser": "修改人"
+      },
+      "message": {
+        "confirmDelete": "是否确定删除套餐「{name}」？"
+      },
+      "search": {
+        "descriptionPlaceholder": "请输入名称/描述"
+      },
+      "title": "套餐管理"
     }
   },
   "register": {
@@ -862,6 +914,9 @@
     "deptPermission": "部门权限",
     "description": "描述",
     "expandCollapse": "展开/折叠",
+    "expandOrFold": "展开/折叠",
+    "checkAllOrNone": "全选/全不选",
+    "parentChildLinkage": "父子联动",
     "field": {
       "code": "角色编码",
       "dataScope": "数据权限",

@@ -5,8 +5,8 @@ export interface TenantResp {
   code: string
   domain: string
   expireTime: string
-  description: number
-  status: string
+  description: string
+  status: 1 | 2
   packageId: string
   createUser: string
   createTime: string
@@ -16,6 +16,7 @@ export interface TenantResp {
   updateUserString: string
   adminUsername: string
   packageName: string
+  disabled: boolean
 }
 export interface TenantQuery {
   description?: string
@@ -32,7 +33,7 @@ export interface TenantPackageResp {
   sort: number
   menuCheckStrictly: string
   description: string
-  status: string
+  status: 1 | 2
   menuIds: []
   createUser: string
   createTime: string
@@ -40,6 +41,7 @@ export interface TenantPackageResp {
   updateTime: string
   createUserString: string
   updateUserString: string
+  disabled: boolean
 }
 export interface TenantPackageQuery {
   description?: string
@@ -65,7 +67,7 @@ export interface TenantReq {
 export interface TenantPackageReq {
   name: string
   sort?: number
-  menuCheckStrictly?: string
+  menuCheckStrictly?: boolean
   description?: string
   status?: string
   menuIds?: Array<string>
