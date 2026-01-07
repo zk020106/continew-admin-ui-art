@@ -38,6 +38,8 @@
     },
     "cancel": "取消",
     "confirm": "确定",
+    "copyFailed": "复制失败",
+    "copySuccess": "复制成功",
     "createTime": "创建时间",
     "detail": "详情",
     "empty": "暂无",
@@ -62,6 +64,12 @@
     "warning": "警告"
   },
   "components": {
+    "common": {
+      "search": "搜索"
+    },
+    "component": {
+      "noComponents": "暂无可用组件"
+    },
     "form": {
       "collapse": "收起",
       "expand": "展开",
@@ -75,6 +83,13 @@
         "required": "{label}为必填项"
       }
     },
+    "icon": {
+      "local": "本地图标",
+      "noRecent": "暂无最近使用的图标",
+      "noResult": "未找到匹配的图标",
+      "online": "在线图标",
+      "recent": "最近使用"
+    },
     "iconPicker": {
       "clear": "清空",
       "noIcon": "未选择图标",
@@ -82,23 +97,10 @@
       "searchPlaceholder": "搜索图标",
       "selectIcon": "选择图标"
     },
-    "icon": {
-      "recent": "最近使用",
-      "local": "本地图标",
-      "online": "在线图标",
-      "noRecent": "暂无最近使用的图标",
-      "noResult": "未找到匹配的图标"
-    },
-    "component": {
-      "noComponents": "暂无可用组件"
-    },
-    "common": {
-      "search": "搜索"
-    },
-    "loading": "加载中...",
     "inputSearch": {
       "placeholder": "请选择"
     },
+    "loading": "加载中...",
     "select": {
       "loadError": "数据加载失败",
       "loading": "加载中...",
@@ -136,11 +138,301 @@
       "uploading": "上传中..."
     }
   },
+  "config": {
+    "site": {
+      "beian": "备案号",
+      "beianPlaceholder": "请输入备案号，如：京ICP备12345678号",
+      "beianTip": "网站备案号，显示在页面底部",
+      "copyright": "版权声明",
+      "copyrightPlaceholder": "请输入版权声明",
+      "copyrightRequired": "请输入版权声明",
+      "copyrightTip": "版权声明，显示在页面底部",
+      "description": "系统描述",
+      "descriptionPlaceholder": "请输入系统描述，用于 SEO 的网站元描述",
+      "descriptionRequired": "请输入系统描述",
+      "descriptionTip": "系统描述，用于 SEO 的网站元描述",
+      "favicon": "系统图标",
+      "faviconTip": "浏览器标签页显示的网站图标（建议 .ico 格式）",
+      "logo": "系统 LOGO",
+      "logoTip": "显示在登录页面和系统导航栏的网站图标（建议 .svg 格式）",
+      "title": "系统名称",
+      "titlePlaceholder": "请输入系统名称",
+      "titleRequired": "请输入系统名称",
+      "titleTip": "系统名称，显示在浏览器标签页标题"
+    }
+  },
+  "dept": {
+    "button": {
+      "add": "新增",
+      "addChild": "新增子部门",
+      "collapse": "折叠",
+      "expand": "展开"
+    },
+    "field": {
+      "createTime": "创建时间",
+      "description": "描述",
+      "isSystem": "系统内置",
+      "name": "部门名称",
+      "parentId": "上级部门",
+      "sort": "排序",
+      "status": "状态"
+    },
+    "form": {
+      "basicInfo": "基础信息"
+    },
+    "menu": {
+      "add": "添加部门",
+      "delete": "删除部门",
+      "edit": "编辑部门"
+    },
+    "message": {
+      "addSuccess": "新增成功",
+      "confirmDelete": "确认删除部门「{name}」吗？",
+      "deleteSuccess": "删除成功",
+      "fetchFailed": "获取部门信息失败",
+      "hasChildren": "该部门存在子部门，不能删除",
+      "systemCannotDelete": "系统内置数据不能删除",
+      "updateSuccess": "修改成功"
+    },
+    "organization": {
+      "empty": "暂无数据",
+      "root": "组织架构"
+    },
+    "page": {
+      "add": "新增部门",
+      "edit": "编辑部门"
+    },
+    "placeholder": {
+      "description": "请输入描述",
+      "name": "请输入部门名称",
+      "parentId": "请选择上级部门"
+    },
+    "search": {
+      "title": "搜索部门名称"
+    },
+    "tab": {
+      "chart": "组织架构图",
+      "list": "表格视图"
+    },
+    "validate": {
+      "nameRequired": "请输入部门名称",
+      "sortRequired": "请输入排序"
+    }
+  },
+  "dict": {
+    "button": {
+      "add": "新增字典"
+    },
+    "field": {
+      "code": "字典编码",
+      "createTime": "创建时间",
+      "description": "描述",
+      "isSystem": "系统内置",
+      "name": "字典名称"
+    },
+    "form": {
+      "basicInfo": "基础信息",
+      "codeTip": "字典编码，用于获取字典数据"
+    },
+    "item": {
+      "button": {
+        "add": "新增字典项"
+      },
+      "field": {
+        "color": "颜色",
+        "createTime": "创建时间",
+        "description": "描述",
+        "label": "字典标签",
+        "sort": "排序",
+        "status": "状态",
+        "value": "字典值"
+      },
+      "form": {
+        "basicInfo": "基础信息",
+        "noColor": "未设置颜色"
+      },
+      "message": {
+        "addSuccess": "新增成功",
+        "confirmDelete": "确认删除字典项「{label}」吗？",
+        "deleteSuccess": "删除成功",
+        "fetchFailed": "获取字典项信息失败",
+        "selectDictFirst": "请先选择字典",
+        "updateSuccess": "修改成功"
+      },
+      "page": {
+        "add": "新增字典项",
+        "edit": "编辑字典项"
+      },
+      "placeholder": {
+        "color": "请选择或输入颜色值",
+        "description": "请输入描述",
+        "label": "请输入字典标签",
+        "value": "请输入字典值"
+      },
+      "searchPlaceholder": "搜索字典项标签/值/描述",
+      "selectDict": "请先选择字典",
+      "tab": {
+        "title": "字典项"
+      },
+      "validate": {
+        "labelRequired": "请输入字典标签",
+        "sortRequired": "请输入排序",
+        "valueRequired": "请输入字典值"
+      }
+    },
+    "list": {
+      "searchPlaceholder": "搜索字典名称/编码/描述",
+      "title": "字典列表"
+    },
+    "message": {
+      "addSuccess": "新增成功",
+      "clearCacheSuccess": "清除缓存成功",
+      "confirmClearCache": "确认清除字典「{code}」的缓存吗？",
+      "confirmDelete": "确认删除字典「{name}」吗？",
+      "deleteSuccess": "删除成功",
+      "fetchFailed": "获取字典信息失败",
+      "systemCannotDelete": "系统内置数据不能删除",
+      "updateSuccess": "修改成功"
+    },
+    "page": {
+      "add": "新增字典",
+      "edit": "编辑字典"
+    },
+    "placeholder": {
+      "code": "请输入字典编码",
+      "description": "请输入描述",
+      "name": "请输入字典名称"
+    },
+    "validate": {
+      "codeFormat": "字典编码只能包含字母、数字和下划线，且以字母或下划线开头",
+      "codeRequired": "请输入字典编码",
+      "nameRequired": "请输入字典名称"
+    }
+  },
   "exceptionPage": {
     "403": "抱歉，您无权访问该页面",
     "404": "抱歉，您访问的页面不存在",
     "500": "抱歉，服务器出错了",
     "gohome": "返回首页"
+  },
+  "file": {
+    "breadcrumb": {
+      "root": "根目录"
+    },
+    "contextMenu": {
+      "copy": "复制",
+      "delete": "删除",
+      "download": "下载",
+      "move": "移动",
+      "open": "打开",
+      "preview": "预览",
+      "rename": "重命名",
+      "share": "分享"
+    },
+    "detail": {
+      "archive": "压缩包",
+      "audio": "音频",
+      "code": "代码文件",
+      "createTime": "创建时间",
+      "document": "文档",
+      "fileInfo": "文件信息",
+      "image": "图片",
+      "location": "位置",
+      "modifyTime": "修改时间",
+      "pdf": "PDF 文档",
+      "selectFile": "选择文件查看详情",
+      "sha256": "SHA256",
+      "size": "大小",
+      "title": "文件详情",
+      "type": "类型",
+      "video": "视频"
+    },
+    "filter": {
+      "extension": "扩展名",
+      "keyword": "关键词",
+      "type": "类型"
+    },
+    "header": {
+      "clearFilters": "清除筛选",
+      "detailPanel": "详情面板",
+      "newFolder": "新建文件夹",
+      "refresh": "刷新",
+      "searchPlaceholder": "搜索文件...",
+      "selectAll": "全选",
+      "sort": "排序",
+      "sortOptions": {
+        "name": "名称",
+        "size": "大小",
+        "type": "类型",
+        "updateTime": "修改时间"
+      },
+      "upload": "上传"
+    },
+    "list": {
+      "dragUpload": "拖放文件到此处上传",
+      "empty": {
+        "folder": "此文件夹为空",
+        "root": "暂无文件，点击上传或新建文件夹开始"
+      },
+      "fileName": "文件名",
+      "folder": "文件夹",
+      "modifyTime": "修改时间",
+      "size": "大小",
+      "type": "类型"
+    },
+    "modal": {
+      "newFolder": {
+        "cancel": "取消",
+        "confirm": "确定",
+        "placeholder": "请输入文件夹名称",
+        "title": "新建文件夹",
+        "validate": {
+          "invalidChars": "文件夹名称不能包含 / \\ : * ? \" < > | 字符",
+          "lengthRange": "文件夹名称长度应在 1 到 100 个字符之间",
+          "required": "请输入文件夹名称"
+        }
+      },
+      "rename": {
+        "cancel": "取消",
+        "confirm": "确定",
+        "fileTitle": "重命名文件",
+        "folderTitle": "重命名文件夹",
+        "placeholder": "请输入新名称",
+        "validate": {
+          "invalidChars": "名称不能包含 / \\ : * ? \" < > | 字符",
+          "keepExtension": "请保留文件扩展名 .{extension}",
+          "required": "请输入新名称"
+        }
+      }
+    },
+    "preview": {
+      "unsupported": "该文件类型暂不支持预览"
+    },
+    "sidebar": {
+      "allFiles": "全部文件",
+      "documents": "文档",
+      "images": "图片",
+      "music": "音乐",
+      "quickAccess": "快速访问",
+      "recentAccess": "最近访问",
+      "rootDirectory": "根目录",
+      "videos": "视频"
+    },
+    "statistics": {
+      "archive": "压缩包",
+      "audio": "音频",
+      "code": "代码",
+      "document": "文档",
+      "folder": "文件夹",
+      "image": "图片",
+      "other": "其他",
+      "title": "文件统计",
+      "totalFiles": "文件",
+      "totalUsage": "共占用 {size}",
+      "totalUsageLabel": "存储量",
+      "video": "视频"
+    },
+    "title": "文件管理"
   },
   "forgetPassword": {
     "backBtnText": "返回",
@@ -294,64 +586,6 @@
       "typeRequired": "请选择菜单类型"
     }
   },
-  "dept": {
-    "button": {
-      "add": "新增",
-      "addChild": "新增子部门",
-      "collapse": "折叠",
-      "expand": "展开"
-    },
-    "menu": {
-      "add": "添加部门",
-      "edit": "编辑部门",
-      "delete": "删除部门"
-    },
-    "organization": {
-      "empty": "暂无数据",
-      "root": "组织架构"
-    },
-    "tab": {
-      "chart": "组织架构图",
-      "list": "表格视图"
-    },
-    "field": {
-      "createTime": "创建时间",
-      "description": "描述",
-      "isSystem": "系统内置",
-      "name": "部门名称",
-      "parentId": "上级部门",
-      "sort": "排序",
-      "status": "状态"
-    },
-    "form": {
-      "basicInfo": "基础信息"
-    },
-    "message": {
-      "addSuccess": "新增成功",
-      "confirmDelete": "确认删除部门「{name}」吗？",
-      "deleteSuccess": "删除成功",
-      "fetchFailed": "获取部门信息失败",
-      "hasChildren": "该部门存在子部门，不能删除",
-      "systemCannotDelete": "系统内置数据不能删除",
-      "updateSuccess": "修改成功"
-    },
-    "page": {
-      "add": "新增部门",
-      "edit": "编辑部门"
-    },
-    "placeholder": {
-      "description": "请输入描述",
-      "name": "请输入部门名称",
-      "parentId": "请选择上级部门"
-    },
-    "search": {
-      "title": "搜索部门名称"
-    },
-    "validate": {
-      "nameRequired": "请输入部门名称",
-      "sortRequired": "请输入排序"
-    }
-  },
   "menus": {
     "dashboard": {
       "console": "工作台",
@@ -447,6 +681,105 @@
     "viewAll": "查看全部"
   },
   "pages": {
+    "onlineUser": {
+      "button": {
+        "kickout": "强退"
+      },
+      "field": {
+        "action": "操作",
+        "address": "登录地点",
+        "browser": "浏览器",
+        "index": "序号",
+        "ip": "登录IP",
+        "lastActiveTime": "最后活跃时间",
+        "loginTime": "登录时间",
+        "nickname": "用户昵称",
+        "os": "终端系统",
+        "username": "用户名"
+      },
+      "message": {
+        "cannotKickoutSelf": "不能强退自己",
+        "confirmKickout": "是否确定强退该用户？",
+        "kickoutSuccess": "强退成功"
+      },
+      "search": {
+        "loginTime": "登录时间",
+        "nickname": "用户名/昵称",
+        "nicknamePlaceholder": "请输入用户名/昵称"
+      },
+      "title": "在线用户"
+    },
+    "smsLog": {
+      "field": {
+        "action": "操作",
+        "configId": "配置 ID",
+        "createTime": "操作时间",
+        "createUser": "操作人",
+        "index": "序号",
+        "params": "参数配置",
+        "phone": "手机号",
+        "resMsg": "返回数据",
+        "status": "发送状态",
+        "statusFailure": "失败",
+        "statusSuccess": "成功"
+      },
+      "message": {
+        "confirmDelete": "是否确定删除该条数据？"
+      },
+      "search": {
+        "configId": "配置 ID",
+        "configIdPlaceholder": "请输入配置 ID",
+        "phone": "手机号",
+        "phonePlaceholder": "请输入手机号",
+        "status": "发送状态",
+        "statusPlaceholder": "请选择发送状态"
+      },
+      "title": "短信日志"
+    },
+    "systemLog": {
+      "field": {
+        "action": "操作",
+        "address": "登录地点",
+        "browser": "浏览器",
+        "createTime": "操作时间",
+        "createUserString": "操作人",
+        "index": "序号",
+        "ip": "登录IP",
+        "os": "终端系统",
+        "status": "状态",
+        "timeTaken": "耗时"
+      },
+      "login": {
+        "field": {
+          "address": "登录地点",
+          "ip": "登录IP"
+        }
+      },
+      "loginTab": "登录日志",
+      "operation": {
+        "detailTitle": "日志详情",
+        "field": {
+          "description": "操作描述",
+          "id": "日志 ID",
+          "module": "操作模块",
+          "requestUri": "请求 URI",
+          "traceId": "Trace ID"
+        },
+        "requestBody": "请求体",
+        "requestHeaders": "请求头",
+        "requestInfo": "请求信息",
+        "responseBody": "响应体",
+        "responseHeaders": "响应头",
+        "responseInfo": "响应信息"
+      },
+      "operationTab": "操作日志",
+      "search": {
+        "createUserPlaceholder": "请输入操作人",
+        "descriptionPlaceholder": "请输入操作描述",
+        "ipPlaceholder": "请输入登录IP",
+        "modulePlaceholder": "请输入操作模块"
+      }
+    },
     "user": {
       "button": {
         "add": "新增",
@@ -490,78 +823,6 @@
         "username": "用户名"
       },
       "title": "用户管理"
-    },
-    "onlineUser": {
-      "title": "在线用户",
-      "field": {
-        "index": "序号",
-        "nickname": "用户昵称",
-        "username": "用户名",
-        "ip": "登录IP",
-        "address": "登录地点",
-        "browser": "浏览器",
-        "os": "终端系统",
-        "loginTime": "登录时间",
-        "lastActiveTime": "最后活跃时间",
-        "action": "操作"
-      },
-      "search": {
-        "nickname": "用户名/昵称",
-        "nicknamePlaceholder": "请输入用户名/昵称",
-        "loginTime": "登录时间"
-      },
-      "button": {
-        "kickout": "强退"
-      },
-      "message": {
-        "confirmKickout": "是否确定强退该用户？",
-        "kickoutSuccess": "强退成功",
-        "cannotKickoutSelf": "不能强退自己"
-      }
-    },
-    "systemLog": {
-      "loginTab": "登录日志",
-      "operationTab": "操作日志",
-      "field": {
-        "index": "序号",
-        "ip": "登录IP",
-        "address": "登录地点",
-        "browser": "浏览器",
-        "os": "终端系统",
-        "status": "状态",
-        "createTime": "操作时间",
-        "createUserString": "操作人",
-        "timeTaken": "耗时",
-        "action": "操作"
-      },
-      "login": {
-        "field": {
-          "ip": "登录IP",
-          "address": "登录地点"
-        }
-      },
-      "operation": {
-        "field": {
-          "module": "操作模块",
-          "description": "操作描述",
-          "id": "日志 ID",
-          "traceId": "Trace ID",
-          "requestUri": "请求 URI"
-        },
-        "detailTitle": "日志详情",
-        "requestInfo": "请求信息",
-        "responseInfo": "响应信息",
-        "requestHeaders": "请求头",
-        "requestBody": "请求体",
-        "responseHeaders": "响应头",
-        "responseBody": "响应体"
-      },
-      "search": {
-        "ipPlaceholder": "请输入登录IP",
-        "createUserPlaceholder": "请输入操作人",
-        "modulePlaceholder": "请输入操作模块",
-        "descriptionPlaceholder": "请输入操作描述"
-      }
     }
   },
   "register": {
@@ -877,238 +1138,6 @@
       "fixed": "固定",
       "refresh": "刷新",
       "unfixed": "取消固定"
-    }
-  },
-  "dict": {
-    "button": {
-      "add": "新增字典"
-    },
-    "list": {
-      "title": "字典列表",
-      "searchPlaceholder": "搜索字典名称/编码/描述"
-    },
-    "field": {
-      "name": "字典名称",
-      "code": "字典编码",
-      "description": "描述",
-      "createTime": "创建时间",
-      "isSystem": "系统内置"
-    },
-    "form": {
-      "basicInfo": "基础信息",
-      "codeTip": "字典编码，用于获取字典数据"
-    },
-    "message": {
-      "addSuccess": "新增成功",
-      "updateSuccess": "修改成功",
-      "deleteSuccess": "删除成功",
-      "fetchFailed": "获取字典信息失败",
-      "confirmDelete": "确认删除字典「{name}」吗？",
-      "confirmClearCache": "确认清除字典「{code}」的缓存吗？",
-      "clearCacheSuccess": "清除缓存成功",
-      "systemCannotDelete": "系统内置数据不能删除"
-    },
-    "page": {
-      "add": "新增字典",
-      "edit": "编辑字典"
-    },
-    "placeholder": {
-      "name": "请输入字典名称",
-      "code": "请输入字典编码",
-      "description": "请输入描述"
-    },
-    "validate": {
-      "nameRequired": "请输入字典名称",
-      "codeRequired": "请输入字典编码",
-      "codeFormat": "字典编码只能包含字母、数字和下划线，且以字母或下划线开头"
-    },
-    "item": {
-      "tab": {
-        "title": "字典项"
-      },
-      "button": {
-        "add": "新增字典项"
-      },
-      "selectDict": "请先选择字典",
-      "searchPlaceholder": "搜索字典项标签/值/描述",
-      "field": {
-        "label": "字典标签",
-        "value": "字典值",
-        "color": "颜色",
-        "sort": "排序",
-        "status": "状态",
-        "description": "描述",
-        "createTime": "创建时间"
-      },
-      "form": {
-        "basicInfo": "基础信息",
-        "noColor": "未设置颜色"
-      },
-      "message": {
-        "addSuccess": "新增成功",
-        "updateSuccess": "修改成功",
-        "deleteSuccess": "删除成功",
-        "fetchFailed": "获取字典项信息失败",
-        "confirmDelete": "确认删除字典项「{label}」吗？",
-        "selectDictFirst": "请先选择字典"
-      },
-      "page": {
-        "add": "新增字典项",
-        "edit": "编辑字典项"
-      },
-      "placeholder": {
-        "label": "请输入字典标签",
-        "value": "请输入字典值",
-        "color": "请选择或输入颜色值",
-        "description": "请输入描述"
-      },
-      "validate": {
-        "labelRequired": "请输入字典标签",
-        "valueRequired": "请输入字典值",
-        "sortRequired": "请输入排序"
-      }
-    }
-  },
-  "config": {
-    "site": {
-      "title": "系统名称",
-      "titleRequired": "请输入系统名称",
-      "titlePlaceholder": "请输入系统名称",
-      "titleTip": "系统名称，显示在浏览器标签页标题",
-      "description": "系统描述",
-      "descriptionRequired": "请输入系统描述",
-      "descriptionPlaceholder": "请输入系统描述，用于 SEO 的网站元描述",
-      "descriptionTip": "系统描述，用于 SEO 的网站元描述",
-      "logo": "系统 LOGO",
-      "logoTip": "显示在登录页面和系统导航栏的网站图标（建议 .svg 格式）",
-      "favicon": "系统图标",
-      "faviconTip": "浏览器标签页显示的网站图标（建议 .ico 格式）",
-      "copyright": "版权声明",
-      "copyrightRequired": "请输入版权声明",
-      "copyrightPlaceholder": "请输入版权声明",
-      "copyrightTip": "版权声明，显示在页面底部",
-      "beian": "备案号",
-      "beianPlaceholder": "请输入备案号，如：京ICP备12345678号",
-      "beianTip": "网站备案号，显示在页面底部"
-    }
-  },
-  "file": {
-    "title": "文件管理",
-    "breadcrumb": {
-      "root": "根目录"
-    },
-    "header": {
-      "upload": "上传",
-      "newFolder": "新建文件夹",
-      "searchPlaceholder": "搜索文件...",
-      "sort": "排序",
-      "sortOptions": {
-        "name": "名称",
-        "size": "大小",
-        "type": "类型",
-        "updateTime": "修改时间"
-      },
-      "detailPanel": "详情面板",
-      "refresh": "刷新",
-      "selectAll": "全选",
-      "clearFilters": "清除筛选"
-    },
-    "sidebar": {
-      "quickAccess": "快速访问",
-      "recentAccess": "最近访问",
-      "allFiles": "全部文件",
-      "images": "图片",
-      "documents": "文档",
-      "videos": "视频",
-      "music": "音乐",
-      "rootDirectory": "根目录"
-    },
-    "list": {
-      "fileName": "文件名",
-      "size": "大小",
-      "type": "类型",
-      "modifyTime": "修改时间",
-      "folder": "文件夹",
-      "empty": {
-        "root": "暂无文件，点击上传或新建文件夹开始",
-        "folder": "此文件夹为空"
-      },
-      "dragUpload": "拖放文件到此处上传"
-    },
-    "contextMenu": {
-      "open": "打开",
-      "download": "下载",
-      "preview": "预览",
-      "rename": "重命名",
-      "move": "移动",
-      "copy": "复制",
-      "delete": "删除",
-      "share": "分享"
-    },
-    "detail": {
-      "title": "文件详情",
-      "fileInfo": "文件信息",
-      "type": "类型",
-      "size": "大小",
-      "location": "位置",
-      "createTime": "创建时间",
-      "modifyTime": "修改时间",
-      "sha256": "SHA256",
-      "selectFile": "选择文件查看详情",
-      "image": "图片",
-      "video": "视频",
-      "audio": "音频",
-      "pdf": "PDF 文档",
-      "code": "代码文件",
-      "document": "文档",
-      "archive": "压缩包"
-    },
-    "statistics": {
-      "title": "文件统计",
-      "totalFiles": "文件",
-      "totalUsage": "共占用 {size}",
-      "totalUsageLabel": "存储量",
-      "image": "图片",
-      "video": "视频",
-      "audio": "音频",
-      "document": "文档",
-      "archive": "压缩包",
-      "code": "代码",
-      "folder": "文件夹",
-      "other": "其他"
-    },
-    "modal": {
-      "newFolder": {
-        "title": "新建文件夹",
-        "placeholder": "请输入文件夹名称",
-        "confirm": "确定",
-        "cancel": "取消",
-        "validate": {
-          "required": "请输入文件夹名称",
-          "invalidChars": "文件夹名称不能包含 / \\ : * ? \" < > | 字符",
-          "lengthRange": "文件夹名称长度应在 1 到 100 个字符之间"
-        }
-      },
-      "rename": {
-        "folderTitle": "重命名文件夹",
-        "fileTitle": "重命名文件",
-        "placeholder": "请输入新名称",
-        "confirm": "确定",
-        "cancel": "取消",
-        "validate": {
-          "required": "请输入新名称",
-          "invalidChars": "名称不能包含 / \\ : * ? \" < > | 字符",
-          "keepExtension": "请保留文件扩展名 .{extension}"
-        }
-      }
-    },
-    "preview": {
-      "unsupported": "该文件类型暂不支持预览"
-    },
-    "filter": {
-      "keyword": "关键词",
-      "type": "类型",
-      "extension": "扩展名"
     }
   }
 }

@@ -103,8 +103,13 @@
   /**
    * 过滤后的菜单项列表
    * 只显示未隐藏的菜单项
+   * 使用 JSON 序列化/反序列化来完全断开响应式链接
    */
-  const filteredMenuItems = computed(() => filterRoutes(props.list))
+  const filteredMenuItems = computed(() => {
+    // 使用 JSON 序列化来完全断开响应式引用
+    const listCopy = JSON.parse(JSON.stringify(props.list))
+    return filterRoutes(listCopy)
+  })
 
   /**
    * 跳转到指定页面
@@ -130,23 +135,27 @@
    * @returns 过滤后的菜单项数组
    */
   const filterRoutes = (items: AppRouteRecord[]): AppRouteRecord[] => {
-    return items.filter((item) => {
-      // 如果当前项被隐藏，直接过滤掉
-      if (item.meta.isHide) {
-        return false
-      }
+    return items
+      .map((item) => {
+        // 创建新对象避免修改原始数据
+        const newItem = { ...item }
 
-      // 如果有子菜单，递归过滤子菜单
-      if (item.children && item.children.length > 0) {
-        const filteredChildren = filterRoutes(item.children)
-        item.children = filteredChildren
-        // 父菜单始终显示，即使子菜单全部被过滤
+        // 如果有子菜单，递归过滤子菜单
+        if (newItem.children && newItem.children.length > 0) {
+          newItem.children = filterRoutes(newItem.children)
+        }
+
+        return newItem
+      })
+      .filter((item) => {
+        // 如果当前项被隐藏，直接过滤掉
+        if (item.meta.isHide) {
+          return false
+        }
+
+        // 叶子节点且未被隐藏，保留
         return true
-      }
-
-      // 叶子节点且未被隐藏，保留
-      return true
-    })
+      })
   }
 
   /**

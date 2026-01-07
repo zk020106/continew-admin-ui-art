@@ -38,7 +38,10 @@
     },
     "cancel": "Cancel",
     "confirm": "Sure",
+    "copyFailed": "Copy failed",
+    "copySuccess": "Copied successfully",
     "createTime": "creation time",
+    "detail": "Details",
     "empty": "None yet",
     "error": "mistake",
     "false": "no",
@@ -61,6 +64,12 @@
     "warning": "warn"
   },
   "components": {
+    "common": {
+      "search": "search"
+    },
+    "component": {
+      "noComponents": "No components available yet"
+    },
     "form": {
       "collapse": "close",
       "expand": "Expand",
@@ -74,6 +83,13 @@
         "required": "{label} is required"
       }
     },
+    "icon": {
+      "local": "local icon",
+      "noRecent": "There are no recently used icons",
+      "noResult": "No matching icon found",
+      "online": "online icon",
+      "recent": "Recently used"
+    },
     "iconPicker": {
       "clear": "Clear",
       "noIcon": "No icon selected",
@@ -81,23 +97,10 @@
       "searchPlaceholder": "search icon",
       "selectIcon": "Select icon"
     },
-    "icon": {
-      "recent": "Recently used",
-      "local": "local icon",
-      "online": "online icon",
-      "noRecent": "There are no recently used icons",
-      "noResult": "No matching icon found"
-    },
-    "component": {
-      "noComponents": "No components available yet"
-    },
-    "common": {
-      "search": "search"
-    },
-    "loading": "loading...",
     "inputSearch": {
       "placeholder": "Please select"
     },
+    "loading": "loading...",
     "select": {
       "loadError": "Data loading failed",
       "loading": "loading...",
@@ -135,11 +138,301 @@
       "uploading": "Uploading..."
     }
   },
+  "config": {
+    "site": {
+      "beian": "Registration number",
+      "beianPlaceholder": "Please enter the registration number, such as: Beijing ICP No. 12345678",
+      "beianTip": "Website registration number, displayed at the bottom of the page",
+      "copyright": "Copyright statement",
+      "copyrightPlaceholder": "Please enter a copyright statement",
+      "copyrightRequired": "Please enter a copyright statement",
+      "copyrightTip": "Copyright statement, shown at the bottom of the page",
+      "description": "System description",
+      "descriptionPlaceholder": "Please enter a system description, website meta description for SEO",
+      "descriptionRequired": "Please enter system description",
+      "descriptionTip": "System description, website meta description for SEO",
+      "favicon": "System icon",
+      "faviconTip": "The website icon displayed on the browser tab (.ico format recommended)",
+      "logo": "System LOGO",
+      "logoTip": "Website icon displayed on the login page and system navigation bar (.svg format recommended)",
+      "title": "System name",
+      "titlePlaceholder": "Please enter system name",
+      "titleRequired": "Please enter system name",
+      "titleTip": "System name, displayed in the browser tab title"
+    }
+  },
+  "dept": {
+    "button": {
+      "add": "New",
+      "addChild": "Add new sub-department",
+      "collapse": "fold",
+      "expand": "Expand"
+    },
+    "field": {
+      "createTime": "creation time",
+      "description": "describe",
+      "isSystem": "System built-in",
+      "name": "Department name",
+      "parentId": "superior department",
+      "sort": "sort",
+      "status": "state"
+    },
+    "form": {
+      "basicInfo": "Basic information"
+    },
+    "menu": {
+      "add": "Add department",
+      "delete": "Delete department",
+      "edit": "Editorial Department"
+    },
+    "message": {
+      "addSuccess": "Added successfully",
+      "confirmDelete": "Are you sure you want to delete department \"{name}\"?",
+      "deleteSuccess": "Delete successfully",
+      "fetchFailed": "Failed to obtain department information",
+      "hasChildren": "This department has sub-departments and cannot be deleted.",
+      "systemCannotDelete": "System built-in data cannot be deleted",
+      "updateSuccess": "Modification successful"
+    },
+    "organization": {
+      "empty": "No data yet",
+      "root": "Organizational structure"
+    },
+    "page": {
+      "add": "Add new department",
+      "edit": "Editorial Department"
+    },
+    "placeholder": {
+      "description": "Please enter a description",
+      "name": "Please enter department name",
+      "parentId": "Please select the parent department"
+    },
+    "search": {
+      "title": "Search department name"
+    },
+    "tab": {
+      "chart": "Organization chart",
+      "list": "table view"
+    },
+    "validate": {
+      "nameRequired": "Please enter department name",
+      "sortRequired": "Please enter sorting"
+    }
+  },
+  "dict": {
+    "button": {
+      "add": "Add dictionary"
+    },
+    "field": {
+      "code": "dictionary encoding",
+      "createTime": "creation time",
+      "description": "describe",
+      "isSystem": "System built-in",
+      "name": "Dictionary name"
+    },
+    "form": {
+      "basicInfo": "Basic information",
+      "codeTip": "Dictionary encoding, used to obtain dictionary data"
+    },
+    "item": {
+      "button": {
+        "add": "Add new dictionary item"
+      },
+      "field": {
+        "color": "color",
+        "createTime": "creation time",
+        "description": "describe",
+        "label": "dictionary tag",
+        "sort": "sort",
+        "status": "state",
+        "value": "Dictionary value"
+      },
+      "form": {
+        "basicInfo": "Basic information",
+        "noColor": "Color not set"
+      },
+      "message": {
+        "addSuccess": "Added successfully",
+        "confirmDelete": "Are you sure you want to delete the dictionary item \"{label}\"?",
+        "deleteSuccess": "Delete successfully",
+        "fetchFailed": "Failed to obtain dictionary item information",
+        "selectDictFirst": "Please select a dictionary first",
+        "updateSuccess": "Modification successful"
+      },
+      "page": {
+        "add": "Add new dictionary item",
+        "edit": "Edit dictionary item"
+      },
+      "placeholder": {
+        "color": "Please select or enter a color value",
+        "description": "Please enter a description",
+        "label": "Please enter a dictionary tag",
+        "value": "Please enter dictionary value"
+      },
+      "searchPlaceholder": "Search dictionary item tag/value/description",
+      "selectDict": "Please select a dictionary first",
+      "tab": {
+        "title": "dictionary item"
+      },
+      "validate": {
+        "labelRequired": "Please enter a dictionary tag",
+        "sortRequired": "Please enter sorting",
+        "valueRequired": "Please enter dictionary value"
+      }
+    },
+    "list": {
+      "searchPlaceholder": "Search dictionary name/encoding/description",
+      "title": "dictionary list"
+    },
+    "message": {
+      "addSuccess": "Added successfully",
+      "clearCacheSuccess": "Clear cache successfully",
+      "confirmClearCache": "Are you sure you want to clear the cache of dictionary \"{code}\"?",
+      "confirmDelete": "Are you sure you want to delete the dictionary \"{name}\"?",
+      "deleteSuccess": "Delete successfully",
+      "fetchFailed": "Failed to obtain dictionary information",
+      "systemCannotDelete": "System built-in data cannot be deleted",
+      "updateSuccess": "Modification successful"
+    },
+    "page": {
+      "add": "Add dictionary",
+      "edit": "edit dictionary"
+    },
+    "placeholder": {
+      "code": "Please enter the dictionary code",
+      "description": "Please enter a description",
+      "name": "Please enter a dictionary name"
+    },
+    "validate": {
+      "codeFormat": "Dictionary encodings can only contain letters, numbers, and underscores, and start with a letter or underscore",
+      "codeRequired": "Please enter the dictionary code",
+      "nameRequired": "Please enter a dictionary name"
+    }
+  },
   "exceptionPage": {
     "403": "Sorry, you do not have permission to access this page",
     "404": "Sorry, the page you visited does not exist",
     "500": "Sorry, there was a server error",
     "gohome": "Return to home page"
+  },
+  "file": {
+    "breadcrumb": {
+      "root": "root directory"
+    },
+    "contextMenu": {
+      "copy": "copy",
+      "delete": "delete",
+      "download": "download",
+      "move": "move",
+      "open": "Open",
+      "preview": "Preview",
+      "rename": "Rename",
+      "share": "share"
+    },
+    "detail": {
+      "archive": "Compressed package",
+      "audio": "Audio",
+      "code": "code file",
+      "createTime": "creation time",
+      "document": "document",
+      "fileInfo": "File information",
+      "image": "picture",
+      "location": "Location",
+      "modifyTime": "modification time",
+      "pdf": "PDF document",
+      "selectFile": "Select file to view details",
+      "sha256": "SHA256",
+      "size": "size",
+      "title": "Document details",
+      "type": "type",
+      "video": "video"
+    },
+    "filter": {
+      "extension": "extension",
+      "keyword": "keywords",
+      "type": "type"
+    },
+    "header": {
+      "clearFilters": "Clear filters",
+      "detailPanel": "Details panel",
+      "newFolder": "Create new folder",
+      "refresh": "refresh",
+      "searchPlaceholder": "Search for files...",
+      "selectAll": "Select all",
+      "sort": "sort",
+      "sortOptions": {
+        "name": "name",
+        "size": "size",
+        "type": "type",
+        "updateTime": "modification time"
+      },
+      "upload": "upload"
+    },
+    "list": {
+      "dragUpload": "Drag and drop files here to upload",
+      "empty": {
+        "folder": "This folder is empty",
+        "root": "There are no files yet. Click to upload or create a new folder to start."
+      },
+      "fileName": "file name",
+      "folder": "folder",
+      "modifyTime": "modification time",
+      "size": "size",
+      "type": "type"
+    },
+    "modal": {
+      "newFolder": {
+        "cancel": "Cancel",
+        "confirm": "Sure",
+        "placeholder": "Please enter a folder name",
+        "title": "Create new folder",
+        "validate": {
+          "invalidChars": "Folder names cannot contain / \\ : * ? \" < > | characters",
+          "lengthRange": "Folder name length should be between 1 and 100 characters",
+          "required": "Please enter a folder name"
+        }
+      },
+      "rename": {
+        "cancel": "Cancel",
+        "confirm": "Sure",
+        "fileTitle": "Rename file",
+        "folderTitle": "Rename folder",
+        "placeholder": "Please enter a new name",
+        "validate": {
+          "invalidChars": "Name cannot contain / \\ : * ? \" < > | characters",
+          "keepExtension": "Please keep the file extension .{extension}",
+          "required": "Please enter a new name"
+        }
+      }
+    },
+    "preview": {
+      "unsupported": "This file type does not currently support preview"
+    },
+    "sidebar": {
+      "allFiles": "All files",
+      "documents": "document",
+      "images": "picture",
+      "music": "music",
+      "quickAccess": "quick access",
+      "recentAccess": "recent visits",
+      "rootDirectory": "root directory",
+      "videos": "video"
+    },
+    "statistics": {
+      "archive": "Compressed package",
+      "audio": "Audio",
+      "code": "code",
+      "document": "document",
+      "folder": "folder",
+      "image": "picture",
+      "other": "other",
+      "title": "File statistics",
+      "totalFiles": "document",
+      "totalUsage": "Total occupied {size}",
+      "totalUsageLabel": "Storage capacity",
+      "video": "video"
+    },
+    "title": "File management"
   },
   "forgetPassword": {
     "backBtnText": "return",
@@ -293,64 +586,6 @@
       "typeRequired": "Please select menu type"
     }
   },
-  "dept": {
-    "button": {
-      "add": "New",
-      "addChild": "Add new sub-department",
-      "collapse": "fold",
-      "expand": "Expand"
-    },
-    "menu": {
-      "add": "Add department",
-      "edit": "Editorial Department",
-      "delete": "Delete department"
-    },
-    "organization": {
-      "empty": "No data yet",
-      "root": "Organizational structure"
-    },
-    "tab": {
-      "chart": "Organization chart",
-      "list": "table view"
-    },
-    "field": {
-      "createTime": "creation time",
-      "description": "describe",
-      "isSystem": "System built-in",
-      "name": "Department name",
-      "parentId": "superior department",
-      "sort": "sort",
-      "status": "state"
-    },
-    "form": {
-      "basicInfo": "Basic information"
-    },
-    "message": {
-      "addSuccess": "Added successfully",
-      "confirmDelete": "Are you sure you want to delete department \"{name}\"?",
-      "deleteSuccess": "Delete successfully",
-      "fetchFailed": "Failed to obtain department information",
-      "hasChildren": "This department has sub-departments and cannot be deleted.",
-      "systemCannotDelete": "System built-in data cannot be deleted",
-      "updateSuccess": "Modification successful"
-    },
-    "page": {
-      "add": "Add new department",
-      "edit": "Editorial Department"
-    },
-    "placeholder": {
-      "description": "Please enter a description",
-      "name": "Please enter department name",
-      "parentId": "Please select the parent department"
-    },
-    "search": {
-      "title": "Search department name"
-    },
-    "validate": {
-      "nameRequired": "Please enter department name",
-      "sortRequired": "Please enter sorting"
-    }
-  },
   "menus": {
     "dashboard": {
       "console": "workbench",
@@ -446,6 +681,105 @@
     "viewAll": "View all"
   },
   "pages": {
+    "onlineUser": {
+      "button": {
+        "kickout": "Forced retreat"
+      },
+      "field": {
+        "action": "operate",
+        "address": "Login location",
+        "browser": "Browser",
+        "index": "serial number",
+        "ip": "Login IP",
+        "lastActiveTime": "Last active time",
+        "loginTime": "Login time",
+        "nickname": "User nickname",
+        "os": "terminal system",
+        "username": "username"
+      },
+      "message": {
+        "cannotKickoutSelf": "You can't force yourself back",
+        "confirmKickout": "Are you sure you want to force log out this user?",
+        "kickoutSuccess": "Forced retreat successful"
+      },
+      "search": {
+        "loginTime": "Login time",
+        "nickname": "Username/nickname",
+        "nicknamePlaceholder": "Please enter username/nickname"
+      },
+      "title": "Online users"
+    },
+    "smsLog": {
+      "field": {
+        "action": "operate",
+        "configId": "Configuration ID",
+        "createTime": "Operating time",
+        "createUser": "operator",
+        "index": "serial number",
+        "params": "Parameter configuration",
+        "phone": "Phone number",
+        "resMsg": "Return data",
+        "status": "Send status",
+        "statusFailure": "fail",
+        "statusSuccess": "success"
+      },
+      "message": {
+        "confirmDelete": "Are you sure you want to delete this data?"
+      },
+      "search": {
+        "configId": "Configuration ID",
+        "configIdPlaceholder": "Please enter configuration ID",
+        "phone": "Phone number",
+        "phonePlaceholder": "Please enter mobile phone number",
+        "status": "Send status",
+        "statusPlaceholder": "Please select sending status"
+      },
+      "title": "SMS log"
+    },
+    "systemLog": {
+      "field": {
+        "action": "operate",
+        "address": "Login location",
+        "browser": "Browser",
+        "createTime": "Operating time",
+        "createUserString": "operator",
+        "index": "serial number",
+        "ip": "Login IP",
+        "os": "terminal system",
+        "status": "state",
+        "timeTaken": "time consuming"
+      },
+      "login": {
+        "field": {
+          "address": "Login location",
+          "ip": "Login IP"
+        }
+      },
+      "loginTab": "Login log",
+      "operation": {
+        "detailTitle": "Log details",
+        "field": {
+          "description": "Operation description",
+          "id": "Log ID",
+          "module": "Operation module",
+          "requestUri": "Request URI",
+          "traceId": "Trace ID"
+        },
+        "requestBody": "Request body",
+        "requestHeaders": "Request header",
+        "requestInfo": "request information",
+        "responseBody": "response body",
+        "responseHeaders": "response header",
+        "responseInfo": "response message"
+      },
+      "operationTab": "Operation log",
+      "search": {
+        "createUserPlaceholder": "Please enter the operator",
+        "descriptionPlaceholder": "Please enter a description of the operation",
+        "ipPlaceholder": "Please enter login IP",
+        "modulePlaceholder": "Please enter the operation module"
+      }
+    },
     "user": {
       "button": {
         "add": "New",
@@ -489,78 +823,6 @@
         "username": "username"
       },
       "title": "User management"
-    },
-    "onlineUser": {
-      "title": "Online User",
-      "field": {
-        "index": "Index",
-        "nickname": "Nickname",
-        "username": "Username",
-        "ip": "Login IP",
-        "address": "Login Location",
-        "browser": "Browser",
-        "os": "OS",
-        "loginTime": "Login Time",
-        "lastActiveTime": "Last Active Time",
-        "action": "Action"
-      },
-      "search": {
-        "nickname": "Username/Nickname",
-        "nicknamePlaceholder": "Please enter username/nickname",
-        "loginTime": "Login Time"
-      },
-      "button": {
-        "kickout": "Kickout"
-      },
-      "message": {
-        "confirmKickout": "Are you sure to kickout this user?",
-        "kickoutSuccess": "Kickout successfully",
-        "cannotKickoutSelf": "Cannot kickout yourself"
-      }
-    },
-    "systemLog": {
-      "loginTab": "Login Log",
-      "operationTab": "Operation Log",
-      "field": {
-        "index": "Index",
-        "ip": "Login IP",
-        "address": "Login Location",
-        "browser": "Browser",
-        "os": "OS",
-        "status": "Status",
-        "createTime": "Operation Time",
-        "createUserString": "Operator",
-        "timeTaken": "Time Taken",
-        "action": "Action"
-      },
-      "login": {
-        "field": {
-          "ip": "Login IP",
-          "address": "Login Location"
-        }
-      },
-      "operation": {
-        "field": {
-          "module": "Module",
-          "description": "Description",
-          "id": "Log ID",
-          "traceId": "Trace ID",
-          "requestUri": "Request URI"
-        },
-        "detailTitle": "Log Detail",
-        "requestInfo": "Request Info",
-        "responseInfo": "Response Info",
-        "requestHeaders": "Request Headers",
-        "requestBody": "Request Body",
-        "responseHeaders": "Response Headers",
-        "responseBody": "Response Body"
-      },
-      "search": {
-        "ipPlaceholder": "Please enter login IP",
-        "createUserPlaceholder": "Please enter operator",
-        "modulePlaceholder": "Please enter operation module",
-        "descriptionPlaceholder": "Please enter operation description"
-      }
     }
   },
   "register": {
@@ -876,238 +1138,6 @@
       "fixed": "fixed",
       "refresh": "refresh",
       "unfixed": "Unpin"
-    }
-  },
-  "dict": {
-    "button": {
-      "add": "New Dictionary"
-    },
-    "list": {
-      "title": "Dictionary List",
-      "searchPlaceholder": "Search dictionary name/code/description"
-    },
-    "field": {
-      "name": "Dictionary Name",
-      "code": "Dictionary Code",
-      "description": "Description",
-      "createTime": "Creation Time",
-      "isSystem": "System Built-in"
-    },
-    "form": {
-      "basicInfo": "Basic Info",
-      "codeTip": "Dictionary code, used to get dictionary data"
-    },
-    "message": {
-      "addSuccess": "Added successfully",
-      "updateSuccess": "Updated successfully",
-      "deleteSuccess": "Deleted successfully",
-      "fetchFailed": "Failed to get dictionary information",
-      "confirmDelete": "Are you sure to delete dictionary「{name}」?",
-      "confirmClearCache": "Are you sure to clear the cache of dictionary「{code}」?",
-      "clearCacheSuccess": "Cache cleared successfully",
-      "systemCannotDelete": "System built-in data cannot be deleted"
-    },
-    "page": {
-      "add": "New Dictionary",
-      "edit": "Edit Dictionary"
-    },
-    "placeholder": {
-      "name": "Please enter dictionary name",
-      "code": "Please enter dictionary code",
-      "description": "Please enter description"
-    },
-    "validate": {
-      "nameRequired": "Please enter dictionary name",
-      "codeRequired": "Please enter dictionary code",
-      "codeFormat": "Dictionary code can only contain letters, numbers and underscores, and start with a letter or underscore"
-    },
-    "item": {
-      "tab": {
-        "title": "Dictionary Items"
-      },
-      "button": {
-        "add": "New Dictionary Item"
-      },
-      "selectDict": "Please select a dictionary first",
-      "searchPlaceholder": "Search dictionary item label/value/description",
-      "field": {
-        "label": "Dictionary Label",
-        "value": "Dictionary Value",
-        "color": "Color",
-        "sort": "Sort",
-        "status": "Status",
-        "description": "Description",
-        "createTime": "Creation Time"
-      },
-      "form": {
-        "basicInfo": "Basic Info",
-        "noColor": "No color set"
-      },
-      "message": {
-        "addSuccess": "Added successfully",
-        "updateSuccess": "Updated successfully",
-        "deleteSuccess": "Deleted successfully",
-        "fetchFailed": "Failed to get dictionary item information",
-        "confirmDelete": "Are you sure to delete dictionary item「{label}」?",
-        "selectDictFirst": "Please select a dictionary first"
-      },
-      "page": {
-        "add": "New Dictionary Item",
-        "edit": "Edit Dictionary Item"
-      },
-      "placeholder": {
-        "label": "Please enter dictionary label",
-        "value": "Please enter dictionary value",
-        "color": "Please select or enter color value",
-        "description": "Please enter description"
-      },
-      "validate": {
-        "labelRequired": "Please enter dictionary label",
-        "valueRequired": "Please enter dictionary value",
-        "sortRequired": "Please enter sort"
-      }
-    }
-  },
-  "config": {
-    "site": {
-      "title": "System Name",
-      "titleRequired": "Please enter system name",
-      "titlePlaceholder": "Please enter system name",
-      "titleTip": "System name displayed in browser tab title",
-      "description": "System Description",
-      "descriptionRequired": "Please enter system description",
-      "descriptionPlaceholder": "Please enter system description for SEO meta description",
-      "descriptionTip": "System description for SEO meta description",
-      "logo": "System LOGO",
-      "logoTip": "Displayed on login page and system navigation bar (recommended .svg format)",
-      "favicon": "System Icon",
-      "faviconTip": "Displayed in browser tab (recommended .ico format)",
-      "copyright": "Copyright Notice",
-      "copyrightRequired": "Please enter copyright notice",
-      "copyrightPlaceholder": "Please enter copyright notice",
-      "copyrightTip": "Copyright notice displayed at page bottom",
-      "beian": "ICP License",
-      "beianPlaceholder": "Please enter ICP license number",
-      "beianTip": "Website ICP license number displayed at page bottom"
-    }
-  },
-  "file": {
-    "title": "File management",
-    "breadcrumb": {
-      "root": "root directory"
-    },
-    "header": {
-      "upload": "upload",
-      "newFolder": "Create new folder",
-      "searchPlaceholder": "Search for files...",
-      "sort": "sort",
-      "sortOptions": {
-        "name": "name",
-        "size": "size",
-        "type": "type",
-        "updateTime": "modification time"
-      },
-      "detailPanel": "Details panel",
-      "refresh": "refresh",
-      "selectAll": "Select all",
-      "clearFilters": "Clear filters"
-    },
-    "sidebar": {
-      "quickAccess": "quick access",
-      "recentAccess": "recent visits",
-      "allFiles": "All files",
-      "images": "picture",
-      "documents": "document",
-      "videos": "video",
-      "music": "music",
-      "rootDirectory": "root directory"
-    },
-    "list": {
-      "fileName": "file name",
-      "size": "size",
-      "type": "type",
-      "modifyTime": "modification time",
-      "folder": "folder",
-      "empty": {
-        "root": "There are no files yet. Click to upload or create a new folder to start.",
-        "folder": "This folder is empty"
-      },
-      "dragUpload": "Drag and drop files here to upload"
-    },
-    "contextMenu": {
-      "open": "Open",
-      "download": "download",
-      "preview": "Preview",
-      "rename": "Rename",
-      "move": "move",
-      "copy": "copy",
-      "delete": "delete",
-      "share": "share"
-    },
-    "detail": {
-      "title": "Document details",
-      "fileInfo": "File information",
-      "type": "type",
-      "size": "size",
-      "location": "Location",
-      "createTime": "creation time",
-      "modifyTime": "modification time",
-      "sha256": "SHA256",
-      "selectFile": "Select file to view details",
-      "image": "picture",
-      "video": "video",
-      "audio": "Audio",
-      "pdf": "PDF document",
-      "code": "code file",
-      "document": "document",
-      "archive": "Compressed package"
-    },
-    "statistics": {
-      "title": "File statistics",
-      "totalFiles": "document",
-      "totalUsage": "Total occupied {size}",
-      "totalUsageLabel": "Storage",
-      "image": "picture",
-      "video": "video",
-      "audio": "Audio",
-      "document": "document",
-      "archive": "Compressed package",
-      "code": "code",
-      "folder": "folder",
-      "other": "other"
-    },
-    "modal": {
-      "newFolder": {
-        "title": "Create new folder",
-        "placeholder": "Please enter a folder name",
-        "confirm": "Sure",
-        "cancel": "Cancel",
-        "validate": {
-          "required": "Please enter a folder name",
-          "invalidChars": "Folder names cannot contain / \\ : * ? \" < > | characters",
-          "lengthRange": "Folder name length should be between 1 and 100 characters"
-        }
-      },
-      "rename": {
-        "folderTitle": "Rename folder",
-        "fileTitle": "Rename file",
-        "placeholder": "Please enter a new name",
-        "confirm": "Sure",
-        "cancel": "Cancel",
-        "validate": {
-          "required": "Please enter a new name",
-          "invalidChars": "Name cannot contain / \\ : * ? \" < > | characters",
-          "keepExtension": "Please keep the file extension .{extension}"
-        }
-      }
-    },
-    "preview": {
-      "unsupported": "This file type does not currently support preview"
-    },
-    "filter": {
-      "keyword": "keywords",
-      "type": "type",
-      "extension": "extension"
     }
   }
 }

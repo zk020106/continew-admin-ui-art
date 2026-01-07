@@ -2,6 +2,7 @@
   import { computed, ref } from 'vue'
 
   import JsonNode from './JsonNode.vue'
+  import '@/assets/styles/json-viewer.css'
 
   interface JsonViewerTheme {
     key?: string

@@ -12,6 +12,15 @@
   border-color: var(--json-border-dark, #363843);
 }
 
+/* Hover background color */
+.json-node:not(.has-collapse-btn) .node-header:hover {
+  background-color: var(--json-hover-bg, rgba(187, 187, 187, 0.15));
+}
+
+.dark .json-node:not(.has-collapse-btn) .node-header:hover {
+  background-color: var(--json-hover-bg-dark, rgba(255, 255, 255, 0.1));
+}
+
 .json-key-text {
   color: var(--json-key, #0550ae);
 }

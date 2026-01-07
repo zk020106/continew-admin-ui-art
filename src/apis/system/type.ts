@@ -597,11 +597,12 @@ export interface SmsLogResp {
   updateTime: string
   createUserString: string
   updateUserString: string
+  disabled: boolean
 }
 export interface SmsLogQuery {
-  configId: string | undefined
-  phone: string | undefined
-  status: number | undefined
+  configId?: string
+  phone?: string
+  status?: number
   sort: Array<string>
 }
 export interface SmsLogPageQuery extends SmsLogQuery, PageQuery {}

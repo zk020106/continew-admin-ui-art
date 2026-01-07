@@ -1,5 +1,9 @@
 <script setup lang="ts">
+  import { ElMessage } from 'element-plus'
   import { computed, ref } from 'vue'
+  import { useI18n } from 'vue-i18n'
+
+  const { t } = useI18n()
 
   const props = defineProps<{
     value: unknown
@@ -194,8 +198,10 @@
     try {
       const jsonString = JSON.stringify(props.value, null, 2)
       await navigator.clipboard.writeText(jsonString)
+      ElMessage.success(t('common.copySuccess'))
     } catch (err) {
       console.error('Failed to copy to clipboard:', err)
+      ElMessage.error(t('common.copyFailed'))
     }
   }
 
@@ -216,8 +222,8 @@
         </span>
 
         <template v-if="isExpanded && itemCount > 0">
-          <button class="json-btn-collapse" @click="toggleExpand" />
-          <button class="json-btn-copy" @click="copyToClipboard" />
+          <button class="json-btn-collapse" @click="toggleExpand"></button>
+          <button class="json-btn-copy" @click="copyToClipboard"></button>
           <span class="text-[11px] text-gray-500 ml-2">{{ countLabel }}</span>
         </template>
 
@@ -261,10 +267,8 @@
             </span>
           </template>
 
-          <span class="text-[#24292e] dark:text-[#d4d4d4]" @click="toggleExpand">{{
-            closeBracket
-          }}</span>
-          <span v-if="!isLastItem && depth > 0" class="text-[#24292e] dark:text-[#d4d4d4]">,</span>
+          <span class="json-bracket-text" @click="toggleExpand">{{ closeBracket }}</span>
+          <span v-if="!isLastItem && depth > 0" class="json-bracket-text">,</span>
         </template>
       </div>
 
@@ -308,15 +312,27 @@
 </template>
 
 <style scoped>
-  .json-node:not(.has-collapse-btn) .node-header:hover {
-    background-color: rgb(187 187 187 / 25%);
-  }
-
   .json-btn-collapse::before {
     content: '\2013';
   }
 
   .json-btn-copy::before {
     content: '\0192';
+  }
+
+  .json-btn-collapse {
+    border: 1px solid var(--json-border, #4a4a4a);
+  }
+
+  .dark .json-btn-collapse {
+    border-color: var(--json-border-dark, #6e7681);
+  }
+
+  .json-btn-copy {
+    border: 1px solid var(--json-border, #4a4a4a);
+  }
+
+  .dark .json-btn-copy {
+    border-color: var(--json-border-dark, #6e7681);
   }
 </style>
