@@ -31,12 +31,6 @@
       <ElFormItem :label="t('role.deptPermission')">
         <div class="menu-permission-wrapper">
           <div class="menu-permission-header">
-            <ElCheckbox v-model="isMenuExpanded" @change="(val) => onExpanded(val)">{{
-              t('role.expandOrFold')
-            }}</ElCheckbox>
-            <ElCheckbox v-model="isMenuCheckAll" @change="(val) => onCheckAll(val)">{{
-              t('role.checkAllOrNone')
-            }}</ElCheckbox>
             <ElCheckbox v-model="form.menuCheckStrictly">{{
               t('role.parentChildLinkage')
             }}</ElCheckbox>
@@ -47,7 +41,6 @@
               :data="menuList"
               class="menu-tree"
               :props="{ children: 'children', label: 'title' }"
-              :default-expand-all="isMenuExpanded"
               :check-strictly="!form.menuCheckStrictly"
               show-checkbox
               node-key="id"
@@ -74,7 +67,7 @@
     updateTenantPackage
   } from '@/apis/tenant/package'
   import type { TenantPackageMenuResp, TenantPackageReq } from '@/apis/tenant/type'
-  import { CheckboxValueType, ElMessage } from 'element-plus'
+  import { ElMessage } from 'element-plus'
   import { useI18n } from 'vue-i18n'
 
   defineOptions({ name: 'TenantPackageAddDrawer' })
@@ -93,8 +86,6 @@
   const formRef = ref()
   const menuList = ref<TenantPackageMenuResp[]>([])
   const menuTreeRef = ref<any>()
-  const isMenuExpanded = ref(false)
-  const isMenuCheckAll = ref(false)
 
   const rules = {
     name: [
@@ -126,14 +117,13 @@
 
   const getTenantPackageMenuList = async () => {
     const data = await listTenantPackageMenu()
-    menuList.value = data
+    menuList.value = data.map((item) => {
+      item.title = t(item.title)
+      return item
+    })
   }
 
   const reset = () => {
-    isMenuExpanded.value = false
-    isMenuCheckAll.value = false
-    const nodes = menuTreeRef.value?.store?.nodesMap || {}
-    Object.values(nodes).forEach((node: any) => node.collapse())
     menuTreeRef.value?.setCheckedKeys([])
     formRef.value?.resetFields()
     Object.assign(form, {
@@ -178,33 +168,6 @@
     }
   }
 
-  const onExpanded = (val: CheckboxValueType) => {
-    console.log('val', val)
-    const nodes = menuTreeRef.value?.store?.nodesMap || {}
-    Object.values(nodes).forEach((node: any) => {
-      if (val) node.expand()
-      else node.collapse()
-    })
-  }
-
-  const onCheckAll = (val: CheckboxValueType) => {
-    if (val) {
-      const allKeys = getAllKeys(menuList.value)
-      menuTreeRef.value?.setCheckedKeys(allKeys)
-    } else {
-      menuTreeRef.value?.setCheckedKeys([])
-    }
-  }
-
-  const getAllKeys = (data: TenantPackageMenuResp[]): string[] => {
-    const keys: string[] = []
-    data.forEach((item) => {
-      keys.push(item.id)
-      if (item.children?.length) keys.push(...getAllKeys(item.children))
-    })
-    return keys
-  }
-
   const onAdd = async () => {
     reset()
     await getTenantPackageMenuList()
@@ -217,6 +180,7 @@
     await getTenantPackageMenuList()
     dataId.value = id
     const data = await getTenantPackage(id)
+
     Object.assign(form, data)
     if (data.menuIds?.length) menuTreeRef.value?.setCheckedKeys(data.menuIds.map(String))
     visible.value = true

@@ -8,8 +8,8 @@
   >
     <CaForm v-model="form" :columns="formColumns" :grid-row="1" :grid-span="24" />
     <template #footer>
-      <ElButton @click="handleCancel">{{ t('common.button.cancel') }}</ElButton>
-      <ElButton type="primary" @click="handleConfirm">{{ t('common.button.confirm') }}</ElButton>
+      <CaButton type="cancel" @click="handleCancel" />
+      <CaButton type="confirm" @click="handleConfirm" />
     </template>
   </ElDialog>
 </template>
@@ -18,7 +18,7 @@
   import type { TenantAdminPwdReq } from '@/apis'
   import { updateTenantAdminUserPwd } from '@/apis/tenant/management'
   import type { FormColumnItem } from '@/components/base/CaForm/type'
-  import { ElButton, ElDialog, ElMessage } from 'element-plus'
+  import { ElDialog, ElMessage } from 'element-plus'
   import { useI18n } from 'vue-i18n'
 
   defineOptions({ name: 'TenantManagementAdminUserPwdUpdateModal' })

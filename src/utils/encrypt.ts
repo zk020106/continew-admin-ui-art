@@ -50,10 +50,14 @@ const publicKey =
  * @param txt 原始文本
  * @returns RSA 加密后的字符串,失败返回 false
  */
-export function encryptByRsa(txt: string): string | false {
+export function encryptByRsa(txt: string): string {
   const encryptor = new JSEncrypt()
   encryptor.setPublicKey(publicKey) // 设置公钥
-  return encryptor.encrypt(txt) // 对数据进行加密
+  const encrypted = encryptor.encrypt(txt) // 对数据进行加密
+  if (encrypted === false) {
+    throw new Error('数据加密失败')
+  }
+  return encrypted
 }
 
 /**

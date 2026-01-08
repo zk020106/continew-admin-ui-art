@@ -833,6 +833,7 @@
         "updateAdminPwd": "Update Admin Password"
       },
       "field": {
+        "adminPassword": "Admin Password",
         "adminUsername": "Admin Username",
         "code": "Code",
         "createTime": "Create Time",

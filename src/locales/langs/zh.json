@@ -833,6 +833,7 @@
         "updateAdminPwd": "修改管理员密码"
       },
       "field": {
+        "adminPassword": "管理员密码",
         "adminUsername": "管理员用户",
         "code": "编码",
         "createTime": "创建时间",

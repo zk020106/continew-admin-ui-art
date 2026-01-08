@@ -53,7 +53,7 @@ export interface TenantPackagePageQuery extends TenantPackageQuery, PageQuery {}
 /** 租户新增/修改请求 */
 export interface TenantReq {
   name: string
-  code: string
+  code?: string
   domain?: string
   expireTime?: string
   description?: string
