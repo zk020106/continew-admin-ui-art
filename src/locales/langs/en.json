@@ -61,6 +61,7 @@
     "success": "success",
     "tips": "hint",
     "true": "yes",
+    "updateTime": "Update time",
     "warning": "warn"
   },
   "components": {
@@ -660,6 +661,7 @@
     }
   },
   "message": {
+    "addSuccess": "Added successfully",
     "batchDelete": "Batch delete",
     "batchDeleteSuccess": "Batch deletion successful",
     "cancel": "Cancel",
@@ -669,9 +671,11 @@
     "deleteSuccess": "Delete successfully",
     "items": "items",
     "loadFailed": "Loading failed",
+    "noMoreActions": "No more actions",
     "prompt": "hint",
     "selectDeleteData": "Please select the data you want to delete",
-    "selected": "Selected"
+    "selected": "Selected",
+    "updateSuccess": "Updated successfully"
   },
   "notice": {
     "bar": ["notify", "information", "Agent"],
@@ -823,6 +827,55 @@
         "username": "username"
       },
       "title": "User management"
+    },
+    "tenantManagement": {
+      "button": {
+        "updateAdminPwd": "Update Admin Password"
+      },
+      "field": {
+        "adminPassword": "Admin Password",
+        "adminUsername": "Admin Username",
+        "code": "Code",
+        "createTime": "Create Time",
+        "createUser": "Creator",
+        "description": "Description",
+        "domain": "Domain",
+        "expireTime": "Expire Time",
+        "name": "Name",
+        "neverExpire": "Never Expire",
+        "notSet": "Not Set",
+        "package": "Package",
+        "status": "Status",
+        "updateTime": "Update Time",
+        "updateUser": "Updater"
+      },
+      "message": {
+        "confirmDelete": "Are you sure to delete tenant \"{name}({code})\"?"
+      },
+      "search": {
+        "description": "Name/Description",
+        "descriptionPlaceholder": "Please enter name/description",
+        "package": "Package",
+        "packagePlaceholder": "Please select package"
+      },
+      "title": "Tenant Management"
+    },
+    "tenantPackage": {
+      "field": {
+        "description": "Description",
+        "name": "Name",
+        "sort": "Sort",
+        "status": "Status",
+        "createUser": "Creator",
+        "updateUser": "Updater"
+      },
+      "message": {
+        "confirmDelete": "Are you sure to delete package \"{name}\"?"
+      },
+      "search": {
+        "descriptionPlaceholder": "Please enter name/description"
+      },
+      "title": "Package Management"
     }
   },
   "register": {
@@ -862,6 +915,9 @@
     "deptPermission": "Department authority",
     "description": "describe",
     "expandCollapse": "expand/collapse",
+    "expandOrFold": "Expand/Fold",
+    "checkAllOrNone": "Check All/None",
+    "parentChildLinkage": "Parent-child linkage",
     "field": {
       "code": "role coding",
       "dataScope": "Data permissions",
