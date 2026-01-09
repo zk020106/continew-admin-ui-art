@@ -32,11 +32,13 @@
 
 import type { AppRouteRecord } from '@/types/router'
 import { useRoute } from 'vue-router'
+import { useUserStore } from '@/store/modules/user'
 
 type AuthItem = NonNullable<AppRouteRecord['meta']['authList']>[number]
 
 export const useAuth = () => {
   const route = useRoute()
+  const userStore = useUserStore()
   // 后端路由 meta 配置的权限列表（例如：[{ authMark: 'add' }]）
   const backendAuthList: AuthItem[] = Array.isArray(route.meta.authList)
     ? (route.meta.authList as AuthItem[])
@@ -48,6 +50,10 @@ export const useAuth = () => {
    * @returns 是否有权限
    */
   const hasAuth = (auth: string): boolean => {
+    // 超级管理员拥有所有权限
+    if (userStore.info.permissions.includes('*:*:*')) {
+      return true
+    }
     // 后端模式
     return backendAuthList.some((item) => item?.authMark === auth)
   }

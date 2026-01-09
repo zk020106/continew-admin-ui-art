@@ -122,7 +122,7 @@
   import type { FormInstance } from 'element-plus'
   import * as El from 'element-plus'
   import { ElButton, ElForm, ElFormItem, ElSpace, ElText } from 'element-plus'
-  import { computed, getCurrentInstance, onMounted, ref, toRaw, useAttrs, useId, watch } from 'vue'
+  import { computed, getCurrentInstance, onMounted, ref, useAttrs, useId } from 'vue'
   import { useI18n } from 'vue-i18n'
   import InputSearch from '../CaInputSearch/index.vue'
   import type { FormColumnItem, FormColumnType, FormProps } from './type'
@@ -132,7 +132,7 @@
     labelWidth: 'auto',
     scrollToError: true,
     showMessage: true,
-    gridItemProps: () => ({ span: { xs: 24, sm: 24, md: 12 } }), // xs, sm, md, lg, xl, xxl
+    gridItemProps: () => ({ span: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 } }),
     search: false,
     searchText: undefined,
     hideFoldBtn: false,
@@ -360,14 +360,6 @@
   function updateModelValue(value: any, item: FormColumnItem) {
     emit('update:modelValue', Object.assign(props.modelValue, { [item.field]: value }))
   }
-
-  watch(
-    () => props.modelValue,
-    () => {
-      console.log('form', toRaw(props.modelValue))
-    },
-    { deep: true }
-  )
 
   defineExpose({ formRef })
 </script>

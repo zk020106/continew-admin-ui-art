@@ -852,6 +852,13 @@
       "message": {
         "confirmDelete": "是否确定删除租户「{name}({code})」？"
       },
+      "placeholder": {
+        "newPassword": "请输入新密码"
+      },
+      "tooltip": {
+        "adminUsername": "自动初始化管理员用户",
+        "domain": "例如：example.com"
+      },
       "search": {
         "description": "名称/描述",
         "descriptionPlaceholder": "请输入名称/描述",
@@ -876,6 +883,31 @@
         "descriptionPlaceholder": "请输入名称/描述"
       },
       "title": "套餐管理"
+    },
+    "appManagement": {
+      "button": {
+        "resetSecret": "重置密钥"
+      },
+      "field": {
+        "description": "描述",
+        "expireTime": "失效时间",
+        "id": "ID",
+        "name": "名称",
+        "status": "状态",
+        "createUser": "创建人",
+        "createTime": "创建时间",
+        "updateUser": "修改人",
+        "updateTime": "修改时间"
+      },
+      "message": {
+        "confirmDelete": "是否确定删除应用「{name}」？",
+        "confirmResetSecret": "是否确定重置应用「{name}」密钥？重置后旧密钥将失效。"
+      },
+      "search": {
+        "description": "名称/描述",
+        "descriptionPlaceholder": "请输入名称/描述"
+      },
+      "title": "应用管理"
     }
   },
   "register": {

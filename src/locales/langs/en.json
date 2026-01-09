@@ -852,6 +852,13 @@
       "message": {
         "confirmDelete": "Are you sure to delete tenant \"{name}({code})\"?"
       },
+      "placeholder": {
+        "newPassword": "Please enter new password"
+      },
+      "tooltip": {
+        "adminUsername": "Automatically initialize admin user",
+        "domain": "e.g. example.com"
+      },
       "search": {
         "description": "Name/Description",
         "descriptionPlaceholder": "Please enter name/description",
@@ -876,6 +883,31 @@
         "descriptionPlaceholder": "Please enter name/description"
       },
       "title": "Package Management"
+    },
+    "appManagement": {
+      "button": {
+        "resetSecret": "Reset Secret"
+      },
+      "field": {
+        "description": "Description",
+        "expireTime": "Expire Time",
+        "id": "ID",
+        "name": "Name",
+        "status": "Status",
+        "createUser": "Creator",
+        "createTime": "Create Time",
+        "updateUser": "Updater",
+        "updateTime": "Update Time"
+      },
+      "message": {
+        "confirmDelete": "Are you sure to delete app \"{name}\"?",
+        "confirmResetSecret": "Are you sure to reset app \"{name}\" secret? The old secret will be invalid after reset."
+      },
+      "search": {
+        "description": "Name/Description",
+        "descriptionPlaceholder": "Please enter name/description"
+      },
+      "title": "App Management"
     }
   },
   "register": {

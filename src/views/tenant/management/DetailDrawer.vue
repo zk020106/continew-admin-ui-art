@@ -22,7 +22,7 @@
       </ElDescriptionsItem>
       <ElDescriptionsItem :label="t('pages.tenantManagement.field.status')">
         <CaTag :type="detail.status === 1 ? 'success' : 'warning'" :dot="detail.status === 1">
-          {{ detail.status === 1 ? t('common.enable') : t('common.disable') }}
+          {{ detail.status === 1 ? t('common.statusEnabled') : t('common.statusDisabled') }}
         </CaTag>
       </ElDescriptionsItem>
       <ElDescriptionsItem :label="t('pages.tenantManagement.field.description')">

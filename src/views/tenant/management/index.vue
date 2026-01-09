@@ -72,6 +72,7 @@
                 </ElDropdownItem>
                 <ElDropdownItem
                   v-if="hasAuth('tenant:management:delete') && !row.disabled"
+                  divided
                   @click="onDelete(row)"
                 >
                   {{ t('common.button.delete') }}
@@ -155,7 +156,7 @@
       ] as FormColumnItem<TenantQuery>[]
   )
 
-  const { tableData, loading, pagination, search } = useTable<TenantResp>(
+  const { tableData, loading, pagination, search, handleDelete } = useTable<TenantResp>(
     (page) => listTenant({ ...queryForm, ...page }),
     { immediate: true }
   )
@@ -270,14 +271,15 @@
   }
 
   // 删除
-  const onDelete = async (row: TenantResp) => {
-    try {
-      await deleteTenant(row.id)
-      ElMessage.success(t('message.deleteSuccess'))
-      search()
-    } catch (error) {
-      console.error('删除失败:', error)
-    }
+  const onDelete = (row: TenantResp) => {
+    handleDelete(() => deleteTenant(row.id), {
+      content: t('pages.tenantManagement.message.confirmDelete', {
+        name: row.name,
+        code: row.code
+      }),
+      confirmType: 'error',
+      successTip: t('message.deleteSuccess')
+    })
   }
 
   const AddModalRef = useTemplateRef('AddModalRef')

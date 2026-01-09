@@ -33,8 +33,7 @@
   const tenantId = ref<string>()
 
   const form = ref<TenantAdminPwdReq>({
-    password: '',
-    confirmPassword: ''
+    password: ''
   })
 
   const formColumns = computed(
@@ -42,44 +41,19 @@
       [
         {
           type: 'input',
-          label: t('user.field.password'),
+          label: t('pages.tenantManagement.field.adminPassword'),
           field: 'password',
           props: {
             type: 'password',
-            placeholder: t('user.placeholder.password'),
+            placeholder: t('pages.tenantManagement.placeholder.newPassword'),
             'show-password': true
           },
           rules: [
             {
               required: true,
-              message: t('components.form.validate.required', { label: t('user.field.password') })
-            }
-          ]
-        },
-        {
-          type: 'input',
-          label: t('register.placeholder.confirmPassword'),
-          field: 'confirmPassword',
-          props: {
-            type: 'password',
-            placeholder: t('register.placeholder.confirmPassword')
-          },
-          rules: [
-            {
-              required: true,
               message: t('components.form.validate.required', {
-                label: t('register.placeholder.confirmPassword')
+                label: t('pages.tenantManagement.field.adminPassword')
               })
-            },
-            {
-              validator: (rule: any, value: string, callback: any) => {
-                if (value !== form.value.password) {
-                  callback(new Error(t('register.rule.passwordMismatch')))
-                } else {
-                  callback()
-                }
-              },
-              trigger: 'blur'
             }
           ]
         }
@@ -91,8 +65,7 @@
   const open = (id: string) => {
     tenantId.value = id
     form.value = {
-      password: '',
-      confirmPassword: ''
+      password: ''
     }
     visible.value = true
   }

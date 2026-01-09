@@ -76,7 +76,6 @@ export interface TenantPackageReq {
 /** 租户管理员密码修改请求 */
 export interface TenantAdminPwdReq {
   password: string
-  confirmPassword: string
 }
 
 /** 租户套餐菜单响应类型 */
