@@ -11,13 +11,7 @@
       @refresh="search"
     >
       <template #top>
-        <CaForm
-          v-model="queryForm"
-          search
-          :columns="queryFormColumns"
-          @search="search"
-          @reset="reset"
-        />
+        <CaQueryForm v-model="queryForm" mode="click-search" :columns="queryFormColumns" />
       </template>
 
       <template #toolbar-left>
@@ -98,6 +92,7 @@
   import { listTenantPackageDict } from '@/apis/tenant'
   import { deleteTenant, listTenant } from '@/apis/tenant/management'
   import type { FormColumnItem } from '@/components/base/CaForm/type'
+  import CaQueryForm from '@/components/base/CaQueryForm'
   import type { TableColumnItem } from '@/components/base/CaTable/type'
   import { CellCopy } from '@/components/base/CellCopy'
   import { useAuth, useDevice, useResetReactive, useTable } from '@/hooks'

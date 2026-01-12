@@ -12,12 +12,11 @@
       @refresh="search"
     >
       <template #top>
-        <CaForm
+        <CaQueryForm
           v-model="queryForm"
-          search
+          mode="change-search"
+          :immediate="false"
           :columns="queryFormColumns"
-          @search="search"
-          @reset="reset"
         />
       </template>
       <template #toolbar-right>
@@ -63,11 +62,15 @@
             </span>
             <template #dropdown>
               <ElDropdownMenu>
-                <ElDropdownItem v-auth="['schedule:log:list']" @click="onLog(row)"
+                <ElDropdownItem v-if="hasAuth('schedule:log:list')" @click="onLog(row)"
                   >查看日志</ElDropdownItem
                 >
-                <ElDropdownItem v-auth="['schedule:job:delete']" divided @click="onDelete(row)">
-                  <ElLink type="danger" :underline="false">删除</ElLink>
+                <ElDropdownItem
+                  v-if="hasAuth('schedule:job:delete')"
+                  divided
+                  @click="onDelete(row)"
+                >
+                  <span style="color: var(--el-color-danger)">删除</span>
                 </ElDropdownItem>
               </ElDropdownMenu>
             </template>
@@ -92,6 +95,7 @@
     updateJobStatus
   } from '@/apis/schedule/job'
   import { FormColumnItem } from '@/components/base/CaForm/type'
+  import CaQueryForm from '@/components/base/CaQueryForm'
   import type { TableColumnItem } from '@/components/base/CaTable/type'
   import { useAuth, useDict, useResetReactive, useTable } from '@/hooks'
   import { MoreFilled } from '@element-plus/icons-vue'

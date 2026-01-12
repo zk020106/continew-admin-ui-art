@@ -1,7 +1,7 @@
-import { computed, ref, shallowRef } from 'vue'
 import { listCommonDict } from '@/apis/system'
-import { useDictStore } from '@/store/modules/dict'
 import type { DictItem } from '@/store/modules/dict'
+import { useDictStore } from '@/store/modules/dict'
+import { computed, ref, shallowRef } from 'vue'
 
 const pendingRequests = new Map<string, Promise<DictItem[]>>()
 
@@ -32,9 +32,9 @@ export function useDict<T extends string>(...codes: T[]): UseDictReturn<T> {
     // 防止重复请求
     if (!pendingRequests.has(code)) {
       const request = listCommonDict(code)
-        .then(({ data: res }) => {
-          dictStore.setDict(code, res)
-          return res
+        .then((data) => {
+          dictStore.setDict(code, data)
+          return data
         })
         .catch(() => [])
         .finally(() => {
@@ -90,9 +90,9 @@ export function useDictList(codes: string[]) {
 
     if (!pendingRequests.has(code)) {
       const request = listCommonDict(code)
-        .then(({ data: res }) => {
-          dictStore.setDict(code, res)
-          return res
+        .then((data) => {
+          dictStore.setDict(code, data)
+          return data
         })
         .catch(() => [])
         .finally(() => {

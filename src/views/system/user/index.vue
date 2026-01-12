@@ -15,13 +15,7 @@
       @refresh="search"
     >
       <template #top>
-        <CaForm
-          v-model="queryForm"
-          search
-          :columns="queryFormColumns"
-          @search="search"
-          @reset="reset"
-        />
+        <CaQueryForm v-model="queryForm" mode="click-search" :columns="queryFormColumns" />
       </template>
       <template #toolbar-left>
         <ElSpace>
@@ -71,7 +65,6 @@
         </ElSpace>
       </template>
     </CaTable>
-
     <AddDrawer ref="AddDrawerRef" @save-success="search" />
     <ImportDrawer ref="ImportDrawerRef" @save-success="search" />
     <DetailDrawer ref="DetailDrawerRef" />
@@ -79,11 +72,11 @@
     <RoleUpdateModal ref="RoleUpdateModalRef" @save-success="search" />
   </CaPageLayout>
 </template>
-
 <script setup lang="ts">
   import { UserQuery, UserResp } from '@/apis'
   import { deleteUser, exportUser, listUser } from '@/apis/system/user'
   import { FormColumnItem } from '@/components/base/CaForm/type'
+  import CaQueryForm from '@/components/base/CaQueryForm'
   import { TableColumnItem } from '@/components/base/CaTable/type'
   import { DisEnableStatusList } from '@/constant/common'
   import { useDevice, useDownload, useResetReactive, useTable } from '@/hooks'
@@ -96,11 +89,8 @@
   import ImportDrawer from './ImportDrawer.vue'
   import PwdResetModal from './PwdResetModal.vue'
   import RoleUpdateModal from './RoleUpdateModal.vue'
-
   defineOptions({ name: 'SystemUser' })
-
   const { isMobile } = useDevice()
-
   const [queryForm, resetForm] = useResetReactive<UserQuery>({
     sort: ['t1.id,desc']
   })
@@ -201,12 +191,10 @@
         }
       ] as FormColumnItem<UserQuery>[]
   )
-
   const { tableData, loading, pagination, search, handleDelete } = useTable<UserResp>(
     (page) => listUser({ ...queryForm, ...page }),
     { immediate: false }
   )
-
   const columns = computed(
     () =>
       [
@@ -264,7 +252,6 @@
           showOverflowTooltip: true
         },
         { label: t('user.field.createTime'), prop: 'createTime', width: 180 },
-
         {
           label: t('user.field.updateUser'),
           prop: 'updateUserString',
@@ -283,65 +270,54 @@
         }
       ] as TableColumnItem[]
   )
-
   // 重置
   const reset = () => {
     resetForm()
     search()
   }
-
   // 删除
   const onDelete = (row: { id: string; nickname: any; username: any }) => {
     return handleDelete(() => deleteUser(row.id), {
       content: `是否确定删除用户「${row.nickname}(${row.username})」？`
     })
   }
-
   // 导出
   const onExport = () => {
     useDownload(() => exportUser(queryForm))
   }
-
   // 根据选中部门查询
   const handleSelectDept = (key: string | number) => {
     queryForm.deptId = key
     search()
   }
-
   const ImportDrawerRef = ref<InstanceType<typeof ImportDrawer>>()
   // 导入
   const onImport = () => {
     ImportDrawerRef.value?.onOpen()
   }
-
   const AddDrawerRef = ref<InstanceType<typeof AddDrawer>>()
   // 新增
   const onAdd = () => {
     AddDrawerRef.value?.onAdd()
   }
-
   // 修改
   const onUpdate = (record: UserResp) => {
     AddDrawerRef.value?.onUpdate(record.id)
   }
-
   const DetailDrawerRef = ref<InstanceType<typeof DetailDrawer>>()
   // 详情
   const onDetail = (record: UserResp) => {
     DetailDrawerRef.value?.onOpen(record.id)
   }
-
   const PwdResetModalRef = ref<InstanceType<typeof PwdResetModal>>()
   // 重置密码
   const onResetPwd = (record: UserResp) => {
     PwdResetModalRef.value?.onOpen(record.id)
   }
-
   const RoleUpdateModalRef = ref<InstanceType<typeof RoleUpdateModal>>()
   // 分配角色
   const onUpdateRole = (record: UserResp) => {
     RoleUpdateModalRef.value?.onOpen(record.id)
   }
 </script>
-
 <style scoped lang="scss"></style>
