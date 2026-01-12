@@ -46,7 +46,7 @@
           props: {
             type: 'password',
             placeholder: t('pages.tenantManagement.placeholder.newPassword'),
-            'show-password': true
+            showPassword: true
           },
           rules: [
             {

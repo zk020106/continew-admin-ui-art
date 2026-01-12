@@ -206,10 +206,6 @@ function handleUnauthorizedError(message?: string): never {
 
   if (!isUnauthorizedErrorShown) {
     isUnauthorizedErrorShown = true
-
-    // 显示错误消息
-    showError(error, true)
-
     // 延迟登出
     setTimeout(() => {
       const userStore = useUserStore()
@@ -329,10 +325,6 @@ async function httpRaw<T = any>(
 
     return response
   } catch (error) {
-    if (error instanceof HttpError) {
-      const showMsg = config.showErrorMessage !== false
-      showError(error, showMsg)
-    }
     return Promise.reject(error)
   }
 }

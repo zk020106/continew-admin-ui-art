@@ -57,7 +57,7 @@ export interface TenantReq {
   domain?: string
   expireTime?: string
   description?: string
-  status?: string
+  status?: number
   packageId: string
   adminUsername?: string
   adminPassword?: string
