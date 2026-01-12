@@ -1,0 +1,112 @@
+// ===========================================
+// GenCron 组件公共样式
+// ===========================================
+
+// 布局
+.cron-config-list {
+  margin: 0 12px 4px;
+  text-align: left;
+
+  .item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 6px;
+    font-size: 14px;
+  }
+
+  .choice {
+    margin-right: 4px;
+  }
+
+  .w60 {
+    width: 60px;
+  }
+
+  .w80 {
+    width: 80px;
+  }
+
+  .list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0 20px;
+  }
+
+  .list-check-item {
+    width: 32px;
+    text-align: center;
+  }
+
+  .list-cn .list-check-item {
+    width: 48px;
+  }
+
+  .list-cn {
+    // 中文周选择器的复选框宽度
+    .el-checkbox {
+      width: 48px;
+    }
+  }
+
+  .tip-info {
+    margin-left: 8px;
+    font-size: 12px;
+    color: var(--el-text-color-secondary);
+  }
+}
+
+// 复选框组
+.cron-config-list .el-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cron-config-list .el-checkbox {
+  margin-right: 0;
+
+  --el-checkbox-checked-bg-color: var(--el-color-primary);
+  --el-checkbox-checked-input-bg-color: var(--el-color-primary);
+  --el-checkbox-checked-border-color: var(--el-color-primary);
+}
+
+// 输入框组前缀
+.el-input-group__prepend {
+  padding: 0 !important;
+}
+
+// 预览时间
+.cron-preview-times {
+  margin: 2px 0 4px;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
+}
+
+// 可点击区域
+.cron-allow-click {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+// Tabs 样式
+.cron-inner .el-tabs__content {
+  padding-top: 6px;
+}
+
+.el-tabs__nav-wrap::after {
+  height: 1px;
+}
+
+.el-tabs__item {
+  padding: 0 16px;
+  font-size: 13px;
+}
