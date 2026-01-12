@@ -179,7 +179,6 @@ export const useUserStore = defineStore(
       // 获取并缓存用户信息，避免路由守卫中重复请求
       const userInfo = await fetchUserInfo()
       setUserInfo(userInfo)
-      console.log('aaauserInfo', userInfo)
     }
 
     // 登录

@@ -48,3 +48,6 @@ export { useBreakpoint } from './core/useBreakpoint'
 
 // 分页管理
 export { usePagination } from './core/usePagination'
+
+// 字典数据
+export { useDict, useDictList } from './core/useDict'
