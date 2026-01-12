@@ -97,8 +97,6 @@
 
 <script setup lang="ts">
   import { getImageCaptcha } from '@/apis'
-  import { listOption } from '@/apis/system'
-  import AppConfig from '@/config'
   import { useAppStore } from '@/store/modules/app'
   import { useUserStore } from '@/store/modules/user'
   import { encryptByRsa } from '@/utils/encrypt'
@@ -121,7 +119,6 @@
   const router = useRouter()
   const route = useRoute()
   const captchaImgBase64 = ref<string>()
-  const systemName = AppConfig.systemInfo.name
   const formRef = ref<FormInstance>()
   const isCaptchaEnabled = ref<boolean>(true)
 
@@ -181,18 +178,6 @@
     formData.expired = false
     // 启动过期定时器
     startTimer(expireTime, Date.now())
-  }
-
-  // 获取站点信息（版权、备案号）
-  const getSiteInfo = async () => {
-    try {
-      const data = await listOption({ category: 'SITE' })
-      const copyright = data.find((item: any) => item.code === 'SITE_COPYRIGHT')?.value || ''
-      const beian = data.find((item: any) => item.code === 'SITE_BEIAN')?.value || ''
-      appStore.setSiteInfo({ copyright, beian })
-    } catch (error) {
-      console.error('[Login] 获取站点信息失败:', error)
-    }
   }
   // 登录
   const handleSubmit = async () => {
@@ -257,18 +242,19 @@
   // 登录成功提示
   const showLoginSuccessNotice = () => {
     setTimeout(() => {
+      // 直接从 store 获取最新的用户信息（响应式）
+      const userInfo = userStore.info
       ElNotification({
         title: t('login.success.title'),
         type: 'success',
         duration: 2500,
         zIndex: 10000,
-        message: `${t('login.success.message')}, ${systemName}!`
+        message: `${t('login.success.message')}, ${userInfo?.nickname}!`
       })
     }, 1000)
   }
   onMounted(() => {
     getCaptcha()
-    getSiteInfo()
   })
 </script>
 

@@ -126,12 +126,12 @@ axiosInstance.interceptors.request.use(
     }
 
     // 记录请求日志
-    if (import.meta.env.DEV) {
-      console.log(`[HTTP Request] ${request.method?.toUpperCase()} ${request.url}`, {
-        params: request.params,
-        data: request.data
-      })
-    }
+    // if (import.meta.env.DEV) {
+    //   console.log(`[HTTP Request] ${request.method?.toUpperCase()} ${request.url}`, {
+    //     params: request.params,
+    //     data: request.data
+    //   })
+    // }
 
     return request
   },
@@ -147,15 +147,15 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse<ApiRes<any>>) => {
     // 记录响应日志
-    if (import.meta.env.DEV) {
-      console.log(
-        `[HTTP Response] ${response.config.method?.toUpperCase()} ${response.config.url}`,
-        {
-          status: response.status,
-          data: response.data
-        }
-      )
-    }
+    // if (import.meta.env.DEV) {
+    //   console.log(
+    //     `[HTTP Response] ${response.config.method?.toUpperCase()} ${response.config.url}`,
+    //     {
+    //       status: response.status,
+    //       data: response.data
+    //     }
+    //   )
+    // }
 
     const { data } = response
 

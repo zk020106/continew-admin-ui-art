@@ -39,6 +39,7 @@ import {
   emailLogin as fetchEmailLogin,
   phoneLogin as fetchPhoneLogin,
   socialAuth as fetchSocialAuth,
+  getUserInfo as fetchUserInfo,
   PhoneLoginReq,
   UserInfo
 } from '@/apis/auth'
@@ -165,15 +166,29 @@ export const useUserStore = defineStore(
       }
     }
 
+    /**
+     * 登录成功后统一处理
+     * 设置登录状态、令牌、租户ID，并获取用户信息
+     * @param token 访问令牌
+     * @param tenantId 租户ID
+     */
+    const handleLoginSuccess = async (token: string, tenantId: string) => {
+      setLoginStatus(true)
+      setToken(token)
+      tenantStore.setTenantId(tenantId)
+      // 获取并缓存用户信息，避免路由守卫中重复请求
+      const userInfo = await fetchUserInfo()
+      setUserInfo(userInfo)
+      console.log('aaauserInfo', userInfo)
+    }
+
     // 登录
     const accountLogin = async (req: AccountLoginReq, tenantCode?: string) => {
       const res = await fetchAccountLogin(
         { ...req, clientId, authType: AuthTypeConstants.ACCOUNT },
         tenantCode
       )
-      setLoginStatus(true)
-      setToken(res.token)
-      tenantStore.setTenantId(res.tenantId)
+      await handleLoginSuccess(res.token, res.tenantId)
     }
 
     // 邮箱登录
@@ -182,9 +197,7 @@ export const useUserStore = defineStore(
         { ...req, clientId, authType: AuthTypeConstants.EMAIL },
         tenantCode
       )
-      setLoginStatus(true)
-      setToken(res.token)
-      tenantStore.setTenantId(res.tenantId)
+      await handleLoginSuccess(res.token, res.tenantId)
     }
 
     // 手机号登录
@@ -193,9 +206,7 @@ export const useUserStore = defineStore(
         { ...req, clientId, authType: AuthTypeConstants.PHONE },
         tenantCode
       )
-      setLoginStatus(true)
-      setToken(token)
-      tenantStore.setTenantId(tenantId)
+      await handleLoginSuccess(token, tenantId)
     }
 
     // 三方账号登录
@@ -206,9 +217,7 @@ export const useUserStore = defineStore(
         clientId,
         authType: AuthTypeConstants.SOCIAL
       })
-      setLoginStatus(true)
-      setToken(res.token)
-      tenantStore.setTenantId(res.tenantId)
+      await handleLoginSuccess(res.token, res.tenantId)
     }
 
     /**
@@ -313,6 +322,7 @@ export const useUserStore = defineStore(
       setLockStatus,
       setLockPassword,
       setToken,
+      handleLoginSuccess,
       accountLogin,
       emailLogin,
       phoneLogin,
