@@ -11,6 +11,7 @@ export interface AppResp {
   createTime: string
   updateUserString: string
   updateTime: string
+  disabled: boolean
 }
 
 export interface AppQuery {

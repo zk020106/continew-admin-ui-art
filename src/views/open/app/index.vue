@@ -252,7 +252,7 @@
 
   const onSecret = async (record: AppResp) => {
     const res = await getAppSecret(record.id)
-    record.secretKey = res.data.secretKey
+    record.secretKey = res.secretKey
   }
 
   const onSecretHide = (record: AppResp) => {

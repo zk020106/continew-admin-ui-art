@@ -4,11 +4,11 @@
     :title="title"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    :width="500"
+    :width="width >= 500 ? 500 : '100%'"
     destroy-on-close
     @close="handleClose"
   >
-    <CaForm ref="formRef" v-model="form" :columns="formColumns" />
+    <CaForm ref="formRef" v-model="form" :columns="columns" />
     <template #footer>
       <CaButton type="cancel" @click="handleClose" />
       <CaButton type="confirm" :loading="saving" @click="handleConfirm" />
@@ -18,8 +18,9 @@
 
 <script setup lang="ts">
   import { addApp, getApp, updateApp } from '@/apis/open/app'
-  import type { FormColumnItem } from '@/components/base/CaForm/type'
+  import { FormColumnItem } from '@/components/base/CaForm/type'
   import { useResetReactive } from '@/hooks'
+  import { useWindowSize } from '@vueuse/core'
   import { ElDialog, ElMessage } from 'element-plus'
   import { useI18n } from 'vue-i18n'
 
@@ -33,10 +34,11 @@
   }
 
   const emit = defineEmits<{
-    'save-success': []
+    (e: 'save-success'): void
   }>()
 
   const { t } = useI18n()
+  const { width } = useWindowSize()
 
   const visible = ref(false)
   const isEdit = ref(false)
@@ -50,8 +52,7 @@
     description: '',
     status: 1
   })
-
-  const formColumns = computed(
+  const columns = computed(
     () =>
       [
         {
@@ -60,14 +61,16 @@
           field: 'name',
           props: {
             placeholder: t('pages.appManagement.field.name'),
-            maxlength: 30
+            maxlength: 100,
+            clearable: true
           },
           rules: [
             {
               required: true,
               message: t('components.form.validate.required', {
                 label: t('pages.appManagement.field.name')
-              })
+              }),
+              trigger: 'blur'
             }
           ]
         },
@@ -77,8 +80,8 @@
           field: 'expireTime',
           props: {
             type: 'datetime',
-            placeholder: t('pages.appManagement.field.expireTime'),
             valueFormat: 'YYYY-MM-DD HH:mm:ss',
+            format: 'YYYY-MM-DD HH:mm:ss',
             clearable: true
           }
         },
@@ -87,12 +90,9 @@
           label: t('common.status'),
           field: 'status',
           props: {
-            activeText: t('common.statusEnabled'),
-            inactiveText: t('common.statusDisabled'),
             activeValue: 1,
             inactiveValue: 2,
-            inlinePrompt: true,
-            type: 'round'
+            inlinePrompt: true
           }
         },
         {
@@ -100,7 +100,6 @@
           label: t('pages.appManagement.field.description'),
           field: 'description',
           props: {
-            placeholder: t('pages.appManagement.field.description'),
             rows: 3,
             maxlength: 200,
             showWordLimit: true
@@ -117,13 +116,45 @@
     visible.value = false
   }
 
-  const onAdd = async () => {
+  // 重置
+  const reset = () => {
+    handleClose()
+  }
+
+  // 保存
+  const save = async () => {
+    try {
+      const valid = await formRef.value?.formRef?.validate()
+      if (!valid) return false
+      if (isEdit.value && editId.value) {
+        await updateApp(form as any, editId.value)
+        ElMessage.success(t('message.updateSuccess'))
+      } else {
+        await addApp(form as any)
+        ElMessage.success(t('message.addSuccess'))
+      }
+      emit('save-success')
+      handleClose()
+      return true
+    } catch (error) {
+      console.error('保存失败:', error)
+      return false
+    }
+  }
+
+  const handleConfirm = async () => {
+    await save()
+  }
+
+  // 新增
+  const onAdd = () => {
     isEdit.value = false
     editId.value = undefined
     resetForm()
     visible.value = true
   }
 
+  // 修改
   const onUpdate = async (id: string) => {
     isEdit.value = true
     editId.value = id
@@ -137,31 +168,7 @@
     visible.value = true
   }
 
-  const handleConfirm = async () => {
-    try {
-      saving.value = true
-
-      if (isEdit.value && editId.value) {
-        await updateApp(form as any, editId.value)
-        ElMessage.success(t('message.updateSuccess'))
-      } else {
-        await addApp(form as any)
-        ElMessage.success(t('message.addSuccess'))
-      }
-
-      emit('save-success')
-      handleClose()
-    } catch (error) {
-      console.error('保存失败:', error)
-    } finally {
-      saving.value = false
-    }
-  }
-
-  defineExpose({
-    onAdd,
-    onUpdate
-  })
+  defineExpose({ onAdd, onUpdate })
 </script>
 
 <style scoped lang="scss"></style>
