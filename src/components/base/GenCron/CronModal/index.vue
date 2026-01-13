@@ -20,6 +20,7 @@
 
 <script setup lang="ts">
   import { ElMessage } from 'element-plus'
+  import { ref } from 'vue'
   import CronForm from '../CronForm/index.vue'
 
   defineOptions({ name: 'CronModal' })
@@ -29,7 +30,7 @@
   }>()
 
   const visible = ref(false)
-  const cronInputRef = ref()
+  const cronInputRef = ref<InstanceType<typeof CronForm>>()
   const cronExpression = ref('')
 
   // 打开弹窗

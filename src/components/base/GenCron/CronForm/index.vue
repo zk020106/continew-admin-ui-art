@@ -2,7 +2,7 @@
   <div class="cron-inner">
     <div class="content">
       <!-- 设置表单 -->
-      <el-tabs v-model="activeKey" size="small">
+      <el-tabs v-model="activeKey">
         <!-- 秒 -->
         <el-tab-pane v-if="!hideSecond" key="second" name="second" label="秒">
           <SecondForm v-model="second" :disabled="disabled" />
@@ -32,74 +32,25 @@
           <YearForm v-model="year" :disabled="disabled" />
         </el-tab-pane>
       </el-tabs>
+
       <!-- 执行时间预览 -->
-      <el-row :gutter="8">
+      <el-row :gutter="12" class="mt-4">
         <!-- 快捷修改 -->
-        <el-col :span="18" style="margin-top: 28px">
-          <el-row :gutter="12">
-            <!-- 秒 -->
-            <el-col :span="8">
-              <el-input v-model="cronInputs.second" @change="onInputChange">
+        <el-col :xs="24" :sm="18">
+          <el-row :gutter="8">
+            <el-col v-for="item in unitList" :key="item.key" :span="8" class="mb-2">
+              <el-input v-model="item.value.value" @change="calcTriggerTimeList">
                 <template #prepend>
-                  <span class="cron-allow-click" @click="activeKey = 'second'">秒</span>
+                  <span class="cron-allow-click" @click="activeKey = item.key">{{
+                    item.label
+                  }}</span>
                 </template>
               </el-input>
             </el-col>
-            <!-- 分 -->
-            <el-col :span="8">
-              <el-input v-model="cronInputs.minute" @change="onInputChange">
-                <template #prepend>
-                  <span class="cron-allow-click" @click="activeKey = 'minute'">分</span>
-                </template>
-              </el-input>
-            </el-col>
-            <!-- 时 -->
-            <el-col :span="8">
-              <el-input v-model="cronInputs.hour" @change="onInputChange">
-                <template #prepend>
-                  <span class="cron-allow-click" @click="activeKey = 'hour'">时</span>
-                </template>
-              </el-input>
-            </el-col>
-            <!-- 日 -->
-            <el-col :span="8">
-              <el-input v-model="cronInputs.day" @change="onInputChange">
-                <template #prepend>
-                  <span class="cron-allow-click" @click="activeKey = 'day'">日</span>
-                </template>
-              </el-input>
-            </el-col>
-            <!-- 月 -->
-            <el-col :span="8">
-              <el-input v-model="cronInputs.month" @change="onInputChange">
-                <template #prepend>
-                  <span class="cron-allow-click" @click="activeKey = 'month'">月</span>
-                </template>
-              </el-input>
-            </el-col>
-            <!-- 周 -->
-            <el-col :span="8">
-              <el-input v-model="cronInputs.week" @change="onInputChange">
-                <template #prepend>
-                  <span class="cron-allow-click" @click="activeKey = 'week'">周</span>
-                </template>
-              </el-input>
-            </el-col>
-            <!-- 年 -->
-            <el-col :span="8">
-              <el-input v-model="cronInputs.year" @change="onInputChange">
-                <template #prepend>
-                  <span class="cron-allow-click" @click="activeKey = 'year'">年</span>
-                </template>
-              </el-input>
-            </el-col>
+
             <!-- 表达式 -->
             <el-col :span="16">
-              <el-input
-                v-model="cronInputs.cron"
-                :placeholder="placeholder"
-                @change="onInputCronChange"
-              >
+              <el-input v-model="cronInput" :placeholder="placeholder" @change="onInputCronChange">
                 <template #prepend>
                   <span class="cron-allow-click">表达式</span>
                 </template>
@@ -107,10 +58,11 @@
             </el-col>
           </el-row>
         </el-col>
+
         <!-- 执行时间 -->
-        <el-col :span="6">
+        <el-col :xs="24" :sm="6">
           <div class="cron-preview-times usn">近五次执行时间 (不解析年)</div>
-          <el-input v-model="previewTimes" type="textarea" :rows="5" />
+          <el-input v-model="previewTimes" type="textarea" :rows="5" readonly />
         </el-col>
       </el-row>
     </div>
@@ -118,10 +70,11 @@
 </template>
 
 <script setup lang="ts">
-  import { watch } from 'vue'
+  import '@/components/base/GenCron/index.scss'
   import { useDebounceFn } from '@vueuse/core'
   import CronParser from 'cron-parser'
   import dayjs from 'dayjs'
+  import { computed, onMounted, ref, watch } from 'vue'
   import DayForm from './component/day-form.vue'
   import HourForm from './component/hour-form.vue'
   import MinuteForm from './component/minute-form.vue'
@@ -130,7 +83,6 @@
   import WeekForm from './component/week-form.vue'
   import YearForm from './component/year-form.vue'
   import type { CronPropType } from './type'
-  import '@/components/base/GenCron/index.scss'
 
   defineOptions({ name: 'CronForm' })
 
@@ -154,17 +106,22 @@
   const week = ref('?')
   const year = ref('*')
 
-  // 输入框值
-  const cronInputs = reactive({
-    second: '',
-    minute: '',
-    hour: '',
-    day: '',
-    month: '',
-    week: '',
-    year: '',
-    cron: ''
+  // UI 配置列表
+  const unitList = computed(() => {
+    const list = [
+      { key: 'second', label: '秒', value: second, hide: props.hideSecond },
+      { key: 'minute', label: '分', value: minute, hide: false },
+      { key: 'hour', label: '时', value: hour, hide: false },
+      { key: 'day', label: '日', value: day, hide: false },
+      { key: 'month', label: '月', value: month, hide: false },
+      { key: 'week', label: '周', value: week, hide: false },
+      { key: 'year', label: '年', value: year, hide: props.hideYear || props.hideSecond }
+    ]
+    return list.filter((item) => !item.hide)
   })
+
+  // 表达式文本框
+  const cronInput = ref('')
 
   const previewTimes = ref('执行预览')
 
@@ -188,7 +145,8 @@
   // 不含年的 cron 表达式
   const expressionNoYear = (corn: string) => {
     if (props.hideYear || props.hideSecond) return corn
-    return corn.split(' ').slice(0, -1).join(' ')
+    const parts = corn.split(' ')
+    return parts.length > 6 ? parts.slice(0, 6).join(' ') : corn
   }
 
   // 计算触发时间
@@ -196,14 +154,14 @@
     try {
       const parse = expressionNoYear(corn)
       const date = dayjs().format('YYYY-MM-DD HH:mm:ss')
-      const iter = CronParser.parseExpression(parse, { currentDate: date })
+      const iter = CronParser.parse(parse, { currentDate: date })
       const result: string[] = []
       for (let i = 1; i <= 5; i++) {
         result.push(dayjs(iter.next() as any).format('YYYY-MM-DD HH:mm:ss'))
       }
       previewTimes.value = result.length > 0 ? result.join('\n') : '无执行时间'
       props.callback?.(cronExpression.value, +new Date(), true)
-    } catch {
+    } catch (error) {
       previewTimes.value = '表达式错误'
       props.callback?.(cronExpression.value, +new Date(), false)
     }
@@ -211,85 +169,61 @@
 
   const calcTriggerTimeList = useDebounceFn(calculateNextExecutionTimes, 500)
 
-  // 监听 cron 修改
+  // 监听 v-model
   watch(
     () => props.modelValue,
     (newVal) => {
       if (newVal !== cronExpression.value) {
-        parseCron()
+        parseCron(newVal)
       }
     }
   )
 
-  // 监听 cron 表达式变化
+  // 监听内部表达式变化
   watch(cronExpression, (newValue) => {
     calcTriggerTimeList()
     emit('change', newValue)
     emit('update:modelValue', newValue)
-    assignInput()
+    cronInput.value = newValue
   })
 
-  // 根据 cron 解析
-  const parseCron = () => {
-    calcTriggerTimeList()
-    if (!props.modelValue) return
-
-    const values = props.modelValue.split(' ').filter(Boolean)
+  // 解析 cron
+  const parseCron = (value: string | undefined) => {
+    if (!value) return
+    const values = value.split(' ').filter(Boolean)
     if (!values.length) return
 
     let i = 0
-    if (!props.hideSecond) second.value = values[i++]
+    if (!props.hideSecond && values.length > i) second.value = values[i++]
     if (values.length > i) minute.value = values[i++]
     if (values.length > i) hour.value = values[i++]
     if (values.length > i) day.value = values[i++]
     if (values.length > i) month.value = values[i++]
     if (values.length > i) week.value = values[i++]
-    if (values.length > i) year.value = values[i]
+    if (!props.hideYear && !props.hideSecond && values.length > i) year.value = values[i]
 
-    assignInput()
-  }
-
-  // 重新分配输入值
-  const assignInput = () => {
-    Object.assign(cronInputs, {
-      second: second.value,
-      minute: minute.value,
-      hour: hour.value,
-      day: day.value,
-      month: month.value,
-      week: week.value,
-      year: year.value,
-      cron: cronExpression.value
-    })
-  }
-
-  // 修改 cron 解析内容
-  const onInputChange = () => {
-    second.value = cronInputs.second
-    minute.value = cronInputs.minute
-    hour.value = cronInputs.hour
-    day.value = cronInputs.day
-    month.value = cronInputs.month
-    week.value = cronInputs.week
-    year.value = cronInputs.year
+    cronInput.value = cronExpression.value
+    calcTriggerTimeList()
   }
 
   // 修改 cron 输入框
   const onInputCronChange = (value: string) => {
     emit('change', value)
     emit('update:modelValue', value)
+    parseCron(value)
   }
 
   // 校验日和周只能有一个为 ?
   const checkCron = () => day.value === '?' && week.value === '?'
 
   onMounted(() => {
-    assignInput()
-    parseCron()
-    if (!props.modelValue) {
+    if (props.modelValue) {
+      parseCron(props.modelValue)
+    } else {
       emit('change', cronExpression.value)
       emit('update:modelValue', cronExpression.value)
     }
+    cronInput.value = cronExpression.value
   })
 
   defineExpose({ checkCron })

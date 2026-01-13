@@ -1,28 +1,40 @@
 <template>
   <div class="cron-config-list">
-    <el-radio-group :model-value="type" @update:model-value="type = $event">
+    <el-radio-group :model-value="type" @update:model-value="type = $event as any">
       <div class="item">
-        <el-radio :value="TypeEnum.unset" v-bind="beforeRadioAttrs">不设置</el-radio>
+        <ElRadio :value="TypeEnum.unset" v-bind="beforeRadioAttrs">不设置</ElRadio>
         <span class="tip-info">日和周只能设置其中之一</span>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.every" v-bind="beforeRadioAttrs">每日</el-radio>
+        <ElRadio :value="TypeEnum.every" v-bind="beforeRadioAttrs">每日</ElRadio>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.range" v-bind="beforeRadioAttrs">区间</el-radio>
-        <span>从</span>
-        <el-input-number v-model="valueRange.start" v-bind="inputNumberAttrs" />
-        <span>日 至</span>
-        <el-input-number v-model="valueRange.end" v-bind="inputNumberAttrs" />
-        <span>日</span>
+        <ElRadio :value="TypeEnum.range" v-bind="beforeRadioAttrs">区间</ElRadio>
+        <div class="item-config">
+          <span>从</span>
+          <el-input-number v-model="valueRange.start" v-bind="inputNumberAttrs" />
+          <span>日 至</span>
+          <el-input-number v-model="valueRange.end" v-bind="inputNumberAttrs" />
+          <span>日</span>
+        </div>
+      </div>
+      <div class="item">
+        <el-radio :value="TypeEnum.work" v-bind="beforeRadioAttrs">工作日</el-radio>
+        <div class="item-config">
+          <span>本月</span>
+          <el-input-number v-model="valueWork" v-bind="typeWorkAttrs" />
+          <span>日，最近的工作日</span>
+        </div>
       </div>
       <div class="item">
         <el-radio :value="TypeEnum.loop" v-bind="beforeRadioAttrs">循环</el-radio>
-        <span>从</span>
-        <el-input-number v-model="valueLoop.start" v-bind="typeLoopAttrs" />
-        <span>日开始, 间隔</span>
-        <el-input-number v-model="valueLoop.interval" v-bind="typeLoopAttrs" />
-        <span>日</span>
+        <div class="item-config">
+          <span>从</span>
+          <el-input-number v-model="valueLoop.start" v-bind="typeLoopAttrs" />
+          <span>日开始, 间隔</span>
+          <el-input-number v-model="valueLoop.interval" v-bind="typeLoopAttrs" />
+          <span>日</span>
+        </div>
       </div>
       <div class="item">
         <el-radio :value="TypeEnum.last" v-bind="beforeRadioAttrs">最后一日</el-radio>
@@ -42,27 +54,28 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, watch } from 'vue'
-  import {
-    TypeEnum,
-    useFormProps,
-    useFormSetup,
-    useFromEmits,
-    type FormSetupReturn
-  } from './use-mixin'
+  import { computed, watch, type ComputedRef } from 'vue'
+  import { TypeEnum, useFormSetup, type FormSetupReturn } from './use-mixin'
 
   defineOptions({ name: 'DayForm' })
 
-  const props = defineProps(
-    useFormProps({
-      defaultValue: '*',
-      props: {
-        week: { type: String, default: '?' }
-      }
-    })
+  const props = withDefaults(
+    defineProps<{
+      modelValue?: string
+      disabled?: boolean
+      week?: string
+    }>(),
+    {
+      modelValue: '*',
+      disabled: false,
+      week: '?'
+    }
   )
 
-  const emit = defineEmits(useFromEmits())
+  const emit = defineEmits<{
+    (e: 'change', value: string): void
+    (e: 'update:modelValue', value: string): void
+  }>()
 
   const isDisabled = computed(() => {
     return (props.week && props.week !== '?') || props.disabled
@@ -82,7 +95,8 @@
       max: number
       min: number
       precision: number
-      size: string
+      size: 'small'
+      controlsPosition: 'right'
       class: string[]
     }>
   }
@@ -104,10 +118,10 @@
     valueRange,
     valueLoop,
     valueList,
+    valueWork,
     specifyRange,
     beforeRadioAttrs,
     inputNumberAttrs,
-    typeRangeAttrs,
     typeLoopAttrs,
     typeSpecifyAttrs
   } = setup

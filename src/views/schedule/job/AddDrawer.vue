@@ -75,23 +75,19 @@
             </ElFormItem>
             <ElFormItem v-else label="Cron表达式" prop="triggerInterval">
               <div style="display: flex">
-                <ElAutocomplete
+                <ElInput
                   v-model="form.triggerInterval"
                   :fetch-suggestions="querySearch"
                   placeholder="请输入Cron表达式"
                   clearable
                   style="flex: 1"
                 >
-                  <template #suffix>
+                  <template #append>
                     <ElTooltip content="Cron表达式生成">
-                      <ElButton
-                        @click="openGeneratorCron(form.triggerInterval)"
-                        :icon="Clock"
-                        circle
-                      />
+                      <ElButton @click="openGeneratorCron(form.triggerInterval)" :icon="Clock" />
                     </ElTooltip>
                   </template>
-                </ElAutocomplete>
+                </ElInput>
               </div>
             </ElFormItem>
           </ElCol>
@@ -223,13 +219,13 @@
 
 <script setup lang="ts">
   import { addJob, listGroup, updateJob } from '@/apis/schedule/job'
+  import CronModal from '@/components/base/GenCron/CronModal/index.vue'
   import { useDict, useResetReactive } from '@/hooks'
   import type { LabelValueState } from '@/types/global'
   import { Clock, Delete, Plus } from '@element-plus/icons-vue'
   import { useWindowSize } from '@vueuse/core'
   import type { FormInstance, FormRules } from 'element-plus'
   import { ElMessage } from 'element-plus'
-  import CronModal from '@/components/base/GenCron/CronModal/index.vue'
 
   const emit = defineEmits<{
     (e: 'save-success'): void

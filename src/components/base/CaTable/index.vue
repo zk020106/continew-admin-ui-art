@@ -304,6 +304,8 @@
       z-index: 100;
       display: flex;
       flex-shrink: 0;
+      flex-wrap: wrap;
+      gap: 12px;
       align-items: center;
       justify-content: space-between;
       padding: 10px 0;
@@ -311,11 +313,24 @@
       &-left {
         flex: 1;
         min-width: 0;
+
+        @media screen and (width <= 768px) {
+          flex: none;
+          width: 100%;
+        }
       }
 
       &-right {
+        display: flex;
         flex-shrink: 0;
+        align-items: center;
         margin-left: auto;
+
+        @media screen and (width <= 768px) {
+          justify-content: flex-end;
+          width: 100%;
+          margin-left: 0;
+        }
 
         .el-dropdown {
           .el-button.is-circle {

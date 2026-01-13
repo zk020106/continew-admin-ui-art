@@ -1,24 +1,28 @@
 <template>
   <div class="cron-config-list">
-    <el-radio-group :model-value="type" @update:model-value="type = $event">
+    <el-radio-group :model-value="type" @update:model-value="type = $event as any">
       <div class="item">
         <el-radio :value="TypeEnum.every" v-bind="beforeRadioAttrs">每月</el-radio>
       </div>
       <div class="item">
         <el-radio :value="TypeEnum.range" v-bind="beforeRadioAttrs">区间</el-radio>
-        <span>从</span>
-        <el-input-number v-model="valueRange.start" v-bind="typeRangeAttrs" />
-        <span>月 至</span>
-        <el-input-number v-model="valueRange.end" v-bind="typeRangeAttrs" />
-        <span>月</span>
+        <div class="item-config">
+          <span>从</span>
+          <el-input-number v-model="valueRange.start" v-bind="typeRangeAttrs" />
+          <span>月 至</span>
+          <el-input-number v-model="valueRange.end" v-bind="typeRangeAttrs" />
+          <span>月</span>
+        </div>
       </div>
       <div class="item">
         <el-radio :value="TypeEnum.loop" v-bind="beforeRadioAttrs">循环</el-radio>
-        <span>从</span>
-        <el-input-number v-model="valueLoop.start" v-bind="typeLoopAttrs" />
-        <span>月开始, 间隔</span>
-        <el-input-number v-model="valueLoop.interval" v-bind="typeLoopAttrs" />
-        <span>月</span>
+        <div class="item-config">
+          <span>从</span>
+          <el-input-number v-model="valueLoop.start" v-bind="typeLoopAttrs" />
+          <span>月开始, 间隔</span>
+          <el-input-number v-model="valueLoop.interval" v-bind="typeLoopAttrs" />
+          <span>月</span>
+        </div>
       </div>
       <div class="item">
         <el-radio :value="TypeEnum.specify" v-bind="beforeRadioAttrs">指定</el-radio>
@@ -35,17 +39,25 @@
 </template>
 
 <script setup lang="ts">
-  import { useFormProps, useFormSetup, useFromEmits } from './use-mixin'
+  import { useFormSetup } from './use-mixin'
 
   defineOptions({ name: 'MonthForm' })
 
-  const props = defineProps(
-    useFormProps({
-      defaultValue: '*'
-    })
+  const props = withDefaults(
+    defineProps<{
+      modelValue?: string
+      disabled?: boolean
+    }>(),
+    {
+      modelValue: '*',
+      disabled: false
+    }
   )
 
-  const emit = defineEmits(useFromEmits())
+  const emit = defineEmits<{
+    (e: 'change', value: string): void
+    (e: 'update:modelValue', value: string): void
+  }>()
 
   const setup = useFormSetup(props, emit, {
     defaultValue: '*',

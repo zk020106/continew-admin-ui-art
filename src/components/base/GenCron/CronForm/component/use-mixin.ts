@@ -38,7 +38,8 @@ export interface FormSetupOptions {
   maxValue?: number
   valueRange?: { start: number; end: number }
   valueLoop?: { start: number; interval: number }
-  disabled?: boolean | (() => boolean)
+  valueWork?: number
+  disabled?: boolean | (() => boolean) | Ref<boolean> | ComputedRef<boolean>
 }
 
 // 返回值类型
@@ -58,13 +59,14 @@ export interface FormSetupReturn {
   beforeRadioAttrs: ComputedRef<{
     class: string[]
     disabled: boolean
-    size: string
+    size: 'small'
   }>
   inputNumberAttrs: ComputedRef<{
     max: number
     min: number
     precision: number
-    size: string
+    size: 'small'
+    controlsPosition: 'right'
     class: string[]
   }>
   typeRangeAttrs: ComputedRef<{
@@ -72,7 +74,8 @@ export interface FormSetupReturn {
     max: number
     min: number
     precision: number
-    size: string
+    size: 'small'
+    controlsPosition: 'right'
     class: string[]
   }>
   typeLoopAttrs: ComputedRef<{
@@ -80,13 +83,14 @@ export interface FormSetupReturn {
     max: number
     min: number
     precision: number
-    size: string
+    size: 'small'
+    controlsPosition: 'right'
     class: string[]
   }>
   typeSpecifyAttrs: ComputedRef<{
     disabled: boolean
     class: string[]
-    size: string
+    size: 'small'
   }>
 }
 
@@ -113,10 +117,9 @@ export function useFromEmits() {
 // 公共 setup
 export function useFormSetup(
   props: Record<string, any>,
-  context: { emit: (event: string, value: any) => void },
+  emit: (event: any, value: any) => void,
   options: FormSetupOptions = {}
 ): FormSetupReturn {
-  const emit = context.emit
   const defaultValue = ref(options.defaultValue ?? '?')
   const type = ref<TypeEnumValue>(options.defaultType ?? TypeEnum.every)
   const valueList = ref<number[]>([])
@@ -129,46 +132,34 @@ export function useFormSetup(
 
   // 根据不同的类型计算出的 value
   const computeValue = computed(() => {
-    const valueArray: string[] = []
     switch (type.value) {
       case TypeEnum.unset:
-        valueArray.push('?')
-        break
+        return '?'
       case TypeEnum.every:
-        valueArray.push('*')
-        break
+        return '*'
       case TypeEnum.range:
-        valueArray.push(`${valueRange.start}-${valueRange.end}`)
-        break
+        return `${valueRange.start}-${valueRange.end}`
       case TypeEnum.loop:
-        valueArray.push(`${valueLoop.start}/${valueLoop.interval}`)
-        break
+        return `${valueLoop.start}/${valueLoop.interval}`
       case TypeEnum.work:
-        valueArray.push(`${valueWork.value}W`)
-        break
+        return `${valueWork.value}W`
       case TypeEnum.last:
-        valueArray.push('L')
-        break
+        return 'L'
       case TypeEnum.specify:
         if (valueList.value.length === 0) {
           valueList.value.push(minValue.value)
         }
-        valueArray.push(valueList.value.join(','))
-        break
+        return [...new Set(valueList.value)].sort((a, b) => a - b).join(',')
       default:
-        valueArray.push(defaultValue.value)
-        break
+        return defaultValue.value
     }
-    return valueArray.length > 0 ? valueArray.join('') : defaultValue.value
   })
 
   // 指定值范围区间, 介于最小值和最大值之间
   const specifyRange = computed(() => {
     const range: number[] = []
-    if (maxValue.value != null) {
-      for (let i = minValue.value; i <= maxValue.value; i++) {
-        range.push(i)
-      }
+    for (let i = minValue.value; i <= maxValue.value; i++) {
+      range.push(i)
     }
     return range
   })
@@ -180,40 +171,36 @@ export function useFormSetup(
   }
 
   // 解析值
-  const parseValue = (value: string) => {
-    if (value === computeValue.value) {
-      return
-    }
+  const parseValue = (value: string | undefined) => {
+    if (!value || value === computeValue.value) return
+
     try {
-      if (!value || value === defaultValue.value) {
+      if (value === '*') {
         type.value = TypeEnum.every
-      } else if (value.includes('?')) {
+      } else if (value === '?') {
         type.value = TypeEnum.unset
       } else if (value.includes('-')) {
         type.value = TypeEnum.range
-        const values = value.split('-')
-        if (values.length >= 2) {
-          valueRange.start = Number.parseInt(values[0])
-          valueRange.end = Number.parseInt(values[1])
-        }
+        const [start, end] = value.split('-').map(Number)
+        if (!Number.isNaN(start)) valueRange.start = start
+        if (!Number.isNaN(end)) valueRange.end = end
       } else if (value.includes('/')) {
         type.value = TypeEnum.loop
-        const values = value.split('/')
-        if (values.length >= 2) {
-          valueLoop.start = value[0] === '*' ? 0 : Number.parseInt(values[0])
-          valueLoop.interval = Number.parseInt(values[1])
-        }
-      } else if (value.includes('W')) {
+        const [start, interval] = value.split('/')
+        valueLoop.start = start === '*' ? 0 : Number(start)
+        if (!Number.isNaN(Number(interval))) valueLoop.interval = Number(interval)
+      } else if (value.endsWith('W')) {
         type.value = TypeEnum.work
-        const values = value.split('W')
-        if (!values[0] && !Number.isNaN(values[0])) {
-          valueWork.value = Number.parseInt(values[0])
-        }
-      } else if (value.includes('L')) {
+        const val = Number.parseInt(value.replace('W', ''))
+        if (!Number.isNaN(val)) valueWork.value = val
+      } else if (value === 'L') {
         type.value = TypeEnum.last
-      } else if (value.includes(',') || !Number.isNaN(value)) {
+      } else if (value.includes(',') || !Number.isNaN(Number(value))) {
         type.value = TypeEnum.specify
-        valueList.value = value.split(',').map((item) => Number.parseInt(item))
+        valueList.value = value
+          .split(',')
+          .map(Number)
+          .filter((n) => !Number.isNaN(n))
       } else {
         type.value = TypeEnum.every
       }
@@ -228,10 +215,13 @@ export function useFormSetup(
     if (typeof optionDisabled === 'function') {
       return optionDisabled()
     }
+    if (typeof optionDisabled === 'object' && 'value' in optionDisabled) {
+      return optionDisabled.value
+    }
     return optionDisabled ?? false
   }
 
-  // 更新值
+  // 监听 modelValue
   watch(
     () => props.modelValue,
     (val) => {
@@ -242,14 +232,14 @@ export function useFormSetup(
     { immediate: true }
   )
 
-  // 更新值
+  // 监听内部值变化
   watch(computeValue, (v) => updateValue(v))
 
   // 单选框属性
   const beforeRadioAttrs = computed(() => ({
     class: ['choice'],
     disabled: props.disabled || getDisabled(),
-    size: 'small'
+    size: 'small' as const
   }))
 
   // 输入框属性
@@ -257,8 +247,9 @@ export function useFormSetup(
     max: maxValue.value,
     min: minValue.value,
     precision: 0,
-    size: 'small',
-    class: ['w60']
+    size: 'small' as const,
+    controlsPosition: 'right' as const,
+    class: []
   }))
 
   // 区间属性
@@ -277,7 +268,7 @@ export function useFormSetup(
   const typeSpecifyAttrs = computed(() => ({
     disabled: type.value !== TypeEnum.specify || props.disabled || getDisabled(),
     class: ['list-check-item'],
-    size: 'small'
+    size: 'small' as const
   }))
 
   return {

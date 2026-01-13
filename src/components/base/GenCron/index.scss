@@ -7,54 +7,64 @@
   margin: 0 12px 4px;
   text-align: left;
 
+  .el-radio-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
   .item {
+    display: block; // Stack items vertically
+    width: 100%;
+    margin-top: 12px;
+    font-size: 14px;
+
+    &:first-child {
+      margin-top: 4px;
+    }
+  }
+
+  .choice {
+    margin-right: 0;
+    margin-bottom: 8px; // Space between radio and its config
+  }
+
+  .w80 {
+    width: 100px;
+  }
+
+  span:not(.tip-info) {
+    margin: 0 4px;
+    color: var(--el-text-color-regular);
+  }
+
+  .item-config {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
-    margin-top: 6px;
-    font-size: 14px;
-  }
-
-  .choice {
-    margin-right: 4px;
-  }
-
-  .w60 {
-    width: 60px;
-  }
-
-  .w80 {
-    width: 80px;
+    min-height: 32px;
+    margin-left: 28px; // Align with the radio label text
   }
 
   .list {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    margin: 0 20px;
-  }
+    margin-top: 4px;
+    margin-left: 28px;
 
-  .list-check-item {
-    width: 32px;
-    text-align: center;
-  }
-
-  .list-cn .list-check-item {
-    width: 48px;
-  }
-
-  .list-cn {
-    // 中文周选择器的复选框宽度
     .el-checkbox {
-      width: 48px;
+      width: 45px; // Ensure enough space for 2-digit numbers
+      margin-right: 0;
     }
   }
 
-  .tip-info {
-    margin-left: 8px;
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
+  .list-cn {
+    .el-checkbox {
+      width: 60px; // More space for Chinese labels
+    }
   }
 }
 
@@ -66,8 +76,6 @@
 }
 
 .cron-config-list .el-checkbox {
-  margin-right: 0;
-
   --el-checkbox-checked-bg-color: var(--el-color-primary);
   --el-checkbox-checked-input-bg-color: var(--el-color-primary);
   --el-checkbox-checked-border-color: var(--el-color-primary);
@@ -76,6 +84,12 @@
 // 输入框组前缀
 .el-input-group__prepend {
   padding: 0 !important;
+}
+
+.tip-info {
+  margin-left: 8px;
+  font-size: 12px;
+  color: var(--el-text-color-secondary);
 }
 
 // 预览时间
