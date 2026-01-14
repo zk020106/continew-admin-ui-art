@@ -367,7 +367,7 @@
 
   // 查询任务组列表
   const getGroupList = async () => {
-    const { data } = await listGroup()
+    const data = await listGroup()
     groupList.value = data?.map((item: string) => ({
       label: item,
       value: item
