@@ -26,8 +26,11 @@
         <ElLink type="primary" @click="onDetail(row)">{{ row.jobName }}</ElLink>
       </template>
       <template #triggerType="{ row }">
-        <span v-if="row.triggerType === 1">Cron</span>
-        <span v-else-if="row.triggerType === 2">固定间隔 - {{ row.triggerInterval }} 秒</span>
+        <span v-if="row.triggerType === 1">{{ $t('schedule.job.triggerType.cron') }}</span>
+        <span v-else-if="row.triggerType === 2"
+          >{{ $t('schedule.job.triggerType.fixedInterval') }} - {{ row.triggerInterval }}
+          {{ $t('schedule.job.triggerType.intervalUnit') }}</span
+        >
         <span v-else>{{ row.triggerInterval }}</span>
       </template>
       <template #taskType="{ row }">
@@ -45,14 +48,16 @@
       </template>
       <template #action="{ row }">
         <ElSpace>
-          <ElPopconfirm title="是否确定立即执行一次任务?" @ok="onTrigger(row)">
+          <ElPopconfirm :title="$t('schedule.job.message.executeRequestSent')" @ok="onTrigger(row)">
             <template #reference>
-              <ElLink v-auth="['schedule:job:trigger']" type="primary">执行</ElLink>
+              <ElLink v-auth="['schedule:job:trigger']" type="primary">{{
+                $t('schedule.job.button.execute')
+              }}</ElLink>
             </template>
           </ElPopconfirm>
-          <ElLink v-auth="['schedule:job:update']" type="primary" @click="onUpdate(row)"
-            >修改</ElLink
-          >
+          <ElLink v-auth="['schedule:job:update']" type="primary" @click="onUpdate(row)">{{
+            $t('schedule.job.button.edit')
+          }}</ElLink>
           <ElDropdown
             v-if="hasAuth('schedule:log:list') || hasAuth('schedule:job:delete')"
             trigger="click"
@@ -62,15 +67,17 @@
             </span>
             <template #dropdown>
               <ElDropdownMenu>
-                <ElDropdownItem v-if="hasAuth('schedule:log:list')" @click="onLog(row)"
-                  >查看日志</ElDropdownItem
-                >
+                <ElDropdownItem v-if="hasAuth('schedule:log:list')" @click="onLog(row)">{{
+                  $t('schedule.job.button.viewLog')
+                }}</ElDropdownItem>
                 <ElDropdownItem
                   v-if="hasAuth('schedule:job:delete')"
                   divided
                   @click="onDelete(row)"
                 >
-                  <span style="color: var(--el-color-danger)">删除</span>
+                  <span style="color: var(--el-color-danger)">{{
+                    $t('schedule.job.button.delete')
+                  }}</span>
                 </ElDropdownItem>
               </ElDropdownMenu>
             </template>
@@ -127,21 +134,21 @@
       [
         {
           type: 'input',
-          label: '任务名称',
+          label: t('schedule.job.search.jobName'),
           field: 'jobName',
           gridItemProps: { span: { xs: 24, sm: 12, xxl: 6 } },
           props: {
-            placeholder: '搜索任务名称',
+            placeholder: t('schedule.job.search.jobNamePlaceholder'),
             clearable: true
           }
         },
         {
           type: 'select',
-          label: '任务组',
+          label: t('schedule.job.search.groupName'),
           field: 'groupName',
           gridItemProps: { span: { xs: 24, sm: 12, xxl: 6 } },
           props: {
-            placeholder: '请选择任务组',
+            placeholder: t('schedule.job.search.groupNamePlaceholder'),
             clearable: true,
             options: groupList.value,
             filterable: true
@@ -160,25 +167,41 @@
       fixed: 'left'
     },
     {
-      label: '任务名称',
+      label: t('schedule.job.field.jobName'),
       prop: 'jobName',
       slotName: 'jobName',
       minWidth: 100,
       showOverflowTooltip: true,
       fixed: 'left'
     },
-    { label: '调度类型', prop: 'triggerType', slotName: 'triggerType', minWidth: 130 },
     {
-      label: '任务类型',
+      label: t('schedule.job.field.triggerType'),
+      prop: 'triggerType',
+      slotName: 'triggerType',
+      minWidth: 130
+    },
+    {
+      label: t('schedule.job.field.taskType'),
       prop: 'taskType',
       slotName: 'taskType',
       minWidth: 130,
       showOverflowTooltip: true
     },
-    { label: '状态', prop: 'jobStatus', slotName: 'jobStatus', align: 'center', width: 80 },
-    { label: '描述', prop: 'description', minWidth: 130, showOverflowTooltip: true },
-    { label: '创建时间', prop: 'createDt', width: 180 },
-    { label: '修改时间', prop: 'updateDt', width: 180, visible: false },
+    {
+      label: t('schedule.job.field.jobStatus'),
+      prop: 'jobStatus',
+      slotName: 'jobStatus',
+      align: 'center',
+      width: 80
+    },
+    {
+      label: t('schedule.job.field.description'),
+      prop: 'description',
+      minWidth: 130,
+      showOverflowTooltip: true
+    },
+    { label: t('schedule.job.field.createDt'), prop: 'createDt', width: 180 },
+    { label: t('schedule.job.field.updateDt'), prop: 'updateDt', width: 180, visible: false },
     {
       label: t('common.action'),
       prop: 'action',
@@ -201,18 +224,12 @@
     search()
   }
 
-  // 重置
-  const reset = () => {
-    resetForm()
-    search()
-  }
-
   // 删除
   const onDelete = (row: JobResp) => {
     handleDelete(() => deleteJob(row.id), {
-      content: `是否确定删除任务「${row.jobName}」？`,
+      content: t('schedule.job.message.deleteConfirm', { name: row.jobName }),
       confirmType: 'error',
-      successTip: '删除成功'
+      successTip: t('schedule.job.message.deleteSuccess')
     })
   }
 
@@ -221,7 +238,11 @@
     const newVal = record.jobStatus === 1 ? 0 : 1
     try {
       await updateJobStatus({ jobStatus: newVal }, record.id)
-      ElMessage.success(newVal === 1 ? '启用成功' : '禁用成功')
+      ElMessage.success(
+        newVal === 1
+          ? t('schedule.job.message.enableSuccess')
+          : t('schedule.job.message.disableSuccess')
+      )
       return true
     } catch {
       return false
@@ -231,8 +252,14 @@
   // 执行
   const onTrigger = (record: JobResp) => {
     triggerJob(record.id).then(() => {
-      ElMessage.success('执行请求已下发')
+      ElMessage.success(t('schedule.job.message.executeRequestSent'))
     })
+  }
+
+  // 重置
+  const reset = () => {
+    resetForm()
+    search()
   }
 
   const AddDrawerRef = useTemplateRef('AddDrawerRef')

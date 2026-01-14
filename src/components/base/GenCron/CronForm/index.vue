@@ -4,31 +4,41 @@
       <!-- 设置表单 -->
       <el-tabs v-model="activeKey">
         <!-- 秒 -->
-        <el-tab-pane v-if="!hideSecond" key="second" name="second" label="秒">
+        <el-tab-pane
+          v-if="!hideSecond"
+          key="second"
+          name="second"
+          :label="t('components.genCron.tab.second')"
+        >
           <SecondForm v-model="second" :disabled="disabled" />
         </el-tab-pane>
         <!-- 分 -->
-        <el-tab-pane key="minute" name="minute" label="分">
+        <el-tab-pane key="minute" name="minute" :label="t('components.genCron.tab.minute')">
           <MinuteForm v-model="minute" :disabled="disabled" />
         </el-tab-pane>
         <!-- 时 -->
-        <el-tab-pane key="hour" name="hour" label="时">
+        <el-tab-pane key="hour" name="hour" :label="t('components.genCron.tab.hour')">
           <HourForm v-model="hour" :disabled="disabled" />
         </el-tab-pane>
         <!-- 日 -->
-        <el-tab-pane key="day" name="day" label="日">
+        <el-tab-pane key="day" name="day" :label="t('components.genCron.tab.day')">
           <DayForm v-model="day" :week="week" :disabled="disabled" />
         </el-tab-pane>
         <!-- 月 -->
-        <el-tab-pane key="month" name="month" label="月">
+        <el-tab-pane key="month" name="month" :label="t('components.genCron.tab.month')">
           <MonthForm v-model="month" :disabled="disabled" />
         </el-tab-pane>
         <!-- 周 -->
-        <el-tab-pane key="week" name="week" label="周">
+        <el-tab-pane key="week" name="week" :label="t('components.genCron.tab.week')">
           <WeekForm v-model="week" :day="day" :disabled="disabled" />
         </el-tab-pane>
         <!-- 年 -->
-        <el-tab-pane v-if="!hideYear && !hideSecond" key="year" name="year" label="年">
+        <el-tab-pane
+          v-if="!hideYear && !hideSecond"
+          key="year"
+          name="year"
+          :label="t('components.genCron.tab.year')"
+        >
           <YearForm v-model="year" :disabled="disabled" />
         </el-tab-pane>
       </el-tabs>
@@ -42,7 +52,7 @@
               <el-input v-model="item.value.value" @change="calcTriggerTimeList">
                 <template #prepend>
                   <span class="cron-allow-click" @click="activeKey = item.key">{{
-                    item.label
+                    t(`components.genCron.tab.${item.key}`)
                   }}</span>
                 </template>
               </el-input>
@@ -50,9 +60,13 @@
 
             <!-- 表达式 -->
             <el-col :span="16">
-              <el-input v-model="cronInput" :placeholder="placeholder" @change="onInputCronChange">
+              <el-input
+                v-model="cronInput"
+                :placeholder="t('components.genCron.placeholder.cronInput')"
+                @change="onInputCronChange"
+              >
                 <template #prepend>
-                  <span class="cron-allow-click">表达式</span>
+                  <span class="cron-allow-click">{{ t('components.genCron.expression') }}</span>
                 </template>
               </el-input>
             </el-col>
@@ -61,7 +75,7 @@
 
         <!-- 执行时间 -->
         <el-col :xs="24" :sm="6">
-          <div class="cron-preview-times usn">近五次执行时间 (不解析年)</div>
+          <div class="cron-preview-times usn">{{ t('components.genCron.preview.title') }}</div>
           <el-input v-model="previewTimes" type="textarea" :rows="5" readonly />
         </el-col>
       </el-row>
@@ -83,8 +97,11 @@
   import WeekForm from './component/week-form.vue'
   import YearForm from './component/year-form.vue'
   import type { CronPropType } from './type'
+  import { useI18n } from 'vue-i18n'
 
   defineOptions({ name: 'CronForm' })
+
+  const { t } = useI18n()
 
   const props = withDefaults(defineProps<Partial<CronPropType>>(), {
     disabled: false,
@@ -109,13 +126,13 @@
   // UI 配置列表
   const unitList = computed(() => {
     const list = [
-      { key: 'second', label: '秒', value: second, hide: props.hideSecond },
-      { key: 'minute', label: '分', value: minute, hide: false },
-      { key: 'hour', label: '时', value: hour, hide: false },
-      { key: 'day', label: '日', value: day, hide: false },
-      { key: 'month', label: '月', value: month, hide: false },
-      { key: 'week', label: '周', value: week, hide: false },
-      { key: 'year', label: '年', value: year, hide: props.hideYear || props.hideSecond }
+      { key: 'second', value: second, hide: props.hideSecond },
+      { key: 'minute', value: minute, hide: false },
+      { key: 'hour', value: hour, hide: false },
+      { key: 'day', value: day, hide: false },
+      { key: 'month', value: month, hide: false },
+      { key: 'week', value: week, hide: false },
+      { key: 'year', value: year, hide: props.hideYear || props.hideSecond }
     ]
     return list.filter((item) => !item.hide)
   })
@@ -123,7 +140,7 @@
   // 表达式文本框
   const cronInput = ref('')
 
-  const previewTimes = ref('执行预览')
+  const previewTimes = ref(t('components.genCron.preview.executionPreview'))
 
   // cron 表达式
   const cronExpression = computed(() => {
@@ -159,10 +176,11 @@
       for (let i = 1; i <= 5; i++) {
         result.push(dayjs(iter.next() as any).format('YYYY-MM-DD HH:mm:ss'))
       }
-      previewTimes.value = result.length > 0 ? result.join('\n') : '无执行时间'
+      previewTimes.value =
+        result.length > 0 ? result.join('\n') : t('components.genCron.preview.noExecutionTime')
       props.callback?.(cronExpression.value, +new Date(), true)
     } catch (error) {
-      previewTimes.value = '表达式错误'
+      previewTimes.value = t('components.genCron.preview.expressionError')
       props.callback?.(cronExpression.value, +new Date(), false)
     }
   }

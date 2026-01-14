@@ -18,13 +18,13 @@
       :layout="width >= 700 ? 'inline' : 'vertical'"
     >
       <fieldset>
-        <legend>基础配置</legend>
+        <legend>{{ $t('schedule.job.form.basicConfig') }}</legend>
         <ElRow :gutter="12">
           <ElCol v-bind="colProps">
-            <ElFormItem label="任务组" prop="groupName">
+            <ElFormItem :label="t('schedule.job.form.groupName')" prop="groupName">
               <ElSelect
                 v-model="form.groupName"
-                placeholder="请选择任务组"
+                :placeholder="t('schedule.job.form.groupNamePlaceholder')"
                 :options="groupList"
                 filterable
                 style="width: 100%"
@@ -32,21 +32,21 @@
             </ElFormItem>
           </ElCol>
           <ElCol v-bind="colProps">
-            <ElFormItem label="任务名称" prop="jobName">
+            <ElFormItem :label="t('schedule.job.form.jobName')" prop="jobName">
               <ElInput
                 v-model="form.jobName"
-                placeholder="请输入任务名称"
+                :placeholder="t('schedule.job.form.jobNamePlaceholder')"
                 :maxlength="64"
                 show-word-limit
               />
             </ElFormItem>
           </ElCol>
         </ElRow>
-        <ElFormItem label="描述" prop="description">
+        <ElFormItem :label="t('schedule.job.form.description')" prop="description">
           <ElInput
             v-model="form.description"
             type="textarea"
-            placeholder="请输入描述"
+            :placeholder="t('schedule.job.form.descriptionPlaceholder')"
             show-word-limit
             :maxlength="200"
             :rows="3"
@@ -54,13 +54,13 @@
         </ElFormItem>
       </fieldset>
       <fieldset>
-        <legend>调度配置</legend>
+        <legend>{{ $t('schedule.job.form.scheduleConfig') }}</legend>
         <ElRow :gutter="12">
           <ElCol v-bind="colProps">
-            <ElFormItem label="触发类型" prop="triggerType">
+            <ElFormItem :label="t('schedule.job.form.triggerType')" prop="triggerType">
               <ElSelect
                 v-model="form.triggerType"
-                placeholder="请选择触发类型"
+                :placeholder="t('schedule.job.form.triggerTypePlaceholder')"
                 :options="job_trigger_type_enum"
                 @change="triggerTypeChange"
                 style="width: 100%"
@@ -68,22 +68,35 @@
             </ElFormItem>
           </ElCol>
           <ElCol v-bind="colProps">
-            <ElFormItem v-if="form.triggerType === 2" label="间隔时长" prop="triggerInterval">
-              <ElInput v-model="form.triggerInterval" placeholder="请输入间隔时长">
-                <template #suffix>秒</template>
+            <ElFormItem
+              v-if="form.triggerType === 2"
+              :label="t('schedule.job.form.triggerInterval.interval')"
+              prop="triggerInterval"
+            >
+              <ElInput
+                v-model="form.triggerInterval"
+                :placeholder="t('schedule.job.form.triggerInterval.intervalPlaceholder')"
+              >
+                <template #suffix>{{
+                  $t('schedule.job.form.triggerInterval.intervalUnit')
+                }}</template>
               </ElInput>
             </ElFormItem>
-            <ElFormItem v-else label="Cron表达式" prop="triggerInterval">
+            <ElFormItem
+              v-else
+              :label="t('schedule.job.form.triggerInterval.cron')"
+              prop="triggerInterval"
+            >
               <div style="display: flex">
                 <ElInput
                   v-model="form.triggerInterval"
                   :fetch-suggestions="querySearch"
-                  placeholder="请输入Cron表达式"
+                  :placeholder="t('schedule.job.form.triggerInterval.cronPlaceholder')"
                   clearable
                   style="flex: 1"
                 >
                   <template #append>
-                    <ElTooltip content="Cron表达式生成">
+                    <ElTooltip :content="t('components.genCron.title')">
                       <ElButton @click="openGeneratorCron(form.triggerInterval)" :icon="Clock" />
                     </ElTooltip>
                   </template>
@@ -94,109 +107,122 @@
         </ElRow>
       </fieldset>
       <fieldset>
-        <legend>任务配置</legend>
+        <legend>{{ $t('schedule.job.form.taskConfig') }}</legend>
         <ElRow :gutter="12">
           <ElCol v-bind="colProps">
-            <ElFormItem label="任务类型" prop="taskType">
+            <ElFormItem :label="t('schedule.job.form.taskType')" prop="taskType">
               <ElSelect
                 v-model="form.taskType"
                 :options="job_task_type_enum"
-                placeholder="请选择任务类型"
+                :placeholder="t('schedule.job.form.taskTypePlaceholder')"
                 style="width: 100%"
               />
             </ElFormItem>
           </ElCol>
           <ElCol v-bind="colProps">
-            <ElFormItem label="执行器名称" prop="executorInfo">
+            <ElFormItem :label="t('schedule.job.form.executorInfo')" prop="executorInfo">
               <ElInput
                 v-model="form.executorInfo"
-                placeholder="请输入执行器名称"
+                :placeholder="t('schedule.job.form.executorInfoPlaceholder')"
                 :maxlength="255"
               />
             </ElFormItem>
           </ElCol>
         </ElRow>
-        <ElFormItem label="任务参数" prop="argsStr">
+        <ElFormItem :label="t('schedule.job.form.argsStr')" prop="argsStr">
           <ElInput
             v-if="form.taskType !== 3"
             v-model="form.argsStr"
             type="textarea"
-            placeholder="请输入任务参数"
+            :placeholder="t('schedule.job.form.argsStrPlaceholder')"
             :rows="3"
           />
           <div v-else class="args-container">
             <div v-for="(item, index) in args" :key="index" class="args-item">
-              <ElFormItem hide-label :rules="[{ required: true, message: '请输入分片参数' }]">
-                <ElInput v-model="item.value" :placeholder="`请输入分片参数 ${index + 1}`" />
+              <ElFormItem
+                hide-label
+                :rules="[
+                  {
+                    required: true,
+                    message: t('schedule.job.form.sliceParamPlaceholder', { index: index + 1 })
+                  }
+                ]"
+              >
+                <ElInput
+                  v-model="item.value"
+                  :placeholder="t('schedule.job.form.sliceParamPlaceholder', { index: index + 1 })"
+                />
               </ElFormItem>
               <ElButton type="danger" :icon="Delete" circle @click="onDeleteArgs(index)" />
             </div>
-            <ElButton type="primary" :icon="Plus" @click="onAddArgs">添加分片参数</ElButton>
+            <ElButton type="primary" :icon="Plus" @click="onAddArgs">{{
+              $t('schedule.job.form.sliceParam')
+            }}</ElButton>
           </div>
         </ElFormItem>
       </fieldset>
       <fieldset>
-        <legend>高级配置</legend>
+        <legend>{{ $t('schedule.job.form.advancedConfig') }}</legend>
         <ElRow :gutter="12">
           <ElCol v-bind="colProps">
-            <ElFormItem label="路由策略" prop="routeKey">
+            <ElFormItem :label="t('schedule.job.form.routeKey')" prop="routeKey">
               <ElSelect
                 v-model="form.routeKey"
-                placeholder="请选择路由策略"
+                :placeholder="t('schedule.job.form.routeKeyPlaceholder')"
                 :options="job_route_strategy_enum"
                 style="width: 100%"
               />
             </ElFormItem>
           </ElCol>
           <ElCol v-bind="colProps">
-            <ElFormItem label="阻塞策略" prop="blockStrategy">
+            <ElFormItem :label="t('schedule.job.form.blockStrategy')" prop="blockStrategy">
               <ElSelect
                 v-model="form.blockStrategy"
-                placeholder="请选择阻塞策略"
+                :placeholder="t('schedule.job.form.blockStrategyPlaceholder')"
                 :options="job_block_strategy_enum"
                 style="width: 100%"
               />
             </ElFormItem>
           </ElCol>
           <ElCol v-bind="colProps">
-            <ElFormItem label="超时时间" prop="executorTimeout">
+            <ElFormItem :label="t('schedule.job.form.executorTimeout')" prop="executorTimeout">
               <ElInputNumber
                 v-model="form.executorTimeout"
-                placeholder="请输入超时时间"
+                :placeholder="t('schedule.job.form.executorTimeoutPlaceholder')"
                 :min="1"
                 controls-position="right"
               >
-                <template #suffix>秒</template>
+                <template #suffix>{{ $t('schedule.job.form.executorTimeoutUnit') }}</template>
               </ElInputNumber>
             </ElFormItem>
           </ElCol>
           <ElCol v-bind="colProps">
-            <ElFormItem label="最大重试次数" prop="maxRetryTimes">
+            <ElFormItem :label="t('schedule.job.form.maxRetryTimes')" prop="maxRetryTimes">
               <ElInputNumber
                 v-model="form.maxRetryTimes"
-                placeholder="请输入最大重试次数"
+                :placeholder="t('schedule.job.form.maxRetryTimesPlaceholder')"
                 :min="0"
                 controls-position="right"
               />
             </ElFormItem>
           </ElCol>
           <ElCol v-bind="colProps">
-            <ElFormItem label="重试间隔" prop="retryInterval">
+            <ElFormItem :label="t('schedule.job.form.retryInterval')" prop="retryInterval">
               <ElInputNumber
                 v-model="form.retryInterval"
-                placeholder="请输入重试间隔"
+                :placeholder="t('schedule.job.form.retryIntervalPlaceholder')"
                 :min="1"
                 controls-position="right"
               >
-                <template #suffix>秒</template>
+                <template #suffix>{{ $t('schedule.job.form.retryIntervalUnit') }}</template>
               </ElInputNumber>
             </ElFormItem>
           </ElCol>
           <ElCol v-bind="colProps">
-            <ElFormItem label="并行数" prop="parallelNum">
+            <ElFormItem :label="t('schedule.job.form.parallelNum')" prop="parallelNum">
               <ElInputNumber
                 v-model="form.parallelNum"
-                placeholder="请输入并行数"
+                :placeholder="t('schedule.job.form.parallelNumPlaceholder')"
                 :min="1"
                 controls-position="right"
               />
@@ -210,8 +236,8 @@
 
     <template #footer>
       <div style="display: flex; flex: 1; gap: 12px; justify-content: flex-end">
-        <ElButton @click="visible = false">关闭</ElButton>
-        <ElButton type="primary" @click="save">确定</ElButton>
+        <ElButton @click="visible = false">{{ $t('common.cancel') }}</ElButton>
+        <ElButton type="primary" @click="save">{{ $t('common.confirm') }}</ElButton>
       </div>
     </template>
   </ElDrawer>
@@ -226,31 +252,35 @@
   import { useWindowSize } from '@vueuse/core'
   import type { FormInstance, FormRules } from 'element-plus'
   import { ElMessage } from 'element-plus'
+  import { useI18n } from 'vue-i18n'
 
   const emit = defineEmits<{
     (e: 'save-success'): void
   }>()
 
+  const { t } = useI18n()
   const { width } = useWindowSize()
 
   const colProps = { xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }
 
   // 内置 Cron 表达式
-  const cron_list = [
-    { label: '每分钟', value: '0 * * * * ?' },
-    { label: '每30分钟', value: '0 0/30 * * * ?' },
-    { label: '每小时', value: '0 0 * * * ?' },
-    { label: '每天零点', value: '0 0 0 * * ?' },
-    { label: '每月1日零点', value: '0 0 0 1 * ?' },
-    { label: '每月最后一天零点', value: '0 0 0 L * ?' },
-    { label: '每月最后一个工作日零点', value: '0 0 0 LW * ?' },
-    { label: '每周日零点', value: '0 0 0 ? * 1' }
-  ]
+  const cron_list = computed(() => [
+    { label: t('components.cronPreset.everyMinute'), value: '0 * * * * ?' },
+    { label: t('components.cronPreset.every30Minutes'), value: '0 0/30 * * * ?' },
+    { label: t('components.cronPreset.everyHour'), value: '0 0 * * * ?' },
+    { label: t('components.cronPreset.everyDay'), value: '0 0 0 * * ?' },
+    { label: t('components.cronPreset.everyMonth'), value: '0 0 0 1 * ?' },
+    { label: t('components.cronPreset.everyMonthLast'), value: '0 0 0 L * ?' },
+    { label: t('components.cronPreset.everyMonthLastWorkday'), value: '0 0 0 LW * ?' },
+    { label: t('components.cronPreset.everyWeek'), value: '0 0 0 ? * 1' }
+  ])
 
   const dataId = ref<number>()
   const visible = ref(false)
   const isUpdate = computed(() => !!dataId.value)
-  const title = computed(() => (isUpdate.value ? '修改任务' : '新增任务'))
+  const title = computed(() =>
+    isUpdate.value ? t('schedule.job.button.edit') : t('schedule.job.button.add')
+  )
   const formRef = ref<FormInstance>()
   const groupList = ref<LabelValueState[]>([])
   const {
@@ -265,17 +295,47 @@
     'job_block_strategy_enum'
   )
   const rules: FormRules = {
-    groupName: [{ required: true, message: '请选择任务组', trigger: 'change' }],
-    jobName: [{ required: true, message: '请输入任务名称', trigger: 'blur' }],
-    triggerType: [{ required: true, message: '请选择触发类型', trigger: 'change' }],
-    taskType: [{ required: true, message: '请选择任务类型', trigger: 'change' }],
-    executorInfo: [{ required: true, message: '请输入执行器名称', trigger: 'blur' }],
-    routeKey: [{ required: true, message: '请选择路由策略', trigger: 'change' }],
-    blockStrategy: [{ required: true, message: '请选择阻塞策略', trigger: 'change' }],
-    executorTimeout: [{ required: true, message: '请输入超时时间', trigger: 'blur' }],
-    maxRetryTimes: [{ required: true, message: '请输入最大重试次数', trigger: 'blur' }],
-    retryInterval: [{ required: true, message: '请输入重试间隔', trigger: 'blur' }],
-    parallelNum: [{ required: true, message: '请输入并行数', trigger: 'blur' }]
+    groupName: [
+      { required: true, message: t('schedule.job.form.groupNamePlaceholder'), trigger: 'change' }
+    ],
+    jobName: [
+      { required: true, message: t('schedule.job.form.jobNamePlaceholder'), trigger: 'blur' }
+    ],
+    triggerType: [
+      { required: true, message: t('schedule.job.form.triggerTypePlaceholder'), trigger: 'change' }
+    ],
+    taskType: [
+      { required: true, message: t('schedule.job.form.taskTypePlaceholder'), trigger: 'change' }
+    ],
+    executorInfo: [
+      { required: true, message: t('schedule.job.form.executorInfoPlaceholder'), trigger: 'blur' }
+    ],
+    routeKey: [
+      { required: true, message: t('schedule.job.form.routeKeyPlaceholder'), trigger: 'change' }
+    ],
+    blockStrategy: [
+      {
+        required: true,
+        message: t('schedule.job.form.blockStrategyPlaceholder'),
+        trigger: 'change'
+      }
+    ],
+    executorTimeout: [
+      {
+        required: true,
+        message: t('schedule.job.form.executorTimeoutPlaceholder'),
+        trigger: 'blur'
+      }
+    ],
+    maxRetryTimes: [
+      { required: true, message: t('schedule.job.form.maxRetryTimesPlaceholder'), trigger: 'blur' }
+    ],
+    retryInterval: [
+      { required: true, message: t('schedule.job.form.retryIntervalPlaceholder'), trigger: 'blur' }
+    ],
+    parallelNum: [
+      { required: true, message: t('schedule.job.form.parallelNumPlaceholder'), trigger: 'blur' }
+    ]
   }
 
   const [form, resetForm] = useResetReactive({
@@ -329,7 +389,7 @@
   // Cron 表达式自动完成查询
   const querySearch = (queryString: string, cb: (results: { value: string }[]) => void) => {
     const results = queryString
-      ? cron_list.filter(
+      ? cron_list.value.filter(
           (item) => item.label.includes(queryString) || item.value.includes(queryString)
         )
       : cron_list
@@ -353,10 +413,10 @@
       await formRef.value?.validate()
       if (isUpdate.value) {
         await updateJob(form, dataId.value!)
-        ElMessage.success('修改成功')
+        ElMessage.success(t('schedule.job.message.editSuccess'))
       } else {
         await addJob(form)
-        ElMessage.success('新增成功')
+        ElMessage.success(t('schedule.job.message.addSuccess'))
       }
       emit('save-success')
       visible.value = false

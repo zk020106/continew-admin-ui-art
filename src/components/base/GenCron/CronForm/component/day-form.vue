@@ -2,45 +2,62 @@
   <div class="cron-config-list">
     <el-radio-group :model-value="type" @update:model-value="type = $event as any">
       <div class="item">
-        <ElRadio :value="TypeEnum.unset" v-bind="beforeRadioAttrs">不设置</ElRadio>
-        <span class="tip-info">日和周只能设置其中之一</span>
+        <ElRadio :value="TypeEnum.unset" v-bind="beforeRadioAttrs">{{
+          $t('components.genCron.type.unset')
+        }}</ElRadio>
+        <span class="tip-info">{{ $t('components.genCron.tip.dayWeekConflict') }}</span>
       </div>
       <div class="item">
-        <ElRadio :value="TypeEnum.every" v-bind="beforeRadioAttrs">每日</ElRadio>
+        <ElRadio :value="TypeEnum.every" v-bind="beforeRadioAttrs">{{
+          $t('components.genCron.type.every', { unit: $t('components.genCron.tab.day') })
+        }}</ElRadio>
       </div>
       <div class="item">
-        <ElRadio :value="TypeEnum.range" v-bind="beforeRadioAttrs">区间</ElRadio>
+        <ElRadio :value="TypeEnum.range" v-bind="beforeRadioAttrs">{{
+          $t('components.genCron.type.range')
+        }}</ElRadio>
         <div class="item-config">
-          <span>从</span>
+          <span>{{ $t('components.genCron.unit.from') }}</span>
           <el-input-number v-model="valueRange.start" v-bind="inputNumberAttrs" />
-          <span>日 至</span>
+          <span>{{ $t('components.genCron.unit.to') }}</span>
           <el-input-number v-model="valueRange.end" v-bind="inputNumberAttrs" />
-          <span>日</span>
+          <span>{{ $t('components.genCron.tab.day') }}</span>
         </div>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.work" v-bind="beforeRadioAttrs">工作日</el-radio>
+        <el-radio :value="TypeEnum.work" v-bind="beforeRadioAttrs">{{
+          $t('components.genCron.type.work')
+        }}</el-radio>
         <div class="item-config">
-          <span>本月</span>
+          <span>{{ $t('components.genCron.unit.thisMonth') }}</span>
           <el-input-number v-model="valueWork" v-bind="typeWorkAttrs" />
-          <span>日，最近的工作日</span>
+          <span>{{ $t('components.genCron.unit.nearestWorkday') }}</span>
         </div>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.loop" v-bind="beforeRadioAttrs">循环</el-radio>
+        <el-radio :value="TypeEnum.loop" v-bind="beforeRadioAttrs">{{
+          $t('components.genCron.type.loop')
+        }}</el-radio>
         <div class="item-config">
-          <span>从</span>
+          <span>{{ $t('components.genCron.unit.from') }}</span>
           <el-input-number v-model="valueLoop.start" v-bind="typeLoopAttrs" />
-          <span>日开始, 间隔</span>
+          <span
+            >{{ $t('components.genCron.unit.start') }},
+            {{ $t('components.genCron.unit.interval') }}</span
+          >
           <el-input-number v-model="valueLoop.interval" v-bind="typeLoopAttrs" />
-          <span>日</span>
+          <span>{{ $t('components.genCron.tab.day') }}</span>
         </div>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.last" v-bind="beforeRadioAttrs">最后一日</el-radio>
+        <el-radio :value="TypeEnum.last" v-bind="beforeRadioAttrs">{{
+          $t('components.genCron.type.last')
+        }}</el-radio>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.specify" v-bind="beforeRadioAttrs">指定</el-radio>
+        <el-radio :value="TypeEnum.specify" v-bind="beforeRadioAttrs">{{
+          $t('components.genCron.type.specify')
+        }}</el-radio>
         <div class="list">
           <el-checkbox-group v-model="valueList">
             <el-checkbox v-for="i in specifyRange" :key="i" :value="i" v-bind="typeSpecifyAttrs">
@@ -56,8 +73,11 @@
 <script setup lang="ts">
   import { computed, watch, type ComputedRef } from 'vue'
   import { TypeEnum, useFormSetup, type FormSetupReturn } from './use-mixin'
+  import { useI18n } from 'vue-i18n'
 
   defineOptions({ name: 'DayForm' })
+
+  const { t } = useI18n()
 
   const props = withDefaults(
     defineProps<{

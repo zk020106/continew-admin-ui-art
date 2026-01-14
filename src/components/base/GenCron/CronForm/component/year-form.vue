@@ -2,26 +2,35 @@
   <div class="cron-config-list">
     <el-radio-group :model-value="type" @update:model-value="type = $event as any">
       <div class="item">
-        <el-radio :value="TypeEnum.every" v-bind="beforeRadioAttrs">每年</el-radio>
+        <el-radio :value="TypeEnum.every" v-bind="beforeRadioAttrs">{{
+          $t('components.genCron.type.every', { unit: $t('components.genCron.unit.year') })
+        }}</el-radio>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.range" v-bind="beforeRadioAttrs">区间</el-radio>
+        <el-radio :value="TypeEnum.range" v-bind="beforeRadioAttrs">{{
+          $t('components.genCron.type.range')
+        }}</el-radio>
         <div class="item-config">
-          <span>从</span>
+          <span>{{ $t('components.genCron.unit.from') }}</span>
           <el-input-number v-model="valueRange.start" v-bind="typeRangeAttrs" />
-          <span>年 至</span>
+          <span>{{ $t('components.genCron.unit.to') }}</span>
           <el-input-number v-model="valueRange.end" v-bind="typeRangeAttrs" />
-          <span>年</span>
+          <span>{{ $t('components.genCron.unit.year') }}</span>
         </div>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.loop" v-bind="beforeRadioAttrs">循环</el-radio>
+        <el-radio :value="TypeEnum.loop" v-bind="beforeRadioAttrs">{{
+          $t('components.genCron.type.loop')
+        }}</el-radio>
         <div class="item-config">
-          <span>从</span>
+          <span>{{ $t('components.genCron.unit.from') }}</span>
           <el-input-number v-model="valueLoop.start" v-bind="typeLoopAttrs" />
-          <span>年开始, 间隔</span>
+          <span
+            >{{ $t('components.genCron.unit.start') }},
+            {{ $t('components.genCron.unit.interval') }}</span
+          >
           <el-input-number v-model="valueLoop.interval" v-bind="typeLoopAttrs" />
-          <span>年</span>
+          <span>{{ $t('components.genCron.unit.year') }}</span>
         </div>
       </div>
     </el-radio-group>
@@ -30,8 +39,11 @@
 
 <script setup lang="ts">
   import { useFormSetup } from './use-mixin'
+  import { useI18n } from 'vue-i18n'
 
   defineOptions({ name: 'YearForm' })
+
+  const { t } = useI18n()
 
   const props = withDefaults(
     defineProps<{

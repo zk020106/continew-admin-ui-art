@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="visible"
-    title="Cron表达式生成"
+    :title="t('components.genCron.title')"
     top="32px"
     :width="780"
     :close-on-click-modal="false"
@@ -12,8 +12,10 @@
     <CronForm ref="cronInputRef" v-model="cronExpression" />
     <!-- 页脚 -->
     <template #footer>
-      <el-button size="small" @click="handlerClose">关闭</el-button>
-      <el-button size="small" type="primary" @click="handlerOk"> 确定 </el-button>
+      <el-button size="small" @click="handlerClose">{{ t('common.cancel') }}</el-button>
+      <el-button size="small" type="primary" @click="handlerOk">{{
+        t('common.confirm')
+      }}</el-button>
     </template>
   </el-dialog>
 </template>
@@ -22,8 +24,11 @@
   import { ElMessage } from 'element-plus'
   import { ref } from 'vue'
   import CronForm from '../CronForm/index.vue'
+  import { useI18n } from 'vue-i18n'
 
   defineOptions({ name: 'CronModal' })
+
+  const { t } = useI18n()
 
   const emit = defineEmits<{
     (e: 'ok', value: string): void
@@ -42,7 +47,7 @@
   // 确定
   const handlerOk = () => {
     if (cronInputRef.value?.checkCron()) {
-      ElMessage.error('日和周只能有一个为 [不设置]')
+      ElMessage.error(t('components.genCron.tip.dayWeekOnlyOneUnset'))
       return
     }
     visible.value = false

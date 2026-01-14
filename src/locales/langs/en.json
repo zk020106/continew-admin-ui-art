@@ -61,82 +61,77 @@
     "success": "success",
     "tips": "hint",
     "true": "yes",
-    "updateTime": "Update time",
+    "updateTime": "modification time",
     "warning": "warn"
   },
   "components": {
-    "common": {
-      "search": "search"
-    },
-    "component": {
-      "noComponents": "No components available yet"
-    },
-    "form": {
-      "collapse": "close",
-      "expand": "Expand",
-      "placeholder": {
-        "date": "Please select a date",
-        "input": "Please enter {label}",
-        "select": "Please select {label}",
-        "time": "Please select a time"
+    "genCron": {
+      "title": "Cron expression generation",
+      "tab": {
+        "second": "Second",
+        "minute": "point",
+        "hour": "hour",
+        "day": "day",
+        "month": "moon",
+        "week": "week",
+        "year": "Year"
       },
-      "validate": {
-        "required": "{label} is required"
+      "type": {
+        "every": "{unit}",
+        "range": "interval",
+        "loop": "cycle",
+        "work": "working days",
+        "last": "last day",
+        "specify": "Specify",
+        "unset": "Not set"
+      },
+      "placeholder": {
+        "cronInput": "Please enter a Cron expression"
+      },
+      "preview": {
+        "title": "Last five execution times (years are not parsed)",
+        "noExecutionTime": "No execution time",
+        "expressionError": "Expression error",
+        "executionPreview": "Execute preview"
+      },
+      "unit": {
+        "from": "from",
+        "to": "to",
+        "start": "start",
+        "interval": "interval",
+        "thisMonth": "this month",
+        "nearestWorkday": "Day, the most recent working day",
+        "day": "sky",
+        "second": "Second",
+        "minute": "point",
+        "hour": "hour",
+        "month": "moon",
+        "year": "Year"
+      },
+      "expression": "expression",
+      "tip": {
+        "dayWeekConflict": "Only one of day and week can be set",
+        "dayWeekOnlyOneUnset": "Only one of day and week can be [not set]"
       }
     },
-    "icon": {
-      "local": "local icon",
-      "noRecent": "There are no recently used icons",
-      "noResult": "No matching icon found",
-      "online": "online icon",
-      "recent": "Recently used"
+    "cronPreset": {
+      "everyMinute": "per minute",
+      "every30Minutes": "every 30 minutes",
+      "everyHour": "per hour",
+      "everyDay": "midnight every day",
+      "everyMonth": "0:00 on the 1st of every month",
+      "everyMonthLast": "midnight on the last day of every month",
+      "everyMonthLastWorkday": "midnight on the last working day of every month",
+      "everyWeek": "Every Sunday at midnight"
     },
-    "iconPicker": {
-      "clear": "Clear",
-      "noIcon": "No icon selected",
-      "noResult": "No matching icon found",
-      "searchPlaceholder": "search icon",
-      "selectIcon": "Select icon"
-    },
-    "inputSearch": {
-      "placeholder": "Please select"
-    },
-    "loading": "loading...",
-    "select": {
-      "loadError": "Data loading failed",
-      "loading": "loading...",
-      "noData": "No data yet",
-      "placeholder": "Please select",
-      "searchPlaceholder": "Please enter keyword search"
-    },
-    "tableSelector": {
-      "cancel": "Cancel",
-      "confirm": "Sure",
-      "loading": "loading...",
-      "noData": "No data yet",
-      "searchPlaceholder": "Please enter keyword search",
-      "selected": "{count} items selected",
-      "title": "Select data"
-    },
-    "tree": {
-      "collapseAll": "Collapse all",
-      "expandAll": "Expand all",
-      "loadError": "Data loading failed",
-      "loading": "loading...",
-      "noData": "No data yet",
-      "searchPlaceholder": "Please enter keyword search"
-    },
-    "upload": {
-      "clickHint": "Click to upload",
-      "delete": "delete",
-      "download": "download",
-      "dragHint": "Drag your files here, or click Upload",
-      "fileSizeExceeded": "File size exceeds limit (maximum {size}MB)",
-      "fileTypeError": "Unsupported file types",
-      "preview": "Preview",
-      "uploadFailed": "Upload failed",
-      "uploadSuccess": "Upload successful",
-      "uploading": "Uploading..."
+    "week": {
+      "sunday": "Sunday",
+      "monday": "on Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday"
     }
   },
   "config": {
@@ -660,6 +655,100 @@
       "package": "Package management"
     }
   },
+  "schedule": {
+    "job": {
+      "title": "task management",
+      "field": {
+        "id": "ID",
+        "jobName": "Task name",
+        "groupName": "task force",
+        "description": "describe",
+        "jobStatus": "state",
+        "triggerType": "Scheduling type",
+        "taskType": "Task type",
+        "executorInfo": "Actuator information",
+        "argsStr": "Execution parameters",
+        "executorTimeout": "Execution timeout",
+        "maxRetryTimes": "Maximum number of retries",
+        "retryInterval": "Retry interval",
+        "parallelNum": "Parallel number",
+        "routeKey": "Routing strategy",
+        "blockStrategy": "blocking strategy",
+        "createDt": "creation time",
+        "updateDt": "modification time"
+      },
+      "search": {
+        "jobName": "Task name",
+        "jobNamePlaceholder": "Search task name",
+        "groupName": "task force",
+        "groupNamePlaceholder": "Please select a task group"
+      },
+      "button": {
+        "add": "New",
+        "edit": "Revise",
+        "delete": "delete",
+        "execute": "implement",
+        "viewLog": "View log"
+      },
+      "triggerType": {
+        "cron": "Cron",
+        "fixedInterval": "fixed interval",
+        "intervalUnit": "Second"
+      },
+      "form": {
+        "basicConfig": "Basic configuration",
+        "scheduleConfig": "Scheduling configuration",
+        "taskConfig": "Task configuration",
+        "advancedConfig": "Advanced configuration",
+        "groupName": "task force",
+        "groupNamePlaceholder": "Please select a task group",
+        "jobName": "Task name",
+        "jobNamePlaceholder": "Please enter a task name",
+        "description": "describe",
+        "descriptionPlaceholder": "Please enter a description",
+        "triggerType": "Trigger type",
+        "triggerTypePlaceholder": "Please select trigger type",
+        "triggerInterval": {
+          "cron": "Cron expression",
+          "cronPlaceholder": "Please enter a Cron expression",
+          "interval": "Interval duration",
+          "intervalPlaceholder": "Please enter the interval time",
+          "intervalUnit": "Second"
+        },
+        "taskType": "Task type",
+        "taskTypePlaceholder": "Please select task type",
+        "executorInfo": "Actuator name",
+        "executorInfoPlaceholder": "Please enter the executor name",
+        "argsStr": "Task parameters",
+        "argsStrPlaceholder": "Please enter task parameters",
+        "sliceParam": "Sharding parameters",
+        "sliceParamPlaceholder": "Please enter the sharding parameter {index}",
+        "routeKey": "Routing strategy",
+        "routeKeyPlaceholder": "Please select a routing policy",
+        "blockStrategy": "blocking strategy",
+        "blockStrategyPlaceholder": "Please select a blocking strategy",
+        "executorTimeout": "timeout",
+        "executorTimeoutPlaceholder": "Please enter the timeout",
+        "executorTimeoutUnit": "Second",
+        "maxRetryTimes": "Maximum number of retries",
+        "maxRetryTimesPlaceholder": "Please enter the maximum number of retries",
+        "retryInterval": "Retry interval",
+        "retryIntervalPlaceholder": "Please enter a retry interval",
+        "retryIntervalUnit": "Second",
+        "parallelNum": "Parallel number",
+        "parallelNumPlaceholder": "Please enter the number of parallels"
+      },
+      "message": {
+        "addSuccess": "Added successfully",
+        "editSuccess": "Modification successful",
+        "deleteConfirm": "Are you sure you want to delete task \"{name}\"?",
+        "deleteSuccess": "Delete successfully",
+        "enableSuccess": "Activated successfully",
+        "disableSuccess": "Disabled successfully",
+        "executeRequestSent": "The execution request has been issued"
+      }
+    }
+  },
   "message": {
     "addSuccess": "Added successfully",
     "batchDelete": "Batch delete",
@@ -671,11 +760,11 @@
     "deleteSuccess": "Delete successfully",
     "items": "items",
     "loadFailed": "Loading failed",
-    "noMoreActions": "No more actions",
+    "noMoreActions": "no more actions",
     "prompt": "hint",
     "selectDeleteData": "Please select the data you want to delete",
     "selected": "Selected",
-    "updateSuccess": "Updated successfully"
+    "updateSuccess": "Modification successful"
   },
   "notice": {
     "bar": ["notify", "information", "Agent"],
@@ -830,84 +919,84 @@
     },
     "tenantManagement": {
       "button": {
-        "updateAdminPwd": "Update Admin Password"
+        "updateAdminPwd": "Change administrator password"
       },
       "field": {
-        "adminPassword": "Admin Password",
-        "adminUsername": "Admin Username",
-        "code": "Code",
-        "createTime": "Create Time",
+        "adminPassword": "Administrator password",
+        "adminUsername": "Admin user",
+        "code": "coding",
+        "createTime": "creation time",
         "createUser": "Creator",
-        "description": "Description",
-        "domain": "Domain",
-        "expireTime": "Expire Time",
-        "name": "Name",
-        "neverExpire": "Never Expire",
-        "notSet": "Not Set",
-        "package": "Package",
-        "status": "Status",
-        "updateTime": "Update Time",
-        "updateUser": "Updater"
+        "description": "describe",
+        "domain": "domain name",
+        "expireTime": "Expiration time",
+        "name": "name",
+        "neverExpire": "never expires",
+        "notSet": "not set",
+        "package": "combo",
+        "status": "state",
+        "updateTime": "modification time",
+        "updateUser": "Modifier"
       },
       "message": {
-        "confirmDelete": "Are you sure to delete tenant \"{name}({code})\"?"
+        "confirmDelete": "Are you sure you want to delete tenant \"{name}({code})\"?"
       },
       "placeholder": {
         "newPassword": "Please enter new password"
       },
       "tooltip": {
-        "adminUsername": "Automatically initialize admin user",
-        "domain": "e.g. example.com"
+        "adminUsername": "Automatically initialize the administrator user",
+        "domain": "For example: example.com"
       },
       "search": {
         "description": "Name/Description",
         "descriptionPlaceholder": "Please enter name/description",
-        "package": "Package",
-        "packagePlaceholder": "Please select package"
+        "package": "combo",
+        "packagePlaceholder": "Please select a package"
       },
-      "title": "Tenant Management"
+      "title": "Tenant management"
     },
     "tenantPackage": {
       "field": {
-        "description": "Description",
-        "name": "Name",
-        "sort": "Sort",
-        "status": "Status",
+        "description": "describe",
+        "name": "name",
+        "sort": "sort",
+        "status": "state",
         "createUser": "Creator",
-        "updateUser": "Updater"
+        "updateUser": "Modifier"
       },
       "message": {
-        "confirmDelete": "Are you sure to delete package \"{name}\"?"
+        "confirmDelete": "Are you sure you want to delete the package \"{name}\"?"
       },
       "search": {
         "descriptionPlaceholder": "Please enter name/description"
       },
-      "title": "Package Management"
+      "title": "Package management"
     },
     "appManagement": {
       "button": {
-        "resetSecret": "Reset Secret"
+        "resetSecret": "reset key"
       },
       "field": {
-        "description": "Description",
-        "expireTime": "Expire Time",
+        "description": "describe",
+        "expireTime": "Expiration time",
         "id": "ID",
-        "name": "Name",
-        "status": "Status",
+        "name": "name",
+        "status": "state",
         "createUser": "Creator",
-        "createTime": "Create Time",
-        "updateUser": "Updater",
-        "updateTime": "Update Time"
+        "createTime": "creation time",
+        "updateUser": "Modifier",
+        "updateTime": "modification time"
       },
       "message": {
-        "confirmDelete": "Are you sure to delete app \"{name}\"?",
-        "confirmResetSecret": "Are you sure to reset app \"{name}\" secret? The old secret will be invalid after reset."
+        "confirmDelete": "Are you sure you want to delete the app \"{name}\"?",
+        "confirmResetSecret": "Are you sure you want to reset the app \"{name}\" key? The old key will be invalid after reset."
       },
       "search": {
         "description": "Name/Description",
         "descriptionPlaceholder": "Please enter name/description"
       },
-      "title": "App Management"
+      "title": "Application management"
     }
   },
   "register": {
@@ -947,9 +1036,9 @@
     "deptPermission": "Department authority",
     "description": "describe",
     "expandCollapse": "expand/collapse",
-    "expandOrFold": "Expand/Fold",
-    "checkAllOrNone": "Check All/None",
-    "parentChildLinkage": "Parent-child linkage",
+    "expandOrFold": "expand/collapse",
+    "checkAllOrNone": "Select all/Deselect all",
+    "parentChildLinkage": "Father and son linkage",
     "field": {
       "code": "role coding",
       "dataScope": "Data permissions",
