@@ -41,6 +41,13 @@
     "copyFailed": "复制失败",
     "copySuccess": "复制成功",
     "createTime": "创建时间",
+    "datePicker": {
+      "rangeSeparator": "至",
+      "startDatePlaceholder": "开始日期",
+      "endDatePlaceholder": "结束日期",
+      "startTimePlaceholder": "开始时间",
+      "endTimePlaceholder": "结束时间"
+    },
     "detail": "详情",
     "empty": "暂无",
     "error": "错误",
@@ -751,6 +758,37 @@
         "enableSuccess": "启用成功",
         "disableSuccess": "禁用成功",
         "executeRequestSent": "执行请求已下发"
+      }
+    },
+    "log": {
+      "title": "任务日志",
+      "field": {
+        "groupName": "任务组",
+        "jobName": "任务名称",
+        "createDt": "调度时间",
+        "taskBatchStatus": "执行状态",
+        "operationReason": "执行备注",
+        "executionAt": "执行时间"
+      },
+      "search": {
+        "groupName": "任务组",
+        "groupNamePlaceholder": "请选择任务组",
+        "jobName": "任务名称",
+        "jobNamePlaceholder": "搜索任务名称",
+        "taskBatchStatus": "执行状态",
+        "taskBatchStatusPlaceholder": "请选择状态",
+        "datetimeRange": "调度时间",
+        "datetimeRangePlaceholder": "请选择调度时间范围"
+      },
+      "button": {
+        "stop": "停止",
+        "retry": "重试"
+      },
+      "message": {
+        "stopConfirm": "是否确定停止本次执行?",
+        "retryConfirm": "是否确定重试本次执行?",
+        "stopSuccess": "停止成功",
+        "retrySuccess": "重试成功"
       }
     }
   },

@@ -41,6 +41,13 @@
     "copyFailed": "Copy failed",
     "copySuccess": "Copied successfully",
     "createTime": "creation time",
+    "datePicker": {
+      "rangeSeparator": "to",
+      "startDatePlaceholder": "Start date",
+      "endDatePlaceholder": "End date",
+      "startTimePlaceholder": "Start time",
+      "endTimePlaceholder": "End time"
+    },
     "detail": "Details",
     "empty": "None yet",
     "error": "mistake",
@@ -746,6 +753,37 @@
         "enableSuccess": "Activated successfully",
         "disableSuccess": "Disabled successfully",
         "executeRequestSent": "The execution request has been issued"
+      }
+    },
+    "log": {
+      "title": "Task Log",
+      "field": {
+        "groupName": "Task Group",
+        "jobName": "Task Name",
+        "createDt": "Schedule Time",
+        "taskBatchStatus": "Execution Status",
+        "operationReason": "Execution Note",
+        "executionAt": "Execution Time"
+      },
+      "search": {
+        "groupName": "Task Group",
+        "groupNamePlaceholder": "Please select task group",
+        "jobName": "Task Name",
+        "jobNamePlaceholder": "Search task name",
+        "taskBatchStatus": "Execution Status",
+        "taskBatchStatusPlaceholder": "Please select status",
+        "datetimeRange": "Schedule Time",
+        "datetimeRangePlaceholder": "Please select date range"
+      },
+      "button": {
+        "stop": "Stop",
+        "retry": "Retry"
+      },
+      "message": {
+        "stopConfirm": "Are you sure to stop this execution?",
+        "retryConfirm": "Are you sure to retry this execution?",
+        "stopSuccess": "Stop successful",
+        "retrySuccess": "Retry successful"
       }
     }
   },

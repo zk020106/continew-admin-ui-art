@@ -58,7 +58,20 @@ function checkAuthPermission(el: HTMLElement, binding: AuthBinding): void {
 }
 
 function removeElement(el: HTMLElement): void {
-  if (el.parentNode) {
+  // 如果父节点是 template（slot），使用 display: none 隐藏，避免破坏 slot 结构
+  // 否则移除 DOM
+  if (el.parentNode && el.parentNode.nodeType === Node.ELEMENT_NODE) {
+    const parent = el.parentNode as Element
+    // 检查父元素是否是 template（Vue slot）或 SVG foreignObject
+    const isSlotParent =
+      parent.tagName.toLowerCase() === 'template' ||
+      parent.tagName.toLowerCase() === 'foreignobject'
+    if (isSlotParent) {
+      el.style.display = 'none'
+    } else {
+      parent.removeChild(el)
+    }
+  } else if (el.parentNode) {
     el.parentNode.removeChild(el)
   }
 }
