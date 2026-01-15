@@ -1,4 +1,4 @@
-import { useBreakpoint } from '@/hooks'
+import { useBreakpoint } from './useBreakpoint'
 import { reactive, toRefs, watch } from 'vue'
 
 type Callback = () => void

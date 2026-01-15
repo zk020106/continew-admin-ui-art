@@ -1,4 +1,6 @@
-import { useBreakpoint, useLocale, usePagination } from '@/hooks'
+import { useBreakpoint } from './useBreakpoint'
+import { useLocale } from './useLocale'
+import { usePagination } from './usePagination'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { Options as PaginationOptions } from './usePagination'
 
