@@ -219,7 +219,7 @@ async function handleDynamicRoutes(
   try {
     const menuList = await menuProcessor.getMenuList()
 
-    // 2. 检查并清理工作台标签页
+    // 1. 检查并清理工作台标签页
     userStore.checkAndClearWorktabs()
     // 4. 验证菜单数据
     if (!menuProcessor.validateMenuList(menuList)) {
