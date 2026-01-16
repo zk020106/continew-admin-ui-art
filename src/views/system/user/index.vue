@@ -39,25 +39,29 @@
         <CaCellStatus :status="row.status" />
       </template>
       <template #isSystem="{ row }">
-        <ElTag v-if="row.isSystem" type="danger" size="small">是</ElTag>
-        <ElTag v-else type="primary" size="small">否</ElTag>
+        <ElTag v-if="row.isSystem" type="danger" size="small">{{ t('common.true') }}</ElTag>
+        <ElTag v-else type="primary" size="small">{{ t('common.false') }}</ElTag>
       </template>
       <template #action="{ row }">
         <ElSpace>
-          <ElLink type="primary" @click="onDetail(row)">详情</ElLink>
-          <ElLink type="primary" @click="onUpdate(row)">修改</ElLink>
+          <ElLink type="primary" @click="onDetail(row)">{{ t('common.detail') }}</ElLink>
+          <ElLink type="primary" @click="onUpdate(row)">{{ t('common.button.edit') }}</ElLink>
           <ElDropdown>
             <ElButton text>
               <ElIcon><MoreFilled /></ElIcon>
             </ElButton>
             <template #dropdown>
               <ElDropdownMenu>
-                <ElDropdownItem @click="onResetPwd(row)">重置密码</ElDropdownItem>
+                <ElDropdownItem @click="onResetPwd(row)">{{
+                  t('button.resetPassword')
+                }}</ElDropdownItem>
                 <ElDropdownItem :disabled="row.isSystem" @click="onUpdateRole(row)">
-                  分配角色
+                  {{ t('button.assignRole') }}
                 </ElDropdownItem>
                 <ElDropdownItem :disabled="row.isSystem" @click="onDelete(row)">
-                  <ElLink type="danger" :disabled="row.isSystem" :underline="false"> 删除 </ElLink>
+                  <ElLink type="danger" :disabled="row.isSystem" :underline="false">
+                    {{ t('common.button.delete') }}
+                  </ElLink>
                 </ElDropdownItem>
               </ElDropdownMenu>
             </template>
@@ -196,7 +200,7 @@
           showOverflowTooltip: true,
           show: false
         },
-        { label: '修改时间', prop: 'updateTime', width: 180, show: false },
+        { label: t('user.field.updateTime'), prop: 'updateTime', width: 180, show: false },
         {
           label: t('common.action'),
           prop: 'action',
@@ -215,7 +219,10 @@
   // 删除
   const onDelete = (row: { id: string; nickname: any; username: any }) => {
     return handleDelete(() => deleteUser(row.id), {
-      content: `是否确定删除用户「${row.nickname}(${row.username})」？`
+      content: t('system.user.message.deleteConfirm', {
+        nickname: row.nickname,
+        username: row.username
+      })
     })
   }
   // 导出

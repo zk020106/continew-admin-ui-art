@@ -89,6 +89,10 @@
       },
       "validate": {
         "required": "{label}为必填项"
+      },
+      "message": {
+        "dictRequestNotConfigured": "请配置全局字典请求方法dictRequest",
+        "dictLoadFailed": "获取字典数据失败"
       }
     },
     "icon": {

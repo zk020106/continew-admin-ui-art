@@ -43,10 +43,10 @@
     "createTime": "creation time",
     "datePicker": {
       "rangeSeparator": "to",
-      "startDatePlaceholder": "Start date",
-      "endDatePlaceholder": "End date",
-      "startTimePlaceholder": "Start time",
-      "endTimePlaceholder": "End time"
+      "startDatePlaceholder": "start date",
+      "endDatePlaceholder": "end date",
+      "startTimePlaceholder": "start time",
+      "endTimePlaceholder": "end time"
     },
     "detail": "Details",
     "empty": "None yet",
@@ -72,6 +72,83 @@
     "warning": "warn"
   },
   "components": {
+    "common": {
+      "search": "search"
+    },
+    "component": {
+      "noComponents": "No components available yet"
+    },
+    "form": {
+      "collapse": "close",
+      "expand": "Expand",
+      "placeholder": {
+        "date": "Please select a date",
+        "input": "Please enter {label}",
+        "select": "Please select {label}",
+        "time": "Please select a time"
+      },
+      "validate": {
+        "required": "{label} is required"
+      },
+      "message": {
+        "dictRequestNotConfigured": "Please configure the global dictionary request method dictRequest",
+        "dictLoadFailed": "Failed to obtain dictionary data"
+      }
+    },
+    "icon": {
+      "local": "local icon",
+      "noRecent": "There are no recently used icons",
+      "noResult": "No matching icon found",
+      "online": "online icon",
+      "recent": "Recently used"
+    },
+    "iconPicker": {
+      "clear": "Clear",
+      "noIcon": "No icon selected",
+      "noResult": "No matching icon found",
+      "searchPlaceholder": "search icon",
+      "selectIcon": "Select icon"
+    },
+    "inputSearch": {
+      "placeholder": "Please select"
+    },
+    "loading": "loading...",
+    "select": {
+      "loadError": "Data loading failed",
+      "loading": "loading...",
+      "noData": "No data yet",
+      "placeholder": "Please select",
+      "searchPlaceholder": "Please enter keyword search"
+    },
+    "tableSelector": {
+      "cancel": "Cancel",
+      "confirm": "Sure",
+      "loading": "loading...",
+      "noData": "No data yet",
+      "searchPlaceholder": "Please enter keyword search",
+      "selected": "{count} items selected",
+      "title": "Select data"
+    },
+    "tree": {
+      "collapseAll": "Collapse all",
+      "expandAll": "Expand all",
+      "loadError": "Data loading failed",
+      "loading": "loading...",
+      "noData": "No data yet",
+      "searchPlaceholder": "Please enter keyword search"
+    },
+    "upload": {
+      "clickHint": "Click to upload",
+      "delete": "delete",
+      "download": "download",
+      "dragHint": "Drag your files here, or click Upload",
+      "fileSizeExceeded": "File size exceeds limit (maximum {size}MB)",
+      "fileTypeError": "Unsupported file types",
+      "preview": "Preview",
+      "uploadFailed": "Upload failed",
+      "uploadSuccess": "Upload successful",
+      "uploading": "Uploading..."
+    },
     "genCron": {
       "title": "Cron expression generation",
       "tab": {
@@ -756,33 +833,33 @@
       }
     },
     "log": {
-      "title": "Task Log",
+      "title": "Mission log",
       "field": {
-        "groupName": "Task Group",
-        "jobName": "Task Name",
-        "createDt": "Schedule Time",
-        "taskBatchStatus": "Execution Status",
-        "operationReason": "Execution Note",
-        "executionAt": "Execution Time"
+        "groupName": "task force",
+        "jobName": "Task name",
+        "createDt": "Scheduling time",
+        "taskBatchStatus": "Execution status",
+        "operationReason": "Execution notes",
+        "executionAt": "Execution time"
       },
       "search": {
-        "groupName": "Task Group",
-        "groupNamePlaceholder": "Please select task group",
-        "jobName": "Task Name",
+        "groupName": "task force",
+        "groupNamePlaceholder": "Please select a task group",
+        "jobName": "Task name",
         "jobNamePlaceholder": "Search task name",
-        "taskBatchStatus": "Execution Status",
-        "taskBatchStatusPlaceholder": "Please select status",
-        "datetimeRange": "Schedule Time",
-        "datetimeRangePlaceholder": "Please select date range"
+        "taskBatchStatus": "Execution status",
+        "taskBatchStatusPlaceholder": "Please select a status",
+        "datetimeRange": "Scheduling time",
+        "datetimeRangePlaceholder": "Please select a scheduling time range"
       },
       "button": {
-        "stop": "Stop",
-        "retry": "Retry"
+        "stop": "stop",
+        "retry": "Try again"
       },
       "message": {
         "stopConfirm": "Are you sure to stop this execution?",
-        "retryConfirm": "Are you sure to retry this execution?",
-        "stopSuccess": "Stop successful",
+        "retryConfirm": "Are you sure you want to retry this execution?",
+        "stopSuccess": "stop successfully",
         "retrySuccess": "Retry successful"
       }
     }
@@ -955,37 +1032,37 @@
       },
       "title": "User management",
       "import": {
-        "title": "Import Users",
-        "alert": "Please fill in the data according to the template requirements. After filling, please upload and parse first.",
-        "downloadTemplate": "Download Template",
+        "title": "Import users",
+        "alert": "Please fill in the data according to the template requirements. After completing the filling, please upload and parse it first.",
+        "downloadTemplate": "Download template",
         "step1": {
-          "title": "1. Parse Data",
-          "uploadText": "Drag the file here, or <em>click to upload</em>",
-          "uploadTip": "Only supports xls, xlsx formats",
-          "totalRows": "Total rows",
-          "validRows": "Valid rows",
-          "duplicateUserRows": "Duplicate users",
-          "duplicateEmailRows": "Duplicate emails",
-          "duplicatePhoneRows": "Duplicate phones"
+          "title": "1. Parse the data",
+          "uploadText": "Drag the file here, or <em>click Upload</em>",
+          "uploadTip": "Only supports xls and xlsx formats",
+          "totalRows": "Total number of rows",
+          "validRows": "Normal number of rows",
+          "duplicateUserRows": "User already exists",
+          "duplicateEmailRows": "Email already exists",
+          "duplicatePhoneRows": "Already exists in mobile phone"
         },
         "step2": {
-          "title": "2. Import Strategy",
+          "title": "2. Import strategy",
           "duplicateUser": "User already exists",
           "duplicateEmail": "Email already exists",
           "duplicatePhone": "Phone already exists",
-          "defaultStatus": "Default status",
-          "skip": "Skip this row",
+          "defaultStatus": "Default state",
+          "skip": "skip this line",
           "stop": "Stop import",
-          "update": "Update data"
+          "update": "Modify data"
         },
         "button": {
-          "cancel": "Cancel Import",
-          "confirm": "Confirm Import"
+          "cancel": "Cancel import",
+          "confirm": "Confirm import"
         },
         "message": {
           "uploadSuccess": "Upload and parse successfully",
-          "importSuccess": "Import successful! Added {insertRows}, Updated {updateRows}",
-          "pleaseUploadFirst": "Please upload the file first to parse import data"
+          "importSuccess": "Import successful! Add {insertRows}, modify {updateRows}",
+          "pleaseUploadFirst": "Please upload the file first and parse the imported data."
         }
       }
     },

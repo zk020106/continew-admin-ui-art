@@ -195,7 +195,7 @@
     })
     if (!dictCodes.length) return
     if (!globalConfig?.dictRequest) {
-      return El.ElMessage.error('请配置全局字典请求方法dictRequest')
+      return El.ElMessage.error(t('components.form.message.dictRequestNotConfigured'))
     }
     try {
       // 使用Promise.all并行处理所有字典请求
@@ -209,8 +209,8 @@
         dictData.value[code] = response
       })
     } catch (error) {
-      console.error('获取字典数据失败:', error)
-      El.ElMessage.error('获取字典数据失败')
+      console.error('Failed to load dictionary data:', error)
+      El.ElMessage.error(t('components.form.message.dictLoadFailed'))
     }
   }
 
