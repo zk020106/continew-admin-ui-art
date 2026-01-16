@@ -36,7 +36,9 @@
   const dataId = ref('')
   const visible = ref(false)
   const isUpdate = computed(() => !!dataId.value)
-  const title = computed(() => (isUpdate.value ? '修改用户' : '新增用户'))
+  const title = computed(() =>
+    isUpdate.value ? t('user.page.title.edit') : `${t('button.add')}用户`
+  )
   const formRef = useTemplateRef('formRef')
   const { roleList, getRoleList } = useRole()
   const { deptList, getDeptList } = useDept()
@@ -151,8 +153,8 @@
         type: 'round',
         activeValue: 1,
         inactiveValue: 2,
-        activeText: '启用',
-        inactiveText: '禁用'
+        activeText: t('common.statusEnabled'),
+        inactiveText: t('common.statusDisabled')
       }
     }
   ] as FormColumnItem[])
@@ -170,13 +172,13 @@
       await formRef.value?.formRef?.validate()
       if (isUpdate.value) {
         await updateUser(form, dataId.value)
-        ElMessage.success('修改成功')
+        ElMessage.success(t('message.updateSuccess'))
       } else {
         if (rawPassword) {
           form.password = encryptByRsa(rawPassword) || ''
         }
         await addUser(form)
-        ElMessage.success('新增成功')
+        ElMessage.success(t('message.addSuccess'))
       }
       emit('save-success')
       visible.value = false

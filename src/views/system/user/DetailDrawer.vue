@@ -59,9 +59,9 @@
           label: t('user.field.gender'),
           type: 'enum',
           enum: {
-            '1': { label: '男', type: 'primary' },
-            '2': { label: '女', type: 'success' },
-            other: { label: '未知', type: 'info' }
+            '1': { label: t('common.genderMale'), type: 'primary' },
+            '2': { label: t('common.genderFemale'), type: 'success' },
+            other: { label: t('common.genderUnknown'), type: 'info' }
           }
         },
         {
@@ -69,8 +69,8 @@
           label: t('user.field.status'),
           type: 'enum',
           enum: {
-            '1': { label: '启用', type: 'success' },
-            '0': { label: '禁用', type: 'danger' }
+            '1': { label: t('common.statusEnabled'), type: 'success' },
+            '0': { label: t('common.statusDisabled'), type: 'danger' }
           }
         },
         {

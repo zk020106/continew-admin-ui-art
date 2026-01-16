@@ -108,69 +108,6 @@
           }
         },
         {
-          type: 'input',
-          label: t('user.field.username'),
-          field: 'description',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            placeholder: t('user.placeholder.username')
-          }
-        },
-        {
-          type: 'input',
-          label: t('user.field.username'),
-          field: 'description',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            placeholder: t('user.placeholder.username')
-          }
-        },
-        {
-          type: 'input',
-          label: t('user.field.username'),
-          field: 'description',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            placeholder: t('user.placeholder.username')
-          }
-        },
-        {
-          type: 'input',
-          label: t('user.field.username'),
-          field: 'description',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            placeholder: t('user.placeholder.username')
-          }
-        },
-        {
-          type: 'input',
-          label: t('user.field.username'),
-          field: 'description',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            placeholder: t('user.placeholder.username')
-          }
-        },
-        {
-          type: 'input',
-          label: t('user.field.username'),
-          field: 'description',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            placeholder: t('user.placeholder.username')
-          }
-        },
-        {
-          type: 'input',
-          label: t('user.field.username'),
-          field: 'description',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            placeholder: t('user.placeholder.username')
-          }
-        },
-        {
           type: 'select',
           label: t('common.status'),
           field: 'status',

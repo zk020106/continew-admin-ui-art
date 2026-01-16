@@ -69,7 +69,7 @@
       await formRef.value?.formRef?.validate()
 
       await updateUserRole({ roleIds: form.roleIds }, dataId.value)
-      ElMessage.success('分配成功')
+      ElMessage.success(t('role.message.assignSuccess'))
       emit('save-success')
       visible.value = false
       return true

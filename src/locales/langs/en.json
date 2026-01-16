@@ -953,7 +953,41 @@
         "updateUser": "Modifier",
         "username": "username"
       },
-      "title": "User management"
+      "title": "User management",
+      "import": {
+        "title": "Import Users",
+        "alert": "Please fill in the data according to the template requirements. After filling, please upload and parse first.",
+        "downloadTemplate": "Download Template",
+        "step1": {
+          "title": "1. Parse Data",
+          "uploadText": "Drag the file here, or <em>click to upload</em>",
+          "uploadTip": "Only supports xls, xlsx formats",
+          "totalRows": "Total rows",
+          "validRows": "Valid rows",
+          "duplicateUserRows": "Duplicate users",
+          "duplicateEmailRows": "Duplicate emails",
+          "duplicatePhoneRows": "Duplicate phones"
+        },
+        "step2": {
+          "title": "2. Import Strategy",
+          "duplicateUser": "User already exists",
+          "duplicateEmail": "Email already exists",
+          "duplicatePhone": "Phone already exists",
+          "defaultStatus": "Default status",
+          "skip": "Skip this row",
+          "stop": "Stop import",
+          "update": "Update data"
+        },
+        "button": {
+          "cancel": "Cancel Import",
+          "confirm": "Confirm Import"
+        },
+        "message": {
+          "uploadSuccess": "Upload and parse successfully",
+          "importSuccess": "Import successful! Added {insertRows}, Updated {updateRows}",
+          "pleaseUploadFirst": "Please upload the file first to parse import data"
+        }
+      }
     },
     "tenantManagement": {
       "button": {

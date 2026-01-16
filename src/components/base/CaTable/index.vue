@@ -73,7 +73,7 @@
       :data="props.data as any[]"
       :size="tableSize"
       v-loading="props.loading"
-      :height="isFullscreen ? fullscreenHeight : undefined"
+      :height="tableHeight"
     >
       <TableColumn v-for="item in visibleColumns" :key="item.prop || item.label" :column="item">
         <!-- 将所有插槽传递给子组件 -->
@@ -105,7 +105,7 @@
     ElTable,
     ElTooltip
   } from 'element-plus'
-  import { computed, ref, useTemplateRef, watch } from 'vue'
+  import { computed, onMounted, onUnmounted, ref, useTemplateRef, watch } from 'vue'
   import { useI18n } from 'vue-i18n'
   import TableColumn from './TableColumn.vue'
   import ColumnSetting from './components/ColumnSetting.vue'
@@ -128,10 +128,11 @@
 
   // 全屏状态
   const isFullscreen = ref(false)
-  const fullscreenHeight = ref(0)
+  const tableHeight = ref<number | undefined>(undefined)
 
-  const calculateFullscreenHeight = () => {
-    if (!isFullscreen.value || !tableContainer.value) {
+  const calculateTableHeight = () => {
+    if (!tableContainer.value) {
+      tableHeight.value = undefined
       return
     }
 
@@ -139,11 +140,15 @@
     const header = container.querySelector('.ca-table-header') as HTMLElement
     const toolbar = container.querySelector('.ca-table__toolbar') as HTMLElement
     const pagination = container.querySelector('.ca-table-pagination') as HTMLElement
+    const topSlot = container.querySelector('.el-row') as HTMLElement
 
-    let offset = 40
+    let offset = 20 // 基础边距
 
     if (header) {
       offset += header.offsetHeight
+    }
+    if (topSlot) {
+      offset += topSlot.offsetHeight
     }
     if (toolbar) {
       offset += toolbar.offsetHeight
@@ -151,7 +156,21 @@
     if (pagination) {
       offset += pagination.offsetHeight
     }
-    fullscreenHeight.value = window.innerHeight - offset
+
+    if (isFullscreen.value) {
+      tableHeight.value = window.innerHeight - offset
+    } else {
+      const containerHeight = container.offsetHeight
+      if (containerHeight > 0) {
+        tableHeight.value = containerHeight - offset
+      } else {
+        tableHeight.value = undefined
+      }
+    }
+  }
+
+  const calculateFullscreenHeight = () => {
+    calculateTableHeight()
   }
 
   // 表格尺寸
@@ -182,6 +201,38 @@
     },
     { deep: true }
   )
+
+  // 监听数据变化重新计算高度
+  watch(
+    () => props.data,
+    () => {
+      nextTick(() => {
+        calculateTableHeight()
+      })
+    }
+  )
+
+  // 使用 ResizeObserver 监听容器大小变化
+  let resizeObserver: ResizeObserver | null = null
+
+  const setupResizeObserver = () => {
+    if (typeof ResizeObserver === 'undefined') return
+
+    resizeObserver = new ResizeObserver(() => {
+      calculateTableHeight()
+    })
+
+    if (tableContainer.value) {
+      resizeObserver.observe(tableContainer.value)
+    }
+  }
+
+  const cleanupResizeObserver = () => {
+    if (resizeObserver) {
+      resizeObserver.disconnect()
+      resizeObserver = null
+    }
+  }
 
   // 密度选项
   const sizeOptions = computed(() => {
@@ -266,6 +317,27 @@
     } else {
       document.body.style.overflow = ''
     }
+    nextTick(() => {
+      calculateTableHeight()
+    })
+  })
+
+  // 窗口大小变化时重新计算高度
+  const handleResize = () => {
+    calculateTableHeight()
+  }
+
+  onMounted(() => {
+    nextTick(() => {
+      calculateTableHeight()
+      setupResizeObserver()
+    })
+    window.addEventListener('resize', handleResize)
+  })
+
+  onUnmounted(() => {
+    window.removeEventListener('resize', handleResize)
+    cleanupResizeObserver()
   })
 
   defineExpose({

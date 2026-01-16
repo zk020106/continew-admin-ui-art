@@ -1,7 +1,7 @@
 <template>
   <ElDrawer
     v-model="visible"
-    title="导入用户"
+    :title="t('system.user.import.title')"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :size="width >= 600 ? 600 : '100%'"
@@ -9,17 +9,17 @@
   >
     <ElForm ref="formRef" :model="form" size="large" label-width="auto">
       <ElAlert v-if="!form.disabled" type="info" :closable="false" style="margin-bottom: 15px">
-        <template #title> 请按照模板要求填写数据，填写完毕后，请先上传并进行解析。 </template>
+        <template #title> {{ t('system.user.import.alert') }} </template>
         <template #default>
           <ElLink type="primary" @click="downloadTemplate">
             <ElIcon><Document /></ElIcon>
-            下载模板
+            {{ t('system.user.import.downloadTemplate') }}
           </ElLink>
         </template>
       </ElAlert>
 
       <fieldset>
-        <legend>1.解析数据</legend>
+        <legend>{{ t('system.user.import.step1.title') }}</legend>
         <div class="file-box">
           <ElUpload
             drag
@@ -30,65 +30,82 @@
             accept=".xls, .xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           >
             <ElIcon class="el-icon--upload"><UploadFilled /></ElIcon>
-            <div class="el-upload__text"> 将文件拖到此处，或<em>点击上传</em> </div>
+            <div class="el-upload__text" v-html="t('system.user.import.step1.uploadText')" />
             <template #tip>
-              <div class="el-upload__tip">仅支持xls、xlsx格式</div>
+              <div class="el-upload__tip">{{ t('system.user.import.step1.uploadTip') }}</div>
             </template>
           </ElUpload>
         </div>
         <div v-if="dataResult.importKey">
           <div class="file-box">
             <ElSpace :size="20">
-              <ElStatistic title="总计行数" :value="dataResult.totalRows" />
-              <ElStatistic title="正常行数" :value="dataResult.validRows" />
+              <ElStatistic
+                :title="t('system.user.import.step1.totalRows')"
+                :value="dataResult.totalRows"
+              />
+              <ElStatistic
+                :title="t('system.user.import.step1.validRows')"
+                :value="dataResult.validRows"
+              />
             </ElSpace>
           </div>
           <div class="file-box">
             <ElSpace :size="20">
-              <ElStatistic title="已存在用户" :value="dataResult.duplicateUserRows" />
-              <ElStatistic title="已存在邮箱" :value="dataResult.duplicateEmailRows" />
-              <ElStatistic title="已存在手机" :value="dataResult.duplicatePhoneRows" />
+              <ElStatistic
+                :title="t('system.user.import.step1.duplicateUserRows')"
+                :value="dataResult.duplicateUserRows"
+              />
+              <ElStatistic
+                :title="t('system.user.import.step1.duplicateEmailRows')"
+                :value="dataResult.duplicateEmailRows"
+              />
+              <ElStatistic
+                :title="t('system.user.import.step1.duplicatePhoneRows')"
+                :value="dataResult.duplicatePhoneRows"
+              />
             </ElSpace>
           </div>
         </div>
       </fieldset>
 
       <fieldset>
-        <legend>2.导入策略</legend>
-        <ElFormItem label="用户已存在">
+        <legend>{{ t('system.user.import.step2.title') }}</legend>
+        <ElFormItem :label="t('system.user.import.step2.duplicateUser')">
           <ElRadioGroup v-model="form.duplicateUser">
-            <ElRadioButton :value="1">跳过该行</ElRadioButton>
-            <ElRadioButton :value="3">停止导入</ElRadioButton>
-            <ElRadioButton :value="2">修改数据</ElRadioButton>
+            <ElRadioButton :value="1">{{ t('system.user.import.step2.skip') }}</ElRadioButton>
+            <ElRadioButton :value="3">{{ t('system.user.import.step2.stop') }}</ElRadioButton>
+            <ElRadioButton :value="2">{{ t('system.user.import.step2.update') }}</ElRadioButton>
           </ElRadioGroup>
         </ElFormItem>
-        <ElFormItem label="邮箱已存在">
+        <ElFormItem :label="t('system.user.import.step2.duplicateEmail')">
           <ElRadioGroup v-model="form.duplicateEmail">
-            <ElRadioButton :value="1">跳过该行</ElRadioButton>
-            <ElRadioButton :value="3">停止导入</ElRadioButton>
+            <ElRadioButton :value="1">{{ t('system.user.import.step2.skip') }}</ElRadioButton>
+            <ElRadioButton :value="3">{{ t('system.user.import.step2.stop') }}</ElRadioButton>
           </ElRadioGroup>
         </ElFormItem>
-        <ElFormItem label="手机已存在">
+        <ElFormItem :label="t('system.user.import.step2.duplicatePhone')">
           <ElRadioGroup v-model="form.duplicatePhone">
-            <ElRadioButton :value="1">跳过该行</ElRadioButton>
-            <ElRadioButton :value="3">停止导入</ElRadioButton>
+            <ElRadioButton :value="1">{{ t('system.user.import.step2.skip') }}</ElRadioButton>
+            <ElRadioButton :value="3">{{ t('system.user.import.step2.stop') }}</ElRadioButton>
           </ElRadioGroup>
         </ElFormItem>
-        <ElFormItem label="默认状态">
+        <ElFormItem :label="t('system.user.import.step2.defaultStatus')">
           <ElSwitch
             v-model="form.defaultStatus"
             :active-value="1"
             :inactive-value="2"
-            active-text="启用"
-            inactive-text="禁用"
+            :active-text="t('common.statusEnabled')"
+            :inactive-text="t('common.statusDisabled')"
           />
         </ElFormItem>
       </fieldset>
     </ElForm>
 
     <template #footer>
-      <CaButton type="cancel" @click="visible = false">取消导入</CaButton>
-      <CaButton type="confirm" @click="save">确认导入</CaButton>
+      <CaButton type="cancel" @click="visible = false">{{
+        t('system.user.import.button.cancel')
+      }}</CaButton>
+      <CaButton type="confirm" @click="save">{{ t('system.user.import.button.confirm') }}</CaButton>
     </template>
   </ElDrawer>
 </template>
@@ -102,12 +119,14 @@
   import { useWindowSize } from '@vueuse/core'
   import type { FormInstance, UploadRequestOptions } from 'element-plus'
   import { ElMessage } from 'element-plus'
+  import { useI18n } from 'vue-i18n'
 
   const emit = defineEmits<{
     (e: 'save-success'): void
   }>()
 
   const { width } = useWindowSize()
+  const { t } = useI18n()
 
   const visible = ref(false)
   const formRef = ref<FormInstance>()
@@ -151,7 +170,7 @@
     return parseImportUser(formData)
       .then((res) => {
         dataResult.value = res.data
-        ElMessage.success('上传解析成功')
+        ElMessage.success(t('system.user.import.message.uploadSuccess'))
         onSuccess(res)
       })
       .catch((error) => {
@@ -163,12 +182,17 @@
   const save = async () => {
     try {
       if (!dataResult.value.importKey) {
-        ElMessage.warning('请先上传文件，解析导入数据')
+        ElMessage.warning(t('system.user.import.message.pleaseUploadFirst'))
         return false
       }
       form.importKey = dataResult.value.importKey
       const res = await importUser(form)
-      ElMessage.success(`导入成功! 新增${res.data.insertRows}, 修改${res.data.updateRows}`)
+      ElMessage.success(
+        t('system.user.import.message.importSuccess', {
+          insertRows: res.data.insertRows,
+          updateRows: res.data.updateRows
+        })
+      )
       emit('save-success')
       visible.value = false
       return true

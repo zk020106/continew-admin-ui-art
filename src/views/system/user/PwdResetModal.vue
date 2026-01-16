@@ -64,7 +64,7 @@
     try {
       await formRef.value?.formRef?.validate()
       await resetUserPwd({ newPassword: encryptByRsa(form.newPassword) || '' }, dataId.value)
-      ElMessage.success('重置成功')
+      ElMessage.success(t('message.updateSuccess'))
       emit('save-success')
       visible.value = false
       return true
