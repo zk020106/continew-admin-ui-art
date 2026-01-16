@@ -12,6 +12,7 @@
   import { toggleTransition } from './utils/ui/animation'
   import { checkStorageCompatibility } from './utils/storage'
   import { initializeTheme } from './hooks/core/useTheme'
+  import { initSiteConfig } from './config/modules/site'
 
   const userStore = useUserStore()
   const { language } = storeToRefs(userStore)
@@ -30,5 +31,6 @@
     checkStorageCompatibility()
     toggleTransition(false)
     systemUpgrade()
+    initSiteConfig()
   })
 </script>
