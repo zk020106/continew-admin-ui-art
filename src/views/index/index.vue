@@ -12,6 +12,9 @@
       <div id="app-content">
         <ArtPageContent />
       </div>
+      <div id="app-footer">
+        <ArtFooter />
+      </div>
     </main>
 
     <div id="app-global">
