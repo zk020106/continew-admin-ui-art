@@ -89,18 +89,29 @@ export function useAutoLayoutHeight(
 ) {
   const { extraSpacing = 15, updateCssVar = true, cssVarName = '--art-full-height' } = options
 
-  // 创建元素引用
-  const headerRef = ref<HTMLElement>()
-  const contentHeaderRef = ref<HTMLElement>()
+  // 为每个 ID 创建元素引用
+  const elementRefs = ref<HTMLElement[]>([])
 
-  // 使用 VueUse 自动监听元素尺寸变化
-  const { height: headerHeight } = useElementSize(headerRef)
-  const { height: contentHeaderHeight } = useElementSize(contentHeaderRef)
+  // 使用 VueUse 自动监听每个元素的尺寸变化
+  const elementSizes = computed(() => {
+    return elementRefs.value.map((element) => {
+      if (!element) return { height: 0 }
+      return { height: element.offsetHeight }
+    })
+  })
+
+  // 计算总高度
+  const totalHeight = computed(() => {
+    let height = 0
+    elementSizes.value.forEach((size) => {
+      height += size.height
+    })
+    return height
+  })
 
   // 计算容器最小高度（响应式）
   const containerMinHeight = computed(() => {
-    const totalHeight = headerHeight.value + contentHeaderHeight.value + extraSpacing
-    return `calc(100vh - ${totalHeight}px)`
+    return `calc(100vh - ${totalHeight.value + extraSpacing}px)`
   })
 
   if (updateCssVar) {
@@ -118,31 +129,47 @@ export function useAutoLayoutHeight(
   // 在 DOM 挂载后查找元素
   onMounted(() => {
     if (typeof document !== 'undefined') {
-      // 使用 nextTick 确保 DOM 完全渲染
-      requestAnimationFrame(() => {
-        const header = document.getElementById(headerIds[0])
-        const contentHeader = document.getElementById(headerIds[1])
+      // 使用 requestAnimationFrame 确保 DOM 完全渲染
+      const updateElements = () => {
+        const elements: HTMLElement[] = []
+        headerIds.forEach((id) => {
+          const element = document.getElementById(id)
+          if (element) {
+            elements.push(element)
+          }
+        })
+        elementRefs.value = elements
+      }
 
-        if (header) {
-          headerRef.value = header
-        }
-        if (contentHeader) {
-          contentHeaderRef.value = contentHeader
-        }
-      })
+      requestAnimationFrame(updateElements)
+
+      // 使用 ResizeObserver 监听每个元素的变化
+      const resizeObserver = new ResizeObserver(updateElements)
+      const startObserving = () => {
+        headerIds.forEach((id) => {
+          const element = document.getElementById(id)
+          if (element) {
+            resizeObserver.observe(element)
+          }
+        })
+      }
+
+      // 延迟开始监听，确保 DOM 已渲染
+      setTimeout(startObserving, 100)
+
+      // 清理函数
+      return () => {
+        resizeObserver.disconnect()
+      }
     }
   })
 
   return {
     /** 容器最小高度（响应式） */
     containerMinHeight,
-    /** 头部元素引用 */
-    headerRef,
-    /** 内容头部元素引用 */
-    contentHeaderRef,
-    /** 头部高度（响应式） */
-    headerHeight,
-    /** 内容头部高度（响应式） */
-    contentHeaderHeight
+    /** 元素引用数组 */
+    elementRefs,
+    /** 总高度（响应式） */
+    totalHeight
   }
 }

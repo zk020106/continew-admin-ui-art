@@ -48,16 +48,20 @@
   </div>
 </template>
 <script setup lang="ts">
-  import type { CSSProperties } from 'vue'
-  import { useRoute } from 'vue-router'
   import { useAutoLayoutHeight } from '@/hooks/core/useLayoutHeight'
   import { useSettingStore } from '@/store/modules/setting'
   import { useWorktabStore } from '@/store/modules/worktab'
+  import type { CSSProperties } from 'vue'
+  import { useRoute } from 'vue-router'
 
   defineOptions({ name: 'ArtPageContent' })
 
   const route = useRoute()
-  const { containerMinHeight } = useAutoLayoutHeight()
+  const { containerMinHeight } = useAutoLayoutHeight([
+    'app-header',
+    'app-content-header',
+    'app-footer'
+  ])
   const { pageTransition, containerWidth, refresh } = storeToRefs(useSettingStore())
   const { keepAliveExclude } = storeToRefs(useWorktabStore())
 
