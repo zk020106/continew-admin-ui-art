@@ -11,18 +11,18 @@
  */
 
 import { listSiteOptionDict } from '@/apis/system/common'
-import type { SiteConfig } from '@/apis/system/type'
+import type { OptionResp, SiteConfig } from '@/apis/system/type'
 import { useAppStore } from '@/store/modules/app'
 
 /**
  * 站点配置对象
  */
 const siteConfig: SiteConfig = {
-  SITE_FAVICON: '',
-  SITE_LOGO: '',
-  SITE_TITLE: '',
-  SITE_COPYRIGHT: '',
-  SITE_BEIAN: ''
+  SITE_FAVICON: { id: 0, code: 'SITE_FAVICON', value: '' },
+  SITE_LOGO: { id: 0, code: 'SITE_LOGO', value: '' },
+  SITE_TITLE: { id: 0, code: 'SITE_TITLE', value: '' },
+  SITE_COPYRIGHT: { id: 0, code: 'SITE_COPYRIGHT', value: '' },
+  SITE_BEIAN: { id: 0, code: 'SITE_BEIAN', value: '' }
 }
 
 /**
@@ -32,33 +32,33 @@ const siteConfig: SiteConfig = {
 export async function initSiteConfig(): Promise<void> {
   try {
     const res = await listSiteOptionDict()
-    const resMap = new Map<string, string>()
+    const resMap = new Map<string, OptionResp>()
 
     res.forEach((item) => {
-      resMap.set(item.label, item.value)
+      resMap.set(item.code, item)
     })
 
     // 更新站点配置
-    siteConfig.SITE_FAVICON = resMap.get('SITE_FAVICON') || ''
-    siteConfig.SITE_LOGO = resMap.get('SITE_LOGO') || ''
-    siteConfig.SITE_TITLE = resMap.get('SITE_TITLE') || ''
-    siteConfig.SITE_COPYRIGHT = resMap.get('SITE_COPYRIGHT') || ''
-    siteConfig.SITE_BEIAN = resMap.get('SITE_BEIAN') || ''
+    siteConfig.SITE_FAVICON = resMap.get('SITE_FAVICON') || siteConfig.SITE_FAVICON
+    siteConfig.SITE_LOGO = resMap.get('SITE_LOGO') || siteConfig.SITE_LOGO
+    siteConfig.SITE_TITLE = resMap.get('SITE_TITLE') || siteConfig.SITE_TITLE
+    siteConfig.SITE_COPYRIGHT = resMap.get('SITE_COPYRIGHT') || siteConfig.SITE_COPYRIGHT
+    siteConfig.SITE_BEIAN = resMap.get('SITE_BEIAN') || siteConfig.SITE_BEIAN
 
     // 更新页面标题和 favicon
-    if (siteConfig.SITE_TITLE) {
-      document.title = siteConfig.SITE_TITLE
+    if (siteConfig.SITE_TITLE?.value) {
+      document.title = siteConfig.SITE_TITLE.value
     }
     const faviconEl = document.querySelector('link[rel="shortcut icon"]')
-    if (faviconEl && siteConfig.SITE_FAVICON) {
-      faviconEl.setAttribute('href', siteConfig.SITE_FAVICON)
+    if (faviconEl && siteConfig.SITE_FAVICON?.value) {
+      faviconEl.setAttribute('href', siteConfig.SITE_FAVICON.value)
     }
 
     // 更新 appStore 中的版权和备案号
     const appStore = useAppStore()
     appStore.setSiteInfo({
-      copyright: siteConfig.SITE_COPYRIGHT,
-      beian: siteConfig.SITE_BEIAN
+      copyright: siteConfig.SITE_COPYRIGHT?.value,
+      beian: siteConfig.SITE_BEIAN?.value
     })
   } catch (error) {
     console.error('[SiteConfig] 初始化站点配置失败:', error)
@@ -73,22 +73,22 @@ export function setSiteConfig(config: Partial<SiteConfig>): void {
   Object.assign(siteConfig, config)
 
   // 更新页面标题和 favicon
-  if (config.SITE_TITLE) {
-    document.title = config.SITE_TITLE
+  if (config.SITE_TITLE?.value) {
+    document.title = config.SITE_TITLE.value
   }
-  if (config.SITE_FAVICON) {
+  if (config.SITE_FAVICON?.value) {
     const faviconEl = document.querySelector('link[rel="shortcut icon"]')
     if (faviconEl) {
-      faviconEl.setAttribute('href', config.SITE_FAVICON)
+      faviconEl.setAttribute('href', config.SITE_FAVICON.value)
     }
   }
 
   // 更新 appStore 中的版权和备案号
-  if (config.SITE_COPYRIGHT || config.SITE_BEIAN) {
+  if (config.SITE_COPYRIGHT?.value || config.SITE_BEIAN?.value) {
     const appStore = useAppStore()
     appStore.setSiteInfo({
-      copyright: config.SITE_COPYRIGHT,
-      beian: config.SITE_BEIAN
+      copyright: config.SITE_COPYRIGHT?.value,
+      beian: config.SITE_BEIAN?.value
     })
   }
 }

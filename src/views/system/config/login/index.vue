@@ -116,8 +116,9 @@
   }
 
   const handleSave = async () => {
-    const isInvalid = await formRef.value?.validate()
-    if (isInvalid) return
+    const isValid = await formRef.value?.validate()
+    if (!isValid) return
+
     try {
       await updateOption(
         Object.entries(form).map(([key, value]) => {

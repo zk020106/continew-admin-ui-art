@@ -23,7 +23,7 @@
         >
           <ElOption label="AliYun" value="AliYun" />
           <ElOption label="Tencent" value="Tencent" />
-          <ElOption label=" Huawei" value="Huawei" />
+          <ElOption label="Huawei" value="Huawei" />
         </ElSelect>
       </ElFormItem>
       <ElFormItem :label="t('system.config.sms.accessKey')" prop="accessKey">

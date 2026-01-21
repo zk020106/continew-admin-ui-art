@@ -69,8 +69,9 @@
     try {
       loading.value = true
       const data = await listStorage(queryForm)
-      storageList.value = data || []
-      dataMap.value = groupBy(data, 'type')
+      const list = data || []
+      storageList.value = list
+      dataMap.value = groupBy(list, 'type')
     } catch (error) {
       console.error('Failed to fetch storage list:', error)
     } finally {

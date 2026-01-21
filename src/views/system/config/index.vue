@@ -13,6 +13,7 @@
 <script setup lang="ts">
   import CaPageLayout from '@/components/base/CaPageLayout/index.vue'
   import { ElTabPane, ElTabs } from 'element-plus'
+  import type { Component } from 'vue'
   import { computed, defineAsyncComponent, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'

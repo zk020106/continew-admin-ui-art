@@ -17,7 +17,6 @@
         </template>
         <ElSelect v-model="form.MAIL_PROTOCOL" style="width: 220px">
           <ElOption label="SMTP" value="smtp" />
-          <ElOption label="SMTP" value="SMTP" />
         </ElSelect>
       </ElFormItem>
 
@@ -207,8 +206,9 @@
   }
 
   const handleSave = async () => {
-    const isInvalid = await formRef.value?.validate()
-    if (isInvalid) return
+    const isValid = await formRef.value?.validate()
+    if (!isValid) return
+
     try {
       await updateOption(
         Object.entries(form).map(([key, value]) => {

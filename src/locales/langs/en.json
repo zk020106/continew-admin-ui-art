@@ -70,7 +70,8 @@
     "tips": "hint",
     "true": "yes",
     "updateTime": "modification time",
-    "warning": "warn"
+    "warning": "warn",
+    "noData": "No data"
   },
   "components": {
     "common": {
@@ -120,11 +121,11 @@
       "tab": {
         "day": "day",
         "hour": "hour",
-        "minute": "point",
-        "month": "moon",
-        "second": "Second",
+        "minute": "minute",
+        "month": "month",
+        "second": "second",
         "week": "week",
-        "year": "Year"
+        "year": "year"
       },
       "tip": {
         "dayWeekConflict": "Only one of day and week can be set",
@@ -141,18 +142,18 @@
         "work": "working days"
       },
       "unit": {
-        "day": "sky",
+        "day": "day",
         "from": "from",
         "hour": "hour",
         "interval": "interval",
-        "minute": "point",
-        "month": "moon",
-        "nearestWorkday": "Day, the most recent working day",
-        "second": "Second",
+        "minute": "minute",
+        "month": "month",
+        "nearestWorkday": "Nearest workday",
+        "second": "second",
         "start": "start",
         "thisMonth": "this month",
         "to": "to",
-        "year": "Year"
+        "year": "year"
       }
     },
     "icon": {
@@ -1169,17 +1170,17 @@
         "add": "New",
         "delete": "delete",
         "edit": "Revise",
-        "execute": "implement",
+        "execute": "Execute",
         "viewLog": "View log"
       },
       "field": {
         "argsStr": "Execution parameters",
-        "blockStrategy": "blocking strategy",
+        "blockStrategy": "Blocking strategy",
         "createDt": "creation time",
         "description": "describe",
         "executorInfo": "Actuator information",
         "executorTimeout": "Execution timeout",
-        "groupName": "task force",
+        "groupName": "Task group",
         "id": "ID",
         "jobName": "Task name",
         "jobStatus": "state",
@@ -1205,7 +1206,7 @@
         "executorTimeout": "timeout",
         "executorTimeoutPlaceholder": "Please enter the timeout",
         "executorTimeoutUnit": "Second",
-        "groupName": "task force",
+        "groupName": "Task group",
         "groupNamePlaceholder": "Please select a task group",
         "jobName": "Task name",
         "jobNamePlaceholder": "Please enter a task name",
@@ -1244,12 +1245,12 @@
         "executeRequestSent": "The execution request has been issued"
       },
       "search": {
-        "groupName": "task force",
+        "groupName": "Task group",
         "groupNamePlaceholder": "Please select a task group",
         "jobName": "Task name",
         "jobNamePlaceholder": "Search task name"
       },
-      "title": "task management",
+      "title": "Task management",
       "triggerType": {
         "cron": "Cron",
         "fixedInterval": "fixed interval",
@@ -1259,12 +1260,12 @@
     "log": {
       "button": {
         "retry": "Try again",
-        "stop": "stop"
+        "stop": "Stop"
       },
       "field": {
         "createDt": "Scheduling time",
         "executionAt": "Execution time",
-        "groupName": "task force",
+        "groupName": "Task group",
         "jobName": "Task name",
         "operationReason": "Execution notes",
         "taskBatchStatus": "Execution status"
@@ -1273,19 +1274,19 @@
         "retryConfirm": "Are you sure you want to retry this execution?",
         "retrySuccess": "Retry successful",
         "stopConfirm": "Are you sure to stop this execution?",
-        "stopSuccess": "stop successfully"
+        "stopSuccess": "Stopped successfully"
       },
       "search": {
         "datetimeRange": "Scheduling time",
         "datetimeRangePlaceholder": "Please select a scheduling time range",
-        "groupName": "task force",
+        "groupName": "Task group",
         "groupNamePlaceholder": "Please select a task group",
         "jobName": "Task name",
         "jobNamePlaceholder": "Search task name",
         "taskBatchStatus": "Execution status",
         "taskBatchStatusPlaceholder": "Please select a status"
       },
-      "title": "Mission log"
+      "title": "Task log"
     }
   },
   "search": {
@@ -1395,6 +1396,7 @@
         "maxLoginCountUnlimited": "Unlimited",
         "overflowLogoutMode": "Overflow Logout Mode",
         "replacedRange": "Replace Logout Range",
+        "searchPlaceholder": "Search client ID/type",
         "timeout": "Token Validity Period",
         "timeoutUnit": "seconds",
         "timeoutUnlimited": "Never expires"

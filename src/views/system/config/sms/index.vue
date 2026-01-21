@@ -101,7 +101,14 @@
           label: t('system.config.sms.supplier'),
           field: 'supplier',
           gridItemProps: { span: { xs: 24, sm: 8 } },
-          props: { placeholder: t('system.config.sms.supplierPlaceholder') }
+          props: {
+            placeholder: t('system.config.sms.supplierPlaceholder'),
+            options: [
+              { label: 'AliYun', value: 'AliYun' },
+              { label: 'Tencent', value: 'Tencent' },
+              { label: 'Huawei', value: 'Huawei' }
+            ]
+          }
         }
       ] as FormColumnItem<SmsConfigQuery>[]
   )

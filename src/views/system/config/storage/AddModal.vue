@@ -84,6 +84,7 @@
 <script setup lang="ts">
   import type { FormInstance, FormRules } from 'element-plus'
   import { addStorage, getStorage, updateStorage } from '@/apis/system/storage'
+  import type { StorageReq } from '@/apis/system/type'
   import { useResetReactive } from '@/hooks'
   import { encryptByRsa } from '@/utils/encrypt'
   import { ElMessage } from 'element-plus'
@@ -150,26 +151,29 @@
   }
 
   const handleSave = async () => {
+    const isValid = await formRef.value?.validate()
+    if (!isValid) return
+
+    saveLoading.value = true
+
     try {
-      const isInvalid = await formRef.value?.validate()
-      if (isInvalid) return
-
-      saveLoading.value = true
-
       if (isUpdate.value) {
-        await updateStorage(
-          {
-            ...form,
-            secretKey: form.type === 2 && form.secretKey ? encryptByRsa(form.secretKey) || '' : ''
-          },
-          dataId.value
-        )
+        const payload: Record<string, unknown> = { ...form }
+        // 仅在用户实际输入了 secretKey 时才包含
+        if (form.type === 2 && form.secretKey) {
+          payload.secretKey = encryptByRsa(form.secretKey)
+        } else {
+          delete payload.secretKey
+        }
+        await updateStorage(payload as StorageReq, dataId.value)
         ElMessage.success('修改成功')
       } else {
-        await addStorage({
-          ...form,
-          secretKey: form.type === 2 ? encryptByRsa(form.secretKey) || '' : ''
-        })
+        const payload: StorageReq = { ...form }
+        // 仅在添加模式下且用户输入了 secretKey 时才加密
+        if (form.type === 2 && form.secretKey) {
+          payload.secretKey = encryptByRsa(form.secretKey)
+        }
+        await addStorage(payload)
         ElMessage.success('新增成功')
       }
 

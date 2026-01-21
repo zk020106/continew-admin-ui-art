@@ -11,12 +11,7 @@
       <!-- 站点Logo -->
       <ElFormItem class="image-item" prop="SITE_LOGO">
         <template #label>{{ siteConfig.SITE_LOGO?.name }}</template>
-        <ElUpload
-          :http-request="handleUploadLogo"
-          :show-file-list="false"
-          accept="image/*"
-          :auto-upload="false"
-        >
+        <ElUpload :http-request="handleUploadLogo" :show-file-list="false" accept="image/*">
           <template #trigger>
             <ElButton v-if="!logoFile.url" type="primary" size="small">
               <ElIcon><Plus /></ElIcon>
@@ -36,12 +31,7 @@
       <!-- 站点图标 -->
       <ElFormItem class="image-item" prop="SITE_FAVICON">
         <template #label>{{ siteConfig.SITE_FAVICON?.name }}</template>
-        <ElUpload
-          :http-request="handleUploadFavicon"
-          :show-file-list="false"
-          accept="image/*"
-          :auto-upload="false"
-        >
+        <ElUpload :http-request="handleUploadFavicon" :show-file-list="false" accept="image/*">
           <template #trigger>
             <ElButton v-if="!faviconFile.url" type="primary" size="small">
               <ElIcon><Plus /></ElIcon>
@@ -214,10 +204,10 @@
     isUpdate.value = false
   }
 
-  // 保存
   const handleSave = async () => {
-    const isInvalid = await formRef.value?.validate()
-    if (isInvalid) return
+    const isValid = await formRef.value?.validate()
+    if (!isValid) return
+
     try {
       await updateOption(
         Object.entries(form).map(([key, value]) => {
@@ -259,37 +249,25 @@
       .catch(() => {})
   }
 
-  // 上传 Logo
-  const handleUploadLogo = (options: UploadRequestOptions): Promise<unknown> => {
-    const file = options.file as File
-    return fileToBase64(file)
-      .then((res) => {
-        form.SITE_LOGO = res
-        logoFile.value.url = res
-        ElMessage.success('上传成功')
-      })
-      .catch((error) => {
-        console.error('Upload failed:', error)
-        ElMessage.error('上传失败')
-        return Promise.reject(error)
-      })
+  const handleUpload = (field: 'SITE_LOGO' | 'SITE_FAVICON', fileRef: Ref<{ url?: string }>) => {
+    return (options: UploadRequestOptions): Promise<unknown> => {
+      const file = options.file as File
+      return fileToBase64(file)
+        .then((res) => {
+          form[field] = res
+          fileRef.value.url = res
+          ElMessage.success('上传成功')
+        })
+        .catch((error) => {
+          console.error('Upload failed:', error)
+          ElMessage.error('上传失败')
+          return Promise.reject(error)
+        })
+    }
   }
 
-  // 上传 Favicon
-  const handleUploadFavicon = (options: UploadRequestOptions): Promise<unknown> => {
-    const file = options.file as File
-    return fileToBase64(file)
-      .then((res) => {
-        form.SITE_FAVICON = res
-        faviconFile.value.url = res
-        ElMessage.success('上传成功')
-      })
-      .catch((error) => {
-        console.error('Upload failed:', error)
-        ElMessage.error('上传失败')
-        return Promise.reject(error)
-      })
-  }
+  const handleUploadLogo = handleUpload('SITE_LOGO', logoFile)
+  const handleUploadFavicon = handleUpload('SITE_FAVICON', faviconFile)
 
   onMounted(() => {
     getDataList()

@@ -182,12 +182,12 @@
   }
 
   const handleConfirm = async () => {
+    const isValid = await formRef.value?.validate()
+    if (!isValid) return
+
+    saveLoading.value = true
+
     try {
-      const isInvalid = await formRef.value?.validate()
-      if (isInvalid) return
-
-      saveLoading.value = true
-
       if (isUpdate.value) {
         await updateClient(formData as unknown as ClientReq, currentId.value)
         ElMessage.success(t('common.success'))

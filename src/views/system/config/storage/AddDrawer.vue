@@ -230,8 +230,8 @@
   }
 
   const handleConfirm = async () => {
-    await formRef.value?.validate()
     try {
+      await formRef.value?.validate()
       if (isEdit.value) {
         await updateStorage(formData.value, currentId.value)
       } else {
@@ -241,6 +241,7 @@
       visible.value = false
       emit('save-success')
     } catch (error) {
+      if (error === false) return // 表单验证失败
       console.error('Failed to save storage:', error)
     }
   }

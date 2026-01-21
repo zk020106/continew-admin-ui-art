@@ -75,16 +75,16 @@
       v-loading="props.loading"
       :height="tableHeight"
     >
+      <template #empty>
+        <ElEmpty v-if="$slots.empty">
+          <slot name="empty" />
+        </ElEmpty>
+        <ElEmpty v-else :description="t('common.noData')" />
+      </template>
       <TableColumn v-for="item in visibleColumns" :key="item.prop || item.label" :column="item">
         <!-- 将所有插槽传递给子组件 -->
         <template v-for="(_, slotName) in $slots" :key="slotName" #[slotName]="scope">
           <slot :name="slotName" v-bind="scope" />
-        </template>
-        <template #empty>
-          <ElEmpty v-if="$slots.empty">
-            <slot name="empty" />
-          </ElEmpty>
-          <ElEmpty v-else :description="t('common.noData')" />
         </template>
       </TableColumn>
     </ElTable>

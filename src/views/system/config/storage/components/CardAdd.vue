@@ -1,5 +1,13 @@
 <template>
-  <ElCard class="storage-card add-card" shadow="hover" @click="onAdd">
+  <ElCard
+    class="storage-card add-card"
+    shadow="hover"
+    role="button"
+    tabindex="0"
+    @click="onAdd"
+    @keydown.enter="onAdd"
+    @keydown.space.prevent="onAdd"
+  >
     <div class="add-content">
       <ElIcon :size="24" class="add-icon"><Plus /></ElIcon>
       <div class="add-text">点击创建{{ type === 1 ? '本地存储' : '对象存储' }}</div>

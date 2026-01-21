@@ -9,6 +9,14 @@
       :disabled-tools="['size']"
       @refresh="search"
     >
+      <template #toolbar-left>
+        <ElButton type="primary" @click="onAdd">
+          <template #icon>
+            <ElIcon><Plus /></ElIcon>
+          </template>
+          {{ t('common.button.add') }}
+        </ElButton>
+      </template>
       <template #action="{ row }">
         <ElSpace>
           <ElLink type="primary" @click="onDetail(row)">{{ t('common.detail') }}</ElLink>
@@ -34,6 +42,7 @@
   import { useI18n } from 'vue-i18n'
   import AddModal from './AddModal.vue'
   import DetailModal from './DetailModal.vue'
+  import { Plus } from '@element-plus/icons-vue'
 
   defineOptions({ name: 'ClientConfig' })
 
