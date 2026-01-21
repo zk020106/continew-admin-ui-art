@@ -451,9 +451,9 @@ export interface ClientDetailResp {
   overflowLogoutMode: string
 }
 export interface ClientQuery {
-  clientType: string
-  authType: string[]
-  status: string
+  clientType?: string
+  authType?: string[]
+  status?: string
   sort: Array<string>
 }
 export interface ClientPageQuery extends ClientQuery, PageQuery {}
@@ -475,11 +475,18 @@ export interface ClientReq {
 
 /** 系统参数类型 */
 export interface OptionResp {
-  id: string
-  name: string
+  id: number
+  name?: string
   code: string
   value: string
-  description: string
+  description?: string
+}
+
+/** 系统参数修改请求 */
+export interface OptionReq {
+  id: number
+  code: string
+  value: string
 }
 
 export interface OptionQuery {
@@ -487,16 +494,7 @@ export interface OptionQuery {
   category?: string
 }
 
-/** 基础配置类型 */
-export interface BasicConfig {
-  SITE_FAVICON: string
-  SITE_LOGO: string
-  SITE_TITLE: string
-  SITE_COPYRIGHT: string
-  SITE_BEIAN: string
-}
-
-/** 基础配置类型 */
+/** 站点配置类型 */
 export interface SiteConfig {
   SITE_FAVICON: OptionResp
   SITE_LOGO: OptionResp
@@ -505,6 +503,9 @@ export interface SiteConfig {
   SITE_COPYRIGHT: OptionResp
   SITE_BEIAN: OptionResp
 }
+
+/** @deprecated 使用 SiteConfig 替代 */
+export type BasicConfig = SiteConfig
 
 /** 安全配置类型 */
 export interface SecurityConfig {

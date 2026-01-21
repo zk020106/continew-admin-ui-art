@@ -42,11 +42,11 @@
     "copySuccess": "复制成功",
     "createTime": "创建时间",
     "datePicker": {
+      "endDatePlaceholder": "结束日期",
+      "endTimePlaceholder": "结束时间",
       "rangeSeparator": "至",
       "startDatePlaceholder": "开始日期",
-      "endDatePlaceholder": "结束日期",
-      "startTimePlaceholder": "开始时间",
-      "endTimePlaceholder": "结束时间"
+      "startTimePlaceholder": "开始时间"
     },
     "detail": "详情",
     "empty": "暂无",
@@ -60,6 +60,7 @@
     "loading": "加载中",
     "logOutTips": "您是否要退出登录?",
     "placeholder": {
+      "select": "请选择",
       "status": "请选择状态"
     },
     "status": "状态",
@@ -69,7 +70,8 @@
     "tips": "提示",
     "true": "是",
     "updateTime": "修改时间",
-    "warning": "警告"
+    "warning": "警告",
+    "noData": "暂无数据"
   },
   "components": {
     "common": {
@@ -78,9 +80,23 @@
     "component": {
       "noComponents": "暂无可用组件"
     },
+    "cronPreset": {
+      "every30Minutes": "每30分钟",
+      "everyDay": "每天零点",
+      "everyHour": "每小时",
+      "everyMinute": "每分钟",
+      "everyMonth": "每月1日零点",
+      "everyMonthLast": "每月最后一天零点",
+      "everyMonthLastWorkday": "每月最后一个工作日零点",
+      "everyWeek": "每周日零点"
+    },
     "form": {
       "collapse": "收起",
       "expand": "展开",
+      "message": {
+        "dictLoadFailed": "获取字典数据失败",
+        "dictRequestNotConfigured": "请配置全局字典请求方法dictRequest"
+      },
       "placeholder": {
         "date": "请选择日期",
         "input": "请输入{label}",
@@ -89,10 +105,55 @@
       },
       "validate": {
         "required": "{label}为必填项"
+      }
+    },
+    "genCron": {
+      "expression": "表达式",
+      "placeholder": {
+        "cronInput": "请输入 Cron 表达式"
       },
-      "message": {
-        "dictRequestNotConfigured": "请配置全局字典请求方法dictRequest",
-        "dictLoadFailed": "获取字典数据失败"
+      "preview": {
+        "executionPreview": "执行预览",
+        "expressionError": "表达式错误",
+        "noExecutionTime": "无执行时间",
+        "title": "近五次执行时间 (不解析年)"
+      },
+      "tab": {
+        "day": "日",
+        "hour": "时",
+        "minute": "分",
+        "month": "月",
+        "second": "秒",
+        "week": "周",
+        "year": "年"
+      },
+      "tip": {
+        "dayWeekConflict": "日和周只能设置其中之一",
+        "dayWeekOnlyOneUnset": "日和周只能有一个为 [不设置]"
+      },
+      "title": "Cron表达式生成",
+      "type": {
+        "every": "{unit}",
+        "last": "最后一日",
+        "loop": "循环",
+        "range": "区间",
+        "specify": "指定",
+        "unset": "不设置",
+        "work": "工作日"
+      },
+      "unit": {
+        "day": "天",
+        "from": "从",
+        "hour": "时",
+        "interval": "间隔",
+        "minute": "分",
+        "month": "月",
+        "nearestWorkday": "日，最近的工作日",
+        "second": "秒",
+        "start": "开始",
+        "thisMonth": "本月",
+        "to": "至",
+        "year": "年"
       }
     },
     "icon": {
@@ -149,73 +210,14 @@
       "uploadSuccess": "上传成功",
       "uploading": "上传中..."
     },
-    "genCron": {
-      "title": "Cron表达式生成",
-      "tab": {
-        "second": "秒",
-        "minute": "分",
-        "hour": "时",
-        "day": "日",
-        "month": "月",
-        "week": "周",
-        "year": "年"
-      },
-      "type": {
-        "every": "{unit}",
-        "range": "区间",
-        "loop": "循环",
-        "work": "工作日",
-        "last": "最后一日",
-        "specify": "指定",
-        "unset": "不设置"
-      },
-      "placeholder": {
-        "cronInput": "请输入 Cron 表达式"
-      },
-      "preview": {
-        "title": "近五次执行时间 (不解析年)",
-        "noExecutionTime": "无执行时间",
-        "expressionError": "表达式错误",
-        "executionPreview": "执行预览"
-      },
-      "unit": {
-        "from": "从",
-        "to": "至",
-        "start": "开始",
-        "interval": "间隔",
-        "thisMonth": "本月",
-        "nearestWorkday": "日，最近的工作日",
-        "day": "天",
-        "second": "秒",
-        "minute": "分",
-        "hour": "时",
-        "month": "月",
-        "year": "年"
-      },
-      "expression": "表达式",
-      "tip": {
-        "dayWeekConflict": "日和周只能设置其中之一",
-        "dayWeekOnlyOneUnset": "日和周只能有一个为 [不设置]"
-      }
-    },
-    "cronPreset": {
-      "everyMinute": "每分钟",
-      "every30Minutes": "每30分钟",
-      "everyHour": "每小时",
-      "everyDay": "每天零点",
-      "everyMonth": "每月1日零点",
-      "everyMonthLast": "每月最后一天零点",
-      "everyMonthLastWorkday": "每月最后一个工作日零点",
-      "everyWeek": "每周日零点"
-    },
     "week": {
-      "sunday": "周日",
-      "monday": "周一",
-      "tuesday": "周二",
-      "wednesday": "周三",
-      "thursday": "周四",
       "friday": "周五",
-      "saturday": "周六"
+      "monday": "周一",
+      "saturday": "周六",
+      "sunday": "周日",
+      "thursday": "周四",
+      "tuesday": "周二",
+      "wednesday": "周三"
     }
   },
   "config": {
@@ -739,131 +741,6 @@
       "package": "套餐管理"
     }
   },
-  "schedule": {
-    "job": {
-      "title": "任务管理",
-      "field": {
-        "id": "ID",
-        "jobName": "任务名称",
-        "groupName": "任务组",
-        "description": "描述",
-        "jobStatus": "状态",
-        "triggerType": "调度类型",
-        "taskType": "任务类型",
-        "executorInfo": "执行器信息",
-        "argsStr": "执行参数",
-        "executorTimeout": "执行超时",
-        "maxRetryTimes": "最大重试次数",
-        "retryInterval": "重试间隔",
-        "parallelNum": "并行数",
-        "routeKey": "路由策略",
-        "blockStrategy": "阻塞策略",
-        "createDt": "创建时间",
-        "updateDt": "修改时间"
-      },
-      "search": {
-        "jobName": "任务名称",
-        "jobNamePlaceholder": "搜索任务名称",
-        "groupName": "任务组",
-        "groupNamePlaceholder": "请选择任务组"
-      },
-      "button": {
-        "add": "新增",
-        "edit": "修改",
-        "delete": "删除",
-        "execute": "执行",
-        "viewLog": "查看日志"
-      },
-      "triggerType": {
-        "cron": "Cron",
-        "fixedInterval": "固定间隔",
-        "intervalUnit": "秒"
-      },
-      "form": {
-        "basicConfig": "基础配置",
-        "scheduleConfig": "调度配置",
-        "taskConfig": "任务配置",
-        "advancedConfig": "高级配置",
-        "groupName": "任务组",
-        "groupNamePlaceholder": "请选择任务组",
-        "jobName": "任务名称",
-        "jobNamePlaceholder": "请输入任务名称",
-        "description": "描述",
-        "descriptionPlaceholder": "请输入描述",
-        "triggerType": "触发类型",
-        "triggerTypePlaceholder": "请选择触发类型",
-        "triggerInterval": {
-          "cron": "Cron表达式",
-          "cronPlaceholder": "请输入Cron表达式",
-          "interval": "间隔时长",
-          "intervalPlaceholder": "请输入间隔时长",
-          "intervalUnit": "秒"
-        },
-        "taskType": "任务类型",
-        "taskTypePlaceholder": "请选择任务类型",
-        "executorInfo": "执行器名称",
-        "executorInfoPlaceholder": "请输入执行器名称",
-        "argsStr": "任务参数",
-        "argsStrPlaceholder": "请输入任务参数",
-        "sliceParam": "分片参数",
-        "sliceParamPlaceholder": "请输入分片参数 {index}",
-        "routeKey": "路由策略",
-        "routeKeyPlaceholder": "请选择路由策略",
-        "blockStrategy": "阻塞策略",
-        "blockStrategyPlaceholder": "请选择阻塞策略",
-        "executorTimeout": "超时时间",
-        "executorTimeoutPlaceholder": "请输入超时时间",
-        "executorTimeoutUnit": "秒",
-        "maxRetryTimes": "最大重试次数",
-        "maxRetryTimesPlaceholder": "请输入最大重试次数",
-        "retryInterval": "重试间隔",
-        "retryIntervalPlaceholder": "请输入重试间隔",
-        "retryIntervalUnit": "秒",
-        "parallelNum": "并行数",
-        "parallelNumPlaceholder": "请输入并行数"
-      },
-      "message": {
-        "addSuccess": "新增成功",
-        "editSuccess": "修改成功",
-        "deleteConfirm": "是否确定删除任务「{name}」？",
-        "deleteSuccess": "删除成功",
-        "enableSuccess": "启用成功",
-        "disableSuccess": "禁用成功",
-        "executeRequestSent": "执行请求已下发"
-      }
-    },
-    "log": {
-      "title": "任务日志",
-      "field": {
-        "groupName": "任务组",
-        "jobName": "任务名称",
-        "createDt": "调度时间",
-        "taskBatchStatus": "执行状态",
-        "operationReason": "执行备注",
-        "executionAt": "执行时间"
-      },
-      "search": {
-        "groupName": "任务组",
-        "groupNamePlaceholder": "请选择任务组",
-        "jobName": "任务名称",
-        "jobNamePlaceholder": "搜索任务名称",
-        "taskBatchStatus": "执行状态",
-        "taskBatchStatusPlaceholder": "请选择状态",
-        "datetimeRange": "调度时间",
-        "datetimeRangePlaceholder": "请选择调度时间范围"
-      },
-      "button": {
-        "stop": "停止",
-        "retry": "重试"
-      },
-      "message": {
-        "stopConfirm": "是否确定停止本次执行?",
-        "retryConfirm": "是否确定重试本次执行?",
-        "stopSuccess": "停止成功",
-        "retrySuccess": "重试成功"
-      }
-    }
-  },
   "message": {
     "addSuccess": "新增成功",
     "batchDelete": "批量删除",
@@ -889,6 +766,31 @@
     "viewAll": "查看全部"
   },
   "pages": {
+    "appManagement": {
+      "button": {
+        "resetSecret": "重置密钥"
+      },
+      "field": {
+        "createTime": "创建时间",
+        "createUser": "创建人",
+        "description": "描述",
+        "expireTime": "失效时间",
+        "id": "ID",
+        "name": "名称",
+        "status": "状态",
+        "updateTime": "修改时间",
+        "updateUser": "修改人"
+      },
+      "message": {
+        "confirmDelete": "是否确定删除应用「{name}」？",
+        "confirmResetSecret": "是否确定重置应用「{name}」密钥？重置后旧密钥将失效。"
+      },
+      "search": {
+        "description": "名称/描述",
+        "descriptionPlaceholder": "请输入名称/描述"
+      },
+      "title": "应用管理"
+    },
     "onlineUser": {
       "button": {
         "kickout": "强退"
@@ -988,6 +890,62 @@
         "modulePlaceholder": "请输入操作模块"
       }
     },
+    "tenantManagement": {
+      "button": {
+        "updateAdminPwd": "修改管理员密码"
+      },
+      "field": {
+        "adminPassword": "管理员密码",
+        "adminUsername": "管理员用户",
+        "code": "编码",
+        "createTime": "创建时间",
+        "createUser": "创建人",
+        "description": "描述",
+        "domain": "域名",
+        "expireTime": "过期时间",
+        "name": "名称",
+        "neverExpire": "永不过期",
+        "notSet": "未设置",
+        "package": "套餐",
+        "status": "状态",
+        "updateTime": "修改时间",
+        "updateUser": "修改人"
+      },
+      "message": {
+        "confirmDelete": "是否确定删除租户「{name}({code})」？"
+      },
+      "placeholder": {
+        "newPassword": "请输入新密码"
+      },
+      "search": {
+        "description": "名称/描述",
+        "descriptionPlaceholder": "请输入名称/描述",
+        "package": "套餐",
+        "packagePlaceholder": "请选择套餐"
+      },
+      "title": "租户管理",
+      "tooltip": {
+        "adminUsername": "自动初始化管理员用户",
+        "domain": "例如：example.com"
+      }
+    },
+    "tenantPackage": {
+      "field": {
+        "createUser": "创建人",
+        "description": "描述",
+        "name": "名称",
+        "sort": "排序",
+        "status": "状态",
+        "updateUser": "修改人"
+      },
+      "message": {
+        "confirmDelete": "是否确定删除套餐「{name}」？"
+      },
+      "search": {
+        "descriptionPlaceholder": "请输入名称/描述"
+      },
+      "title": "套餐管理"
+    },
     "user": {
       "button": {
         "add": "新增",
@@ -999,6 +957,40 @@
         "import": "导入",
         "more": "更多",
         "resetPwd": "重置密码"
+      },
+      "import": {
+        "alert": "请按照模板要求填写数据，填写完毕后，请先上传并进行解析。",
+        "button": {
+          "cancel": "取消导入",
+          "confirm": "确认导入"
+        },
+        "downloadTemplate": "下载模板",
+        "message": {
+          "importSuccess": "导入成功! 新增{insertRows}, 修改{updateRows}",
+          "pleaseUploadFirst": "请先上传文件，解析导入数据",
+          "uploadSuccess": "上传解析成功"
+        },
+        "step1": {
+          "duplicateEmailRows": "已存在邮箱",
+          "duplicatePhoneRows": "已存在手机",
+          "duplicateUserRows": "已存在用户",
+          "title": "1.解析数据",
+          "totalRows": "总计行数",
+          "uploadText": "将文件拖到此处，或<em>点击上传</em>",
+          "uploadTip": "仅支持xls、xlsx格式",
+          "validRows": "正常行数"
+        },
+        "step2": {
+          "defaultStatus": "默认状态",
+          "duplicateEmail": "邮箱已存在",
+          "duplicatePhone": "手机已存在",
+          "duplicateUser": "用户已存在",
+          "skip": "跳过该行",
+          "stop": "停止导入",
+          "title": "2.导入策略",
+          "update": "修改数据"
+        },
+        "title": "导入用户"
       },
       "message": {
         "deleteConfirm": "是否确定删除用户「{nickname}({username})」？",
@@ -1030,122 +1022,7 @@
         "updateUser": "修改人",
         "username": "用户名"
       },
-      "title": "用户管理",
-      "import": {
-        "title": "导入用户",
-        "alert": "请按照模板要求填写数据，填写完毕后，请先上传并进行解析。",
-        "downloadTemplate": "下载模板",
-        "step1": {
-          "title": "1.解析数据",
-          "uploadText": "将文件拖到此处，或<em>点击上传</em>",
-          "uploadTip": "仅支持xls、xlsx格式",
-          "totalRows": "总计行数",
-          "validRows": "正常行数",
-          "duplicateUserRows": "已存在用户",
-          "duplicateEmailRows": "已存在邮箱",
-          "duplicatePhoneRows": "已存在手机"
-        },
-        "step2": {
-          "title": "2.导入策略",
-          "duplicateUser": "用户已存在",
-          "duplicateEmail": "邮箱已存在",
-          "duplicatePhone": "手机已存在",
-          "defaultStatus": "默认状态",
-          "skip": "跳过该行",
-          "stop": "停止导入",
-          "update": "修改数据"
-        },
-        "button": {
-          "cancel": "取消导入",
-          "confirm": "确认导入"
-        },
-        "message": {
-          "uploadSuccess": "上传解析成功",
-          "importSuccess": "导入成功! 新增{insertRows}, 修改{updateRows}",
-          "pleaseUploadFirst": "请先上传文件，解析导入数据"
-        }
-      }
-    },
-    "tenantManagement": {
-      "button": {
-        "updateAdminPwd": "修改管理员密码"
-      },
-      "field": {
-        "adminPassword": "管理员密码",
-        "adminUsername": "管理员用户",
-        "code": "编码",
-        "createTime": "创建时间",
-        "createUser": "创建人",
-        "description": "描述",
-        "domain": "域名",
-        "expireTime": "过期时间",
-        "name": "名称",
-        "neverExpire": "永不过期",
-        "notSet": "未设置",
-        "package": "套餐",
-        "status": "状态",
-        "updateTime": "修改时间",
-        "updateUser": "修改人"
-      },
-      "message": {
-        "confirmDelete": "是否确定删除租户「{name}({code})」？"
-      },
-      "placeholder": {
-        "newPassword": "请输入新密码"
-      },
-      "tooltip": {
-        "adminUsername": "自动初始化管理员用户",
-        "domain": "例如：example.com"
-      },
-      "search": {
-        "description": "名称/描述",
-        "descriptionPlaceholder": "请输入名称/描述",
-        "package": "套餐",
-        "packagePlaceholder": "请选择套餐"
-      },
-      "title": "租户管理"
-    },
-    "tenantPackage": {
-      "field": {
-        "description": "描述",
-        "name": "名称",
-        "sort": "排序",
-        "status": "状态",
-        "createUser": "创建人",
-        "updateUser": "修改人"
-      },
-      "message": {
-        "confirmDelete": "是否确定删除套餐「{name}」？"
-      },
-      "search": {
-        "descriptionPlaceholder": "请输入名称/描述"
-      },
-      "title": "套餐管理"
-    },
-    "appManagement": {
-      "button": {
-        "resetSecret": "重置密钥"
-      },
-      "field": {
-        "description": "描述",
-        "expireTime": "失效时间",
-        "id": "ID",
-        "name": "名称",
-        "status": "状态",
-        "createUser": "创建人",
-        "createTime": "创建时间",
-        "updateUser": "修改人",
-        "updateTime": "修改时间"
-      },
-      "message": {
-        "confirmDelete": "是否确定删除应用「{name}」？",
-        "confirmResetSecret": "是否确定重置应用「{name}」密钥？重置后旧密钥将失效。"
-      },
-      "search": {
-        "description": "名称/描述",
-        "descriptionPlaceholder": "请输入名称/描述"
-      },
-      "title": "应用管理"
+      "title": "用户管理"
     }
   },
   "register": {
@@ -1172,6 +1049,7 @@
   "role": {
     "assignUser": "分配用户",
     "batchUnassign": "批量移除",
+    "checkAllOrNone": "全选/全不选",
     "code": "角色编码",
     "dataScope": "数据权限",
     "dataScopeOption": {
@@ -1186,8 +1064,6 @@
     "description": "描述",
     "expandCollapse": "展开/折叠",
     "expandOrFold": "展开/折叠",
-    "checkAllOrNone": "全选/全不选",
-    "parentChildLinkage": "父子联动",
     "field": {
       "code": "角色编码",
       "dataScope": "数据权限",
@@ -1257,6 +1133,7 @@
         }
       }
     },
+    "parentChildLinkage": "父子联动",
     "permission": {
       "button": "按钮",
       "savePermission": "保存权限"
@@ -1285,6 +1162,131 @@
       "codeRequired": "请输入角色编码",
       "dataScopeRequired": "请选择数据权限",
       "nameRequired": "请输入角色名称"
+    }
+  },
+  "schedule": {
+    "job": {
+      "button": {
+        "add": "新增",
+        "delete": "删除",
+        "edit": "修改",
+        "execute": "执行",
+        "viewLog": "查看日志"
+      },
+      "field": {
+        "argsStr": "执行参数",
+        "blockStrategy": "阻塞策略",
+        "createDt": "创建时间",
+        "description": "描述",
+        "executorInfo": "执行器信息",
+        "executorTimeout": "执行超时",
+        "groupName": "任务组",
+        "id": "ID",
+        "jobName": "任务名称",
+        "jobStatus": "状态",
+        "maxRetryTimes": "最大重试次数",
+        "parallelNum": "并行数",
+        "retryInterval": "重试间隔",
+        "routeKey": "路由策略",
+        "taskType": "任务类型",
+        "triggerType": "调度类型",
+        "updateDt": "修改时间"
+      },
+      "form": {
+        "advancedConfig": "高级配置",
+        "argsStr": "任务参数",
+        "argsStrPlaceholder": "请输入任务参数",
+        "basicConfig": "基础配置",
+        "blockStrategy": "阻塞策略",
+        "blockStrategyPlaceholder": "请选择阻塞策略",
+        "description": "描述",
+        "descriptionPlaceholder": "请输入描述",
+        "executorInfo": "执行器名称",
+        "executorInfoPlaceholder": "请输入执行器名称",
+        "executorTimeout": "超时时间",
+        "executorTimeoutPlaceholder": "请输入超时时间",
+        "executorTimeoutUnit": "秒",
+        "groupName": "任务组",
+        "groupNamePlaceholder": "请选择任务组",
+        "jobName": "任务名称",
+        "jobNamePlaceholder": "请输入任务名称",
+        "maxRetryTimes": "最大重试次数",
+        "maxRetryTimesPlaceholder": "请输入最大重试次数",
+        "parallelNum": "并行数",
+        "parallelNumPlaceholder": "请输入并行数",
+        "retryInterval": "重试间隔",
+        "retryIntervalPlaceholder": "请输入重试间隔",
+        "retryIntervalUnit": "秒",
+        "routeKey": "路由策略",
+        "routeKeyPlaceholder": "请选择路由策略",
+        "scheduleConfig": "调度配置",
+        "sliceParam": "分片参数",
+        "sliceParamPlaceholder": "请输入分片参数 {index}",
+        "taskConfig": "任务配置",
+        "taskType": "任务类型",
+        "taskTypePlaceholder": "请选择任务类型",
+        "triggerInterval": {
+          "cron": "Cron表达式",
+          "cronPlaceholder": "请输入Cron表达式",
+          "interval": "间隔时长",
+          "intervalPlaceholder": "请输入间隔时长",
+          "intervalUnit": "秒"
+        },
+        "triggerType": "触发类型",
+        "triggerTypePlaceholder": "请选择触发类型"
+      },
+      "message": {
+        "addSuccess": "新增成功",
+        "deleteConfirm": "是否确定删除任务「{name}」？",
+        "deleteSuccess": "删除成功",
+        "disableSuccess": "禁用成功",
+        "editSuccess": "修改成功",
+        "enableSuccess": "启用成功",
+        "executeRequestSent": "执行请求已下发"
+      },
+      "search": {
+        "groupName": "任务组",
+        "groupNamePlaceholder": "请选择任务组",
+        "jobName": "任务名称",
+        "jobNamePlaceholder": "搜索任务名称"
+      },
+      "title": "任务管理",
+      "triggerType": {
+        "cron": "Cron",
+        "fixedInterval": "固定间隔",
+        "intervalUnit": "秒"
+      }
+    },
+    "log": {
+      "button": {
+        "retry": "重试",
+        "stop": "停止"
+      },
+      "field": {
+        "createDt": "调度时间",
+        "executionAt": "执行时间",
+        "groupName": "任务组",
+        "jobName": "任务名称",
+        "operationReason": "执行备注",
+        "taskBatchStatus": "执行状态"
+      },
+      "message": {
+        "retryConfirm": "是否确定重试本次执行?",
+        "retrySuccess": "重试成功",
+        "stopConfirm": "是否确定停止本次执行?",
+        "stopSuccess": "停止成功"
+      },
+      "search": {
+        "datetimeRange": "调度时间",
+        "datetimeRangePlaceholder": "请选择调度时间范围",
+        "groupName": "任务组",
+        "groupNamePlaceholder": "请选择任务组",
+        "jobName": "任务名称",
+        "jobNamePlaceholder": "搜索任务名称",
+        "taskBatchStatus": "执行状态",
+        "taskBatchStatusPlaceholder": "请选择状态"
+      },
+      "title": "任务日志"
     }
   },
   "search": {
@@ -1356,6 +1358,166 @@
         "slideLeft": "左侧滑入",
         "slideTop": "上方滑入"
       }
+    }
+  },
+  "system": {
+    "config": {
+      "client": {
+        "activeTimeout": "Token 最低活跃频率",
+        "activeTimeoutUnit": "秒",
+        "activeTimeoutUnlimited": "不限制永不冻结",
+        "addTitle": "新增客户端",
+        "authType": "认证类型",
+        "clientId": "客户端 ID",
+        "clientType": "客户端类型",
+        "deleteConfirm": "是否确定删除客户端「{clientId}」？",
+        "detail": {
+          "activeTimeout": "Token 最低活跃频率",
+          "authType": "认证类型",
+          "clientId": "客户端 ID",
+          "clientType": "客户端类型",
+          "createTime": "创建时间",
+          "createUser": "创建人",
+          "id": "ID",
+          "isConcurrent": "多地登录",
+          "maxLoginCount": "登录数量",
+          "overflowLogoutMode": "溢出处理",
+          "replacedRange": "下线范围",
+          "status": "状态",
+          "timeout": "Token 有效期",
+          "updateTime": "更新时间",
+          "updateUser": "更新人"
+        },
+        "detailTitle": "客户端详情",
+        "editTitle": "修改客户端",
+        "isConcurrent": "是否允许同一账号多地同时登录",
+        "maxLoginCount": "同一账号最大登录数量",
+        "maxLoginCountUnit": "个",
+        "maxLoginCountUnlimited": "不限制",
+        "overflowLogoutMode": "溢出人数的下线方式",
+        "replacedRange": "顶人下线的范围",
+        "searchPlaceholder": "搜索客户端 ID/类型",
+        "timeout": "Token 有效期",
+        "timeoutUnit": "秒",
+        "timeoutUnlimited": "永不过期"
+      },
+      "login": {
+        "loginCaptchaEnabled": "登录验证码开关",
+        "resetConfirm": "确认恢复登录配置为默认值吗？"
+      },
+      "mail": {
+        "mailHost": "SMTP服务器地址",
+        "mailHostPlaceholder": "请输入SMTP服务器地址",
+        "mailPassword": "发件人密码",
+        "mailPasswordPlaceholder": "请输入发件人密码",
+        "mailPort": "SMTP端口",
+        "mailProtocol": "邮件协议",
+        "mailSslEnabled": "启用SSL",
+        "mailSslPort": "SSL端口",
+        "mailUsername": "发件人邮箱",
+        "mailUsernamePlaceholder": "请输入发件人邮箱",
+        "resetConfirm": "确认恢复邮件配置为默认值吗？"
+      },
+      "security": {
+        "passwordAllowContainUsername": "允许密码包含用户名",
+        "passwordErrorLockCount": "密码错误次数",
+        "passwordErrorLockCountRange": "密码错误多少次后锁定",
+        "passwordErrorLockCountUnit": "次",
+        "passwordErrorLockMinutes": "锁定时长",
+        "passwordErrorLockMinutesUnit": "分钟",
+        "passwordExpirationDays": "密码有效期",
+        "passwordExpirationDaysUnit": "天",
+        "passwordExpirationWarningDays": "密码到期提醒",
+        "passwordExpirationWarningDaysUnit": "天",
+        "passwordMinLength": "密码最小长度",
+        "passwordRepetitionTimes": "密码重复次数",
+        "passwordRepetitionTimesDesc": "新密码不能与最近N次密码重复",
+        "passwordRepetitionTimesUnit": "次",
+        "passwordRequireSymbols": "密码必须包含特殊字符",
+        "resetConfirm": "确认恢复安全配置为默认值吗？",
+        "warningLessThanExpiry": "密码到期提醒时间应小于密码有效期"
+      },
+      "site": {
+        "resetConfirm": "确认恢复基础配置为默认值吗？",
+        "siteBeian": "备案号",
+        "siteBeianMax": "备案号最多30个字符",
+        "siteBeianPlaceholder": "请输入备案号",
+        "siteCopyright": "版权声明",
+        "siteCopyrightPlaceholder": "请输入版权声明",
+        "siteDescription": "系统描述",
+        "siteDescriptionPlaceholder": "请输入系统描述",
+        "siteFavicon": "站点图标",
+        "siteFaviconHint": "建议尺寸 46x46px",
+        "siteLogo": "站点Logo",
+        "siteLogoHint": "建议尺寸 50x50px",
+        "siteTitle": "系统名称",
+        "siteTitleMax": "系统名称最多18个字符",
+        "siteTitlePlaceholder": "请输入系统名称"
+      },
+      "sms": {
+        "accessKey": "Access Key",
+        "accessKeyPlaceholder": "请输入Access Key",
+        "addTitle": "新增短信配置",
+        "deleteConfirm": "是否确定删除短信配置「{name}」？",
+        "editTitle": "修改短信配置",
+        "isDefault": "是否默认",
+        "maxRetries": "重试次数",
+        "maximum": "发送上限",
+        "name": "名称",
+        "namePlaceholder": "请输入名称",
+        "retryInterval": "重试间隔",
+        "retryIntervalUnit": "秒",
+        "searchAccessKey": "搜索Access Key",
+        "searchName": "搜索名称",
+        "secretKey": "Secret Key",
+        "sendRecord": "发送记录",
+        "setDefaultConfirm": "是否确定将短信配置「{name}」设为默认配置？",
+        "signature": "短信签名",
+        "signaturePlaceholder": "请输入短信签名",
+        "supplier": "厂商",
+        "supplierConfig": "厂商配置",
+        "supplierPlaceholder": "请选择厂商",
+        "templateId": "模板 ID",
+        "templateIdPlaceholder": "请输入模板ID",
+        "weight": "负载均衡权重"
+      },
+      "storage": {
+        "accessKey": "Access Key",
+        "addLocalTitle": "新增本地存储",
+        "addOssTitle": "新增对象存储",
+        "all": "全部",
+        "bucketName": "Bucket/存储路径",
+        "code": "编码",
+        "createLocalStorage": "点击创建本地存储",
+        "createOssStorage": "点击创建对象存储",
+        "deleteConfirm": "是否确定删除存储「{name}({code})」？",
+        "disableConfirm": "是否确定禁用{type}「{name}({code})」？",
+        "domain": "域名/访问路径",
+        "editLocalTitle": "修改本地存储",
+        "editOssTitle": "修改对象存储",
+        "enableConfirm": "是否确定启用{type}「{name}({code})」？",
+        "endpoint": "Endpoint",
+        "isDefault": "默认存储",
+        "localStorage": "本地存储",
+        "name": "名称",
+        "objectStorage": "对象存储",
+        "recycleBinEnabled": "启用回收站",
+        "recycleBinPath": "回收站路径",
+        "searchPlaceholder": "搜索名称/编码",
+        "setDefaultConfirm": "是否确定将{type}「{name}({code})」设为默认存储？",
+        "type": "存储类型",
+        "empty": "暂无数据"
+      },
+      "tabs": {
+        "client": "客户端配置",
+        "login": "登录配置",
+        "mail": "邮件配置",
+        "security": "安全配置",
+        "site": "网站配置",
+        "sms": "短信配置",
+        "storage": "存储配置"
+      },
+      "title": "配置管理"
     }
   },
   "table": {

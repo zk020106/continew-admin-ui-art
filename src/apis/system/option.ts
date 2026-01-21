@@ -11,7 +11,7 @@ export function listOption(query: T.OptionQuery) {
 }
 
 /** @desc 修改参数 */
-export function updateOption(data: any) {
+export function updateOption(data: T.OptionReq[]) {
   return http.put(`${BASE_URL}`, data)
 }
 

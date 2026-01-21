@@ -22,8 +22,10 @@ export interface ScrollConfig {
   minWidth?: number
 }
 
-export interface TableColumnItem<T extends DefaultRow = any>
-  extends Omit<TableColumnInstance['$props'], never> {
+export interface TableColumnItem<T extends DefaultRow = any> extends Omit<
+  TableColumnInstance['$props'],
+  never
+> {
   slotName?: string
   children?: TableColumnItem[]
   render?: (scope: TableSlotScope<T>) => VNode | VNode[] | string
@@ -41,8 +43,10 @@ export type TableSlotScope<T extends DefaultRow = any> = {
   expanded: boolean
 }
 
-export interface TableProps<T extends DefaultRow = any>
-  extends Omit<ExtractPropTypes<ElTableProps<Record<string | number | symbol, any>>>, 'height'> {
+export interface TableProps<T extends DefaultRow = any> extends Omit<
+  ExtractPropTypes<ElTableProps<Record<string | number | symbol, any>>>,
+  'height'
+> {
   data?: T[]
   columns?: TableColumnItem[]
   pagination?: Partial<PaginationProps>

@@ -10,14 +10,14 @@
  * - 提供配置初始化和设置方法
  */
 
-import type { BasicConfig } from '@/apis/system/type'
 import { listSiteOptionDict } from '@/apis/system/common'
+import type { SiteConfig } from '@/apis/system/type'
 import { useAppStore } from '@/store/modules/app'
 
 /**
  * 站点配置对象
  */
-const siteConfig: BasicConfig = {
+const siteConfig: SiteConfig = {
   SITE_FAVICON: '',
   SITE_LOGO: '',
   SITE_TITLE: '',
@@ -34,7 +34,7 @@ export async function initSiteConfig(): Promise<void> {
     const res = await listSiteOptionDict()
     const resMap = new Map<string, string>()
 
-    res.data.forEach((item) => {
+    res.forEach((item) => {
       resMap.set(item.label, item.value)
     })
 
@@ -69,7 +69,7 @@ export async function initSiteConfig(): Promise<void> {
  * 设置系统配置
  * @param config 配置对象
  */
-export function setSiteConfig(config: Partial<BasicConfig>): void {
+export function setSiteConfig(config: Partial<SiteConfig>): void {
   Object.assign(siteConfig, config)
 
   // 更新页面标题和 favicon
@@ -96,7 +96,7 @@ export function setSiteConfig(config: Partial<BasicConfig>): void {
 /**
  * 获取站点配置
  */
-export function getSiteConfig(): BasicConfig {
+export function getSiteConfig(): SiteConfig {
   return { ...siteConfig }
 }
 

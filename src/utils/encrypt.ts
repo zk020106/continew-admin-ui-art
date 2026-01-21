@@ -80,3 +80,25 @@ export function encryptByAes(word: string, keyWord: string = defaultKeyWork) {
   })
   return encrypted.toString()
 }
+
+/**
+ * 文件转换为 Base64
+ * @param file 文件对象
+ * @returns Base64 编码后的字符串
+ */
+export function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (reader.result) {
+        resolve(reader.result.toString())
+      } else {
+        reject(new Error('文件读取失败'))
+      }
+    }
+    reader.onerror = () => {
+      reject(new Error('文件读取错误'))
+    }
+    reader.readAsDataURL(file)
+  })
+}

@@ -80,6 +80,12 @@
         <template v-for="(_, slotName) in $slots" :key="slotName" #[slotName]="scope">
           <slot :name="slotName" v-bind="scope" />
         </template>
+        <template #empty>
+          <ElEmpty v-if="$slots.empty">
+            <slot name="empty" />
+          </ElEmpty>
+          <ElEmpty v-else :description="t('common.noData')" />
+        </template>
       </TableColumn>
     </ElTable>
 

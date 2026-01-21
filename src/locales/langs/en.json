@@ -42,11 +42,11 @@
     "copySuccess": "Copied successfully",
     "createTime": "creation time",
     "datePicker": {
+      "endDatePlaceholder": "end date",
+      "endTimePlaceholder": "end time",
       "rangeSeparator": "to",
       "startDatePlaceholder": "start date",
-      "endDatePlaceholder": "end date",
-      "startTimePlaceholder": "start time",
-      "endTimePlaceholder": "end time"
+      "startTimePlaceholder": "start time"
     },
     "detail": "Details",
     "empty": "None yet",
@@ -60,6 +60,7 @@
     "loading": "loading",
     "logOutTips": "Do you want to log out?",
     "placeholder": {
+      "select": "Please select",
       "status": "Please select a status"
     },
     "status": "state",
@@ -78,9 +79,23 @@
     "component": {
       "noComponents": "No components available yet"
     },
+    "cronPreset": {
+      "every30Minutes": "every 30 minutes",
+      "everyDay": "midnight every day",
+      "everyHour": "per hour",
+      "everyMinute": "per minute",
+      "everyMonth": "0:00 on the 1st of every month",
+      "everyMonthLast": "midnight on the last day of every month",
+      "everyMonthLastWorkday": "midnight on the last working day of every month",
+      "everyWeek": "Every Sunday at midnight"
+    },
     "form": {
       "collapse": "close",
       "expand": "Expand",
+      "message": {
+        "dictLoadFailed": "Failed to obtain dictionary data",
+        "dictRequestNotConfigured": "Please configure the global dictionary request method dictRequest"
+      },
       "placeholder": {
         "date": "Please select a date",
         "input": "Please enter {label}",
@@ -89,10 +104,55 @@
       },
       "validate": {
         "required": "{label} is required"
+      }
+    },
+    "genCron": {
+      "expression": "expression",
+      "placeholder": {
+        "cronInput": "Please enter a Cron expression"
       },
-      "message": {
-        "dictRequestNotConfigured": "Please configure the global dictionary request method dictRequest",
-        "dictLoadFailed": "Failed to obtain dictionary data"
+      "preview": {
+        "executionPreview": "Execute preview",
+        "expressionError": "Expression error",
+        "noExecutionTime": "No execution time",
+        "title": "Last five execution times (years are not parsed)"
+      },
+      "tab": {
+        "day": "day",
+        "hour": "hour",
+        "minute": "point",
+        "month": "moon",
+        "second": "Second",
+        "week": "week",
+        "year": "Year"
+      },
+      "tip": {
+        "dayWeekConflict": "Only one of day and week can be set",
+        "dayWeekOnlyOneUnset": "Only one of day and week can be [not set]"
+      },
+      "title": "Cron expression generation",
+      "type": {
+        "every": "{unit}",
+        "last": "last day",
+        "loop": "cycle",
+        "range": "interval",
+        "specify": "Specify",
+        "unset": "Not set",
+        "work": "working days"
+      },
+      "unit": {
+        "day": "sky",
+        "from": "from",
+        "hour": "hour",
+        "interval": "interval",
+        "minute": "point",
+        "month": "moon",
+        "nearestWorkday": "Day, the most recent working day",
+        "second": "Second",
+        "start": "start",
+        "thisMonth": "this month",
+        "to": "to",
+        "year": "Year"
       }
     },
     "icon": {
@@ -149,73 +209,14 @@
       "uploadSuccess": "Upload successful",
       "uploading": "Uploading..."
     },
-    "genCron": {
-      "title": "Cron expression generation",
-      "tab": {
-        "second": "Second",
-        "minute": "point",
-        "hour": "hour",
-        "day": "day",
-        "month": "moon",
-        "week": "week",
-        "year": "Year"
-      },
-      "type": {
-        "every": "{unit}",
-        "range": "interval",
-        "loop": "cycle",
-        "work": "working days",
-        "last": "last day",
-        "specify": "Specify",
-        "unset": "Not set"
-      },
-      "placeholder": {
-        "cronInput": "Please enter a Cron expression"
-      },
-      "preview": {
-        "title": "Last five execution times (years are not parsed)",
-        "noExecutionTime": "No execution time",
-        "expressionError": "Expression error",
-        "executionPreview": "Execute preview"
-      },
-      "unit": {
-        "from": "from",
-        "to": "to",
-        "start": "start",
-        "interval": "interval",
-        "thisMonth": "this month",
-        "nearestWorkday": "Day, the most recent working day",
-        "day": "sky",
-        "second": "Second",
-        "minute": "point",
-        "hour": "hour",
-        "month": "moon",
-        "year": "Year"
-      },
-      "expression": "expression",
-      "tip": {
-        "dayWeekConflict": "Only one of day and week can be set",
-        "dayWeekOnlyOneUnset": "Only one of day and week can be [not set]"
-      }
-    },
-    "cronPreset": {
-      "everyMinute": "per minute",
-      "every30Minutes": "every 30 minutes",
-      "everyHour": "per hour",
-      "everyDay": "midnight every day",
-      "everyMonth": "0:00 on the 1st of every month",
-      "everyMonthLast": "midnight on the last day of every month",
-      "everyMonthLastWorkday": "midnight on the last working day of every month",
-      "everyWeek": "Every Sunday at midnight"
-    },
     "week": {
-      "sunday": "Sunday",
-      "monday": "on Monday",
-      "tuesday": "Tuesday",
-      "wednesday": "Wednesday",
-      "thursday": "Thursday",
       "friday": "Friday",
-      "saturday": "Saturday"
+      "monday": "on Monday",
+      "saturday": "Saturday",
+      "sunday": "Sunday",
+      "thursday": "Thursday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday"
     }
   },
   "config": {
@@ -739,131 +740,6 @@
       "package": "Package management"
     }
   },
-  "schedule": {
-    "job": {
-      "title": "task management",
-      "field": {
-        "id": "ID",
-        "jobName": "Task name",
-        "groupName": "task force",
-        "description": "describe",
-        "jobStatus": "state",
-        "triggerType": "Scheduling type",
-        "taskType": "Task type",
-        "executorInfo": "Actuator information",
-        "argsStr": "Execution parameters",
-        "executorTimeout": "Execution timeout",
-        "maxRetryTimes": "Maximum number of retries",
-        "retryInterval": "Retry interval",
-        "parallelNum": "Parallel number",
-        "routeKey": "Routing strategy",
-        "blockStrategy": "blocking strategy",
-        "createDt": "creation time",
-        "updateDt": "modification time"
-      },
-      "search": {
-        "jobName": "Task name",
-        "jobNamePlaceholder": "Search task name",
-        "groupName": "task force",
-        "groupNamePlaceholder": "Please select a task group"
-      },
-      "button": {
-        "add": "New",
-        "edit": "Revise",
-        "delete": "delete",
-        "execute": "implement",
-        "viewLog": "View log"
-      },
-      "triggerType": {
-        "cron": "Cron",
-        "fixedInterval": "fixed interval",
-        "intervalUnit": "Second"
-      },
-      "form": {
-        "basicConfig": "Basic configuration",
-        "scheduleConfig": "Scheduling configuration",
-        "taskConfig": "Task configuration",
-        "advancedConfig": "Advanced configuration",
-        "groupName": "task force",
-        "groupNamePlaceholder": "Please select a task group",
-        "jobName": "Task name",
-        "jobNamePlaceholder": "Please enter a task name",
-        "description": "describe",
-        "descriptionPlaceholder": "Please enter a description",
-        "triggerType": "Trigger type",
-        "triggerTypePlaceholder": "Please select trigger type",
-        "triggerInterval": {
-          "cron": "Cron expression",
-          "cronPlaceholder": "Please enter a Cron expression",
-          "interval": "Interval duration",
-          "intervalPlaceholder": "Please enter the interval time",
-          "intervalUnit": "Second"
-        },
-        "taskType": "Task type",
-        "taskTypePlaceholder": "Please select task type",
-        "executorInfo": "Actuator name",
-        "executorInfoPlaceholder": "Please enter the executor name",
-        "argsStr": "Task parameters",
-        "argsStrPlaceholder": "Please enter task parameters",
-        "sliceParam": "Sharding parameters",
-        "sliceParamPlaceholder": "Please enter the sharding parameter {index}",
-        "routeKey": "Routing strategy",
-        "routeKeyPlaceholder": "Please select a routing policy",
-        "blockStrategy": "blocking strategy",
-        "blockStrategyPlaceholder": "Please select a blocking strategy",
-        "executorTimeout": "timeout",
-        "executorTimeoutPlaceholder": "Please enter the timeout",
-        "executorTimeoutUnit": "Second",
-        "maxRetryTimes": "Maximum number of retries",
-        "maxRetryTimesPlaceholder": "Please enter the maximum number of retries",
-        "retryInterval": "Retry interval",
-        "retryIntervalPlaceholder": "Please enter a retry interval",
-        "retryIntervalUnit": "Second",
-        "parallelNum": "Parallel number",
-        "parallelNumPlaceholder": "Please enter the number of parallels"
-      },
-      "message": {
-        "addSuccess": "Added successfully",
-        "editSuccess": "Modification successful",
-        "deleteConfirm": "Are you sure you want to delete task \"{name}\"?",
-        "deleteSuccess": "Delete successfully",
-        "enableSuccess": "Activated successfully",
-        "disableSuccess": "Disabled successfully",
-        "executeRequestSent": "The execution request has been issued"
-      }
-    },
-    "log": {
-      "title": "Mission log",
-      "field": {
-        "groupName": "task force",
-        "jobName": "Task name",
-        "createDt": "Scheduling time",
-        "taskBatchStatus": "Execution status",
-        "operationReason": "Execution notes",
-        "executionAt": "Execution time"
-      },
-      "search": {
-        "groupName": "task force",
-        "groupNamePlaceholder": "Please select a task group",
-        "jobName": "Task name",
-        "jobNamePlaceholder": "Search task name",
-        "taskBatchStatus": "Execution status",
-        "taskBatchStatusPlaceholder": "Please select a status",
-        "datetimeRange": "Scheduling time",
-        "datetimeRangePlaceholder": "Please select a scheduling time range"
-      },
-      "button": {
-        "stop": "stop",
-        "retry": "Try again"
-      },
-      "message": {
-        "stopConfirm": "Are you sure to stop this execution?",
-        "retryConfirm": "Are you sure you want to retry this execution?",
-        "stopSuccess": "stop successfully",
-        "retrySuccess": "Retry successful"
-      }
-    }
-  },
   "message": {
     "addSuccess": "Added successfully",
     "batchDelete": "Batch delete",
@@ -889,6 +765,31 @@
     "viewAll": "View all"
   },
   "pages": {
+    "appManagement": {
+      "button": {
+        "resetSecret": "reset key"
+      },
+      "field": {
+        "createTime": "creation time",
+        "createUser": "Creator",
+        "description": "describe",
+        "expireTime": "Expiration time",
+        "id": "ID",
+        "name": "name",
+        "status": "state",
+        "updateTime": "modification time",
+        "updateUser": "Modifier"
+      },
+      "message": {
+        "confirmDelete": "Are you sure you want to delete the app \"{name}\"?",
+        "confirmResetSecret": "Are you sure you want to reset the app \"{name}\" key? The old key will be invalid after reset."
+      },
+      "search": {
+        "description": "Name/Description",
+        "descriptionPlaceholder": "Please enter name/description"
+      },
+      "title": "Application management"
+    },
     "onlineUser": {
       "button": {
         "kickout": "Forced retreat"
@@ -988,6 +889,62 @@
         "modulePlaceholder": "Please enter the operation module"
       }
     },
+    "tenantManagement": {
+      "button": {
+        "updateAdminPwd": "Change administrator password"
+      },
+      "field": {
+        "adminPassword": "Administrator password",
+        "adminUsername": "Admin user",
+        "code": "coding",
+        "createTime": "creation time",
+        "createUser": "Creator",
+        "description": "describe",
+        "domain": "domain name",
+        "expireTime": "Expiration time",
+        "name": "name",
+        "neverExpire": "never expires",
+        "notSet": "not set",
+        "package": "combo",
+        "status": "state",
+        "updateTime": "modification time",
+        "updateUser": "Modifier"
+      },
+      "message": {
+        "confirmDelete": "Are you sure you want to delete tenant \"{name}({code})\"?"
+      },
+      "placeholder": {
+        "newPassword": "Please enter new password"
+      },
+      "search": {
+        "description": "Name/Description",
+        "descriptionPlaceholder": "Please enter name/description",
+        "package": "combo",
+        "packagePlaceholder": "Please select a package"
+      },
+      "title": "Tenant management",
+      "tooltip": {
+        "adminUsername": "Automatically initialize the administrator user",
+        "domain": "For example: example.com"
+      }
+    },
+    "tenantPackage": {
+      "field": {
+        "createUser": "Creator",
+        "description": "describe",
+        "name": "name",
+        "sort": "sort",
+        "status": "state",
+        "updateUser": "Modifier"
+      },
+      "message": {
+        "confirmDelete": "Are you sure you want to delete the package \"{name}\"?"
+      },
+      "search": {
+        "descriptionPlaceholder": "Please enter name/description"
+      },
+      "title": "Package management"
+    },
     "user": {
       "button": {
         "add": "New",
@@ -999,6 +956,40 @@
         "import": "import",
         "more": "More",
         "resetPwd": "reset password"
+      },
+      "import": {
+        "alert": "Please fill in the data according to the template requirements. After completing the filling, please upload and parse it first.",
+        "button": {
+          "cancel": "Cancel import",
+          "confirm": "Confirm import"
+        },
+        "downloadTemplate": "Download template",
+        "message": {
+          "importSuccess": "Import successful! Add {insertRows}, modify {updateRows}",
+          "pleaseUploadFirst": "Please upload the file first and parse the imported data.",
+          "uploadSuccess": "Upload and parse successfully"
+        },
+        "step1": {
+          "duplicateEmailRows": "Email already exists",
+          "duplicatePhoneRows": "Already exists in mobile phone",
+          "duplicateUserRows": "User already exists",
+          "title": "1. Parse the data",
+          "totalRows": "Total number of rows",
+          "uploadText": "Drag the file here, or <em>click Upload</em>",
+          "uploadTip": "Only supports xls and xlsx formats",
+          "validRows": "Normal number of rows"
+        },
+        "step2": {
+          "defaultStatus": "Default state",
+          "duplicateEmail": "Email already exists",
+          "duplicatePhone": "Phone already exists",
+          "duplicateUser": "User already exists",
+          "skip": "skip this line",
+          "stop": "Stop import",
+          "title": "2. Import strategy",
+          "update": "Modify data"
+        },
+        "title": "Import users"
       },
       "message": {
         "deleteConfirm": "Are you sure you want to delete user \"{nickname}({username})\"?",
@@ -1030,122 +1021,7 @@
         "updateUser": "Modifier",
         "username": "username"
       },
-      "title": "User management",
-      "import": {
-        "title": "Import users",
-        "alert": "Please fill in the data according to the template requirements. After completing the filling, please upload and parse it first.",
-        "downloadTemplate": "Download template",
-        "step1": {
-          "title": "1. Parse the data",
-          "uploadText": "Drag the file here, or <em>click Upload</em>",
-          "uploadTip": "Only supports xls and xlsx formats",
-          "totalRows": "Total number of rows",
-          "validRows": "Normal number of rows",
-          "duplicateUserRows": "User already exists",
-          "duplicateEmailRows": "Email already exists",
-          "duplicatePhoneRows": "Already exists in mobile phone"
-        },
-        "step2": {
-          "title": "2. Import strategy",
-          "duplicateUser": "User already exists",
-          "duplicateEmail": "Email already exists",
-          "duplicatePhone": "Phone already exists",
-          "defaultStatus": "Default state",
-          "skip": "skip this line",
-          "stop": "Stop import",
-          "update": "Modify data"
-        },
-        "button": {
-          "cancel": "Cancel import",
-          "confirm": "Confirm import"
-        },
-        "message": {
-          "uploadSuccess": "Upload and parse successfully",
-          "importSuccess": "Import successful! Add {insertRows}, modify {updateRows}",
-          "pleaseUploadFirst": "Please upload the file first and parse the imported data."
-        }
-      }
-    },
-    "tenantManagement": {
-      "button": {
-        "updateAdminPwd": "Change administrator password"
-      },
-      "field": {
-        "adminPassword": "Administrator password",
-        "adminUsername": "Admin user",
-        "code": "coding",
-        "createTime": "creation time",
-        "createUser": "Creator",
-        "description": "describe",
-        "domain": "domain name",
-        "expireTime": "Expiration time",
-        "name": "name",
-        "neverExpire": "never expires",
-        "notSet": "not set",
-        "package": "combo",
-        "status": "state",
-        "updateTime": "modification time",
-        "updateUser": "Modifier"
-      },
-      "message": {
-        "confirmDelete": "Are you sure you want to delete tenant \"{name}({code})\"?"
-      },
-      "placeholder": {
-        "newPassword": "Please enter new password"
-      },
-      "tooltip": {
-        "adminUsername": "Automatically initialize the administrator user",
-        "domain": "For example: example.com"
-      },
-      "search": {
-        "description": "Name/Description",
-        "descriptionPlaceholder": "Please enter name/description",
-        "package": "combo",
-        "packagePlaceholder": "Please select a package"
-      },
-      "title": "Tenant management"
-    },
-    "tenantPackage": {
-      "field": {
-        "description": "describe",
-        "name": "name",
-        "sort": "sort",
-        "status": "state",
-        "createUser": "Creator",
-        "updateUser": "Modifier"
-      },
-      "message": {
-        "confirmDelete": "Are you sure you want to delete the package \"{name}\"?"
-      },
-      "search": {
-        "descriptionPlaceholder": "Please enter name/description"
-      },
-      "title": "Package management"
-    },
-    "appManagement": {
-      "button": {
-        "resetSecret": "reset key"
-      },
-      "field": {
-        "description": "describe",
-        "expireTime": "Expiration time",
-        "id": "ID",
-        "name": "name",
-        "status": "state",
-        "createUser": "Creator",
-        "createTime": "creation time",
-        "updateUser": "Modifier",
-        "updateTime": "modification time"
-      },
-      "message": {
-        "confirmDelete": "Are you sure you want to delete the app \"{name}\"?",
-        "confirmResetSecret": "Are you sure you want to reset the app \"{name}\" key? The old key will be invalid after reset."
-      },
-      "search": {
-        "description": "Name/Description",
-        "descriptionPlaceholder": "Please enter name/description"
-      },
-      "title": "Application management"
+      "title": "User management"
     }
   },
   "register": {
@@ -1172,6 +1048,7 @@
   "role": {
     "assignUser": "Assign users",
     "batchUnassign": "Batch removal",
+    "checkAllOrNone": "Select all/Deselect all",
     "code": "role coding",
     "dataScope": "Data permissions",
     "dataScopeOption": {
@@ -1186,8 +1063,6 @@
     "description": "describe",
     "expandCollapse": "expand/collapse",
     "expandOrFold": "expand/collapse",
-    "checkAllOrNone": "Select all/Deselect all",
-    "parentChildLinkage": "Father and son linkage",
     "field": {
       "code": "role coding",
       "dataScope": "Data permissions",
@@ -1257,6 +1132,7 @@
         }
       }
     },
+    "parentChildLinkage": "Father and son linkage",
     "permission": {
       "button": "button",
       "savePermission": "save permissions"
@@ -1285,6 +1161,131 @@
       "codeRequired": "Please enter the role code",
       "dataScopeRequired": "Please select data permissions",
       "nameRequired": "Please enter a role name"
+    }
+  },
+  "schedule": {
+    "job": {
+      "button": {
+        "add": "New",
+        "delete": "delete",
+        "edit": "Revise",
+        "execute": "implement",
+        "viewLog": "View log"
+      },
+      "field": {
+        "argsStr": "Execution parameters",
+        "blockStrategy": "blocking strategy",
+        "createDt": "creation time",
+        "description": "describe",
+        "executorInfo": "Actuator information",
+        "executorTimeout": "Execution timeout",
+        "groupName": "task force",
+        "id": "ID",
+        "jobName": "Task name",
+        "jobStatus": "state",
+        "maxRetryTimes": "Maximum number of retries",
+        "parallelNum": "Parallel number",
+        "retryInterval": "Retry interval",
+        "routeKey": "Routing strategy",
+        "taskType": "Task type",
+        "triggerType": "Scheduling type",
+        "updateDt": "modification time"
+      },
+      "form": {
+        "advancedConfig": "Advanced configuration",
+        "argsStr": "Task parameters",
+        "argsStrPlaceholder": "Please enter task parameters",
+        "basicConfig": "Basic configuration",
+        "blockStrategy": "blocking strategy",
+        "blockStrategyPlaceholder": "Please select a blocking strategy",
+        "description": "describe",
+        "descriptionPlaceholder": "Please enter a description",
+        "executorInfo": "Actuator name",
+        "executorInfoPlaceholder": "Please enter the executor name",
+        "executorTimeout": "timeout",
+        "executorTimeoutPlaceholder": "Please enter the timeout",
+        "executorTimeoutUnit": "Second",
+        "groupName": "task force",
+        "groupNamePlaceholder": "Please select a task group",
+        "jobName": "Task name",
+        "jobNamePlaceholder": "Please enter a task name",
+        "maxRetryTimes": "Maximum number of retries",
+        "maxRetryTimesPlaceholder": "Please enter the maximum number of retries",
+        "parallelNum": "Parallel number",
+        "parallelNumPlaceholder": "Please enter the number of parallels",
+        "retryInterval": "Retry interval",
+        "retryIntervalPlaceholder": "Please enter a retry interval",
+        "retryIntervalUnit": "Second",
+        "routeKey": "Routing strategy",
+        "routeKeyPlaceholder": "Please select a routing policy",
+        "scheduleConfig": "Scheduling configuration",
+        "sliceParam": "Sharding parameters",
+        "sliceParamPlaceholder": "Please enter the sharding parameter {index}",
+        "taskConfig": "Task configuration",
+        "taskType": "Task type",
+        "taskTypePlaceholder": "Please select task type",
+        "triggerInterval": {
+          "cron": "Cron expression",
+          "cronPlaceholder": "Please enter a Cron expression",
+          "interval": "Interval duration",
+          "intervalPlaceholder": "Please enter the interval time",
+          "intervalUnit": "Second"
+        },
+        "triggerType": "Trigger type",
+        "triggerTypePlaceholder": "Please select trigger type"
+      },
+      "message": {
+        "addSuccess": "Added successfully",
+        "deleteConfirm": "Are you sure you want to delete task \"{name}\"?",
+        "deleteSuccess": "Delete successfully",
+        "disableSuccess": "Disabled successfully",
+        "editSuccess": "Modification successful",
+        "enableSuccess": "Activated successfully",
+        "executeRequestSent": "The execution request has been issued"
+      },
+      "search": {
+        "groupName": "task force",
+        "groupNamePlaceholder": "Please select a task group",
+        "jobName": "Task name",
+        "jobNamePlaceholder": "Search task name"
+      },
+      "title": "task management",
+      "triggerType": {
+        "cron": "Cron",
+        "fixedInterval": "fixed interval",
+        "intervalUnit": "Second"
+      }
+    },
+    "log": {
+      "button": {
+        "retry": "Try again",
+        "stop": "stop"
+      },
+      "field": {
+        "createDt": "Scheduling time",
+        "executionAt": "Execution time",
+        "groupName": "task force",
+        "jobName": "Task name",
+        "operationReason": "Execution notes",
+        "taskBatchStatus": "Execution status"
+      },
+      "message": {
+        "retryConfirm": "Are you sure you want to retry this execution?",
+        "retrySuccess": "Retry successful",
+        "stopConfirm": "Are you sure to stop this execution?",
+        "stopSuccess": "stop successfully"
+      },
+      "search": {
+        "datetimeRange": "Scheduling time",
+        "datetimeRangePlaceholder": "Please select a scheduling time range",
+        "groupName": "task force",
+        "groupNamePlaceholder": "Please select a task group",
+        "jobName": "Task name",
+        "jobNamePlaceholder": "Search task name",
+        "taskBatchStatus": "Execution status",
+        "taskBatchStatusPlaceholder": "Please select a status"
+      },
+      "title": "Mission log"
     }
   },
   "search": {
@@ -1356,6 +1357,165 @@
         "slideLeft": "Slide in left",
         "slideTop": "Slide in from above"
       }
+    }
+  },
+  "system": {
+    "config": {
+      "client": {
+        "activeTimeout": "Token Min Active Frequency",
+        "activeTimeoutUnit": "seconds",
+        "activeTimeoutUnlimited": "Unlimited never freeze",
+        "addTitle": "Add Client",
+        "authType": "Auth Type",
+        "clientId": "Client ID",
+        "clientType": "Client Type",
+        "deleteConfirm": "Confirm to delete client \"{clientId}\"?",
+        "detail": {
+          "activeTimeout": "Token Min Active Frequency",
+          "authType": "Auth Type",
+          "clientId": "Client ID",
+          "clientType": "Client Type",
+          "createTime": "Create Time",
+          "createUser": "Create User",
+          "id": "ID",
+          "isConcurrent": "Multi-Login",
+          "maxLoginCount": "Login Count",
+          "overflowLogoutMode": "Overflow Mode",
+          "replacedRange": "Logout Range",
+          "status": "Status",
+          "timeout": "Token Validity Period",
+          "updateTime": "Update Time",
+          "updateUser": "Update User"
+        },
+        "detailTitle": "Client Detail",
+        "editTitle": "Edit Client",
+        "isConcurrent": "Allow Same Account Login From Multiple Places",
+        "maxLoginCount": "Same Account Max Login Count",
+        "maxLoginCountUnit": "",
+        "maxLoginCountUnlimited": "Unlimited",
+        "overflowLogoutMode": "Overflow Logout Mode",
+        "replacedRange": "Replace Logout Range",
+        "timeout": "Token Validity Period",
+        "timeoutUnit": "seconds",
+        "timeoutUnlimited": "Never expires"
+      },
+      "login": {
+        "loginCaptchaEnabled": "Login Captcha Switch",
+        "resetConfirm": "Confirm to restore login configuration to default?"
+      },
+      "mail": {
+        "mailHost": "SMTP Server Address",
+        "mailHostPlaceholder": "Please enter SMTP server address",
+        "mailPassword": "Sender Password",
+        "mailPasswordPlaceholder": "Please enter sender password",
+        "mailPort": "SMTP Port",
+        "mailProtocol": "Mail Protocol",
+        "mailSslEnabled": "Enable SSL",
+        "mailSslPort": "SSL Port",
+        "mailUsername": "Sender Email",
+        "mailUsernamePlaceholder": "Please enter sender email",
+        "resetConfirm": "Confirm to restore mail configuration to default?"
+      },
+      "security": {
+        "passwordAllowContainUsername": "Allow Password Contain Username",
+        "passwordErrorLockCount": "Password Error Count",
+        "passwordErrorLockCountRange": "Lock account after how many wrong passwords",
+        "passwordErrorLockCountUnit": "times",
+        "passwordErrorLockMinutes": "Lock Duration",
+        "passwordErrorLockMinutesUnit": "minutes",
+        "passwordExpirationDays": "Password Validity Period",
+        "passwordExpirationDaysUnit": "days",
+        "passwordExpirationWarningDays": "Password Expiry Warning",
+        "passwordExpirationWarningDaysUnit": "days",
+        "passwordMinLength": "Password Min Length",
+        "passwordRepetitionTimes": "Password Repetition Times",
+        "passwordRepetitionTimesDesc": "New password cannot repeat last N passwords",
+        "passwordRepetitionTimesUnit": "times",
+        "passwordRequireSymbols": "Password Require Special Characters",
+        "resetConfirm": "Confirm to restore security configuration to default?",
+        "warningLessThanExpiry": "Password expiry warning time should be less than validity period"
+      },
+      "site": {
+        "resetConfirm": "Confirm to restore site configuration to default?",
+        "siteBeian": "ICP License",
+        "siteBeianMax": "ICP license max 30 characters",
+        "siteBeianPlaceholder": "Please enter ICP license",
+        "siteCopyright": "Copyright",
+        "siteCopyrightPlaceholder": "Please enter copyright",
+        "siteDescription": "System Description",
+        "siteDescriptionPlaceholder": "Please enter system description",
+        "siteFavicon": "Site Favicon",
+        "siteFaviconHint": "Recommended size 46x46px",
+        "siteLogo": "Site Logo",
+        "siteLogoHint": "Recommended size 50x50px",
+        "siteTitle": "System Name",
+        "siteTitleMax": "System name max 18 characters",
+        "siteTitlePlaceholder": "Please enter system name"
+      },
+      "sms": {
+        "accessKey": "Access Key",
+        "accessKeyPlaceholder": "Please enter Access Key",
+        "addTitle": "Add SMS Config",
+        "deleteConfirm": "Confirm to delete SMS config \"{name}\"?",
+        "editTitle": "Edit SMS Config",
+        "isDefault": "Is Default",
+        "maxRetries": "Max Retries",
+        "maximum": "Send Limit",
+        "name": "Name",
+        "namePlaceholder": "Please enter name",
+        "retryInterval": "Retry Interval",
+        "retryIntervalUnit": "seconds",
+        "searchAccessKey": "Search Access Key",
+        "searchName": "Search name",
+        "secretKey": "Secret Key",
+        "sendRecord": "Send Record",
+        "setDefaultConfirm": "Confirm to set SMS config \"{name}\" as default?",
+        "signature": "SMS Signature",
+        "signaturePlaceholder": "Please enter SMS signature",
+        "supplier": "Supplier",
+        "supplierConfig": "Supplier Config",
+        "supplierPlaceholder": "Please select supplier",
+        "templateId": "Template ID",
+        "templateIdPlaceholder": "Please enter template ID",
+        "weight": "Load Balance Weight"
+      },
+      "storage": {
+        "accessKey": "Access Key",
+        "addLocalTitle": "Add Local Storage",
+        "addOssTitle": "Add Object Storage",
+        "all": "All",
+        "bucketName": "Bucket/Storage Path",
+        "code": "Code",
+        "createLocalStorage": "Click to create local storage",
+        "createOssStorage": "Click to create object storage",
+        "deleteConfirm": "Confirm to delete storage \"{name}({code})\"?",
+        "disableConfirm": "Confirm to disable {type} \"{name}({code})\"?",
+        "domain": "Domain/Access Path",
+        "editLocalTitle": "Edit Local Storage",
+        "editOssTitle": "Edit Object Storage",
+        "enableConfirm": "Confirm to enable {type} \"{name}({code})\"?",
+        "endpoint": "Endpoint",
+        "isDefault": "Default Storage",
+        "localStorage": "Local Storage",
+        "name": "Name",
+        "objectStorage": "Object Storage",
+        "recycleBinEnabled": "Enable Recycle Bin",
+        "recycleBinPath": "Recycle Bin Path",
+        "searchPlaceholder": "Search name/code",
+        "setDefaultConfirm": "Confirm to set {type} \"{name}({code})\" as default storage?",
+        "type": "Storage Type",
+        "empty": "No data"
+      },
+      "tabs": {
+        "client": "Client Config",
+        "login": "Login Config",
+        "mail": "Mail Config",
+        "security": "Security Config",
+        "site": "Site Config",
+        "sms": "SMS Config",
+        "storage": "Storage Config"
+      },
+      "title": "Configuration Management"
     }
   },
   "table": {
