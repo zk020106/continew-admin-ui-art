@@ -84,7 +84,7 @@ export function encryptByAes(word: string, keyWord: string = defaultKeyWork) {
 /**
  * 文件转换为 Base64
  * @param file 文件对象
- * @returns Base64 编码后的字符串
+ * @returns Base64 编码后的字符串（Data URL 格式：data:mime/type;base64,<base64-data>）
  */
 export function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -97,7 +97,7 @@ export function fileToBase64(file: File): Promise<string> {
       }
     }
     reader.onerror = () => {
-      reject(new Error('文件读取错误'))
+      reject(new Error(`文件读取错误: ${reader.error?.message || '未知错误'}`))
     }
     reader.readAsDataURL(file)
   })

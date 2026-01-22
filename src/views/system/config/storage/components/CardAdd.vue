@@ -10,7 +10,9 @@
   >
     <div class="add-content">
       <ElIcon :size="24" class="add-icon"><Plus /></ElIcon>
-      <div class="add-text">点击创建{{ type === 1 ? '本地存储' : '对象存储' }}</div>
+      <div class="add-text">{{
+        t('storage.createHint', { type: type === 1 ? t('storage.local') : t('storage.object') })
+      }}</div>
     </div>
   </ElCard>
 
@@ -20,6 +22,7 @@
 <script setup lang="ts">
   import { Plus } from '@element-plus/icons-vue'
   import AddModal from '../AddModal.vue'
+  import { useI18n } from 'vue-i18n'
 
   interface Props {
     type: number
@@ -31,6 +34,7 @@
     (e: 'save-success'): void
   }>()
 
+  const { t } = useI18n()
   const AddModalRef = ref<InstanceType<typeof AddModal>>()
 
   const onAdd = () => {

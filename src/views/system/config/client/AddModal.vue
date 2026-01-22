@@ -2,111 +2,15 @@
   <ElDialog
     v-model="visible"
     :title="title"
-    width="500px"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    :width="width >= 600 ? 600 : '100%'"
+    destroy-on-close
     @close="handleClose"
   >
-    <ElForm ref="formRef" :model="formData" :rules="formRules" label-width="140px">
-      <ElFormItem :label="t('system.config.client.clientId')" prop="clientId">
-        <ElInput
-          v-model="formData.clientId"
-          :placeholder="
-            t('common.placeholder.status', { label: t('system.config.client.clientId') })
-          "
-          :disabled="isUpdate"
-        />
-      </ElFormItem>
-      <ElFormItem :label="t('system.config.client.clientType')" prop="clientType">
-        <ElSelect
-          v-model="formData.clientType"
-          :placeholder="
-            t('common.placeholder.select', { label: t('system.config.client.clientType') })
-          "
-          style="width: 100%"
-        >
-          <ElOption
-            v-for="item in client_type"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </ElSelect>
-      </ElFormItem>
-      <ElFormItem :label="t('system.config.client.authType')" prop="authType">
-        <ElSelect
-          v-model="formData.authType"
-          :placeholder="
-            t('common.placeholder.select', { label: t('system.config.client.authType') })
-          "
-          style="width: 100%"
-        >
-          <ElOption
-            v-for="item in auth_type"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </ElSelect>
-      </ElFormItem>
-      <ElFormItem :label="t('system.config.client.activeTimeout')" prop="activeTimeout">
-        <ElInputNumber v-model="formData.activeTimeout" :min="0" />
-        <span class="unit">{{ t('system.config.client.activeTimeoutUnit') }}</span>
-      </ElFormItem>
-      <ElFormItem :label="t('system.config.client.timeout')" prop="timeout">
-        <ElInputNumber v-model="formData.timeout" :min="0" />
-        <span class="unit">{{ t('system.config.client.timeoutUnit') }}</span>
-      </ElFormItem>
-      <ElFormItem :label="t('system.config.client.isConcurrent')" prop="isConcurrent">
-        <ElSwitch
-          v-model="formData.isConcurrent"
-          :active-value="1"
-          :inactive-value="0"
-          :active-text="t('common.true')"
-          :inactive-text="t('common.false')"
-        />
-      </ElFormItem>
-      <ElFormItem :label="t('system.config.client.replacedRange')" prop="replacedRange">
-        <ElSelect
-          v-model="formData.replacedRange"
-          :placeholder="
-            t('common.placeholder.select', { label: t('system.config.client.replacedRange') })
-          "
-          style="width: 100%"
-        >
-          <ElOption label="All" value="All" />
-          <ElOption label="Current" value="Current" />
-        </ElSelect>
-      </ElFormItem>
-      <ElFormItem :label="t('system.config.client.maxLoginCount')" prop="maxLoginCount">
-        <ElInputNumber v-model="formData.maxLoginCount" :min="1" />
-        <span class="unit">{{ t('system.config.client.maxLoginCountUnit') }}</span>
-      </ElFormItem>
-      <ElFormItem :label="t('system.config.client.overflowLogoutMode')" prop="overflowLogoutMode">
-        <ElSelect
-          v-model="formData.overflowLogoutMode"
-          :placeholder="
-            t('common.placeholder.select', { label: t('system.config.client.overflowLogoutMode') })
-          "
-          style="width: 100%"
-        >
-          <ElOption label="First" value="First" />
-          <ElOption label="Last" value="Last" />
-        </ElSelect>
-      </ElFormItem>
-      <ElFormItem :label="t('common.status')" prop="status">
-        <ElSwitch
-          v-model="formData.status"
-          :active-value="'Valid'"
-          :inactive-value="'Invalid'"
-          :active-text="t('common.statusEnabled')"
-          :inactive-text="t('common.statusDisabled')"
-        />
-      </ElFormItem>
-    </ElForm>
-
+    <CaForm ref="formRef" label-position="top" v-model="form" :columns="columns" />
     <template #footer>
-      <ElButton @click="visible = false">{{ t('common.cancel') }}</ElButton>
+      <ElButton @click="handleClose">{{ t('common.cancel') }}</ElButton>
       <ElButton type="primary" :loading="saveLoading" @click="handleConfirm">{{
         t('common.confirm')
       }}</ElButton>
@@ -115,23 +19,33 @@
 </template>
 
 <script setup lang="ts">
-  import type { FormInstance, FormRules } from 'element-plus'
-  import type { ClientReq } from '@/apis/system/type'
   import { addClient, getClient, updateClient } from '@/apis/system/client'
-  import { useResetReactive } from '@/hooks'
-  import { useDict } from '@/hooks'
-  import { ElMessage } from 'element-plus'
+  import type { ClientReq } from '@/apis/system/type'
+  import type { FormColumnItem } from '@/components/base/CaForm/type'
+  import { useDict, useResetReactive } from '@/hooks'
+  import { useWindowSize } from '@vueuse/core'
+  import { ElDialog, ElMessage } from 'element-plus'
+  import { computed, h, ref } from 'vue'
   import { useI18n } from 'vue-i18n'
+
+  defineOptions({ name: 'ClientConfigAddModal' })
 
   const emit = defineEmits<{
     (e: 'save-success'): void
   }>()
 
   const { t } = useI18n()
-  const { client_type, auth_type } = useDict('client_type', 'auth_type')
+  const { width } = useWindowSize()
+  const { client_type, auth_type, replaced_range_enum, logout_mode_enum } = useDict(
+    'client_type',
+    'auth_type',
+    'replaced_range_enum',
+    'logout_mode_enum'
+  )
+
   const visible = ref(false)
   const saveLoading = ref(false)
-  const formRef = ref<FormInstance>()
+  const formRef = ref()
   const isUpdate = ref(false)
   const currentId = ref('')
 
@@ -139,7 +53,7 @@
     isUpdate.value ? t('system.config.client.editTitle') : t('system.config.client.addTitle')
   )
 
-  const [formData, resetFormData] = useResetReactive({
+  const [form, resetForm] = useResetReactive({
     clientId: '',
     clientType: '',
     authType: '',
@@ -152,47 +66,193 @@
     overflowLogoutMode: 'First'
   })
 
-  const formRules: FormRules = {
-    clientId: [
-      {
-        required: true,
-        message: t('common.placeholder.status', { label: t('system.config.client.clientId') }),
-        trigger: 'blur'
-      }
-    ],
-    clientType: [
-      {
-        required: true,
-        message: t('common.placeholder.select', { label: t('system.config.client.clientType') }),
-        trigger: 'change'
-      }
-    ],
-    authType: [
-      {
-        required: true,
-        message: t('common.placeholder.select', { label: t('system.config.client.authType') }),
-        trigger: 'change'
-      }
-    ]
-  }
+  const columns = computed(
+    () =>
+      [
+        {
+          type: 'input',
+          label: t('system.config.client.clientId'),
+          field: 'clientId',
+          span: 24,
+          props: {
+            placeholder: t('common.placeholder.status', {
+              label: t('system.config.client.clientId')
+            }),
+            disabled: isUpdate.value
+          },
+          rules: [
+            {
+              required: true,
+              message: t('common.placeholder.status', { label: t('system.config.client.clientId') })
+            }
+          ]
+        },
+        {
+          type: 'select',
+          label: t('system.config.client.clientType'),
+          field: 'clientType',
+          span: 12,
+          props: {
+            placeholder: t('common.placeholder.select', {
+              label: t('system.config.client.clientType')
+            }),
+            options: client_type.value
+          },
+          rules: [
+            {
+              required: true,
+              message: t('common.placeholder.select', {
+                label: t('system.config.client.clientType')
+              })
+            }
+          ]
+        },
+        {
+          type: 'select',
+          label: t('system.config.client.authType'),
+          field: 'authType',
+          span: 12,
+          props: {
+            placeholder: t('common.placeholder.select', {
+              label: t('system.config.client.authType')
+            }),
+            options: auth_type.value
+          },
+          rules: [
+            {
+              required: true,
+              message: t('common.placeholder.select', { label: t('system.config.client.authType') })
+            }
+          ]
+        },
+        {
+          type: 'input-number',
+          label: t('system.config.client.activeTimeout'),
+          field: 'activeTimeout',
+          span: 12,
+          props: {
+            min: 0
+          },
+          slots: {
+            append: () =>
+              h(
+                'span',
+                { style: { width: '30px', textAlign: 'center' } },
+                t('system.config.client.activeTimeoutUnit')
+              )
+          }
+        },
+        {
+          type: 'input-number',
+          label: t('system.config.client.timeout'),
+          field: 'timeout',
+          span: 12,
+          props: {
+            min: 0
+          },
+          slots: {
+            append: () =>
+              h(
+                'span',
+                { style: { width: '30px', textAlign: 'center' } },
+                t('system.config.client.timeoutUnit')
+              )
+          }
+        },
+        {
+          type: 'switch',
+          label: t('system.config.client.isConcurrent'),
+          field: 'isConcurrent',
+          span: 12,
+          props: {
+            checkedValue: true,
+            uncheckedValue: false,
+            activeText: t('common.allow'),
+            inactiveText: t('common.notAllow')
+          }
+        },
+        {
+          type: 'select',
+          label: t('system.config.client.replacedRange'),
+          field: 'replacedRange',
+          span: 12,
+          props: {
+            placeholder: t('common.placeholder.select', {
+              label: t('system.config.client.replacedRange')
+            }),
+            options: replaced_range_enum.value,
+            disabled: () => {
+              return form.isConcurrent
+            }
+          }
+        },
+        {
+          type: 'input-number',
+          label: t('system.config.client.maxLoginCount'),
+          field: 'maxLoginCount',
+          span: 12,
+          props: {
+            min: 1,
+            disabled: () => {
+              return !form.isConcurrent
+            }
+          },
+          slots: {
+            append: () =>
+              h(
+                'span',
+                { style: { width: '30px', textAlign: 'center' } },
+                t('system.config.client.maxLoginCountUnit')
+              )
+          }
+        },
+        {
+          type: 'select',
+          label: t('system.config.client.overflowLogoutMode'),
+          field: 'overflowLogoutMode',
+          span: 12,
+          props: {
+            placeholder: t('common.placeholder.select', {
+              label: t('system.config.client.overflowLogoutMode')
+            }),
+            options: logout_mode_enum.value,
+            disabled: () => {
+              return form.maxLoginCount === -1 || form.maxLoginCount === 0
+            }
+          }
+        },
+        {
+          type: 'switch',
+          label: t('common.status'),
+          field: 'status',
+          span: 24,
+          props: {
+            inlinePrompt: true,
+            activeValue: 1,
+            inactiveValue: 2,
+            activeText: t('common.statusEnabled'),
+            inactiveText: t('common.statusDisabled')
+          }
+        }
+      ] as FormColumnItem[]
+  )
 
   const handleClose = () => {
-    formRef.value?.resetFields()
-    resetFormData()
+    formRef.value?.formRef?.resetFields()
+    resetForm()
   }
 
   const handleConfirm = async () => {
-    const isValid = await formRef.value?.validate()
-    if (!isValid) return
-
-    saveLoading.value = true
-
     try {
+      saveLoading.value = true
+      const isValid = await formRef.value?.formRef?.validate()
+      if (!isValid) return
+
       if (isUpdate.value) {
-        await updateClient(formData as unknown as ClientReq, currentId.value)
+        await updateClient(form as unknown as ClientReq, currentId.value)
         ElMessage.success(t('common.success'))
       } else {
-        await addClient(formData as unknown as ClientReq)
+        await addClient(form as unknown as ClientReq)
         ElMessage.success(t('common.success'))
       }
 
@@ -206,6 +266,7 @@
   }
 
   const onAdd = () => {
+    resetForm()
     isUpdate.value = false
     currentId.value = ''
     visible.value = true
@@ -215,8 +276,8 @@
     isUpdate.value = true
     currentId.value = id
     try {
-      const res = await getClient(id)
-      Object.assign(formData, res)
+      const data = await getClient(id)
+      Object.assign(form, data)
       visible.value = true
     } catch (error) {
       console.error('Failed to fetch client detail:', error)
@@ -230,8 +291,13 @@
 </script>
 
 <style scoped lang="scss">
-  .unit {
-    margin-left: 8px;
-    color: var(--el-text-color-regular);
+  :deep(.el-input-group__append) {
+    padding: 0;
+
+    .el-button {
+      border: 1px solid transparent;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
   }
 </style>

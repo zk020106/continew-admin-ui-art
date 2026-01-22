@@ -131,6 +131,7 @@
         })
       )
       ElMessage.success('保存成功')
+      isUpdate.value = false
       await getDataList()
     } catch (error) {
       console.error('Failed to update login config:', error)

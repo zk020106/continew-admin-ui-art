@@ -182,11 +182,19 @@
     loading.value = true
     try {
       const data = await listOption(queryForm)
-      // 使用 reduce 构建对象映射
+      // 使用默认配置作为初始值
+      const defaultSiteConfig: SiteConfig = {
+        SITE_FAVICON: {} as OptionResp,
+        SITE_LOGO: {} as OptionResp,
+        SITE_TITLE: {} as OptionResp,
+        SITE_DESCRIPTION: {} as OptionResp,
+        SITE_COPYRIGHT: {} as OptionResp,
+        SITE_BEIAN: {} as OptionResp
+      }
       siteConfig.value = data.reduce<SiteConfig>((obj, option) => {
         obj[option.code as keyof SiteConfig] = { ...option }
         return obj
-      }, {} as SiteConfig)
+      }, defaultSiteConfig)
       reset()
     } finally {
       loading.value = false

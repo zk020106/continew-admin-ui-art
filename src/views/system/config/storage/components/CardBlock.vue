@@ -6,7 +6,7 @@
           <span class="title-text">{{ data.name }} ({{ data.code }})</span>
           <ElTag v-if="data.isDefault" type="primary" size="small">
             <ElIcon><Check /></ElIcon>
-            默认存储
+            {{ t('storage.default') }}
           </ElTag>
         </div>
         <div class="card-actions">
@@ -20,11 +20,11 @@
                   :disabled="data.isDefault || data.status === 2"
                   command="setDefault"
                 >
-                  设为默认
+                  {{ t('storage.setDefault') }}
                 </ElDropdownItem>
-                <ElDropdownItem command="edit">修改</ElDropdownItem>
+                <ElDropdownItem command="edit">{{ t('common.edit') }}</ElDropdownItem>
                 <ElDropdownItem :disabled="data.isDefault" command="delete" divided>
-                  删除
+                  {{ t('common.delete') }}
                 </ElDropdownItem>
               </ElDropdownMenu>
             </template>
@@ -40,13 +40,13 @@
         <!-- 本地存储 -->
         <template v-if="data.type === 1">
           <div class="info-row">
-            <span class="label">存储路径：</span>
+            <span class="label">{{ t('storage.path') }}：</span>
             <ElTooltip :content="data.bucketName" placement="top">
               <span class="value ellipsis">{{ data.bucketName }}</span>
             </ElTooltip>
           </div>
           <div class="info-row">
-            <span class="label">访问路径：</span>
+            <span class="label">{{ t('storage.accessPath') }}：</span>
             <ElTooltip :content="data.domain" placement="top">
               <span class="value ellipsis">{{ data.domain }}</span>
             </ElTooltip>
@@ -68,7 +68,7 @@
             </ElTooltip>
           </div>
           <div v-if="data.domain" class="info-row">
-            <span class="label">自定义域名：</span>
+            <span class="label">{{ t('storage.customDomain') }}：</span>
             <ElTooltip :content="data.domain" placement="top">
               <span class="value ellipsis">{{ data.domain }}</span>
             </ElTooltip>
@@ -76,9 +76,9 @@
         </template>
 
         <div class="info-row">
-          <span class="label">状态：</span>
+          <span class="label">{{ t('common.status') }}：</span>
           <ElTag :type="data.status === 1 ? 'success' : 'danger'" size="small">
-            {{ data.status === 1 ? '启用' : '禁用' }}
+            {{ data.status === 1 ? t('common.statusEnabled') : t('common.statusDisabled') }}
           </ElTag>
         </div>
       </div>
@@ -90,8 +90,8 @@
           :model-value="data.status === 1"
           :disabled="data.isDefault"
           :loading="switchLoading"
-          active-text="启用"
-          inactive-text="禁用"
+          :active-text="t('common.statusEnabled')"
+          :inactive-text="t('common.statusDisabled')"
           inline-prompt
           @change="(val) => handleStatusChange(data, !!val)"
         />
@@ -129,19 +129,23 @@
 
   // 更新状态
   const handleStatusChange = async (item: StorageResp, enable: boolean) => {
-    const typeText = item.type === 1 ? '本地存储' : '对象存储'
-    const actionText = enable ? '启用' : '禁用'
+    const typeText = item.type === 1 ? t('storage.local') : t('storage.object')
+    const actionText = enable ? t('common.statusEnabled') : t('common.statusDisabled')
 
     try {
       await ElMessageBox.confirm(
-        `是否确定${actionText}${typeText}「${item.name}(${item.code})」？`,
-        '提示',
+        t('storage.statusConfirm', {
+          action: actionText,
+          type: typeText,
+          name: `${item.name}(${item.code})`
+        }),
+        t('common.tips'),
         { type: 'warning' }
       )
 
       switchLoading.value = true
       await updateStorageStatus({ status: enable ? 1 : 2 }, item.id)
-      ElMessage.success(`${actionText}成功`)
+      ElMessage.success(t('common.success'))
       emit('save-success')
     } catch (error) {
       if (error !== 'cancel') {
@@ -154,16 +158,16 @@
 
   // 设为默认
   const handleSetDefault = async (item: StorageResp) => {
-    const typeText = item.type === 1 ? '本地存储' : '对象存储'
+    const typeText = item.type === 1 ? t('storage.local') : t('storage.object')
 
     try {
       await ElMessageBox.confirm(
-        `是否确定将${typeText}「${item.name}(${item.code})」设为默认存储？`,
-        '提示',
+        t('storage.setDefaultConfirm', { type: typeText, name: `${item.name}(${item.code})` }),
+        t('common.tips'),
         { type: 'warning' }
       )
       await setDefaultStorage(item.id)
-      ElMessage.success('设置成功')
+      ElMessage.success(t('common.success'))
       emit('save-success')
     } catch (error) {
       if (error !== 'cancel') {
@@ -175,13 +179,17 @@
   // 删除
   const handleDelete = async (item: StorageResp) => {
     try {
-      await ElMessageBox.confirm(`是否确定删除存储「${item.name}(${item.code})」？`, '警告', {
-        type: 'warning',
-        confirmButtonText: '删除',
-        confirmButtonType: 'danger'
-      })
+      await ElMessageBox.confirm(
+        t('storage.deleteConfirm', { name: `${item.name}(${item.code})` }),
+        t('common.tips'),
+        {
+          type: 'warning',
+          confirmButtonText: t('common.delete'),
+          confirmButtonType: 'danger'
+        }
+      )
       await deleteStorage(item.id)
-      ElMessage.success('删除成功')
+      ElMessage.success(t('common.success'))
       emit('save-success')
     } catch (error) {
       if (error !== 'cancel') {

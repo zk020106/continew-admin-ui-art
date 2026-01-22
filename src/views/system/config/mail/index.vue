@@ -37,7 +37,7 @@
         <template #extra>
           {{ mailConfig.MAIL_PORT?.description }}
         </template>
-        <ElInputNumber v-model="form.MAIL_PORT" :min="0" controls-position="right" />
+        <ElInputNumber v-model="form.MAIL_PORT" :min="1" :max="65535" controls-position="right" />
       </ElFormItem>
 
       <ElFormItem prop="MAIL_USERNAME">
@@ -71,8 +71,8 @@
           v-model="form.MAIL_SSL_ENABLED"
           :active-value="1"
           :inactive-value="0"
-          active-text="启用"
-          inactive-text="禁用"
+          :active-text="t('common.statusEnabled')"
+          :inactive-text="t('common.statusDisabled')"
         />
       </ElFormItem>
 
@@ -83,30 +83,35 @@
         <template #extra>
           {{ mailConfig.MAIL_SSL_PORT?.description }}
         </template>
-        <ElInputNumber v-model="form.MAIL_SSL_PORT" :min="0" controls-position="right" />
+        <ElInputNumber
+          v-model="form.MAIL_SSL_PORT"
+          :min="1"
+          :max="65535"
+          controls-position="right"
+        />
       </ElFormItem>
     </ElForm>
     <div class="config-actions">
       <ElSpace>
         <ElButton v-if="!isUpdate" type="primary" @click="onUpdate">
           <ElIcon><Edit /></ElIcon>
-          修改
+          {{ t('common.edit') }}
         </ElButton>
         <ElButton v-if="!isUpdate" @click="onResetValue">
           <ElIcon><RefreshLeft /></ElIcon>
-          恢复默认
+          {{ t('common.restoreDefault') }}
         </ElButton>
         <ElButton v-if="isUpdate" type="primary" @click="handleSave">
           <ElIcon><Select /></ElIcon>
-          保存
+          {{ t('common.save') }}
         </ElButton>
         <ElButton v-if="isUpdate" @click="reset">
           <ElIcon><Refresh /></ElIcon>
-          重置
+          {{ t('common.reset') }}
         </ElButton>
         <ElButton v-if="isUpdate" @click="handleCancel">
           <ElIcon><Close /></ElIcon>
-          取消
+          {{ t('common.cancel') }}
         </ElButton>
       </ElSpace>
     </div>
@@ -126,9 +131,11 @@
   import { Close, Edit, Refresh, RefreshLeft, Select } from '@element-plus/icons-vue'
   import type { FormInstance, FormRules } from 'element-plus'
   import { ElMessage, ElMessageBox } from 'element-plus'
+  import { useI18n } from 'vue-i18n'
 
   defineOptions({ name: 'MailConfig' })
 
+  const { t } = useI18n()
   const loading = ref<boolean>(false)
   const formRef = ref<FormInstance>()
 
@@ -181,6 +188,16 @@
     loading.value = true
     try {
       const data = await listOption(queryForm)
+      // 使用默认配置作为初始值
+      const defaultMailConfig: MailConfig = {
+        MAIL_PROTOCOL: {} as OptionResp,
+        MAIL_HOST: {} as OptionResp,
+        MAIL_PORT: {} as OptionResp,
+        MAIL_USERNAME: {} as OptionResp,
+        MAIL_PASSWORD: {} as OptionResp,
+        MAIL_SSL_ENABLED: {} as OptionResp,
+        MAIL_SSL_PORT: {} as OptionResp
+      }
       mailConfig.value = data.reduce<MailConfig>((obj, option) => {
         obj[option.code as keyof MailConfig] = {
           ...option,
@@ -189,7 +206,7 @@
             : option.value
         }
         return obj
-      }, {} as MailConfig)
+      }, defaultMailConfig)
       reset()
     } finally {
       loading.value = false
@@ -220,7 +237,7 @@
           } as OptionReq
         })
       )
-      ElMessage.success('保存成功')
+      ElMessage.success(t('common.successSave'))
       await getDataList()
     } catch (error) {
       console.error('Failed to update mail config:', error)
@@ -230,7 +247,7 @@
   const handleResetValue = async () => {
     try {
       await resetOptionValue(queryForm)
-      ElMessage.success('恢复成功')
+      ElMessage.success(t('common.successRestore'))
       await getDataList()
     } catch (error) {
       console.error('Failed to reset mail config:', error)
@@ -238,10 +255,10 @@
   }
 
   const onResetValue = () => {
-    ElMessageBox.confirm('确认恢复邮件配置为默认值吗？', '警告', {
+    ElMessageBox.confirm(t('system.config.mail.resetConfirm'), t('common.tips'), {
       type: 'warning',
-      confirmButtonText: '确认',
-      cancelButtonText: '取消'
+      confirmButtonText: t('common.confirm'),
+      cancelButtonText: t('common.cancel')
     })
       .then(async () => {
         await handleResetValue()

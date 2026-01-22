@@ -145,9 +145,8 @@
   }
 
   const handleOpen = () => {
-    if (isUpdate.value) {
-      // 编辑模式下，设置表单初始值
-    }
+    // 数据已在 onUpdate 中加载，此处可用于重置验证状态
+    formRef.value?.clearValidate()
   }
 
   const handleSave = async () => {

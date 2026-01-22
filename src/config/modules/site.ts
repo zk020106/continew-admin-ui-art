@@ -21,6 +21,7 @@ const siteConfig: SiteConfig = {
   SITE_FAVICON: { id: 0, code: 'SITE_FAVICON', value: '' },
   SITE_LOGO: { id: 0, code: 'SITE_LOGO', value: '' },
   SITE_TITLE: { id: 0, code: 'SITE_TITLE', value: '' },
+  SITE_DESCRIPTION: { id: 0, code: 'SITE_DESCRIPTION', value: '' },
   SITE_COPYRIGHT: { id: 0, code: 'SITE_COPYRIGHT', value: '' },
   SITE_BEIAN: { id: 0, code: 'SITE_BEIAN', value: '' }
 }
@@ -42,6 +43,7 @@ export async function initSiteConfig(): Promise<void> {
     siteConfig.SITE_FAVICON = resMap.get('SITE_FAVICON') || siteConfig.SITE_FAVICON
     siteConfig.SITE_LOGO = resMap.get('SITE_LOGO') || siteConfig.SITE_LOGO
     siteConfig.SITE_TITLE = resMap.get('SITE_TITLE') || siteConfig.SITE_TITLE
+    siteConfig.SITE_DESCRIPTION = resMap.get('SITE_DESCRIPTION') || siteConfig.SITE_DESCRIPTION
     siteConfig.SITE_COPYRIGHT = resMap.get('SITE_COPYRIGHT') || siteConfig.SITE_COPYRIGHT
     siteConfig.SITE_BEIAN = resMap.get('SITE_BEIAN') || siteConfig.SITE_BEIAN
 

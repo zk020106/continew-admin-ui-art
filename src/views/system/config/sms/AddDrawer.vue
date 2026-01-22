@@ -182,8 +182,8 @@
   }
 
   const handleConfirm = async () => {
-    await formRef.value?.validate()
     try {
+      await formRef.value?.validate()
       if (isEdit.value) {
         await updateSmsConfig(formData.value, currentId.value)
       } else {

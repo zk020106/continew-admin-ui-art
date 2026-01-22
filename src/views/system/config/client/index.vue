@@ -17,6 +17,30 @@
           {{ t('common.button.add') }}
         </ElButton>
       </template>
+      <template #index="{ $index }">
+        {{ $index + 1 + (pagination.current - 1) * pagination.pageSize }}
+      </template>
+      <template #clientType="{ row }">
+        <CaCellTag :value="row.clientType" :dict="client_type" />
+      </template>
+      <template #authType="{ row }">
+        <template v-if="row.authType">
+          <el-tag
+            v-for="(item, index) in row.authType.split(',')"
+            :key="index"
+            size="small"
+            class="mr-1"
+          >
+            {{ auth_type.find((d) => d.value === item)?.label || item }}
+          </el-tag>
+        </template>
+      </template>
+      <template #replacedRange="{ row }">
+        <CaCellTag :value="row.replacedRange" :dict="replaced_range_enum" />
+      </template>
+      <template #overflowLogoutMode="{ row }">
+        <CaCellTag :value="row.overflowLogoutMode" :dict="logout_mode_enum" />
+      </template>
       <template #action="{ row }">
         <ElSpace>
           <ElLink type="primary" @click="onDetail(row)">{{ t('common.detail') }}</ElLink>
@@ -31,23 +55,28 @@
   </div>
 </template>
 
-<script setup lang="tsx">
+<script setup lang="ts">
   import { deleteClient, listClient } from '@/apis/system/client'
   import type { ClientQuery, ClientResp } from '@/apis/system/type'
+  import CaCellTag from '@/components/base/CaCell/CaCellTag.vue'
   import CaTable from '@/components/base/CaTable/index.vue'
   import { TableColumnItem } from '@/components/base/CaTable/type'
   import { useDict } from '@/hooks'
   import { useTable } from '@/hooks/core/useTable'
-  import type { DictItem } from '@/store/modules/dict'
+  import { Plus } from '@element-plus/icons-vue'
   import { useI18n } from 'vue-i18n'
   import AddModal from './AddModal.vue'
   import DetailModal from './DetailModal.vue'
-  import { Plus } from '@element-plus/icons-vue'
 
   defineOptions({ name: 'ClientConfig' })
 
   const { t } = useI18n()
-  const { client_type, auth_type } = useDict('client_type', 'auth_type')
+  const { client_type, auth_type, replaced_range_enum, logout_mode_enum } = useDict(
+    'client_type',
+    'auth_type',
+    'replaced_range_enum',
+    'logout_mode_enum'
+  )
 
   const queryForm = reactive<ClientQuery>({
     clientType: '',
@@ -62,41 +91,24 @@
 
   const tableRef = ref()
 
-  // 获取字典标签
-  const getDictLabel = (dict: DictItem[], value: string) => {
-    const item = dict.find((d) => d.value === value)
-    return item?.label || value
-  }
-
   const columns = computed(
     () =>
       [
-        {
-          label: t('common.index'),
-          width: 66,
-          align: 'center',
-          render: ({ $index }) => $index + 1 + (pagination.current - 1) * pagination.pageSize
-        },
+        { label: t('common.index'), prop: 'index', slotName: 'index', width: 66, align: 'center' },
         { label: t('system.config.client.clientId'), prop: 'clientId', minWidth: 180 },
         {
           label: t('system.config.client.clientType'),
           prop: 'clientType',
+          slotName: 'clientType',
           width: 120,
-          align: 'center',
-          render: ({ row }) => ({
-            component: 'ElTag',
-            children: getDictLabel(client_type.value, row.clientType)
-          })
+          align: 'center'
         },
         {
           label: t('system.config.client.authType'),
           prop: 'authType',
+          slotName: 'authType',
           width: 150,
-          align: 'center',
-          render: ({ row }) => ({
-            component: 'ElTag',
-            children: getDictLabel(auth_type.value, row.authType)
-          })
+          align: 'center'
         },
         {
           label: t('system.config.client.activeTimeout'),
@@ -135,6 +147,27 @@
             children: row.isConcurrent ? t('common.true') : t('common.false')
           })
         },
+        {
+          label: t('system.config.client.replacedRange'),
+          prop: 'replacedRange',
+          slotName: 'replacedRange',
+          width: 120,
+          align: 'center'
+        },
+        {
+          label: t('system.config.client.maxLoginCount'),
+          prop: 'maxLoginCount',
+          width: 120,
+          align: 'center',
+          render: ({ row }) => `${row.maxLoginCount}${t('system.config.client.maxLoginCountUnit')}`
+        },
+        {
+          label: t('system.config.client.overflowLogoutMode'),
+          prop: 'overflowLogoutMode',
+          slotName: 'overflowLogoutMode',
+          width: 140,
+          align: 'center'
+        },
         { label: t('common.createTime'), prop: 'createTime', width: 180 },
         {
           label: t('common.action'),
@@ -146,12 +179,6 @@
         }
       ] as TableColumnItem[]
   )
-
-  const onReset = () => {
-    queryForm.clientType = ''
-    queryForm.status = ''
-    search()
-  }
 
   const onDelete = (row: ClientResp) => {
     handleDelete(() => deleteClient(row.id), {
