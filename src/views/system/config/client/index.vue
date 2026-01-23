@@ -21,16 +21,13 @@
         {{ $index + 1 + (pagination.current - 1) * pagination.pageSize }}
       </template>
       <template #clientType="{ row }">
-        <CaCellTag :value="row.clientType" :dict="client_type" />
+        <CaCellTag :value="row.clientType" :data="client_type" />
       </template>
       <template #authType="{ row }">
-        <CaCellTags :value="row.authType" :data="auth_type" />
+        <CaCellTags :value="row.authType" :data="auth_type_enum" />
       </template>
-      <template #replacedRange="{ row }">
-        <CaCellTag :value="row.replacedRange" :dict="replaced_range_enum" />
-      </template>
-      <template #overflowLogoutMode="{ row }">
-        <CaCellTag :value="row.overflowLogoutMode" :dict="logout_mode_enum" />
+      <template #status="{ row }">
+        <CaCellStatus :status="row.status" />
       </template>
       <template #action="{ row }">
         <ElSpace>
@@ -62,12 +59,7 @@
   defineOptions({ name: 'ClientConfig' })
 
   const { t } = useI18n()
-  const { client_type, auth_type, replaced_range_enum, logout_mode_enum } = useDict(
-    'client_type',
-    'auth_type',
-    'replaced_range_enum',
-    'logout_mode_enum'
-  )
+  const { client_type, auth_type_enum } = useDict('client_type', 'auth_type_enum')
 
   const queryForm = reactive<ClientQuery>({
     clientType: '',
@@ -79,8 +71,6 @@
     (page) => listClient({ ...queryForm, ...page }),
     { immediate: true }
   )
-
-  const tableRef = ref()
 
   const columns = computed(
     () =>
@@ -118,47 +108,11 @@
         {
           label: t('common.status'),
           prop: 'status',
+          slotName: 'status',
           width: 100,
-          align: 'center',
-          render: ({ row }) => ({
-            component: 'ElTag',
-            props: { type: row.status === 'Valid' ? 'success' : 'danger', size: 'small' },
-            children:
-              row.status === 'Valid' ? t('common.statusEnabled') : t('common.statusDisabled')
-          })
-        },
-        {
-          label: t('system.config.client.isConcurrent'),
-          prop: 'isConcurrent',
-          width: 120,
-          align: 'center',
-          render: ({ row }) => ({
-            component: 'ElTag',
-            props: { type: row.isConcurrent ? 'success' : 'info', size: 'small' },
-            children: row.isConcurrent ? t('common.true') : t('common.false')
-          })
-        },
-        {
-          label: t('system.config.client.replacedRange'),
-          prop: 'replacedRange',
-          slotName: 'replacedRange',
-          width: 120,
           align: 'center'
         },
-        {
-          label: t('system.config.client.maxLoginCount'),
-          prop: 'maxLoginCount',
-          width: 120,
-          align: 'center',
-          render: ({ row }) => `${row.maxLoginCount}${t('system.config.client.maxLoginCountUnit')}`
-        },
-        {
-          label: t('system.config.client.overflowLogoutMode'),
-          prop: 'overflowLogoutMode',
-          slotName: 'overflowLogoutMode',
-          width: 140,
-          align: 'center'
-        },
+
         { label: t('common.createTime'), prop: 'createTime', width: 180 },
         {
           label: t('common.action'),
@@ -195,6 +149,7 @@
 
 <style scoped lang="scss">
   .client-config-container {
-    padding: 20px;
+    // padding: 20px;
+    height: 100%;
   }
 </style>

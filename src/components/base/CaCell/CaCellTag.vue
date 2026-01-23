@@ -26,14 +26,14 @@
   defineOptions({ name: 'CaCellTag' })
 
   const props = withDefaults(defineProps<Partial<CaCellTagType>>(), {
-    dict: () => [],
+    data: () => [],
     value: ''
   })
 
   const dictItem = computed((): LabelValueState => {
     try {
       return (
-        props.dict.find(
+        props.data.find(
           (d) => d.value === String(props.value) || d.value === Number(props.value)
         ) || { label: '', value: '' }
       )

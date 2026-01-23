@@ -21,7 +21,7 @@
 
         <template v-else>
           <GridItem
-            v-if="!isHide(item)"
+            v-if="!getItemHide(item)"
             :key="item.field + index"
             v-bind="item.gridItemProps || props.gridItemProps"
             :span="item.span || item.gridItemProps?.span || props?.gridItemProps?.span"
@@ -44,7 +44,7 @@
                   <div class="ca-form-item__component">
                     <component
                       :is="CompMap[item.type] || item.type"
-                      :disabled="isDisabled(item)"
+                      :disabled="getItemDisabled(item)"
                       class="w-full"
                       v-bind="getComponentBindProps(item)"
                       :model-value="props.modelValue[item.fieldName || item.field]"
@@ -318,6 +318,22 @@
   }
 
   const formRef = ref<FormInstance>()
+
+  /** 获取动态 disabled 状态 */
+  const getItemDisabled = (item: FormColumnItem) => {
+    if (typeof item.props?.disabled === 'function') {
+      return item.props.disabled(props.modelValue)
+    }
+    return isDisabled(item)
+  }
+
+  /** 获取动态 hide 状态 */
+  const getItemHide = (item: FormColumnItem) => {
+    if (typeof item.hide === 'function') {
+      return item.hide(props.modelValue)
+    }
+    return isHide(item)
+  }
 
   /** 表单项校验规则 */
   function getFormItemRules(item: FormColumnItem) {

@@ -59,7 +59,7 @@
                   {{ t('button.assignRole') }}
                 </ElDropdownItem>
                 <ElDropdownItem :disabled="row.isSystem" @click="onDelete(row)">
-                  <ElLink type="danger" :disabled="row.isSystem" :underline="false">
+                  <ElLink type="danger" :disabled="row.isSystem">
                     {{ t('common.button.delete') }}
                   </ElLink>
                 </ElDropdownItem>

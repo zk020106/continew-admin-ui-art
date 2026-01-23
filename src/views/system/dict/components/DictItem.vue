@@ -37,7 +37,7 @@
       <template #action="{ row }">
         <ElSpace>
           <ElLink type="primary" @click="onUpdate(row)">{{ t('common.button.edit') }}</ElLink>
-          <ElLink type="danger" :disabled="dict.isSystem" :underline="false" @click="onDelete(row)">
+          <ElLink type="danger" :disabled="dict.isSystem" @click="onDelete(row)">
             {{ t('common.button.delete') }}
           </ElLink>
         </ElSpace>

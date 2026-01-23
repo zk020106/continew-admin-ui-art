@@ -24,6 +24,7 @@
   },
   "common": {
     "action": "operate",
+    "allow": "allow",
     "button": {
       "add": "New",
       "delete": "delete",
@@ -48,7 +49,9 @@
       "startDatePlaceholder": "start date",
       "startTimePlaceholder": "start time"
     },
+    "delete": "Delete",
     "detail": "Details",
+    "edit": "Edit",
     "empty": "None yet",
     "error": "mistake",
     "false": "no",
@@ -59,27 +62,25 @@
     "info": "information",
     "loading": "loading",
     "logOutTips": "Do you want to log out?",
+    "noData": "No data",
+    "notAllow": "NotAllow",
     "placeholder": {
       "select": "Please select",
       "status": "Please select a status"
     },
+    "reset": "Reset",
+    "restoreDefault": "Restore default",
+    "save": "Save",
     "status": "state",
     "statusDisabled": "Disable",
     "statusEnabled": "Enable",
-    "statusDisabled": "Disable",
     "success": "Success",
-    "successSave": "Saved successfully",
     "successRestore": "Restored successfully",
+    "successSave": "Saved successfully",
     "tips": "Tips",
     "true": "Yes",
     "updateTime": "Modification time",
-    "warning": "Warning",
-    "noData": "No data",
-    "edit": "Edit",
-    "save": "Save",
-    "restoreDefault": "Restore default",
-    "reset": "Reset",
-    "delete": "Delete"
+    "warning": "Warning"
   },
   "components": {
     "common": {
@@ -1491,6 +1492,7 @@
       },
       "storage": {
         "accessKey": "Access Key",
+        "accessPath": "Access Path",
         "addLocalTitle": "Add Local Storage",
         "addOssTitle": "Add Object Storage",
         "all": "All",
@@ -1505,6 +1507,7 @@
         "domain": "Domain/Access Path",
         "editLocalTitle": "Edit Local Storage",
         "editOssTitle": "Edit Object Storage",
+        "empty": "No data",
         "enableConfirm": "Confirm to enable {type} \"{name}({code})\"?",
         "endpoint": "Endpoint",
         "isDefault": "Default Storage",
@@ -1514,15 +1517,13 @@
         "object": "Object Storage",
         "objectStorage": "Object Storage",
         "path": "Storage Path",
-        "accessPath": "Access Path",
         "recycleBinEnabled": "Enable Recycle Bin",
         "recycleBinPath": "Recycle Bin Path",
         "searchPlaceholder": "Search name/code",
         "setDefault": "Set as Default",
         "setDefaultConfirm": "Confirm to set {type} \"{name}({code})\" as default storage?",
         "statusConfirm": "Confirm to {action} {type} \"{name}({code})\"?",
-        "type": "Storage Type",
-        "empty": "No data"
+        "type": "Storage Type"
       },
       "tabs": {
         "client": "Client Config",

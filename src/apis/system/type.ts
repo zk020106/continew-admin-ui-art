@@ -421,7 +421,7 @@ export interface ClientResp {
   authType: string
   activeTimeout: string
   timeout: string
-  status: string
+  status: number
   createUser: string
   createTime: string
   updateUser: string
@@ -429,6 +429,11 @@ export interface ClientResp {
   createUserString: string
   updateUserString: string
   disabled: boolean
+  isConcurrent: number
+  isShare: number
+  maxLoginCount: number
+  replacedRange: string
+  overflowLogoutMode: string
 }
 export interface ClientDetailResp {
   id: string
@@ -437,7 +442,7 @@ export interface ClientDetailResp {
   authType: string
   activeTimeout: string
   timeout: string
-  status: string
+  status: number
   createUser: string
   createTime: string
   updateUser: string

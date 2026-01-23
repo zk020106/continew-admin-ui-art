@@ -24,6 +24,7 @@
   },
   "common": {
     "action": "操作",
+    "allow": "允许",
     "button": {
       "add": "新增",
       "delete": "删除",
@@ -49,6 +50,7 @@
       "startTimePlaceholder": "开始时间"
     },
     "detail": "详情",
+    "edit": "修改",
     "empty": "暂无",
     "error": "错误",
     "false": "否",
@@ -59,25 +61,25 @@
     "info": "信息",
     "loading": "加载中",
     "logOutTips": "您是否要退出登录?",
+    "noData": "暂无数据",
+    "notAllow": "不允许",
     "placeholder": {
       "select": "请选择",
       "status": "请选择状态"
     },
+    "reset": "重置",
+    "restoreDefault": "恢复默认",
+    "save": "保存",
     "status": "状态",
     "statusDisabled": "禁用",
     "statusEnabled": "启用",
     "success": "成功",
-    "successSave": "保存成功",
     "successRestore": "恢复成功",
+    "successSave": "保存成功",
     "tips": "提示",
     "true": "是",
     "updateTime": "修改时间",
-    "warning": "警告",
-    "noData": "暂无数据",
-    "edit": "修改",
-    "save": "保存",
-    "restoreDefault": "恢复默认",
-    "reset": "重置"
+    "warning": "警告"
   },
   "components": {
     "common": {
@@ -1489,6 +1491,7 @@
       },
       "storage": {
         "accessKey": "Access Key",
+        "accessPath": "访问路径",
         "addLocalTitle": "新增本地存储",
         "addOssTitle": "新增对象存储",
         "all": "全部",
@@ -1503,6 +1506,7 @@
         "domain": "域名/访问路径",
         "editLocalTitle": "修改本地存储",
         "editOssTitle": "修改对象存储",
+        "empty": "暂无数据",
         "enableConfirm": "是否确定启用{type}「{name}({code})」？",
         "endpoint": "Endpoint",
         "isDefault": "默认存储",
@@ -1512,15 +1516,13 @@
         "object": "对象存储",
         "objectStorage": "对象存储",
         "path": "存储路径",
-        "accessPath": "访问路径",
         "recycleBinEnabled": "启用回收站",
         "recycleBinPath": "回收站路径",
         "searchPlaceholder": "搜索名称/编码",
         "setDefault": "设为默认",
         "setDefaultConfirm": "是否确定将{type}「{name}({code})」设为默认存储？",
         "statusConfirm": "是否确定{action}{type}「{name}({code})」？",
-        "type": "存储类型",
-        "empty": "暂无数据"
+        "type": "存储类型"
       },
       "tabs": {
         "client": "客户端配置",

@@ -36,9 +36,9 @@
 
   const { t } = useI18n()
   const { width } = useWindowSize()
-  const { client_type, auth_type, replaced_range_enum, logout_mode_enum } = useDict(
+  const { client_type, auth_type_enum, replaced_range_enum, logout_mode_enum } = useDict(
     'client_type',
-    'auth_type',
+    'auth_type_enum',
     'replaced_range_enum',
     'logout_mode_enum'
   )
@@ -56,14 +56,14 @@
   const [form, resetForm] = useResetReactive({
     clientId: '',
     clientType: '',
-    authType: '',
+    authType: [],
     activeTimeout: 1800,
     timeout: 3600,
-    status: 'Valid' as 'Valid' | 'Invalid',
+    status: 1,
     isConcurrent: 0,
-    maxLoginCount: 1,
-    replacedRange: 'All',
-    overflowLogoutMode: 'First'
+    maxLoginCount: null,
+    replacedRange: null,
+    overflowLogoutMode: null
   })
 
   const columns = computed(
@@ -116,7 +116,8 @@
             placeholder: t('common.placeholder.select', {
               label: t('system.config.client.authType')
             }),
-            options: auth_type.value
+            options: auth_type_enum.value,
+            multiple: true
           },
           rules: [
             {
@@ -182,7 +183,7 @@
             }),
             options: replaced_range_enum.value,
             disabled: () => {
-              return form.isConcurrent
+              return form.isConcurrent === 1
             }
           }
         },
@@ -194,7 +195,7 @@
           props: {
             min: 1,
             disabled: () => {
-              return !form.isConcurrent
+              return form.isConcurrent !== 1
             }
           },
           slots: {
@@ -279,6 +280,7 @@
       const data = await getClient(id)
       Object.assign(form, data)
       visible.value = true
+      console.log(form)
     } catch (error) {
       console.error('Failed to fetch client detail:', error)
     }

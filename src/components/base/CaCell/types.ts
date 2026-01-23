@@ -1,4 +1,4 @@
 export interface CaCellTagType {
-  dict: LabelValueState[] | any[]
+  data: LabelValueState[] | any[]
   value: number | string
 }

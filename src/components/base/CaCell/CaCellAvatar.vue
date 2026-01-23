@@ -3,7 +3,7 @@
     <el-avatar :src="props.avatar" :size="24">
       {{ props.name?.charAt(0) }}
     </el-avatar>
-    <el-link v-if="props.isLink" @click="emit('click')" :underline="false">
+    <el-link v-if="props.isLink" @click="emit('click')">
       <span class="link-text" :title="props.name">
         {{ props.name }}
       </span>

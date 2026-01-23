@@ -24,23 +24,18 @@
       </template>
 
       <template #taskBatchStatus="{ row }">
-        <CaCellTag :value="row.taskBatchStatus" :dict="job_execute_status_enum" />
+        <CaCellTag :value="row.taskBatchStatus" :data="job_execute_status_enum" />
       </template>
 
       <template #operationReason="{ row }">
-        <CaCellTag :value="row.operationReason" :dict="job_execute_reason_enum" />
+        <CaCellTag :value="row.operationReason" :data="job_execute_reason_enum" />
       </template>
 
       <template #action="{ row }">
         <ElSpace>
           <ElPopconfirm :title="$t('schedule.log.message.stopConfirm')" @ok="onStop(row)">
             <template #reference>
-              <ElLink
-                v-if="row.taskBatchStatus === 2"
-                v-auth="['schedule:log:stop']"
-                type="danger"
-                :underline="false"
-              >
+              <ElLink v-if="row.taskBatchStatus === 2" v-auth="['schedule:log:stop']" type="danger">
                 {{ $t('schedule.log.button.stop') }}
               </ElLink>
             </template>
@@ -55,7 +50,6 @@
                 "
                 v-auth="['schedule:log:retry']"
                 type="danger"
-                :underline="false"
               >
                 {{ $t('schedule.log.button.retry') }}
               </ElLink>
