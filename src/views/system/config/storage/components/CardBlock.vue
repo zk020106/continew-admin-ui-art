@@ -103,118 +103,118 @@
 </template>
 
 <script setup lang="ts">
-  import { deleteStorage, setDefaultStorage, updateStorageStatus } from '@/apis/system/storage'
-  import type { StorageResp } from '@/apis/system/type'
-  import { Check, MoreFilled } from '@element-plus/icons-vue'
-  import { ElMessage, ElMessageBox } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
-  import AddModal from '../AddModal.vue'
+import type { StorageResp } from '@/apis/system/type'
+import { Check, MoreFilled } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { deleteStorage, setDefaultStorage, updateStorageStatus } from '@/apis/system/storage'
+import AddModal from '../AddModal.vue'
 
-  interface Props {
-    loading: boolean
-    data: StorageResp
-  }
+interface Props {
+  loading: boolean
+  data: StorageResp
+}
 
-  const props = withDefaults(defineProps<Props>(), {})
+const props = withDefaults(defineProps<Props>(), {})
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { t } = useI18n()
-  const switchLoading = ref(false)
-  const AddModalRef = ref<InstanceType<typeof AddModal>>()
+const { t } = useI18n()
+const switchLoading = ref(false)
+const AddModalRef = ref<InstanceType<typeof AddModal>>()
 
-  const status = ref(props.data.status)
+const status = ref(props.data.status)
 
-  // 更新状态
-  const handleStatusChange = async (item: StorageResp, enable: boolean) => {
-    const typeText = item.type === 1 ? t('storage.local') : t('storage.object')
-    const actionText = enable ? t('common.statusEnabled') : t('common.statusDisabled')
+// 更新状态
+const handleStatusChange = async (item: StorageResp, enable: boolean) => {
+  const typeText = item.type === 1 ? t('storage.local') : t('storage.object')
+  const actionText = enable ? t('common.statusEnabled') : t('common.statusDisabled')
 
-    try {
-      await ElMessageBox.confirm(
-        t('storage.statusConfirm', {
-          action: actionText,
-          type: typeText,
-          name: `${item.name}(${item.code})`
-        }),
-        t('common.tips'),
-        { type: 'warning' }
-      )
+  try {
+    await ElMessageBox.confirm(
+      t('storage.statusConfirm', {
+        action: actionText,
+        type: typeText,
+        name: `${item.name}(${item.code})`
+      }),
+      t('common.tips'),
+      { type: 'warning' }
+    )
 
-      switchLoading.value = true
-      await updateStorageStatus({ status: enable ? 1 : 2 }, item.id)
-      ElMessage.success(t('common.success'))
-      emit('save-success')
-    } catch (error) {
-      if (error !== 'cancel') {
-        console.error('Failed to update storage status:', error)
-      }
-    } finally {
-      switchLoading.value = false
-    }
-  }
-
-  // 设为默认
-  const handleSetDefault = async (item: StorageResp) => {
-    const typeText = item.type === 1 ? t('storage.local') : t('storage.object')
-
-    try {
-      await ElMessageBox.confirm(
-        t('storage.setDefaultConfirm', { type: typeText, name: `${item.name}(${item.code})` }),
-        t('common.tips'),
-        { type: 'warning' }
-      )
-      await setDefaultStorage(item.id)
-      ElMessage.success(t('common.success'))
-      emit('save-success')
-    } catch (error) {
-      if (error !== 'cancel') {
-        console.error('Failed to set default storage:', error)
-      }
-    }
-  }
-
-  // 删除
-  const handleDelete = async (item: StorageResp) => {
-    try {
-      await ElMessageBox.confirm(
-        t('storage.deleteConfirm', { name: `${item.name}(${item.code})` }),
-        t('common.tips'),
-        {
-          type: 'warning',
-          confirmButtonText: t('common.delete'),
-          confirmButtonType: 'danger'
-        }
-      )
-      await deleteStorage(item.id)
-      ElMessage.success(t('common.success'))
-      emit('save-success')
-    } catch (error) {
-      if (error !== 'cancel') {
-        console.error('Failed to delete storage:', error)
-      }
-    }
-  }
-
-  const handleCommand = (command: string, item: StorageResp) => {
-    switch (command) {
-      case 'setDefault':
-        handleSetDefault(item)
-        break
-      case 'edit':
-        AddModalRef.value?.onUpdate(item.id)
-        break
-      case 'delete':
-        handleDelete(item)
-        break
-    }
-  }
-
-  const onSaveSuccess = () => {
+    switchLoading.value = true
+    await updateStorageStatus({ status: enable ? 1 : 2 }, item.id)
+    ElMessage.success(t('common.success'))
     emit('save-success')
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Failed to update storage status:', error)
+    }
+  } finally {
+    switchLoading.value = false
   }
+}
+
+// 设为默认
+const handleSetDefault = async (item: StorageResp) => {
+  const typeText = item.type === 1 ? t('storage.local') : t('storage.object')
+
+  try {
+    await ElMessageBox.confirm(
+      t('storage.setDefaultConfirm', { type: typeText, name: `${item.name}(${item.code})` }),
+      t('common.tips'),
+      { type: 'warning' }
+    )
+    await setDefaultStorage(item.id)
+    ElMessage.success(t('common.success'))
+    emit('save-success')
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Failed to set default storage:', error)
+    }
+  }
+}
+
+// 删除
+const handleDelete = async (item: StorageResp) => {
+  try {
+    await ElMessageBox.confirm(
+      t('storage.deleteConfirm', { name: `${item.name}(${item.code})` }),
+      t('common.tips'),
+      {
+        type: 'warning',
+        confirmButtonText: t('common.delete'),
+        confirmButtonType: 'danger'
+      }
+    )
+    await deleteStorage(item.id)
+    ElMessage.success(t('common.success'))
+    emit('save-success')
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('Failed to delete storage:', error)
+    }
+  }
+}
+
+const handleCommand = (command: string, item: StorageResp) => {
+  switch (command) {
+    case 'setDefault':
+      handleSetDefault(item)
+      break
+    case 'edit':
+      AddModalRef.value?.onUpdate(item.id)
+      break
+    case 'delete':
+      handleDelete(item)
+      break
+  }
+}
+
+const onSaveSuccess = () => {
+  emit('save-success')
+}
 </script>
 
 <style scoped lang="scss">
@@ -257,9 +257,9 @@
 
   .title-text {
     overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 14px;
     font-weight: 500;
-    text-overflow: ellipsis;
     white-space: nowrap;
   }
 

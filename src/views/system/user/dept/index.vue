@@ -32,89 +32,90 @@
 </template>
 
 <script setup lang="ts">
-  import { useDept } from '@/hooks/business'
-  import type { DeptDictTreeNode } from '@/types/api/system'
-  import { Search } from '@element-plus/icons-vue'
-  import type { TreeInstance } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
-  defineOptions({ name: 'DeptTree' })
-  const { t } = useI18n()
+import type { TreeInstance } from 'element-plus'
+import type { DeptDictTreeNode } from '@/types/api/system'
+import { Search } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
+import { useDept } from '@/hooks/business'
 
-  const emit = defineEmits<{
-    (e: 'node-click', key: string | number, data: DeptDictTreeNode): void
-  }>()
+defineOptions({ name: 'DeptTree' })
+const emit = defineEmits<{
+  (e: 'node-click', key: string | number, data: DeptDictTreeNode): void
+}>()
 
-  // Tree ref
-  const treeRef = ref<TreeInstance>()
+const { t } = useI18n()
 
-  // 当前选中节点
-  const currentNodeKey = ref<string | number>()
+// Tree ref
+const treeRef = ref<TreeInstance>()
 
-  /**
-   * 节点点击事件
-   */
-  const handleNodeClick = (data: DeptDictTreeNode) => {
-    if (currentNodeKey.value === data.key) {
-      return
-    }
-    currentNodeKey.value = data.key
-    emit('node-click', data.key, data)
+// 当前选中节点
+const currentNodeKey = ref<string | number>()
+
+/**
+ * 节点点击事件
+ */
+const handleNodeClick = (data: DeptDictTreeNode) => {
+  if (currentNodeKey.value === data.key) {
+    return
   }
+  currentNodeKey.value = data.key
+  emit('node-click', data.key, data)
+}
 
-  const treeProps = {
-    label: 'title', // 后端返回的是 title 字段
-    children: 'children'
+const treeProps = {
+  label: 'title', // 后端返回的是 title 字段
+  children: 'children'
+}
+
+// 查询树列表
+const { deptList, getDeptList } = useDept({
+  onSuccess: () => {
+    nextTick(() => {
+      // 默认选中第一个节点
+      if (deptList.value.length > 0) {
+        const firstNode = deptList.value[0]
+        currentNodeKey.value = firstNode.key
+        emit('node-click', firstNode.key, firstNode)
+      }
+    })
   }
+})
 
-  // 查询树列表
-  const { deptList, getDeptList } = useDept({
-    onSuccess: () => {
-      nextTick(() => {
-        // 默认选中第一个节点
-        if (deptList.value.length > 0) {
-          const firstNode = deptList.value[0]
-          currentNodeKey.value = firstNode.key
-          emit('node-click', firstNode.key, firstNode)
+// 过滤树
+const searchKey = ref('')
+
+/**
+ * 递归过滤树节点
+ */
+const filterTree = (keyword: string): DeptDictTreeNode[] => {
+  const loop = (data: DeptDictTreeNode[]): DeptDictTreeNode[] => {
+    const result: DeptDictTreeNode[] = []
+    data.forEach((item) => {
+      if (item.title?.toLowerCase().includes(keyword)) {
+        result.push({ ...item })
+      } else if (item.children) {
+        const filterData = loop(item.children)
+        if (filterData.length) {
+          result.push({
+            ...item,
+            children: filterData
+          })
         }
-      })
-    }
-  })
-
-  // 过滤树
-  const searchKey = ref('')
-
-  /**
-   * 递归过滤树节点
-   */
-  const filterTree = (keyword: string): DeptDictTreeNode[] => {
-    const loop = (data: DeptDictTreeNode[]): DeptDictTreeNode[] => {
-      const result: DeptDictTreeNode[] = []
-      data.forEach((item) => {
-        if (item.title?.toLowerCase().includes(keyword)) {
-          result.push({ ...item })
-        } else if (item.children) {
-          const filterData = loop(item.children)
-          if (filterData.length) {
-            result.push({
-              ...item,
-              children: filterData
-            })
-          }
-        }
-      })
-      return result
-    }
-    return loop(deptList.value)
+      }
+    })
+    return result
   }
+  return loop(deptList.value)
+}
 
-  const treeData = computed(() => {
-    if (!searchKey.value) return deptList.value
-    return filterTree(searchKey.value.toLowerCase())
-  })
+const treeData = computed(() => {
+  if (!searchKey.value) return deptList.value
+  return filterTree(searchKey.value.toLowerCase())
+})
 
-  onMounted(() => {
-    getDeptList()
-  })
+onMounted(() => {
+  getDeptList()
+})
 </script>
 
 <style scoped lang="scss"></style>

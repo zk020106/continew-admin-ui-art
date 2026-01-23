@@ -1,6 +1,6 @@
-import { useSettingStore } from '@/store/modules/setting'
-import { storeToRefs } from 'pinia'
 import type { ContainerWidthEnum } from '@/enums/appEnum'
+import { storeToRefs } from 'pinia'
+import { useSettingStore } from '@/store/modules/setting'
 
 /**
  * 设置项通用处理逻辑
@@ -124,8 +124,8 @@ export function useSettingsHandlers() {
 
       // 防止重复设置
       if (
-        (type === 'shadow-mode' && boxBorderMode.value === false) ||
-        (type === 'border-mode' && boxBorderMode.value === true)
+        (type === 'shadow-mode' && boxBorderMode.value === false)
+        || (type === 'border-mode' && boxBorderMode.value === true)
       ) {
         return
       }

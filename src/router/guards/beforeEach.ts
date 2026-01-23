@@ -1,3 +1,6 @@
+import type { NavigationGuardNext, RouteLocationNormalized, Router } from 'vue-router'
+import NProgress from 'nprogress'
+import { nextTick } from 'vue'
 /**
  * 路由全局前置守卫模块
  *
@@ -45,9 +48,6 @@ import { ApiStatus } from '@/utils/http/status'
 import { setWorktab } from '@/utils/navigation'
 import { setPageTitle } from '@/utils/router'
 import { loadingService } from '@/utils/ui'
-import NProgress from 'nprogress'
-import { nextTick } from 'vue'
-import type { NavigationGuardNext, RouteLocationNormalized, Router } from 'vue-router'
 import { IframeRouteManager, MenuProcessor, RoutePermissionValidator, RouteRegistry } from '../core'
 import { staticRoutes } from '../routes/staticRoutes'
 import { RoutesAlias } from '../routesAlias'

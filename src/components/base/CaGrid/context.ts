@@ -6,8 +6,8 @@ export type RowContextContext = Readonly<{
   div?: boolean
 }>
 
-export const RowContextInjectionKey: InjectionKey<RowContextContext> =
-  Symbol('RowContextInjectionKey')
+export const RowContextInjectionKey: InjectionKey<RowContextContext>
+  = Symbol('RowContextInjectionKey')
 
 export type GridContext = Readonly<{
   overflow: boolean

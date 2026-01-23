@@ -41,7 +41,7 @@
  * @author Art Design Pro Team
  */
 
-import { App, Directive } from 'vue'
+import type { App, Directive } from 'vue'
 import hljs from 'highlight.js'
 
 // 高亮代码
@@ -64,8 +64,8 @@ function insertLineNumbers(block: HTMLElement) {
 function addCopyButton(block: HTMLElement) {
   const copyButton = document.createElement('i')
   copyButton.className = 'copy-button'
-  copyButton.innerHTML =
-    '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1 1 0 0 1 3 21l.003-14c0-.552.45-1 1.006-1zM5.002 8L5 20h10V8zM9 6h8v10h2V4H9z"/></svg>'
+  copyButton.innerHTML
+    = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><path fill="currentColor" d="M7 6V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1 1 0 0 1 3 21l.003-14c0-.552.45-1 1.006-1zM5.002 8L5 20h10V8zM9 6h8v10h2V4H9z"/></svg>'
   copyButton.onclick = () => {
     // 过滤掉行号，只复制代码内容
     const codeContent = block.innerText.replace(/^\d+\s+/gm, '')
@@ -94,9 +94,9 @@ function addCopyButton(block: HTMLElement) {
 // 检查代码块是否已经被处理过
 function isBlockProcessed(block: HTMLElement): boolean {
   return (
-    block.hasAttribute('data-highlighted') ||
-    !!block.querySelector('.line-number') ||
-    !!block.parentElement?.querySelector('.copy-button')
+    block.hasAttribute('data-highlighted')
+    || !!block.querySelector('.line-number')
+    || !!block.parentElement?.querySelector('.copy-button')
   )
 }
 

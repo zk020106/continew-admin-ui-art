@@ -1,8 +1,8 @@
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import AppConfig from '@/config'
 import { headerBarConfig } from '@/config/modules/headerBar'
 import { ContainerWidthEnum } from '@/enums/appEnum'
-import { computed } from 'vue'
-import { useI18n } from 'vue-i18n'
 
 /**
  * 设置项配置选项管理
@@ -228,7 +228,6 @@ export function useSettingsConfig() {
           const headerBarFeature = headerBarConfig[setting.headerBarKey]
           return headerBarFeature?.enabled !== false
         })
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .map(({ headerBarKey: _headerBarKey, ...setting }) => setting)
     )
   })

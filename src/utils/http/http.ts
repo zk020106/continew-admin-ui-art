@@ -4,8 +4,27 @@
  * @module utils/http/http
  */
 
+// 请求取消
+export {
+  addPendingRequest,
+  cancelAllPendingRequests,
+  cancelRequestsByUrl,
+  removePendingRequest
+} from './cancel'
+// 错误处理
+export {
+  type ErrorLogData,
+  type ErrorResponse,
+  handleError,
+  HttpError,
+  isHttpError,
+  showError,
+  showSuccess
+} from './error'
+
 // 核心功能
 export { default as api, createHttpInstance, http, httpRaw } from './index'
+
 export type {
   ApiRes,
   ExtendedAxiosRequestConfig,
@@ -14,24 +33,5 @@ export type {
   PageRes
 } from './index'
 
-// 错误处理
-export {
-  handleError,
-  HttpError,
-  isHttpError,
-  showError,
-  showSuccess,
-  type ErrorLogData,
-  type ErrorResponse
-} from './error'
-
 // 状态码
 export { ApiStatus } from './status'
-
-// 请求取消
-export {
-  addPendingRequest,
-  cancelAllPendingRequests,
-  cancelRequestsByUrl,
-  removePendingRequest
-} from './cancel'

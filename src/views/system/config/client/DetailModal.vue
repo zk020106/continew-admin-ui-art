@@ -51,33 +51,33 @@
 </template>
 
 <script setup lang="ts">
-  import { getClient } from '@/apis/system/client'
-  import type { ClientDetailResp } from '@/apis/system/type'
-  import { useDict } from '@/hooks'
-  import { useI18n } from 'vue-i18n'
+import type { ClientDetailResp } from '@/apis/system/type'
+import { useI18n } from 'vue-i18n'
+import { getClient } from '@/apis/system/client'
+import { useDict } from '@/hooks'
 
-  defineOptions({ name: 'ClientDetailModal' })
-  const { client_type, auth_type_enum, replaced_range_enum } = useDict(
-    'client_type',
-    'auth_type_enum',
-    'replaced_range_enum'
-  )
+defineOptions({ name: 'ClientDetailModal' })
+const { client_type, auth_type_enum, replaced_range_enum } = useDict(
+  'client_type',
+  'auth_type_enum',
+  'replaced_range_enum'
+)
 
-  const { t } = useI18n()
-  const visible = ref(false)
-  const detailData = ref<ClientDetailResp>()
+const { t } = useI18n()
+const visible = ref(false)
+const detailData = ref<ClientDetailResp>()
 
-  const onDetail = async (id: string) => {
-    try {
-      const res = await getClient(id)
-      detailData.value = res
-      visible.value = true
-    } catch (error) {
-      console.error('Failed to fetch client detail:', error)
-    }
+const onDetail = async (id: string) => {
+  try {
+    const res = await getClient(id)
+    detailData.value = res
+    visible.value = true
+  } catch (error) {
+    console.error('Failed to fetch client detail:', error)
   }
+}
 
-  defineExpose({
-    onDetail
-  })
+defineExpose({
+  onDetail
+})
 </script>

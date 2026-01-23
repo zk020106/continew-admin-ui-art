@@ -1,6 +1,7 @@
+import type { ColProps } from 'element-plus'
+import type { ComputedRef } from 'vue'
 import { useBreakpoints } from '@vueuse/core'
-import { ColProps } from 'element-plus'
-import { type ComputedRef, computed } from 'vue'
+import { computed } from 'vue'
 
 type ColBreakpoint = Pick<ColProps, 'xs' | 'sm' | 'md' | 'lg' | 'xl'>
 type Breakpoint = keyof ColBreakpoint

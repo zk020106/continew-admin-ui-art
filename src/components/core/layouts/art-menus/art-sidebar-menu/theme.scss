@@ -127,7 +127,7 @@ $popup-menu-radius: 6px;
     span {
       font-size: $menu-font-size !important;
 
-      @include ellipsis();
+      @include ellipsis;
     }
   }
 

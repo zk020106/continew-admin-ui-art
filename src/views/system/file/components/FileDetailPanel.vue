@@ -15,7 +15,7 @@
             :size="64"
             :class="{ 'is-folder': selectedFile.type === 0 }"
             :style="{
-              color: selectedFile.type === 0 ? undefined : getFileIconByType(selectedFile).color
+              color: selectedFile.type === 0 ? undefined : getFileIconByType(selectedFile).color,
             }"
           />
         </div>
@@ -139,119 +139,119 @@
 </template>
 
 <script setup lang="ts">
-  import { useI18n } from 'vue-i18n'
-  import type { FileItem } from '@/apis/system/file'
-  import {
-    getFileIconByType,
-    isAudioFile,
-    isCodeFile,
-    isImageFile,
-    isPdfFile,
-    isVideoFile
-  } from '../utils/fileIcons'
-  import { canPreview } from '../utils/filePreview'
+import type { FileItem } from '@/apis/system/file'
+import { useI18n } from 'vue-i18n'
+import {
+  getFileIconByType,
+  isAudioFile,
+  isCodeFile,
+  isImageFile,
+  isPdfFile,
+  isVideoFile
+} from '../utils/fileIcons'
+import { canPreview } from '../utils/filePreview'
 
-  const { t } = useI18n()
-
-  withDefaults(
-    defineProps<{
-      selectedFile?: FileItem
-    }>(),
-    {
-      selectedFile: undefined
-    }
-  )
-
-  const emit = defineEmits<{
-    (e: 'close'): void
-    (e: 'download', file: FileItem): void
-    (e: 'preview', file: FileItem): void
-    (e: 'share', file: FileItem): void
-    (e: 'rename', file: FileItem): void
-    (e: 'move', file: FileItem): void
-    (e: 'copy', file: FileItem): void
-    (e: 'delete', file: FileItem): void
-  }>()
-
-  // 格式化文件大小
-  const formatSize = (bytes: number): string => {
-    if (bytes === 0 || !bytes) return '-'
-    const k = 1024
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+withDefaults(
+  defineProps<{
+    selectedFile?: FileItem
+  }>(),
+  {
+    selectedFile: undefined
   }
+)
 
-  // 格式化路径
-  const formatPath = (path: string): string => {
-    if (path.length > 30) {
-      return '...' + path.slice(-30)
-    }
-    return path
+const emit = defineEmits<{
+  (e: 'close'): void
+  (e: 'download', file: FileItem): void
+  (e: 'preview', file: FileItem): void
+  (e: 'share', file: FileItem): void
+  (e: 'rename', file: FileItem): void
+  (e: 'move', file: FileItem): void
+  (e: 'copy', file: FileItem): void
+  (e: 'delete', file: FileItem): void
+}>()
+
+const { t } = useI18n()
+
+// 格式化文件大小
+const formatSize = (bytes: number): string => {
+  if (bytes === 0 || !bytes) return '-'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`
+}
+
+// 格式化路径
+const formatPath = (path: string): string => {
+  if (path.length > 30) {
+    return `...${path.slice(-30)}`
   }
+  return path
+}
 
-  // 格式化哈希值
-  const formatHash = (hash: string): string => {
-    if (hash.length > 16) {
-      return hash.slice(0, 8) + '...' + hash.slice(-8)
-    }
-    return hash
+// 格式化哈希值
+const formatHash = (hash: string): string => {
+  if (hash.length > 16) {
+    return `${hash.slice(0, 8)}...${hash.slice(-8)}`
   }
+  return hash
+}
 
-  // 格式化日期时间
-  const formatDateTime = (datetime: string): string => {
-    if (!datetime) return '-'
-    const date = new Date(datetime)
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const hours = String(date.getHours()).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    return `${year}-${month}-${day} ${hours}:${minutes}`
+// 格式化日期时间
+const formatDateTime = (datetime: string): string => {
+  if (!datetime) return '-'
+  const date = new Date(datetime)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}`
+}
+
+// 获取文件类型标签
+const getFileTypeLabel = (extension: string | undefined): string => {
+  if (!extension) return t('file.detail.type')
+  const ext = extension.toLowerCase()
+
+  if (isImageFile(ext)) return t('file.detail.image')
+  if (isVideoFile(ext)) return t('file.detail.video')
+  if (isAudioFile(ext)) return t('file.detail.audio')
+  if (isPdfFile(ext)) return t('file.detail.pdf')
+  if (isCodeFile(ext)) return t('file.detail.code')
+
+  const docExts = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf']
+  if (docExts.includes(ext)) return t('file.detail.document')
+
+  const archiveExts = ['zip', 'rar', '7z', 'tar', 'gz']
+  if (archiveExts.includes(ext)) return t('file.detail.archive')
+
+  return `${ext.toUpperCase()} 文件`
+}
+
+// 判断是否可以预览
+const canPreviewFile = (file: FileItem): boolean => {
+  return file.type !== 0 && canPreview(file)
+}
+
+// 更多操作
+const handleMoreCommand = (command: string, file: FileItem) => {
+  switch (command) {
+    case 'rename':
+      emit('rename', file)
+      break
+    case 'move':
+      emit('move', file)
+      break
+    case 'copy':
+      emit('copy', file)
+      break
+    case 'delete':
+      emit('delete', file)
+      break
   }
-
-  // 获取文件类型标签
-  const getFileTypeLabel = (extension: string | undefined): string => {
-    if (!extension) return t('file.detail.type')
-    const ext = extension.toLowerCase()
-
-    if (isImageFile(ext)) return t('file.detail.image')
-    if (isVideoFile(ext)) return t('file.detail.video')
-    if (isAudioFile(ext)) return t('file.detail.audio')
-    if (isPdfFile(ext)) return t('file.detail.pdf')
-    if (isCodeFile(ext)) return t('file.detail.code')
-
-    const docExts = ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf']
-    if (docExts.includes(ext)) return t('file.detail.document')
-
-    const archiveExts = ['zip', 'rar', '7z', 'tar', 'gz']
-    if (archiveExts.includes(ext)) return t('file.detail.archive')
-
-    return ext.toUpperCase() + ' 文件'
-  }
-
-  // 判断是否可以预览
-  const canPreviewFile = (file: FileItem): boolean => {
-    return file.type !== 0 && canPreview(file)
-  }
-
-  // 更多操作
-  const handleMoreCommand = (command: string, file: FileItem) => {
-    switch (command) {
-      case 'rename':
-        emit('rename', file)
-        break
-      case 'move':
-        emit('move', file)
-        break
-      case 'copy':
-        emit('copy', file)
-        break
-      case 'delete':
-        emit('delete', file)
-        break
-    }
-  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -320,11 +320,11 @@
     width: 100%;
     margin-bottom: 4px;
     overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 14px;
     font-weight: 500;
     color: var(--el-text-color-primary);
     text-align: center;
-    text-overflow: ellipsis;
     white-space: nowrap;
   }
 

@@ -14,29 +14,29 @@
 </template>
 
 <script setup lang="ts">
-  import { DictResp } from '@/apis'
-  import DictItem from './components/DictItem.vue'
-  import DictTree from './tree/index.vue'
+import type { DictResp } from '@/apis'
+import DictItem from './components/DictItem.vue'
+import DictTree from './tree/index.vue'
 
-  defineOptions({ name: 'SystemDict' })
+defineOptions({ name: 'SystemDict' })
 
-  const activeTab = ref('1')
-  const dict = ref<DictResp>({
-    id: '',
-    name: '',
-    code: '',
-    isSystem: false,
-    description: '',
-    createUserString: '',
-    createTime: '',
-    updateUserString: '',
-    updateTime: ''
-  })
+const activeTab = ref('1')
+const dict = ref<DictResp>({
+  id: '',
+  name: '',
+  code: '',
+  isSystem: false,
+  description: '',
+  createUserString: '',
+  createTime: '',
+  updateUserString: '',
+  updateTime: ''
+})
 
-  // 根据选中字典查询
-  const handleSelectDict = (data: DictResp) => {
-    dict.value = data
-  }
+// 根据选中字典查询
+const handleSelectDict = (data: DictResp) => {
+  dict.value = data
+}
 </script>
 
 <style scoped lang="scss">

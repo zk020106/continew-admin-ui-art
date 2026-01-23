@@ -7,10 +7,10 @@
  * @author Art Design Pro Team
  */
 
+import type { AppRouteRecord } from '@/types/router'
 import { getUserRoute } from '@/apis/auth'
 import { useAppMode } from '@/hooks/core/useAppMode'
 import { useUserStore } from '@/store/modules/user'
-import type { AppRouteRecord } from '@/types/router'
 import { formatMenuTitle } from '@/utils'
 import { transformRoutesToRecords } from '@/utils/route-transform'
 import { asyncRoutes } from '../routes/asyncRoutes'
@@ -188,9 +188,9 @@ export class MenuProcessor {
    */
   private isValidAbsolutePath(path: string): boolean {
     return (
-      path.startsWith('http://') ||
-      path.startsWith('https://') ||
-      path.startsWith('/outside/iframe/')
+      path.startsWith('http://')
+      || path.startsWith('https://')
+      || path.startsWith('/outside/iframe/')
     )
   }
 
@@ -208,11 +208,11 @@ export class MenuProcessor {
     const suggestedPath = path.split('/').pop() || path.slice(1)
 
     console.error(
-      `[路由配置错误] 菜单 "${formatMenuTitle(menuTitle)}" (name: ${routeName}, path: ${path}) 配置错误\n` +
-        `  位置: ${parentName} > ${routeName}\n` +
-        `  问题: ${level + 1}级菜单的 path 不能以 / 开头\n` +
-        `  当前配置: path: '${path}'\n` +
-        `  应该改为: path: '${suggestedPath}'`
+      `[路由配置错误] 菜单 "${formatMenuTitle(menuTitle)}" (name: ${routeName}, path: ${path}) 配置错误\n`
+      + `  位置: ${parentName} > ${routeName}\n`
+      + `  问题: ${level + 1}级菜单的 path 不能以 / 开头\n`
+      + `  当前配置: path: '${path}'\n`
+      + `  应该改为: path: '${suggestedPath}'`
     )
   }
 

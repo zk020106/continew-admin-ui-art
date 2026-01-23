@@ -53,7 +53,7 @@
         <div
           v-for="folder in currentFolder.children?.filter((f: any) => f.type === 0)"
           :key="folder.id"
-          :class="['file-item', { 'is-selected': selectedPath === folder.path }]"
+          class="file-item" :class="[{ 'is-selected': selectedPath === folder.path }]"
           @click="selectFolder(folder)"
         >
           <ArtSvgIcon icon="ri:folder-fill" :size="20" />
@@ -78,104 +78,104 @@
 </template>
 
 <script setup lang="ts">
-  import type { FileItem } from '@/apis/system/file'
+import type { FileItem } from '@/apis/system/file'
 
-  const props = defineProps<{
-    modelValue: boolean
-    files: FileItem[]
-    mode: 'move' | 'copy'
-  }>()
+const props = defineProps<{
+  modelValue: boolean
+  files: FileItem[]
+  mode: 'move' | 'copy'
+}>()
 
-  const emit = defineEmits<{
-    (e: 'update:modelValue', visible: boolean): void
-    (e: 'confirm', targetPath: string): void
-  }>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', visible: boolean): void
+  (e: 'confirm', targetPath: string): void
+}>()
 
-  const visible = computed({
-    get: () => props.modelValue,
-    set: (val) => emit('update:modelValue', val)
-  })
+const visible = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
 
-  const title = computed(() => {
-    const count = props.files.length
-    const action = props.mode === 'move' ? '移动' : '复制'
-    const target = count === 1 ? props.files[0]?.originalName : `${count} 个文件`
-    return `${action} ${target} 到...`
-  })
+const title = computed(() => {
+  const count = props.files.length
+  const action = props.mode === 'move' ? '移动' : '复制'
+  const target = count === 1 ? props.files[0]?.originalName : `${count} 个文件`
+  return `${action} ${target} 到...`
+})
 
-  const loading = ref(false)
-  const treeRef = ref()
-  const folderTree = ref<any[]>([])
-  const currentPath = ref('/')
-  const selectedPath = ref('')
-  const currentFolder = ref<any>(null)
+const loading = ref(false)
+const treeRef = ref()
+const folderTree = ref<any[]>([])
+const currentPath = ref('/')
+const selectedPath = ref('')
+const currentFolder = ref<any>(null)
 
-  const treeProps = {
-    children: 'children',
-    label: 'originalName'
+const treeProps = {
+  children: 'children',
+  label: 'originalName'
+}
+
+// 路径分段（用于面包屑）
+const pathSegments = computed(() => {
+  if (currentPath.value === '/') return []
+  const parts = currentPath.value.split('/').filter(Boolean)
+  return parts.map((part, index) => ({
+    name: part,
+    path: `/${parts.slice(0, index + 1).join('/')}`
+  }))
+})
+
+// 加载文件夹树
+const loadFolderTree = async () => {
+  loading.value = true
+  try {
+    // TODO: 调用 API 获取文件夹树
+    // const res = await fileApi.listFile({ parentPath: '/' })
+    // folderTree.value = buildTree(res.data)
+    folderTree.value = [] // 临时空数据
+  } finally {
+    loading.value = false
   }
+}
 
-  // 路径分段（用于面包屑）
-  const pathSegments = computed(() => {
-    if (currentPath.value === '/') return []
-    const parts = currentPath.value.split('/').filter(Boolean)
-    return parts.map((part, index) => ({
-      name: part,
-      path: '/' + parts.slice(0, index + 1).join('/')
-    }))
-  })
+// 导航到指定路径
+const navigateTo = (path: string) => {
+  currentPath.value = path
+  selectedPath.value = path
+  // TODO: 加载该路径下的文件
+}
 
-  // 加载文件夹树
-  const loadFolderTree = async () => {
-    loading.value = true
-    try {
-      // TODO: 调用 API 获取文件夹树
-      // const res = await fileApi.listFile({ parentPath: '/' })
-      // folderTree.value = buildTree(res.data)
-      folderTree.value = [] // 临时空数据
-    } finally {
-      loading.value = false
+// 树节点点击
+const handleNodeClick = (data: any) => {
+  navigateTo(data.path)
+}
+
+// 选择文件夹
+const selectFolder = (folder: any) => {
+  selectedPath.value = folder.path
+}
+
+// 提交
+const handleSubmit = () => {
+  if (!selectedPath.value) return
+  emit('confirm', selectedPath.value)
+}
+
+// 关闭
+const handleClose = () => {
+  visible.value = false
+}
+
+watch(
+  () => props.modelValue,
+  (val) => {
+    if (val) {
+      currentPath.value = '/'
+      selectedPath.value = ''
+      loadFolderTree()
     }
   }
-
-  // 导航到指定路径
-  const navigateTo = (path: string) => {
-    currentPath.value = path
-    selectedPath.value = path
-    // TODO: 加载该路径下的文件
-  }
-
-  // 树节点点击
-  const handleNodeClick = (data: any) => {
-    navigateTo(data.path)
-  }
-
-  // 选择文件夹
-  const selectFolder = (folder: any) => {
-    selectedPath.value = folder.path
-  }
-
-  // 提交
-  const handleSubmit = () => {
-    if (!selectedPath.value) return
-    emit('confirm', selectedPath.value)
-  }
-
-  // 关闭
-  const handleClose = () => {
-    visible.value = false
-  }
-
-  watch(
-    () => props.modelValue,
-    (val) => {
-      if (val) {
-        currentPath.value = '/'
-        selectedPath.value = ''
-        loadFolderTree()
-      }
-    }
-  )
+)
 </script>
 
 <style lang="scss" scoped>
@@ -284,8 +284,8 @@
 
     .file-name {
       overflow: hidden;
-      font-size: 13px;
       text-overflow: ellipsis;
+      font-size: 13px;
       white-space: nowrap;
     }
   }

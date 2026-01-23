@@ -23,39 +23,39 @@
 </template>
 
 <script setup lang="ts">
-  import { Close, Search } from '@element-plus/icons-vue'
-  import { ElButton, ElInput } from 'element-plus'
-  import { computed } from 'vue'
-  import { useI18n } from 'vue-i18n'
-  import { InputSearchProps } from './type'
+import type { InputSearchProps } from './type'
+import { Close, Search } from '@element-plus/icons-vue'
+import { ElButton, ElInput } from 'element-plus'
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-  const model = defineModel({ type: String })
+const model = defineModel({ type: String })
 
-  const props = withDefaults(defineProps<InputSearchProps>(), {
-    disabled: false,
-    readonly: false,
-    placeholder: undefined,
-    disabledHideButton: false
-  })
+const props = withDefaults(defineProps<InputSearchProps>(), {
+  disabled: false,
+  readonly: false,
+  placeholder: undefined,
+  disabledHideButton: false
+})
 
-  const { t } = useI18n()
+const emit = defineEmits<{
+  (e: 'search'): void
+  (e: 'clear'): void
+}>()
 
-  const placeholder = computed(() => {
-    return props.placeholder || t('components.inputSearch.placeholder')
-  })
+const { t } = useI18n()
 
-  const emit = defineEmits<{
-    (e: 'search'): void
-    (e: 'clear'): void
-  }>()
+const placeholder = computed(() => {
+  return props.placeholder || t('components.inputSearch.placeholder')
+})
 
-  const showButton = computed(() => {
-    if (props.readonly) return false
-    if (props.disabled) {
-      return !props.disabledHideButton
-    }
-    return true
-  })
+const showButton = computed(() => {
+  if (props.readonly) return false
+  if (props.disabled) {
+    return !props.disabledHideButton
+  }
+  return true
+})
 </script>
 
 <style lang="scss" scoped>

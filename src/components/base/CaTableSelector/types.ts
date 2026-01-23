@@ -25,7 +25,7 @@ export interface TableColumn<T = any> {
  */
 export interface CaTableSelectorProps<T = any> {
   /** 异步获取数据的函数 */
-  fetchData: (params: { page: number; pageSize: number; query?: string }) => Promise<{
+  fetchData: (params: { page: number, pageSize: number, query?: string }) => Promise<{
     data: T[]
     total: number
   }>

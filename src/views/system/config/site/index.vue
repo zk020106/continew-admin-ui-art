@@ -108,178 +108,177 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    listOption,
-    OptionReq,
-    resetOptionValue,
-    updateOption,
-    type OptionResp,
-    type SiteConfig
-  } from '@/apis/system/option'
-  import { useResetReactive } from '@/hooks'
-  import { fileToBase64 } from '@/utils/encrypt'
-  import { Close, Edit, Plus, Refresh, RefreshLeft, Select } from '@element-plus/icons-vue'
-  import type { FormInstance, FormRules, UploadRequestOptions } from 'element-plus'
-  import { ElMessage, ElMessageBox } from 'element-plus'
+import type { FormInstance, FormRules, UploadRequestOptions } from 'element-plus'
+import type { OptionReq, OptionResp, SiteConfig } from '@/apis/system/option'
+import { Close, Edit, Plus, Refresh, RefreshLeft, Select } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import {
+  listOption,
+  resetOptionValue,
+  updateOption
 
-  defineOptions({ name: 'SiteConfig' })
+} from '@/apis/system/option'
+import { useResetReactive } from '@/hooks'
+import { fileToBase64 } from '@/utils/encrypt'
 
-  const loading = ref<boolean>(false)
-  const formRef = ref<FormInstance>()
+defineOptions({ name: 'SiteConfig' })
 
-  // 表单数据 - 只存储值
-  const [form, resetForm] = useResetReactive({
-    SITE_FAVICON: '',
-    SITE_LOGO: '',
-    SITE_TITLE: '',
-    SITE_DESCRIPTION: '',
-    SITE_COPYRIGHT: '',
-    SITE_BEIAN: ''
-  })
+const loading = ref<boolean>(false)
+const formRef = ref<FormInstance>()
 
-  // 表单验证规则
-  const rules: FormRules = {
-    SITE_TITLE: [{ required: true, message: '请输入系统名称', trigger: 'blur' }]
-  }
+// 表单数据 - 只存储值
+const [form, resetForm] = useResetReactive({
+  SITE_FAVICON: '',
+  SITE_LOGO: '',
+  SITE_TITLE: '',
+  SITE_DESCRIPTION: '',
+  SITE_COPYRIGHT: '',
+  SITE_BEIAN: ''
+})
 
-  // 配置元数据 - 存储完整的 OptionResp（包含 id, name, code, value, description）
-  const siteConfig = ref<SiteConfig>({
-    SITE_FAVICON: {} as OptionResp,
-    SITE_LOGO: {} as OptionResp,
-    SITE_TITLE: {} as OptionResp,
-    SITE_DESCRIPTION: {} as OptionResp,
-    SITE_COPYRIGHT: {} as OptionResp,
-    SITE_BEIAN: {} as OptionResp
-  })
+// 表单验证规则
+const rules: FormRules = {
+  SITE_TITLE: [{ required: true, message: '请输入系统名称', trigger: 'blur' }]
+}
 
-  // 文件对象
-  const logoFile = ref<{ url?: string }>({})
-  const faviconFile = ref<{ url?: string }>({})
+// 配置元数据 - 存储完整的 OptionResp（包含 id, name, code, value, description）
+const siteConfig = ref<SiteConfig>({
+  SITE_FAVICON: {} as OptionResp,
+  SITE_LOGO: {} as OptionResp,
+  SITE_TITLE: {} as OptionResp,
+  SITE_DESCRIPTION: {} as OptionResp,
+  SITE_COPYRIGHT: {} as OptionResp,
+  SITE_BEIAN: {} as OptionResp
+})
 
-  // 编辑状态
-  const isUpdate = ref(false)
+// 文件对象
+const logoFile = ref<{ url?: string }>({})
+const faviconFile = ref<{ url?: string }>({})
 
-  // 查询参数
-  const queryForm = reactive({
-    category: 'SITE'
-  })
+// 编辑状态
+const isUpdate = ref(false)
 
-  // 重置表单
-  const reset = () => {
-    formRef.value?.resetFields()
-    form.SITE_FAVICON = siteConfig.value.SITE_FAVICON.value || ''
-    form.SITE_LOGO = siteConfig.value.SITE_LOGO.value || ''
-    form.SITE_TITLE = siteConfig.value.SITE_TITLE.value || ''
-    form.SITE_DESCRIPTION = siteConfig.value.SITE_DESCRIPTION.value || ''
-    form.SITE_COPYRIGHT = siteConfig.value.SITE_COPYRIGHT.value || ''
-    form.SITE_BEIAN = siteConfig.value.SITE_BEIAN.value || ''
-    logoFile.value.url = siteConfig.value.SITE_LOGO.value
-    faviconFile.value.url = siteConfig.value.SITE_FAVICON.value
-  }
+// 查询参数
+const queryForm = reactive({
+  category: 'SITE'
+})
 
-  // 查询配置数据
-  const getDataList = async () => {
-    loading.value = true
-    try {
-      const data = await listOption(queryForm)
-      // 使用默认配置作为初始值
-      const defaultSiteConfig: SiteConfig = {
-        SITE_FAVICON: {} as OptionResp,
-        SITE_LOGO: {} as OptionResp,
-        SITE_TITLE: {} as OptionResp,
-        SITE_DESCRIPTION: {} as OptionResp,
-        SITE_COPYRIGHT: {} as OptionResp,
-        SITE_BEIAN: {} as OptionResp
-      }
-      siteConfig.value = data.reduce<SiteConfig>((obj, option) => {
-        obj[option.code as keyof SiteConfig] = { ...option }
-        return obj
-      }, defaultSiteConfig)
-      reset()
-    } finally {
-      loading.value = false
+// 重置表单
+const reset = () => {
+  formRef.value?.resetFields()
+  form.SITE_FAVICON = siteConfig.value.SITE_FAVICON.value || ''
+  form.SITE_LOGO = siteConfig.value.SITE_LOGO.value || ''
+  form.SITE_TITLE = siteConfig.value.SITE_TITLE.value || ''
+  form.SITE_DESCRIPTION = siteConfig.value.SITE_DESCRIPTION.value || ''
+  form.SITE_COPYRIGHT = siteConfig.value.SITE_COPYRIGHT.value || ''
+  form.SITE_BEIAN = siteConfig.value.SITE_BEIAN.value || ''
+  logoFile.value.url = siteConfig.value.SITE_LOGO.value
+  faviconFile.value.url = siteConfig.value.SITE_FAVICON.value
+}
+
+// 查询配置数据
+const getDataList = async () => {
+  loading.value = true
+  try {
+    const data = await listOption(queryForm)
+    // 使用默认配置作为初始值
+    const defaultSiteConfig: SiteConfig = {
+      SITE_FAVICON: {} as OptionResp,
+      SITE_LOGO: {} as OptionResp,
+      SITE_TITLE: {} as OptionResp,
+      SITE_DESCRIPTION: {} as OptionResp,
+      SITE_COPYRIGHT: {} as OptionResp,
+      SITE_BEIAN: {} as OptionResp
     }
-  }
-
-  // 修改
-  const onUpdate = () => {
-    isUpdate.value = true
-  }
-
-  // 取消
-  const handleCancel = () => {
+    siteConfig.value = data.reduce<SiteConfig>((obj, option) => {
+      obj[option.code as keyof SiteConfig] = { ...option }
+      return obj
+    }, defaultSiteConfig)
     reset()
-    isUpdate.value = false
+  } finally {
+    loading.value = false
   }
+}
 
-  const handleSave = async () => {
-    const isValid = await formRef.value?.validate()
-    if (!isValid) return
+// 修改
+const onUpdate = () => {
+  isUpdate.value = true
+}
 
-    try {
-      await updateOption(
-        Object.entries(form).map(([key, value]) => {
-          const configKey = key as keyof typeof siteConfig.value
-          return {
-            id: siteConfig.value[configKey].id,
-            code: key,
-            value: value as string
-          } as OptionReq
-        })
-      )
-      ElMessage.success('保存成功')
-      await getDataList()
-    } catch (error) {
-      console.error('Failed to update site config:', error)
-    }
-  }
+// 取消
+const handleCancel = () => {
+  reset()
+  isUpdate.value = false
+}
 
-  // 恢复默认
-  const handleResetValue = async () => {
-    try {
-      await resetOptionValue(queryForm)
-      ElMessage.success('恢复成功')
-      await getDataList()
-    } catch (error) {
-      console.error('Failed to reset site config:', error)
-    }
-  }
+const handleSave = async () => {
+  const isValid = await formRef.value?.validate()
+  if (!isValid) return
 
-  const onResetValue = () => {
-    ElMessageBox.confirm('确认恢复基础配置为默认值吗？', '警告', {
-      type: 'warning',
-      confirmButtonText: '确认',
-      cancelButtonText: '取消'
-    })
-      .then(async () => {
-        await handleResetValue()
+  try {
+    await updateOption(
+      Object.entries(form).map(([key, value]) => {
+        const configKey = key as keyof typeof siteConfig.value
+        return {
+          id: siteConfig.value[configKey].id,
+          code: key,
+          value: value as string
+        } as OptionReq
       })
-      .catch(() => {})
+    )
+    ElMessage.success('保存成功')
+    await getDataList()
+  } catch (error) {
+    console.error('Failed to update site config:', error)
   }
+}
 
-  const handleUpload = (field: 'SITE_LOGO' | 'SITE_FAVICON', fileRef: Ref<{ url?: string }>) => {
-    return (options: UploadRequestOptions): Promise<unknown> => {
-      const file = options.file as File
-      return fileToBase64(file)
-        .then((res) => {
-          form[field] = res
-          fileRef.value.url = res
-          ElMessage.success('上传成功')
-        })
-        .catch((error) => {
-          console.error('Upload failed:', error)
-          ElMessage.error('上传失败')
-          return Promise.reject(error)
-        })
-    }
+// 恢复默认
+const handleResetValue = async () => {
+  try {
+    await resetOptionValue(queryForm)
+    ElMessage.success('恢复成功')
+    await getDataList()
+  } catch (error) {
+    console.error('Failed to reset site config:', error)
   }
+}
 
-  const handleUploadLogo = handleUpload('SITE_LOGO', logoFile)
-  const handleUploadFavicon = handleUpload('SITE_FAVICON', faviconFile)
-
-  onMounted(() => {
-    getDataList()
+const onResetValue = () => {
+  ElMessageBox.confirm('确认恢复基础配置为默认值吗？', '警告', {
+    type: 'warning',
+    confirmButtonText: '确认',
+    cancelButtonText: '取消'
   })
+    .then(async () => {
+      await handleResetValue()
+    })
+    .catch(() => {})
+}
+
+const handleUpload = (field: 'SITE_LOGO' | 'SITE_FAVICON', fileRef: Ref<{ url?: string }>) => {
+  return (options: UploadRequestOptions): Promise<unknown> => {
+    const file = options.file as File
+    return fileToBase64(file)
+      .then((res) => {
+        form[field] = res
+        fileRef.value.url = res
+        ElMessage.success('上传成功')
+      })
+      .catch((error) => {
+        console.error('Upload failed:', error)
+        ElMessage.error('上传失败')
+        return Promise.reject(error)
+      })
+  }
+}
+
+const handleUploadLogo = handleUpload('SITE_LOGO', logoFile)
+const handleUploadFavicon = handleUpload('SITE_FAVICON', faviconFile)
+
+onMounted(() => {
+  getDataList()
+})
 </script>
 
 <style scoped lang="scss">

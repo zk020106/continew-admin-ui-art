@@ -95,112 +95,113 @@
 </template>
 
 <script setup lang="ts">
-  import { addDictItem, DictItemReq, getDictItem, updateDictItem } from '@/apis/system/dict'
-  import { useResetReactive } from '@/hooks'
-  import { useWindowSize } from '@vueuse/core'
-  import { ElCol, ElForm, ElMessage, ElRow } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { DictItemReq } from '@/apis/system/dict'
+import { useWindowSize } from '@vueuse/core'
+import { ElCol, ElForm, ElMessage, ElRow } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { addDictItem, getDictItem, updateDictItem } from '@/apis/system/dict'
+import { useResetReactive } from '@/hooks'
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { t } = useI18n()
-  const { width } = useWindowSize()
+const { t } = useI18n()
+const { width } = useWindowSize()
 
-  const itemId = ref('')
-  const dictId = ref()
-  const visible = ref(false)
-  const saving = ref(false)
-  const isUpdate = computed(() => !!itemId.value)
-  const title = computed(() =>
-    isUpdate.value ? t('dict.item.page.edit') : t('dict.item.page.add')
-  )
-  const formRef = useTemplateRef('formRef')
+const itemId = ref('')
+const dictId = ref()
+const visible = ref(false)
+const saving = ref(false)
+const isUpdate = computed(() => !!itemId.value)
+const title = computed(() =>
+  isUpdate.value ? t('dict.item.page.edit') : t('dict.item.page.add')
+)
+const formRef = useTemplateRef('formRef')
 
-  // 表单验证规则
-  const rules = computed(() => ({
-    label: [{ required: true, message: t('dict.item.validate.labelRequired'), trigger: 'blur' }],
-    value: [{ required: true, message: t('dict.item.validate.valueRequired'), trigger: 'blur' }],
-    sort: [{ required: true, message: t('dict.item.validate.sortRequired'), trigger: 'blur' }]
-  }))
+// 表单验证规则
+const rules = computed(() => ({
+  label: [{ required: true, message: t('dict.item.validate.labelRequired'), trigger: 'blur' }],
+  value: [{ required: true, message: t('dict.item.validate.valueRequired'), trigger: 'blur' }],
+  sort: [{ required: true, message: t('dict.item.validate.sortRequired'), trigger: 'blur' }]
+}))
 
-  // 表单数据
-  const [form, resetForm] = useResetReactive<DictItemReq>({
-    label: '',
-    value: '',
-    sort: 0,
-    status: 1,
-    color: '',
-    description: '',
-    dictId: ''
+// 表单数据
+const [form, resetForm] = useResetReactive<DictItemReq>({
+  label: '',
+  value: '',
+  sort: 0,
+  status: 1,
+  color: '',
+  description: '',
+  dictId: ''
+})
+
+// 重置表单
+const reset = () => {
+  saving.value = false
+  resetForm()
+  nextTick(() => {
+    formRef.value?.resetFields()
   })
+}
 
-  // 重置表单
-  const reset = () => {
+// 保存
+const handleSave = async () => {
+  if (saving.value) return
+
+  try {
+    const valid = await formRef.value?.validate()
+    if (!valid) return
+
+    saving.value = true
+
+    const params = { ...form, dictId: dictId.value }
+    if (isUpdate.value) {
+      await updateDictItem(params, itemId.value)
+      ElMessage.success(t('dict.item.message.updateSuccess'))
+    } else {
+      await addDictItem(params)
+      ElMessage.success(t('dict.item.message.addSuccess'))
+    }
+
+    visible.value = false
+    emit('save-success')
+  } catch (error) {
+    console.error('保存字典项失败:', error)
+    // ElMessage.error(t('dict.item.message.fetchFailed'))
+  } finally {
     saving.value = false
-    resetForm()
-    nextTick(() => {
-      formRef.value?.resetFields()
-    })
+  }
+}
+
+// 新增
+const onAdd = async (id: string) => {
+  reset()
+  dictId.value = id
+  visible.value = true
+}
+
+// 修改
+const onUpdate = async (id: string) => {
+  reset()
+  itemId.value = id
+  try {
+    const data = await getDictItem(id)
+    Object.assign(form, data)
+    dictId.value = data.dictId
+  } catch (error) {
+    console.error('获取字典项详情失败:', error)
+    ElMessage.error(t('dict.item.message.fetchFailed'))
   }
 
-  // 保存
-  const handleSave = async () => {
-    if (saving.value) return
+  visible.value = true
+}
 
-    try {
-      const valid = await formRef.value?.validate()
-      if (!valid) return
-
-      saving.value = true
-
-      const params = { ...form, dictId: dictId.value }
-      if (isUpdate.value) {
-        await updateDictItem(params, itemId.value)
-        ElMessage.success(t('dict.item.message.updateSuccess'))
-      } else {
-        await addDictItem(params)
-        ElMessage.success(t('dict.item.message.addSuccess'))
-      }
-
-      visible.value = false
-      emit('save-success')
-    } catch (error) {
-      console.error('保存字典项失败:', error)
-      // ElMessage.error(t('dict.item.message.fetchFailed'))
-    } finally {
-      saving.value = false
-    }
-  }
-
-  // 新增
-  const onAdd = async (id: string) => {
-    reset()
-    dictId.value = id
-    visible.value = true
-  }
-
-  // 修改
-  const onUpdate = async (id: string) => {
-    reset()
-    itemId.value = id
-    try {
-      const data = await getDictItem(id)
-      Object.assign(form, data)
-      dictId.value = data.dictId
-    } catch (error) {
-      console.error('获取字典项详情失败:', error)
-      ElMessage.error(t('dict.item.message.fetchFailed'))
-    }
-
-    visible.value = true
-  }
-
-  defineExpose({
-    onAdd,
-    onUpdate
-  })
+defineExpose({
+  onAdd,
+  onUpdate
+})
 </script>
 
 <style scoped lang="scss">

@@ -139,133 +139,133 @@
 </template>
 
 <script setup lang="ts">
-  import type { FileItem } from '@/apis/system/file'
-  import { ElMessage } from 'element-plus'
-  import { getFileIconByType } from '../../utils/fileIcons'
+import type { FileItem } from '@/apis/system/file'
+import { ElMessage } from 'element-plus'
+import { getFileIconByType } from '../../utils/fileIcons'
 
-  interface User {
-    id: string
-    nickname: string
-    avatar: string
+interface User {
+  id: string
+  nickname: string
+  avatar: string
+}
+
+const props = defineProps<{
+  modelValue: boolean
+  file: FileItem | null
+}>()
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', visible: boolean): void
+}>()
+
+const visible = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
+
+const activeTab = ref('link')
+const shareUrl = ref('')
+const generating = ref(false)
+const needPassword = ref(false)
+const password = ref('')
+const expireDays = ref(0)
+const selectedUsers = ref<string[]>([])
+const message = ref('')
+
+// 模拟用户数据
+const users = ref<User[]>([
+  { id: '1', nickname: '张三', avatar: '' },
+  { id: '2', nickname: '李四', avatar: '' },
+  { id: '3', nickname: '王五', avatar: '' }
+])
+
+// 格式化文件大小
+const formatSize = (bytes: number): string => {
+  if (bytes === 0 || !bytes) return '-'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`
+}
+
+// 格式化日期
+const formatDate = (days: number): string => {
+  const date = new Date()
+  date.setDate(date.getDate() + days)
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+// 生成分享链接
+const generateShareLink = async () => {
+  generating.value = true
+  try {
+    // TODO: 调用 API 生成分享链接
+    // const res = await fileApi.createShare({
+    //   fileId: props.file?.id,
+    //   needPassword: needPassword.value,
+    //   password: password.value,
+    //   expireDays: expireDays.value
+    // })
+    // shareUrl.value = res.shareUrl
+
+    // 临时模拟
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    shareUrl.value = `https://example.com/share/${Date.now()}`
+    ElMessage.success('分享链接生成成功')
+  } catch (error: any) {
+    ElMessage.error(error.message || '生成分享链接失败')
+  } finally {
+    generating.value = false
   }
+}
 
-  const props = defineProps<{
-    modelValue: boolean
-    file: FileItem | null
-  }>()
-
-  const emit = defineEmits<{
-    (e: 'update:modelValue', visible: boolean): void
-  }>()
-
-  const visible = computed({
-    get: () => props.modelValue,
-    set: (val) => emit('update:modelValue', val)
-  })
-
-  const activeTab = ref('link')
-  const shareUrl = ref('')
-  const generating = ref(false)
-  const needPassword = ref(false)
-  const password = ref('')
-  const expireDays = ref(0)
-  const selectedUsers = ref<string[]>([])
-  const message = ref('')
-
-  // 模拟用户数据
-  const users = ref<User[]>([
-    { id: '1', nickname: '张三', avatar: '' },
-    { id: '2', nickname: '李四', avatar: '' },
-    { id: '3', nickname: '王五', avatar: '' }
-  ])
-
-  // 格式化文件大小
-  const formatSize = (bytes: number): string => {
-    if (bytes === 0 || !bytes) return '-'
-    const k = 1024
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+// 复制分享链接
+const copyShareLink = async () => {
+  try {
+    await navigator.clipboard.writeText(shareUrl.value)
+    ElMessage.success('链接已复制到剪贴板')
+  } catch {
+    ElMessage.error('复制失败，请手动复制')
   }
+}
 
-  // 格式化日期
-  const formatDate = (days: number): string => {
-    const date = new Date()
-    date.setDate(date.getDate() + days)
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+// 生成随机密码
+const randomPassword = () => {
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
+  password.value = Array.from(
+    { length: 4 },
+    () => chars[Math.floor(Math.random() * chars.length)]
+  ).join('')
+}
+
+// 密码开关变化
+const handlePasswordChange = (enabled: string | number | boolean) => {
+  if (!!enabled && !password.value) {
+    randomPassword()
   }
+}
 
-  // 生成分享链接
-  const generateShareLink = async () => {
-    generating.value = true
-    try {
-      // TODO: 调用 API 生成分享链接
-      // const res = await fileApi.createShare({
-      //   fileId: props.file?.id,
-      //   needPassword: needPassword.value,
-      //   password: password.value,
-      //   expireDays: expireDays.value
-      // })
-      // shareUrl.value = res.shareUrl
-
-      // 临时模拟
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      shareUrl.value = `https://example.com/share/${Date.now()}`
-      ElMessage.success('分享链接生成成功')
-    } catch (error: any) {
-      ElMessage.error(error.message || '生成分享链接失败')
-    } finally {
-      generating.value = false
-    }
+// 发送给用户
+const sendToUsers = async () => {
+  try {
+    // TODO: 调用 API 发送给用户
+    ElMessage.success(`已发送给 ${selectedUsers.value.length} 个用户`)
+  } catch (error: any) {
+    ElMessage.error(error.message || '发送失败')
   }
+}
 
-  // 复制分享链接
-  const copyShareLink = async () => {
-    try {
-      await navigator.clipboard.writeText(shareUrl.value)
-      ElMessage.success('链接已复制到剪贴板')
-    } catch {
-      ElMessage.error('复制失败，请手动复制')
-    }
-  }
-
-  // 密码开关变化
-  const handlePasswordChange = (enabled: string | number | boolean) => {
-    if (!!enabled && !password.value) {
-      randomPassword()
-    }
-  }
-
-  // 生成随机密码
-  const randomPassword = () => {
-    const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
-    password.value = Array.from(
-      { length: 4 },
-      () => chars[Math.floor(Math.random() * chars.length)]
-    ).join('')
-  }
-
-  // 发送给用户
-  const sendToUsers = async () => {
-    try {
-      // TODO: 调用 API 发送给用户
-      ElMessage.success(`已发送给 ${selectedUsers.value.length} 个用户`)
-    } catch (error: any) {
-      ElMessage.error(error.message || '发送失败')
-    }
-  }
-
-  // 关闭弹窗
-  const handleClose = () => {
-    visible.value = false
-    // 重置状态
-    shareUrl.value = ''
-    needPassword.value = false
-    password.value = ''
-    expireDays.value = 0
-    selectedUsers.value = []
-    message.value = ''
-  }
+// 关闭弹窗
+const handleClose = () => {
+  visible.value = false
+  // 重置状态
+  shareUrl.value = ''
+  needPassword.value = false
+  password.value = ''
+  expireDays.value = 0
+  selectedUsers.value = []
+  message.value = ''
+}
 </script>
 
 <style lang="scss" scoped>
@@ -301,10 +301,10 @@
 
   .file-name {
     overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 14px;
     font-weight: 500;
     color: var(--el-text-color-primary);
-    text-overflow: ellipsis;
     white-space: nowrap;
   }
 

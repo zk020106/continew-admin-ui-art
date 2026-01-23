@@ -23,9 +23,9 @@
  * @author Art Design Pro Team
  */
 
-import { UserInfo } from '@/apis'
-import { MenuThemeEnum, SystemThemeEnum } from '@/enums/appEnum'
-import { LocationQueryRaw } from 'vue-router'
+import type { LocationQueryRaw } from 'vue-router'
+import type { UserInfo } from '@/apis'
+import type { MenuThemeEnum, SystemThemeEnum } from '@/enums/appEnum'
 
 // 系统主题样式（light | dark）
 export interface SystemThemeType {

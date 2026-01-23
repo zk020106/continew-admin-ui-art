@@ -119,8 +119,8 @@
               <ElTag
                 type="primary"
                 class="suggestion-tag"
-                @click="applySuggestedName"
                 style="cursor: pointer"
+                @click="applySuggestedName"
               >
                 {{ suggestedComponentName }}
               </ElTag>
@@ -150,7 +150,7 @@
       </ElFormItem>
 
       <ElFormItem v-if="[1, 2].includes(form.type)" :label="t('menu.field.status')" prop="status">
-        <ElRadioGroup size="small" v-model="form.status">
+        <ElRadioGroup v-model="form.status" size="small">
           <ElRadioButton :label="1">{{ t('common.statusEnabled') }}</ElRadioButton>
           <ElRadioButton :label="2">{{ t('common.statusDisabled') }}</ElRadioButton>
         </ElRadioGroup>
@@ -164,7 +164,7 @@
       <ElRow v-if="[1, 2].includes(form.type)" :gutter="16">
         <ElCol :span="8">
           <ElFormItem :label="t('menu.field.isExternal')" prop="isExternal">
-            <ElRadioGroup size="small" v-model="form.isExternal" @change="handleExternalChange">
+            <ElRadioGroup v-model="form.isExternal" size="small" @change="handleExternalChange">
               <ElRadioButton :label="true">{{ t('common.true') }}</ElRadioButton>
               <ElRadioButton :label="false">{{ t('common.false') }}</ElRadioButton>
             </ElRadioGroup>
@@ -172,7 +172,7 @@
         </ElCol>
         <ElCol v-if="form.type === 2" :span="8">
           <ElFormItem :label="t('menu.field.isCache')" prop="isCache">
-            <ElRadioGroup size="small" v-model="form.isCache">
+            <ElRadioGroup v-model="form.isCache" size="small">
               <ElRadioButton :label="true">{{ t('common.true') }}</ElRadioButton>
               <ElRadioButton :label="false">{{ t('common.false') }}</ElRadioButton>
             </ElRadioGroup>
@@ -180,7 +180,7 @@
         </ElCol>
         <ElCol :span="8">
           <ElFormItem :label="t('menu.field.isHidden')" prop="isHidden">
-            <ElRadioGroup size="small" v-model="form.isHidden">
+            <ElRadioGroup v-model="form.isHidden" size="small">
               <ElRadioButton :label="true">{{ t('common.true') }}</ElRadioButton>
               <ElRadioButton :label="false">{{ t('common.false') }}</ElRadioButton>
             </ElRadioGroup>
@@ -199,33 +199,166 @@
 </template>
 
 <script setup lang="ts">
-  import { addMenu, getMenu, listMenu, type MenuResp, updateMenu } from '@/apis/system/menu'
-  import CaComponentPicker from '@/components/base/CaComponentPicker/index.vue'
-  import CaIconPicker from '@/components/base/CaIconPicker/index.vue'
-  import { transformPathToName } from '@/utils/route/string'
-  import { ElMessage } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { MenuResp } from '@/apis/system/menu'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { addMenu, getMenu, listMenu, updateMenu } from '@/apis/system/menu'
+import CaComponentPicker from '@/components/base/CaComponentPicker/index.vue'
+import CaIconPicker from '@/components/base/CaIconPicker/index.vue'
+import { transformPathToName } from '@/utils/route/string'
 
-  defineOptions({ name: 'MenuAddDrawer' })
+defineOptions({ name: 'MenuAddDrawer' })
 
-  const emit = defineEmits<{
-    'save-success': []
-  }>()
+const emit = defineEmits<{
+  'save-success': []
+}>()
 
-  const { t } = useI18n()
-  const formRef = ref()
-  const treeSelectRef = ref()
-  const visible = ref(false)
-  const submitLoading = ref(false)
-  const mode = ref<'add' | 'edit' | 'addChild'>('add')
-  const menuId = ref('')
-  const parentMenuTitle = ref('')
+const { t } = useI18n()
+const formRef = ref()
+const treeSelectRef = ref()
+const visible = ref(false)
+const submitLoading = ref(false)
+const mode = ref<'add' | 'edit' | 'addChild'>('add')
+const menuId = ref('')
+const parentMenuTitle = ref('')
 
-  // 菜单树数据（用于选择父菜单）
-  const menuTreeData = ref<MenuResp[]>([])
+// 菜单树数据（用于选择父菜单）
+const menuTreeData = ref<MenuResp[]>([])
 
-  const form = reactive({
-    type: 2 as 1 | 2 | 3,
+const form = reactive({
+  type: 2 as 1 | 2 | 3,
+  parentId: '',
+  title: '',
+  permission: '',
+  path: '',
+  component: '',
+  icon: '',
+  sort: 0,
+  status: 1 as 1 | 2,
+  name: '',
+  redirect: '',
+  isExternal: false,
+  isCache: true,
+  isHidden: false
+})
+
+// 建议的组件名称
+const suggestedComponentName = computed(() => {
+  if (!form.path || form.type === 3) return ''
+  return transformPathToName(form.path)
+})
+
+// 过滤菜单树，只保留目录和菜单类型
+const filterMenuTree = (data: MenuResp[]): MenuResp[] => {
+  return data
+    .filter((item) => [1, 2].includes(item.type))
+    .map((item) => ({
+      ...item,
+      children: item.children ? filterMenuTree(item.children) : []
+    }))
+}
+
+// 过滤后的菜单树（只显示目录和菜单，排除按钮）
+const menuTreeSelectData = computed(() => {
+  return filterMenuTree(menuTreeData.value)
+})
+
+// 树节点过滤方法
+const filterMenuNode = (value: string, data: MenuResp) => {
+  if (!value) return true
+  const title = data.title || ''
+  return title.toLowerCase().includes(value.toLowerCase())
+}
+
+// 动态验证规则
+const rules = computed(() => {
+  const baseRules = {
+    type: [{ required: true, message: t('menu.validate.typeRequired'), trigger: 'change' }],
+    title: [{ required: true, message: t('menu.validate.titleRequired'), trigger: 'blur' }]
+  }
+
+  if (form.type === 3) {
+    return {
+      ...baseRules,
+      parentId: [
+        { required: true, message: t('menu.validate.parentIdRequired'), trigger: 'change' }
+      ],
+      permission: [
+        { required: true, message: t('menu.validate.permissionRequired'), trigger: 'blur' }
+      ]
+    }
+  }
+
+  if (form.type === 2) {
+    return {
+      ...baseRules,
+      path: [{ required: true, message: t('menu.validate.pathRequired'), trigger: 'blur' }],
+      component: [
+        {
+          required: !form.isExternal,
+          message: t('menu.validate.componentRequired'),
+          trigger: 'blur'
+        }
+      ],
+      name: [{ required: true, message: t('menu.validate.nameRequired'), trigger: 'blur' }]
+    }
+  }
+
+  // type === 1
+  return {
+    ...baseRules,
+    path: [{ required: true, message: t('menu.validate.pathRequired'), trigger: 'blur' }],
+    name: [{ required: true, message: t('menu.validate.nameRequired'), trigger: 'blur' }]
+  }
+})
+
+const drawerTitle = computed(() => {
+  if (mode.value === 'addChild') {
+    return `${t('menu.button.addChild')} - ${parentMenuTitle.value}`
+  }
+  return mode.value === 'add' ? t('menu.page.add') : t('menu.page.edit')
+})
+
+// 获取菜单树
+const getMenuTree = async () => {
+  try {
+    const data = await listMenu()
+    menuTreeData.value = data
+  } catch (error) {
+    console.error('获取菜单树失败:', error)
+  }
+}
+
+// 路径输入处理
+const handlePathInput = () => {
+  // 当路径变化时，自动更新建议的组件名
+  if (suggestedComponentName.value && !form.name) {
+    // 可选：自动填充组件名
+    // form.name = suggestedComponentName.value
+  }
+}
+
+// 应用建议的组件名
+const applySuggestedName = () => {
+  form.name = suggestedComponentName.value
+}
+
+// 菜单类型切换处理
+const handleTypeChange = () => {
+  // 清除相关字段的验证
+  formRef.value?.clearValidate(['permission', 'path', 'component', 'name'])
+}
+
+// 外链切换处理
+const handleExternalChange = () => {
+  form.component = ''
+  formRef.value?.clearValidate(['component'])
+}
+
+// 重置表单
+const resetForm = () => {
+  Object.assign(form, {
+    type: 2,
     parentId: '',
     title: '',
     permission: '',
@@ -233,241 +366,109 @@
     component: '',
     icon: '',
     sort: 0,
-    status: 1 as 1 | 2,
+    status: 1,
     name: '',
     redirect: '',
     isExternal: false,
     isCache: true,
     isHidden: false
   })
+  formRef.value?.clearValidate()
+}
 
-  // 建议的组件名称
-  const suggestedComponentName = computed(() => {
-    if (!form.path || form.type === 3) return ''
-    return transformPathToName(form.path)
-  })
+// 打开抽屉（新增）
+const onAdd = async () => {
+  mode.value = 'add'
+  await getMenuTree()
+  resetForm()
+  visible.value = true
+}
 
-  // 过滤后的菜单树（只显示目录和菜单，排除按钮）
-  const menuTreeSelectData = computed(() => {
-    return filterMenuTree(menuTreeData.value)
-  })
+// 打开抽屉（新增子菜单）
+const onAddChild = async (parentId: string, parentTitle: string) => {
+  mode.value = 'addChild'
+  parentMenuTitle.value = parentTitle
+  await getMenuTree()
+  resetForm()
+  form.parentId = parentId
+  visible.value = true
+}
 
-  // 过滤菜单树，只保留目录和菜单类型
-  const filterMenuTree = (data: MenuResp[]): MenuResp[] => {
-    return data
-      .filter((item) => [1, 2].includes(item.type))
-      .map((item) => ({
-        ...item,
-        children: item.children ? filterMenuTree(item.children) : []
-      }))
-  }
+// 打开抽屉（编辑）
+const onUpdate = async (id: string) => {
+  mode.value = 'edit'
+  menuId.value = id
+  await getMenuTree()
 
-  // 树节点过滤方法
-  const filterMenuNode = (value: string, data: MenuResp) => {
-    if (!value) return true
-    const title = data.title || ''
-    return title.toLowerCase().includes(value.toLowerCase())
-  }
-
-  // 动态验证规则
-  const rules = computed(() => {
-    const baseRules = {
-      type: [{ required: true, message: t('menu.validate.typeRequired'), trigger: 'change' }],
-      title: [{ required: true, message: t('menu.validate.titleRequired'), trigger: 'blur' }]
-    }
-
-    if (form.type === 3) {
-      return {
-        ...baseRules,
-        parentId: [
-          { required: true, message: t('menu.validate.parentIdRequired'), trigger: 'change' }
-        ],
-        permission: [
-          { required: true, message: t('menu.validate.permissionRequired'), trigger: 'blur' }
-        ]
-      }
-    }
-
-    if (form.type === 2) {
-      return {
-        ...baseRules,
-        path: [{ required: true, message: t('menu.validate.pathRequired'), trigger: 'blur' }],
-        component: [
-          {
-            required: !form.isExternal,
-            message: t('menu.validate.componentRequired'),
-            trigger: 'blur'
-          }
-        ],
-        name: [{ required: true, message: t('menu.validate.nameRequired'), trigger: 'blur' }]
-      }
-    }
-
-    // type === 1
-    return {
-      ...baseRules,
-      path: [{ required: true, message: t('menu.validate.pathRequired'), trigger: 'blur' }],
-      name: [{ required: true, message: t('menu.validate.nameRequired'), trigger: 'blur' }]
-    }
-  })
-
-  const drawerTitle = computed(() => {
-    if (mode.value === 'addChild') {
-      return `${t('menu.button.addChild')} - ${parentMenuTitle.value}`
-    }
-    return mode.value === 'add' ? t('menu.page.add') : t('menu.page.edit')
-  })
-
-  // 获取菜单树
-  const getMenuTree = async () => {
-    try {
-      const data = await listMenu()
-      menuTreeData.value = data
-    } catch (error) {
-      console.error('获取菜单树失败:', error)
-    }
-  }
-
-  // 路径输入处理
-  const handlePathInput = () => {
-    // 当路径变化时，自动更新建议的组件名
-    if (suggestedComponentName.value && !form.name) {
-      // 可选：自动填充组件名
-      // form.name = suggestedComponentName.value
-    }
-  }
-
-  // 应用建议的组件名
-  const applySuggestedName = () => {
-    form.name = suggestedComponentName.value
-  }
-
-  // 菜单类型切换处理
-  const handleTypeChange = () => {
-    // 清除相关字段的验证
-    formRef.value?.clearValidate(['permission', 'path', 'component', 'name'])
-  }
-
-  // 外链切换处理
-  const handleExternalChange = () => {
-    form.component = ''
-    formRef.value?.clearValidate(['component'])
-  }
-
-  // 重置表单
-  const resetForm = () => {
+  try {
+    const data = await getMenu(id)
     Object.assign(form, {
-      type: 2,
-      parentId: '',
-      title: '',
-      permission: '',
-      path: '',
-      component: '',
-      icon: '',
-      sort: 0,
-      status: 1,
-      name: '',
-      redirect: '',
-      isExternal: false,
-      isCache: true,
-      isHidden: false
+      type: data.type,
+      parentId: data.parentId || '',
+      title: data.title,
+      permission: data.permission || '',
+      path: data.path || '',
+      component: data.component || '',
+      icon: data.icon || '',
+      sort: data.sort,
+      status: data.status,
+      name: data.name || '',
+      redirect: data.redirect || '',
+      isExternal: data.isExternal || false,
+      isCache: data.isCache !== false,
+      isHidden: data.isHidden || false
     })
-    formRef.value?.clearValidate()
-  }
-
-  // 打开抽屉（新增）
-  const onAdd = async () => {
-    mode.value = 'add'
-    await getMenuTree()
-    resetForm()
+    // 清除验证状态
+    nextTick(() => {
+      formRef.value?.clearValidate()
+    })
     visible.value = true
+  } catch (error) {
+    console.error('获取菜单详情失败:', error)
+    ElMessage.error(t('menu.message.fetchFailed'))
   }
+}
 
-  // 打开抽屉（新增子菜单）
-  const onAddChild = async (parentId: string, parentTitle: string) => {
-    mode.value = 'addChild'
-    parentMenuTitle.value = parentTitle
-    await getMenuTree()
-    resetForm()
-    form.parentId = parentId
-    visible.value = true
-  }
+// 关闭抽屉
+const handleClose = () => {
+  visible.value = false
+  resetForm()
+}
 
-  // 打开抽屉（编辑）
-  const onUpdate = async (id: string) => {
-    mode.value = 'edit'
-    menuId.value = id
-    await getMenuTree()
+// 提交表单
+const handleSubmit = async () => {
+  await formRef.value?.validate()
 
-    try {
-      const data = await getMenu(id)
-      Object.assign(form, {
-        type: data.type,
-        parentId: data.parentId || '',
-        title: data.title,
-        permission: data.permission || '',
-        path: data.path || '',
-        component: data.component || '',
-        icon: data.icon || '',
-        sort: data.sort,
-        status: data.status,
-        name: data.name || '',
-        redirect: data.redirect || '',
-        isExternal: data.isExternal || false,
-        isCache: data.isCache !== false,
-        isHidden: data.isHidden || false
-      })
-      // 清除验证状态
-      nextTick(() => {
-        formRef.value?.clearValidate()
-      })
-      visible.value = true
-    } catch (error) {
-      console.error('获取菜单详情失败:', error)
-      ElMessage.error(t('menu.message.fetchFailed'))
+  submitLoading.value = true
+  try {
+    const data = { ...form }
+    if (mode.value === 'add') {
+      await addMenu(data)
+      ElMessage.success(t('menu.message.addSuccess'))
+    } else if (mode.value === 'addChild') {
+      await addMenu(data)
+      ElMessage.success(t('menu.message.addSuccess'))
+    } else {
+      await updateMenu(data, menuId.value)
+      ElMessage.success(t('menu.message.updateSuccess'))
     }
-  }
-
-  // 关闭抽屉
-  const handleClose = () => {
-    visible.value = false
-    resetForm()
-  }
-
-  // 提交表单
-  const handleSubmit = async () => {
-    await formRef.value?.validate()
-
-    submitLoading.value = true
-    try {
-      const data = { ...form }
-      if (mode.value === 'add') {
-        await addMenu(data)
-        ElMessage.success(t('menu.message.addSuccess'))
-      } else if (mode.value === 'addChild') {
-        await addMenu(data)
-        ElMessage.success(t('menu.message.addSuccess'))
-      } else {
-        await updateMenu(data, menuId.value)
-        ElMessage.success(t('menu.message.updateSuccess'))
-      }
-      emit('save-success')
-      handleClose()
-    } catch (error: any) {
-      console.error('保存菜单失败:', error)
-      if (error.msg) {
-        ElMessage.error(error.msg)
-      }
-    } finally {
-      submitLoading.value = false
+    emit('save-success')
+    handleClose()
+  } catch (error: any) {
+    console.error('保存菜单失败:', error)
+    if (error.msg) {
+      ElMessage.error(error.msg)
     }
+  } finally {
+    submitLoading.value = false
   }
+}
 
-  defineExpose({
-    onAdd,
-    onAddChild,
-    onUpdate
-  })
+defineExpose({
+  onAdd,
+  onAddChild,
+  onUpdate
+})
 </script>
 
 <style scoped lang="scss">

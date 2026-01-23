@@ -74,15 +74,15 @@ export function registerResourceErrorHandler() {
     (event: Event) => {
       const target = event.target as HTMLElement
       if (
-        target &&
-        (target.tagName === 'IMG' || target.tagName === 'SCRIPT' || target.tagName === 'LINK')
+        target
+        && (target.tagName === 'IMG' || target.tagName === 'SCRIPT' || target.tagName === 'LINK')
       ) {
         console.error('[ResourceError]', {
           tagName: target.tagName,
           src:
-            (target as HTMLImageElement).src ||
-            (target as HTMLScriptElement).src ||
-            (target as HTMLLinkElement).href
+            (target as HTMLImageElement).src
+            || (target as HTMLScriptElement).src
+            || (target as HTMLLinkElement).href
         })
         // reportError({ type: 'resource', target })
       }

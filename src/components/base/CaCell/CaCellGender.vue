@@ -13,17 +13,17 @@
 </template>
 
 <script setup lang="ts">
-  import { User, UserFilled } from '@element-plus/icons-vue'
+import { User, UserFilled } from '@element-plus/icons-vue'
 
-  defineOptions({ name: 'CaCellGender' })
+defineOptions({ name: 'CaCellGender' })
 
-  const props = withDefaults(defineProps<Props>(), {
-    gender: 1
-  })
+const props = withDefaults(defineProps<Props>(), {
+  gender: 1
+})
 
-  interface Props {
-    gender: 1 | 2 | 0
-  }
+interface Props {
+  gender: 1 | 2 | 0
+}
 </script>
 
 <style scoped lang="scss">

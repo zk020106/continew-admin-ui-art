@@ -1,5 +1,5 @@
-import http from '@/utils/http'
 import type * as T from './type'
+import http from '@/utils/http'
 
 export type * from './type'
 
@@ -58,12 +58,12 @@ export function getDownloadUrl(id: string, name: string) {
 }
 
 /** @desc 移动文件 */
-export function moveFile(data: { ids: string[]; targetPath: string }) {
+export function moveFile(data: { ids: string[], targetPath: string }) {
   return http.post(`${BASE_URL}/move`, data)
 }
 
 /** @desc 复制文件 */
-export function copyFile(data: { ids: string[]; targetPath: string }) {
+export function copyFile(data: { ids: string[], targetPath: string }) {
   return http.post(`${BASE_URL}/copy`, data)
 }
 
@@ -74,7 +74,7 @@ export function createShare(data: {
   password?: string
   expireDays?: number
 }) {
-  return http.post<{ shareCode: string; shareUrl: string }>(`${BASE_URL}/share`, data)
+  return http.post<{ shareCode: string, shareUrl: string }>(`${BASE_URL}/share`, data)
 }
 
 /** @desc 获取分享文件信息 */
@@ -83,6 +83,6 @@ export function getShareInfo(shareCode: string) {
 }
 
 /** @desc 发送文件给用户 */
-export function sendToUser(data: { fileIds: string[]; userIds: string[]; message?: string }) {
+export function sendToUser(data: { fileIds: string[], userIds: string[], message?: string }) {
   return http.post(`${BASE_URL}/send`, data)
 }

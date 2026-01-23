@@ -1,17 +1,11 @@
 {
   "compilerOptions": {
     "target": "esnext",
+    "jsx": "preserve",
+    "lib": ["esnext", "dom"],
+    "baseUrl": ".",
     "module": "esnext",
     "moduleResolution": "node",
-    "strict": true,
-    "jsx": "preserve",
-    "sourceMap": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "lib": ["esnext", "dom"],
-    "types": ["vite/client", "node", "element-plus/global"],
-    "skipLibCheck": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
       "@views/*": ["src/views/*"],
@@ -21,7 +15,13 @@
       "@stores/*": ["src/store/*"],
       "@plugins/*": ["src/plugins/*"],
       "@styles/*": ["src/assets/styles/*"]
-    }
+    },
+    "resolveJsonModule": true,
+    "types": ["vite/client", "node", "element-plus/global"],
+    "strict": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "include": ["src/**/*", "src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "exclude": ["node_modules", "dist", "**/*.js"]

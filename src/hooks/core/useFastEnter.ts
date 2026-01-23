@@ -15,9 +15,9 @@
  * @author Art Design Pro Team
  */
 
+import type { FastEnterApplication, FastEnterQuickLink } from '@/types/config'
 import { computed } from 'vue'
 import appConfig from '@/config'
-import type { FastEnterApplication, FastEnterQuickLink } from '@/types/config'
 
 export function useFastEnter() {
   // 获取快速入口配置

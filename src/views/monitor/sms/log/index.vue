@@ -58,163 +58,163 @@
 </template>
 
 <script setup lang="ts">
-  import type { SmsLogQuery, SmsLogResp } from '@/apis'
-  import { deleteSmsLog, exportSmsLog, listSmsLog } from '@/apis/system/smsLog'
-  import type { FormColumnItem } from '@/components/base/CaForm/type'
-  import type { TableColumnItem } from '@/components/base/CaTable/type'
-  import { useDevice, useDownload, useResetReactive, useTable } from '@/hooks'
-  import { ElButton, ElMessage, ElPopconfirm, ElSpace } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
-  import { useRoute } from 'vue-router'
+import type { SmsLogQuery, SmsLogResp } from '@/apis'
+import type { FormColumnItem } from '@/components/base/CaForm/type'
+import type { TableColumnItem } from '@/components/base/CaTable/type'
+import { ElButton, ElMessage, ElPopconfirm, ElSpace } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
+import { deleteSmsLog, exportSmsLog, listSmsLog } from '@/apis/system/smsLog'
+import { useDevice, useDownload, useResetReactive, useTable } from '@/hooks'
 
-  defineOptions({ name: 'MonitorSmsLog' })
+defineOptions({ name: 'MonitorSmsLog' })
 
-  const { t } = useI18n()
-  const { isMobile } = useDevice()
-  const route = useRoute()
+const { t } = useI18n()
+const { isMobile } = useDevice()
+const route = useRoute()
 
-  const [queryForm, resetForm] = useResetReactive<SmsLogQuery>({
-    sort: ['id,desc']
-  })
+const [queryForm, resetForm] = useResetReactive<SmsLogQuery>({
+  sort: ['id,desc']
+})
 
-  const queryFormColumns = computed(
-    () =>
-      [
-        {
-          type: 'input',
-          label: t('pages.smsLog.search.configId'),
-          field: 'configId',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            placeholder: t('pages.smsLog.search.configIdPlaceholder'),
-            clearable: true
-          }
-        },
-        {
-          type: 'input',
-          label: t('pages.smsLog.search.phone'),
-          field: 'phone',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            placeholder: t('pages.smsLog.search.phonePlaceholder'),
-            clearable: true
-          }
-        },
-        {
-          type: 'select',
-          label: t('pages.smsLog.search.status'),
-          field: 'status',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            options: [
-              { label: t('pages.smsLog.field.statusSuccess'), value: 1 },
-              { label: t('pages.smsLog.field.statusFailure'), value: 2 }
-            ],
-            placeholder: t('pages.smsLog.search.statusPlaceholder'),
-            clearable: true
-          }
+const queryFormColumns = computed(
+  () =>
+    [
+      {
+        type: 'input',
+        label: t('pages.smsLog.search.configId'),
+        field: 'configId',
+        gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
+        props: {
+          placeholder: t('pages.smsLog.search.configIdPlaceholder'),
+          clearable: true
         }
-      ] as FormColumnItem<SmsLogQuery>[]
-  )
-
-  const { tableData, loading, pagination, search, handleDelete } = useTable<SmsLogResp>(
-    (page) => listSmsLog({ ...queryForm, ...page }),
-    { immediate: false }
-  )
-
-  const columns = computed(
-    () =>
-      [
-        {
-          label: t('common.index'),
-          width: 66,
-          align: 'center',
-          render: ({ $index }) =>
-            h('span', {}, $index + 1 + (pagination.current - 1) * pagination.pageSize),
-          fixed: !isMobile.value ? 'left' : false
-        },
-        {
-          label: t('pages.smsLog.field.configId'),
-          prop: 'configId',
-          minWidth: 120,
-          showOverflowTooltip: true
-        },
-        {
-          label: t('pages.smsLog.field.phone'),
-          prop: 'phone',
-          minWidth: 140,
-          showOverflowTooltip: true
-        },
-        {
-          label: t('pages.smsLog.field.params'),
-          prop: 'params',
-          minWidth: 200,
-          showOverflowTooltip: true
-        },
-        {
-          label: t('pages.smsLog.field.status'),
-          prop: 'status',
-          slotName: 'status',
-          width: 100,
-          align: 'center'
-        },
-        {
-          label: t('pages.smsLog.field.resMsg'),
-          prop: 'resMsg',
-          minWidth: 260,
-          showOverflowTooltip: true
-        },
-        {
-          label: t('pages.smsLog.field.createUser'),
-          prop: 'createUserString',
-          width: 140,
-          showOverflowTooltip: true
-        },
-        {
-          label: t('pages.smsLog.field.createTime'),
-          prop: 'createTime',
-          width: 180,
-          showOverflowTooltip: true
-        },
-        {
-          label: t('common.action'),
-          prop: 'action',
-          slotName: 'action',
-          width: 100,
-          align: 'center',
-          fixed: !isMobile.value ? 'right' : false
+      },
+      {
+        type: 'input',
+        label: t('pages.smsLog.search.phone'),
+        field: 'phone',
+        gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
+        props: {
+          placeholder: t('pages.smsLog.search.phonePlaceholder'),
+          clearable: true
         }
-      ] as TableColumnItem[]
-  )
+      },
+      {
+        type: 'select',
+        label: t('pages.smsLog.search.status'),
+        field: 'status',
+        gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
+        props: {
+          options: [
+            { label: t('pages.smsLog.field.statusSuccess'), value: 1 },
+            { label: t('pages.smsLog.field.statusFailure'), value: 2 }
+          ],
+          placeholder: t('pages.smsLog.search.statusPlaceholder'),
+          clearable: true
+        }
+      }
+    ] as FormColumnItem<SmsLogQuery>[]
+)
 
-  // 重置
-  const reset = () => {
-    resetForm()
+const { tableData, loading, pagination, search } = useTable<SmsLogResp>(
+  (page) => listSmsLog({ ...queryForm, ...page }),
+  { immediate: false }
+)
+
+const columns = computed(
+  () =>
+    [
+      {
+        label: t('common.index'),
+        width: 66,
+        align: 'center',
+        render: ({ $index }) =>
+          h('span', {}, $index + 1 + (pagination.current - 1) * pagination.pageSize),
+        fixed: !isMobile.value ? 'left' : false
+      },
+      {
+        label: t('pages.smsLog.field.configId'),
+        prop: 'configId',
+        minWidth: 120,
+        showOverflowTooltip: true
+      },
+      {
+        label: t('pages.smsLog.field.phone'),
+        prop: 'phone',
+        minWidth: 140,
+        showOverflowTooltip: true
+      },
+      {
+        label: t('pages.smsLog.field.params'),
+        prop: 'params',
+        minWidth: 200,
+        showOverflowTooltip: true
+      },
+      {
+        label: t('pages.smsLog.field.status'),
+        prop: 'status',
+        slotName: 'status',
+        width: 100,
+        align: 'center'
+      },
+      {
+        label: t('pages.smsLog.field.resMsg'),
+        prop: 'resMsg',
+        minWidth: 260,
+        showOverflowTooltip: true
+      },
+      {
+        label: t('pages.smsLog.field.createUser'),
+        prop: 'createUserString',
+        width: 140,
+        showOverflowTooltip: true
+      },
+      {
+        label: t('pages.smsLog.field.createTime'),
+        prop: 'createTime',
+        width: 180,
+        showOverflowTooltip: true
+      },
+      {
+        label: t('common.action'),
+        prop: 'action',
+        slotName: 'action',
+        width: 100,
+        align: 'center',
+        fixed: !isMobile.value ? 'right' : false
+      }
+    ] as TableColumnItem[]
+)
+
+// 重置
+const reset = () => {
+  resetForm()
+  search()
+}
+
+// 删除
+const onDelete = async (row: SmsLogResp) => {
+  try {
+    await deleteSmsLog(row.id)
+    ElMessage.success(t('message.deleteSuccess'))
     search()
+  } catch (error) {
+    console.error('删除失败:', error)
   }
+}
 
-  // 删除
-  const onDelete = async (row: SmsLogResp) => {
-    try {
-      await deleteSmsLog(row.id)
-      ElMessage.success(t('message.deleteSuccess'))
-      search()
-    } catch (error) {
-      console.error('删除失败:', error)
-    }
+// 导出
+const onExport = () => {
+  useDownload(() => exportSmsLog(queryForm))
+}
+
+onMounted(() => {
+  if (route.query?.configId) {
+    queryForm.configId = route.query.configId as string
   }
-
-  // 导出
-  const onExport = () => {
-    useDownload(() => exportSmsLog(queryForm))
-  }
-
-  onMounted(() => {
-    if (route.query?.configId) {
-      queryForm.configId = route.query.configId as string
-    }
-    search()
-  })
+  search()
+})
 </script>
 
 <style scoped lang="scss"></style>

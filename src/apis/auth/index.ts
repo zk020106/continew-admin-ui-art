@@ -1,5 +1,5 @@
-import http from '@/utils/http'
 import type * as T from './type'
+import http from '@/utils/http'
 
 export * from './type'
 

@@ -128,7 +128,7 @@
               :check-strictly="!form.deptCheckStrictly"
               :tree-props="{
                 label: 'title',
-                children: 'children'
+                children: 'children',
               }"
               :default-expand-all="isDeptExpanded"
               highlight-current
@@ -155,183 +155,183 @@
 </template>
 
 <script setup lang="ts">
-  import { addRole, getRole, updateRole } from '@/apis/system/role'
-  import { useResetReactive } from '@/hooks'
-  import { useDept } from '@/hooks/business'
-  import { useWindowSize } from '@vueuse/core'
-  import { ElForm, ElMessage } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import { useWindowSize } from '@vueuse/core'
+import { ElForm, ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { addRole, getRole, updateRole } from '@/apis/system/role'
+import { useResetReactive } from '@/hooks'
+import { useDept } from '@/hooks/business'
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { t } = useI18n()
-  const { width } = useWindowSize()
+const { t } = useI18n()
+const { width } = useWindowSize()
 
-  const dataId = ref('')
-  const visible = ref(false)
-  const saving = ref(false)
-  const isUpdate = computed(() => !!dataId.value)
-  const title = computed(() =>
-    isUpdate.value ? t('role.page.title.edit') : t('role.page.title.add')
-  )
-  const formRef = useTemplateRef('formRef')
-  const { deptList, getDeptList } = useDept()
+const dataId = ref('')
+const visible = ref(false)
+const saving = ref(false)
+const isUpdate = computed(() => !!dataId.value)
+const title = computed(() =>
+  isUpdate.value ? t('role.page.title.edit') : t('role.page.title.add')
+)
+const formRef = useTemplateRef('formRef')
+const { deptList, getDeptList } = useDept()
 
-  // 表单验证规则
-  const rules = computed(() => ({
-    name: [{ required: true, message: t('role.validate.nameRequired'), trigger: 'blur' }],
-    code: [
-      { required: true, message: t('role.validate.codeRequired'), trigger: 'blur' },
-      {
-        pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/,
-        message: '角色编码必须以字母开头，只能包含字母、数字和下划线',
-        trigger: 'blur'
-      }
-    ],
-    dataScope: [
-      { required: true, message: t('role.validate.dataScopeRequired'), trigger: 'change' }
-    ]
-  }))
+// 表单验证规则
+const rules = computed(() => ({
+  name: [{ required: true, message: t('role.validate.nameRequired'), trigger: 'blur' }],
+  code: [
+    { required: true, message: t('role.validate.codeRequired'), trigger: 'blur' },
+    {
+      pattern: /^[a-z]\w*$/i,
+      message: '角色编码必须以字母开头，只能包含字母、数字和下划线',
+      trigger: 'blur'
+    }
+  ],
+  dataScope: [
+    { required: true, message: t('role.validate.dataScopeRequired'), trigger: 'change' }
+  ]
+}))
 
-  // 表单数据
-  const [form, resetForm] = useResetReactive({
-    name: '',
-    code: '',
-    sort: 0,
-    status: 1,
-    remark: '',
-    dataScope: 4,
-    deptCheckStrictly: true,
-    isSystem: false
-  })
+// 表单数据
+const [form, resetForm] = useResetReactive({
+  name: '',
+  code: '',
+  sort: 0,
+  status: 1,
+  remark: '',
+  dataScope: 4,
+  deptCheckStrictly: true,
+  isSystem: false
+})
 
-  const deptTreeRef = ref()
-  const isDeptExpanded = ref(true)
+const deptTreeRef = ref()
+const isDeptExpanded = ref(true)
 
-  // 重置表单
-  const reset = () => {
-    saving.value = false
-    resetForm()
-    nextTick(() => {
-      formRef.value?.resetFields()
-      deptTreeRef.value?.setCheckedKeys([])
-      // 重置后展开树
-      handleDeptExpand(true)
+// 展开/折叠部门树
+const handleDeptExpand = (expanded: boolean) => {
+  isDeptExpanded.value = expanded
+  const allKeys = getAllDeptKeys(deptList.value)
+  if (expanded) {
+    allKeys.forEach((key) => {
+      deptTreeRef.value?.store.nodesMap[key]?.expand()
+    })
+  } else {
+    allKeys.forEach((key) => {
+      deptTreeRef.value?.store.nodesMap[key]?.collapse()
     })
   }
+}
 
-  // 展开/折叠部门树
-  const handleDeptExpand = (expanded: boolean) => {
-    isDeptExpanded.value = expanded
-    const allKeys = getAllDeptKeys(deptList.value)
-    if (expanded) {
-      allKeys.forEach((key) => {
-        deptTreeRef.value?.store.nodesMap[key]?.expand()
-      })
+// 获取所有部门ID
+const getAllDeptKeys = (depts: any[]): string[] => {
+  const keys: string[] = []
+  depts.forEach((dept) => {
+    keys.push(dept.key)
+    if (dept.children && dept.children.length > 0) {
+      keys.push(...getAllDeptKeys(dept.children))
+    }
+  })
+  return keys
+}
+
+// 重置表单
+const reset = () => {
+  saving.value = false
+  resetForm()
+  nextTick(() => {
+    formRef.value?.resetFields()
+    deptTreeRef.value?.setCheckedKeys([])
+    // 重置后展开树
+    handleDeptExpand(true)
+  })
+}
+
+// 获取选中的部门
+const getCheckedDeptKeys = (): string[] => {
+  if (!deptTreeRef.value) return []
+
+  const checkedKeys = deptTreeRef.value.getCheckedKeys() as string[]
+  const halfCheckedKeys = deptTreeRef.value.getHalfCheckedKeys() as string[]
+  return [...checkedKeys, ...halfCheckedKeys]
+}
+
+// 保存
+const handleSave = async () => {
+  if (saving.value) return
+
+  try {
+    const valid = await formRef.value?.validate()
+    if (!valid) return
+
+    saving.value = true
+
+    const params = { ...form }
+    if (form.dataScope === 2) {
+      params.deptIds = getCheckedDeptKeys()
+    }
+
+    if (isUpdate.value) {
+      await updateRole(params, dataId.value)
+      ElMessage.success(t('role.message.updateSuccess'))
     } else {
-      allKeys.forEach((key) => {
-        deptTreeRef.value?.store.nodesMap[key]?.collapse()
+      await addRole(params)
+      ElMessage.success(t('role.message.addSuccess'))
+    }
+
+    visible.value = false
+    emit('save-success')
+  } catch (error) {
+    console.error('保存角色失败:', error)
+    ElMessage.error(t('role.message.saveFailed'))
+  } finally {
+    saving.value = false
+  }
+}
+
+// 新增
+const onAdd = async () => {
+  reset()
+  if (deptList.value.length === 0) {
+    await getDeptList()
+  }
+  dataId.value = ''
+  visible.value = true
+}
+
+// 修改
+const onUpdate = async (id: string) => {
+  reset()
+  if (deptList.value.length === 0) {
+    await getDeptList()
+  }
+
+  dataId.value = id
+  console.log('dataId', dataId.value)
+  try {
+    const data = await getRole(id)
+    Object.assign(form, data)
+
+    // 如果有部门权限，设置选中的部门
+    if (data.deptIds && data.deptIds.length > 0) {
+      nextTick(() => {
+        deptTreeRef.value?.setCheckedKeys(data.deptIds)
       })
     }
+  } catch (error) {
+    console.error('获取角色详情失败:', error)
+    ElMessage.error(t('role.message.fetchRoleFailed'))
   }
 
-  // 获取所有部门ID
-  const getAllDeptKeys = (depts: any[]): string[] => {
-    const keys: string[] = []
-    depts.forEach((dept) => {
-      keys.push(dept.key)
-      if (dept.children && dept.children.length > 0) {
-        keys.push(...getAllDeptKeys(dept.children))
-      }
-    })
-    return keys
-  }
+  visible.value = true
+}
 
-  // 获取选中的部门
-  const getCheckedDeptKeys = (): string[] => {
-    if (!deptTreeRef.value) return []
-
-    const checkedKeys = deptTreeRef.value.getCheckedKeys() as string[]
-    const halfCheckedKeys = deptTreeRef.value.getHalfCheckedKeys() as string[]
-    return [...checkedKeys, ...halfCheckedKeys]
-  }
-
-  // 保存
-  const handleSave = async () => {
-    if (saving.value) return
-
-    try {
-      const valid = await formRef.value?.validate()
-      if (!valid) return
-
-      saving.value = true
-
-      const params = { ...form }
-      if (form.dataScope === 2) {
-        params.deptIds = getCheckedDeptKeys()
-      }
-
-      if (isUpdate.value) {
-        await updateRole(params, dataId.value)
-        ElMessage.success(t('role.message.updateSuccess'))
-      } else {
-        await addRole(params)
-        ElMessage.success(t('role.message.addSuccess'))
-      }
-
-      visible.value = false
-      emit('save-success')
-    } catch (error) {
-      console.error('保存角色失败:', error)
-      ElMessage.error(t('role.message.saveFailed'))
-    } finally {
-      saving.value = false
-    }
-  }
-
-  // 新增
-  const onAdd = async () => {
-    reset()
-    if (deptList.value.length === 0) {
-      await getDeptList()
-    }
-    dataId.value = ''
-    visible.value = true
-  }
-
-  // 修改
-  const onUpdate = async (id: string) => {
-    reset()
-    if (deptList.value.length === 0) {
-      await getDeptList()
-    }
-
-    dataId.value = id
-    console.log('dataId', dataId.value)
-    try {
-      const data = await getRole(id)
-      Object.assign(form, data)
-
-      // 如果有部门权限，设置选中的部门
-      if (data.deptIds && data.deptIds.length > 0) {
-        nextTick(() => {
-          deptTreeRef.value?.setCheckedKeys(data.deptIds)
-        })
-      }
-    } catch (error) {
-      console.error('获取角色详情失败:', error)
-      ElMessage.error(t('role.message.fetchRoleFailed'))
-    }
-
-    visible.value = true
-  }
-
-  defineExpose({
-    onAdd,
-    onUpdate
-  })
+defineExpose({
+  onAdd,
+  onUpdate
+})
 </script>
 
 <style scoped lang="scss">

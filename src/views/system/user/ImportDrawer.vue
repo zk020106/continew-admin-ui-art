@@ -102,113 +102,115 @@
     </ElForm>
 
     <template #footer>
-      <CaButton type="cancel" @click="visible = false">{{
+      <CaButton type="cancel" @click="visible = false">
+{{
         t('system.user.import.button.cancel')
-      }}</CaButton>
+      }}
+</CaButton>
       <CaButton type="confirm" @click="save">{{ t('system.user.import.button.confirm') }}</CaButton>
     </template>
   </ElDrawer>
 </template>
 
 <script setup lang="ts">
-  import { UserImportResp } from '@/apis'
-  import { downloadUserImportTemplate, importUser, parseImportUser } from '@/apis/system/user'
-  import CaButton from '@/components/base/CaButton/index.vue'
-  import { useDownload, useResetReactive } from '@/hooks'
-  import { Document, UploadFilled } from '@element-plus/icons-vue'
-  import { useWindowSize } from '@vueuse/core'
-  import type { FormInstance, UploadRequestOptions } from 'element-plus'
-  import { ElMessage } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { FormInstance, UploadRequestOptions } from 'element-plus'
+import type { UserImportResp } from '@/apis'
+import { Document, UploadFilled } from '@element-plus/icons-vue'
+import { useWindowSize } from '@vueuse/core'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { downloadUserImportTemplate, importUser, parseImportUser } from '@/apis/system/user'
+import CaButton from '@/components/base/CaButton/index.vue'
+import { useDownload, useResetReactive } from '@/hooks'
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { width } = useWindowSize()
-  const { t } = useI18n()
+const { width } = useWindowSize()
+const { t } = useI18n()
 
-  const visible = ref(false)
-  const formRef = ref<FormInstance>()
-  const uploadFile = ref([])
+const visible = ref(false)
+const formRef = ref<FormInstance>()
+const uploadFile = ref([])
 
-  const [form, resetForm] = useResetReactive({
-    duplicateUser: 1,
-    duplicateEmail: 1,
-    duplicatePhone: 1,
-    defaultStatus: 1
-  })
+const [form, resetForm] = useResetReactive({
+  duplicateUser: 1,
+  duplicateEmail: 1,
+  duplicatePhone: 1,
+  defaultStatus: 1
+})
 
-  const dataResult = ref<UserImportResp>({
-    importKey: '',
-    totalRows: 0,
-    validRows: 0,
-    duplicateUserRows: 0,
-    duplicateEmailRows: 0,
-    duplicatePhoneRows: 0
-  })
+const dataResult = ref<UserImportResp>({
+  importKey: '',
+  totalRows: 0,
+  validRows: 0,
+  duplicateUserRows: 0,
+  duplicateEmailRows: 0,
+  duplicatePhoneRows: 0
+})
 
-  // 重置
-  const reset = () => {
-    formRef.value?.resetFields()
-    dataResult.value.importKey = ''
-    uploadFile.value = []
-    resetForm()
-  }
+// 重置
+const reset = () => {
+  formRef.value?.resetFields()
+  dataResult.value.importKey = ''
+  uploadFile.value = []
+  resetForm()
+}
 
-  // 下载模板
-  const downloadTemplate = () => {
-    useDownload(() => downloadUserImportTemplate())
-  }
+// 下载模板
+const downloadTemplate = () => {
+  useDownload(() => downloadUserImportTemplate())
+}
 
-  // 上传解析导入数据
-  const handleUpload = (options: UploadRequestOptions) => {
-    const { onError, onSuccess, file } = options
-    const formData = new FormData()
-    formData.append('file', file)
+// 上传解析导入数据
+const handleUpload = (options: UploadRequestOptions) => {
+  const { onError, onSuccess, file } = options
+  const formData = new FormData()
+  formData.append('file', file)
 
-    return parseImportUser(formData)
-      .then((res) => {
-        dataResult.value = res.data
-        ElMessage.success(t('system.user.import.message.uploadSuccess'))
-        onSuccess(res)
-      })
-      .catch((error) => {
-        onError(error)
-      })
-  }
+  return parseImportUser(formData)
+    .then((res) => {
+      dataResult.value = res.data
+      ElMessage.success(t('system.user.import.message.uploadSuccess'))
+      onSuccess(res)
+    })
+    .catch((error) => {
+      onError(error)
+    })
+}
 
-  // 执行导入
-  const save = async () => {
-    try {
-      if (!dataResult.value.importKey) {
-        ElMessage.warning(t('system.user.import.message.pleaseUploadFirst'))
-        return false
-      }
-      form.importKey = dataResult.value.importKey
-      const res = await importUser(form)
-      ElMessage.success(
-        t('system.user.import.message.importSuccess', {
-          insertRows: res.data.insertRows,
-          updateRows: res.data.updateRows
-        })
-      )
-      emit('save-success')
-      visible.value = false
-      return true
-    } catch (err) {
-      console.error(err)
+// 执行导入
+const save = async () => {
+  try {
+    if (!dataResult.value.importKey) {
+      ElMessage.warning(t('system.user.import.message.pleaseUploadFirst'))
       return false
     }
+    form.importKey = dataResult.value.importKey
+    const res = await importUser(form)
+    ElMessage.success(
+      t('system.user.import.message.importSuccess', {
+        insertRows: res.data.insertRows,
+        updateRows: res.data.updateRows
+      })
+    )
+    emit('save-success')
+    visible.value = false
+    return true
+  } catch (err) {
+    console.error(err)
+    return false
   }
+}
 
-  // 打开
-  const onOpen = () => {
-    reset()
-    visible.value = true
-  }
+// 打开
+const onOpen = () => {
+  reset()
+  visible.value = true
+}
 
-  defineExpose({ onOpen })
+defineExpose({ onOpen })
 </script>
 
 <style scoped lang="scss">

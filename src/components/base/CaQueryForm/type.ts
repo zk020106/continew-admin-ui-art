@@ -1,4 +1,4 @@
-import { FormColumnItem } from '@/components/base/CaForm/type'
+import type { FormColumnItem } from '@/components/base/CaForm/type'
 
 export type QueryFormMode = 'change-search' | 'click-search'
 
@@ -10,11 +10,11 @@ export interface QueryFormEmits<T = any> {
   /**
    * 查询事件
    */
-  search: [params: T]
+  'search': [params: T]
   /**
    * 重置事件
    */
-  reset: []
+  'reset': []
 }
 
 export type QueryFormExpose = {

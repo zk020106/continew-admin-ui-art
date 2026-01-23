@@ -1,9 +1,31 @@
-dist
-node_modules
-public
-.husky
-.vscode
+# Dependencies
+node_modules/
 
-src/components/Layout/MenuLeft/index.vue
-src/assets
-stats.html
+# Build output
+dist/
+build/
+
+# Coverage
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+Thumbs.db
+.DS_Store
+
+# CSS preprocessors cache
+.sass-cache/
+.less-cache/

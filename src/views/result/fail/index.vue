@@ -3,7 +3,7 @@
     type="fail"
     title="提交失败"
     message="请核对并修改以下信息后，再重新提交。"
-    iconCode="ri:close-fill"
+    icon-code="ri:close-fill"
   >
     <template #content>
       <p>您提交的内容有如下错误：</p>
@@ -17,12 +17,12 @@
       </p>
     </template>
     <template #buttons>
-      <ElButton type="primary" v-ripple>返回修改</ElButton>
+      <ElButton v-ripple type="primary">返回修改</ElButton>
       <ElButton v-ripple>查看</ElButton>
     </template>
   </ArtResultPage>
 </template>
 
 <script setup lang="ts">
-  defineOptions({ name: 'ResultFail' })
+defineOptions({ name: 'ResultFail' })
 </script>

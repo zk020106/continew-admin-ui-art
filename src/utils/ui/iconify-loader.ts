@@ -13,18 +13,18 @@
  * @author Art Design Pro Team
  */
 
-import { addCollection } from '@iconify/vue'
+// 项目使用的其他图标库
+import epIcons from '@iconify-json/ep/icons.json'
 
 // 导入离线图标数据
 
+import fluentIcons from '@iconify-json/fluent/icons.json'
+
+import iconamoonIcons from '@iconify-json/iconamoon/icons.json'
 // 系统必要图标库
 import riIcons from '@iconify-json/ri/icons.json'
-
-// 项目使用的其他图标库
-import epIcons from '@iconify-json/ep/icons.json'
-import iconamoonIcons from '@iconify-json/iconamoon/icons.json'
 import vaadinIcons from '@iconify-json/vaadin/icons.json'
-import fluentIcons from '@iconify-json/fluent/icons.json'
+import { addCollection } from '@iconify/vue'
 
 // 注册离线图标集
 addCollection(riIcons)

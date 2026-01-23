@@ -26,7 +26,7 @@
           </ElButton>
         </ElTooltip>
 
-        <ElTooltip placement="top" v-if="showSizeBtn" :content="t('table.size')">
+        <ElTooltip v-if="showSizeBtn" placement="top" :content="t('table.size')">
           <ElDropdown trigger="click" @command="handleSizeChange">
             <ElButton>
               <template #icon>
@@ -70,9 +70,9 @@
     <ElTable
       v-bind="tableProps"
       ref="tableRef"
+      v-loading="props.loading"
       :data="props.data as any[]"
       :size="tableSize"
-      v-loading="props.loading"
     >
       <template #empty>
         <ElEmpty v-if="$slots.empty">
@@ -99,152 +99,152 @@
 </template>
 
 <script lang="ts" setup generic="T extends DefaultRow">
-  import {
-    ElButton,
-    ElDropdown,
-    ElDropdownItem,
-    ElDropdownMenu,
-    ElPagination,
-    ElRow,
-    ElSpace,
-    ElTable,
-    ElTooltip
-  } from 'element-plus'
-  import { computed, ref, useTemplateRef, watch } from 'vue'
-  import { useI18n } from 'vue-i18n'
-  import TableColumn from './TableColumn.vue'
-  import ColumnSetting from './components/ColumnSetting.vue'
-  import { DefaultRow, TableColumnItem, TableProps, TableSlotScope } from './type'
+import type { DefaultRow, TableColumnItem, TableProps, TableSlotScope } from './type'
+import {
+  ElButton,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElPagination,
+  ElRow,
+  ElSpace,
+  ElTable,
+  ElTooltip
+} from 'element-plus'
+import { computed, ref, useTemplateRef, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import ColumnSetting from './components/ColumnSetting.vue'
+import TableColumn from './TableColumn.vue'
 
-  const props = withDefaults(defineProps<TableProps<T>>(), {
-    fit: true,
-    showHeader: true,
-    selectOnIndeterminate: true,
-    data: () => [],
-    columns: () => [],
-    pagination: () => ({}),
-    toolbar: () => ({})
-  })
-  const { t } = useI18n()
+const props = withDefaults(defineProps<TableProps<T>>(), {
+  fit: true,
+  showHeader: true,
+  selectOnIndeterminate: true,
+  data: () => [],
+  columns: () => [],
+  pagination: () => ({}),
+  toolbar: () => ({})
+})
+// 定义事件
+const emit = defineEmits<{
+  'refresh': []
+  'update:columns': [columns: TableColumnItem[]]
+}>()
 
-  const attrs = useAttrs()
-  const tableRef = useTemplateRef('tableRef')
-  const tableContainer = useTemplateRef('tableContainer')
+defineSlots<{
+  'append': () => void
+  'empty': () => void
+  'table-title': () => void
+  'top': () => void
+  'toolbar-left': () => void
+  'toolbar-right': () => void
+  [propsName: string]: (props: TableSlotScope<T>) => void
+}>()
 
-  // 全屏状态
-  const isFullscreen = ref(false)
+const { t } = useI18n()
 
-  // 表格尺寸
-  const tableSize = ref<'default' | 'large' | 'small'>(props.size || 'default')
-  defineSlots<{
-    append: () => void
-    empty: () => void
-    'table-title': () => void
-    top: () => void
-    'toolbar-left': () => void
-    'toolbar-right': () => void
-    [propsName: string]: (props: TableSlotScope<T>) => void
-  }>()
+const attrs = useAttrs()
+const tableRef = useTemplateRef('tableRef')
+const tableContainer = useTemplateRef('tableContainer')
 
-  // 本地列状态
-  const localColumns = ref<TableColumnItem[]>([...props.columns])
+// 全屏状态
+const isFullscreen = ref(false)
 
-  // 过滤可见的列
-  const visibleColumns = computed(() => {
-    return localColumns.value.filter((col) => col.visible !== false)
-  })
+// 表格尺寸
+const tableSize = ref<'default' | 'large' | 'small'>(props.size || 'default')
+// 本地列状态
+const localColumns = ref<TableColumnItem[]>([...props.columns])
 
-  // 监听父组件传入的列变化
-  watch(
-    () => props.columns,
-    (newColumns) => {
-      localColumns.value = [...newColumns]
-    },
-    { deep: true }
-  )
+// 过滤可见的列
+const visibleColumns = computed(() => {
+  return localColumns.value.filter((col) => col.visible !== false)
+})
 
-  // 密度选项
-  const sizeOptions = computed(() => {
-    return [
-      { labelKey: 'table.sizeOptions.default', value: 'default' },
-      { labelKey: 'table.sizeOptions.small', value: 'small' },
-      { labelKey: 'table.sizeOptions.large', value: 'large' }
-    ]
-  })
+// 监听父组件传入的列变化
+watch(
+  () => props.columns,
+  (newColumns) => {
+    localColumns.value = [...newColumns]
+  },
+  { deep: true }
+)
 
-  // 定义事件
-  const emit = defineEmits<{
-    refresh: []
-    'update:columns': [columns: TableColumnItem[]]
-  }>()
+// 密度选项
+const sizeOptions = computed(() => {
+  return [
+    { labelKey: 'table.sizeOptions.default', value: 'default' },
+    { labelKey: 'table.sizeOptions.small', value: 'small' },
+    { labelKey: 'table.sizeOptions.large', value: 'large' }
+  ]
+})
 
-  const showRefreshBtn = computed(() => !props.disabledTools?.includes('refresh'))
-  const showSizeBtn = computed(() => !props.disabledTools?.includes('size'))
-  const showFullscreenBtn = computed(() => !props.disabledTools?.includes('fullscreen'))
-  /** 列设置相关逻辑 */
-  const showSettingColumnBtn = computed(() => {
-    return !props.disabledTools?.includes('columnSetting') && Boolean(localColumns.value.length)
-  })
+const showRefreshBtn = computed(() => !props.disabledTools?.includes('refresh'))
+const showSizeBtn = computed(() => !props.disabledTools?.includes('size'))
+const showFullscreenBtn = computed(() => !props.disabledTools?.includes('fullscreen'))
+/** 列设置相关逻辑 */
+const showSettingColumnBtn = computed(() => {
+  return !props.disabledTools?.includes('columnSetting') && Boolean(localColumns.value.length)
+})
 
-  // 自动生成 tableId（基于当前路径）
-  const autoTableId = computed(() => {
-    if (props.tableId) return props.tableId
-    // 没有传入 tableId 时，自动基于当前路径生成
-    const path = window.location.pathname.replace(/^\//, '').replace(/\//g, ':')
-    return path
-  })
-  const tableProps = computed(() => {
-    return {
-      ...attrs,
-      ...props,
-      columns: undefined,
-      pagination: undefined,
-      toolbar: undefined,
-      actions: undefined
-    }
-  })
-
-  const paginationProps = computed(() => {
-    return {
-      background: true,
-      layout: 'prev, pager, next, sizes, total',
-      pageSizes: [10, 20, 50, 100],
-      ...props.pagination
-    }
-  })
-
-  // 刷新处理
-  const handleRefresh = async () => {
-    emit('refresh')
+// 自动生成 tableId（基于当前路径）
+const autoTableId = computed(() => {
+  if (props.tableId) return props.tableId
+  // 没有传入 tableId 时，自动基于当前路径生成
+  const path = window.location.pathname.replace(/^\//, '').replace(/\//g, ':')
+  return path
+})
+const tableProps = computed(() => {
+  return {
+    ...attrs,
+    ...props,
+    columns: undefined,
+    pagination: undefined,
+    toolbar: undefined,
+    actions: undefined
   }
+})
 
-  // 列更新处理
-  const handleColumnsUpdate = (columns: TableColumnItem[]) => {
-    localColumns.value = columns
-    emit('update:columns', columns)
+const paginationProps = computed(() => {
+  return {
+    background: true,
+    layout: 'prev, pager, next, sizes, total',
+    pageSizes: [10, 20, 50, 100],
+    ...props.pagination
   }
+})
 
-  // 尺寸变更处理
-  const handleSizeChange = (size: 'default' | 'large' | 'small') => {
-    tableSize.value = size
+// 刷新处理
+const handleRefresh = async () => {
+  emit('refresh')
+}
+
+// 列更新处理
+const handleColumnsUpdate = (columns: TableColumnItem[]) => {
+  localColumns.value = columns
+  emit('update:columns', columns)
+}
+
+// 尺寸变更处理
+const handleSizeChange = (size: 'default' | 'large' | 'small') => {
+  tableSize.value = size
+}
+
+// 全屏切换
+const toggleFullscreen = () => {
+  isFullscreen.value = !isFullscreen.value
+  if (isFullscreen.value) {
+    document.body.style.overflow = 'hidden'
+  } else {
+    document.body.style.overflow = ''
   }
+}
 
-  // 全屏切换
-  const toggleFullscreen = () => {
-    isFullscreen.value = !isFullscreen.value
-    if (isFullscreen.value) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-  }
-
-  defineExpose({
-    tableRef,
-    tableContainer,
-    isFullscreen,
-    toggleFullscreen
-  })
+defineExpose({
+  tableRef,
+  tableContainer,
+  isFullscreen,
+  toggleFullscreen
+})
 </script>
 
 <style lang="scss" scoped>

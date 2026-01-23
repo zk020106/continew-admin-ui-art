@@ -94,203 +94,203 @@
 </template>
 
 <script setup lang="ts">
-  import type { AppPageQuery, AppResp } from '@/apis/open/app'
-  import { deleteApp, exportApp, getAppSecret, listApp, resetAppSecret } from '@/apis/open/app'
-  import type { FormColumnItem } from '@/components/base/CaForm/type'
-  import type { TableColumnItem } from '@/components/base/CaTable/type'
-  import { CellCopy } from '@/components/base/CellCopy'
-  import { useAuth, useDevice, useResetReactive, useTable } from '@/hooks'
-  import { Download, Hide, MoreFilled, Plus, View } from '@element-plus/icons-vue'
-  import {
-    ElButton,
-    ElDropdown,
-    ElDropdownItem,
-    ElDropdownMenu,
-    ElIcon,
-    ElMessage,
-    ElMessageBox,
-    ElSpace,
-    ElText
-  } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
-  import AddModal from './AddModal.vue'
-  import DetailDrawer from './DetailDrawer.vue'
+import type { AppPageQuery, AppResp } from '@/apis/open/app'
+import type { FormColumnItem } from '@/components/base/CaForm/type'
+import type { TableColumnItem } from '@/components/base/CaTable/type'
+import { Download, Hide, MoreFilled, Plus, View } from '@element-plus/icons-vue'
+import {
+  ElButton,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElIcon,
+  ElMessage,
+  ElMessageBox,
+  ElSpace,
+  ElText
+} from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { deleteApp, exportApp, getAppSecret, listApp, resetAppSecret } from '@/apis/open/app'
+import { CellCopy } from '@/components/base/CellCopy'
+import { useAuth, useDevice, useResetReactive, useTable } from '@/hooks'
+import AddModal from './AddModal.vue'
+import DetailDrawer from './DetailDrawer.vue'
 
-  defineOptions({ name: 'OpenApp' })
+defineOptions({ name: 'OpenApp' })
 
-  const { t } = useI18n()
-  const { isMobile } = useDevice()
-  const { hasAuth } = useAuth()
+const { t } = useI18n()
+const { isMobile } = useDevice()
+const { hasAuth } = useAuth()
 
-  const [queryForm, resetForm] = useResetReactive<AppPageQuery>({
-    sort: ['createTime,desc']
+const [queryForm, resetForm] = useResetReactive<AppPageQuery>({
+  sort: ['createTime,desc']
+})
+
+const queryFormColumns = computed(
+  () =>
+    [
+      {
+        type: 'input',
+        label: t('pages.appManagement.search.description'),
+        field: 'description',
+        gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
+        props: {
+          placeholder: t('pages.appManagement.search.descriptionPlaceholder'),
+          clearable: true
+        }
+      }
+    ] as FormColumnItem<AppPageQuery>[]
+)
+
+const { tableData, loading, pagination, search, handleDelete } = useTable<AppResp>(
+  (page) => listApp({ ...queryForm, ...page }),
+  { immediate: true }
+)
+
+const columns = computed(
+  () =>
+    [
+      {
+        label: t('common.index'),
+        width: 66,
+        align: 'center',
+        render: ({ $index }) =>
+          h('span', {}, $index + 1 + (pagination.current - 1) * pagination.pageSize),
+        fixed: !isMobile.value ? 'left' : false
+      },
+      {
+        label: t('pages.appManagement.field.name'),
+        prop: 'name',
+        minWidth: 140,
+        showOverflowTooltip: true,
+        fixed: !isMobile.value ? 'left' : false
+      },
+      {
+        label: 'Access Key',
+        prop: 'accessKey',
+        slotName: 'accessKey',
+        width: 200
+      },
+      {
+        label: 'Secret Key',
+        prop: 'secretKey',
+        slotName: 'secretKey',
+        width: 220
+      },
+      {
+        label: t('pages.appManagement.field.expireTime'),
+        prop: 'expireTime',
+        width: 180
+      },
+      {
+        label: t('pages.appManagement.field.status'),
+        prop: 'status',
+        slotName: 'status',
+        width: 80,
+        align: 'center'
+      },
+      {
+        label: t('pages.appManagement.field.description'),
+        prop: 'description',
+        minWidth: 160,
+        showOverflowTooltip: true
+      },
+      {
+        label: t('pages.appManagement.field.createUser'),
+        prop: 'createUserString',
+        width: 140,
+        showOverflowTooltip: true,
+        show: false
+      },
+      {
+        label: t('pages.appManagement.field.createTime'),
+        prop: 'createTime',
+        width: 180
+      },
+      {
+        label: t('pages.appManagement.field.updateUser'),
+        prop: 'updateUserString',
+        width: 140,
+        showOverflowTooltip: true,
+        show: false
+      },
+      {
+        label: t('pages.appManagement.field.updateTime'),
+        prop: 'updateTime',
+        width: 180,
+        show: false
+      },
+      {
+        label: t('common.action'),
+        prop: 'action',
+        slotName: 'action',
+        width: 180,
+        align: 'center',
+        fixed: !isMobile.value ? 'right' : false
+      }
+    ] as TableColumnItem[]
+)
+
+const hasMoreActions = computed(() => true)
+
+const reset = () => {
+  resetForm()
+  search()
+}
+
+const onDelete = (record: AppResp) => {
+  handleDelete(() => deleteApp(record.id), {
+    content: t('pages.appManagement.message.confirmDelete', { name: record.name }),
+    confirmType: 'error',
+    successTip: t('message.deleteSuccess')
   })
+}
 
-  const queryFormColumns = computed(
-    () =>
-      [
-        {
-          type: 'input',
-          label: t('pages.appManagement.search.description'),
-          field: 'description',
-          gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
-          props: {
-            placeholder: t('pages.appManagement.search.descriptionPlaceholder'),
-            clearable: true
-          }
-        }
-      ] as FormColumnItem<AppPageQuery>[]
-  )
+const onExport = () => {
+  exportApp(queryForm)
+}
 
-  const { tableData, loading, pagination, search, handleDelete } = useTable<AppResp>(
-    (page) => listApp({ ...queryForm, ...page }),
-    { immediate: true }
-  )
+const onSecret = async (record: AppResp) => {
+  const res = await getAppSecret(record.id)
+  record.secretKey = res.secretKey
+}
 
-  const columns = computed(
-    () =>
-      [
-        {
-          label: t('common.index'),
-          width: 66,
-          align: 'center',
-          render: ({ $index }) =>
-            h('span', {}, $index + 1 + (pagination.current - 1) * pagination.pageSize),
-          fixed: !isMobile.value ? 'left' : false
-        },
-        {
-          label: t('pages.appManagement.field.name'),
-          prop: 'name',
-          minWidth: 140,
-          showOverflowTooltip: true,
-          fixed: !isMobile.value ? 'left' : false
-        },
-        {
-          label: 'Access Key',
-          prop: 'accessKey',
-          slotName: 'accessKey',
-          width: 200
-        },
-        {
-          label: 'Secret Key',
-          prop: 'secretKey',
-          slotName: 'secretKey',
-          width: 220
-        },
-        {
-          label: t('pages.appManagement.field.expireTime'),
-          prop: 'expireTime',
-          width: 180
-        },
-        {
-          label: t('pages.appManagement.field.status'),
-          prop: 'status',
-          slotName: 'status',
-          width: 80,
-          align: 'center'
-        },
-        {
-          label: t('pages.appManagement.field.description'),
-          prop: 'description',
-          minWidth: 160,
-          showOverflowTooltip: true
-        },
-        {
-          label: t('pages.appManagement.field.createUser'),
-          prop: 'createUserString',
-          width: 140,
-          showOverflowTooltip: true,
-          show: false
-        },
-        {
-          label: t('pages.appManagement.field.createTime'),
-          prop: 'createTime',
-          width: 180
-        },
-        {
-          label: t('pages.appManagement.field.updateUser'),
-          prop: 'updateUserString',
-          width: 140,
-          showOverflowTooltip: true,
-          show: false
-        },
-        {
-          label: t('pages.appManagement.field.updateTime'),
-          prop: 'updateTime',
-          width: 180,
-          show: false
-        },
-        {
-          label: t('common.action'),
-          prop: 'action',
-          slotName: 'action',
-          width: 180,
-          align: 'center',
-          fixed: !isMobile.value ? 'right' : false
-        }
-      ] as TableColumnItem[]
-  )
+const onSecretHide = (record: AppResp) => {
+  record.secretKey = ''
+}
 
-  const hasMoreActions = computed(() => true)
-
-  const reset = () => {
-    resetForm()
+const onResetSecret = async (record: AppResp) => {
+  try {
+    await ElMessageBox.confirm(
+      t('pages.appManagement.message.confirmResetSecret', { name: record.name }),
+      t('common.tips'),
+      {
+        type: 'warning',
+        confirmButtonText: t('common.confirm'),
+        cancelButtonText: t('common.cancel')
+      }
+    )
+    await resetAppSecret(record.id)
+    ElMessage.success(t('message.updateSuccess'))
     search()
+  } catch (error) {
+    console.error('重置密钥失败:', error)
   }
+}
 
-  const onDelete = (record: AppResp) => {
-    handleDelete(() => deleteApp(record.id), {
-      content: t('pages.appManagement.message.confirmDelete', { name: record.name }),
-      confirmType: 'error',
-      successTip: t('message.deleteSuccess')
-    })
-  }
+const AddModalRef = useTemplateRef('AddModalRef')
+const onAdd = () => {
+  AddModalRef.value?.onAdd()
+}
 
-  const onExport = () => {
-    exportApp(queryForm)
-  }
+const onUpdate = (record: AppResp) => {
+  AddModalRef.value?.onUpdate(record.id)
+}
 
-  const onSecret = async (record: AppResp) => {
-    const res = await getAppSecret(record.id)
-    record.secretKey = res.secretKey
-  }
-
-  const onSecretHide = (record: AppResp) => {
-    record.secretKey = ''
-  }
-
-  const onResetSecret = async (record: AppResp) => {
-    try {
-      await ElMessageBox.confirm(
-        t('pages.appManagement.message.confirmResetSecret', { name: record.name }),
-        t('common.tips'),
-        {
-          type: 'warning',
-          confirmButtonText: t('common.confirm'),
-          cancelButtonText: t('common.cancel')
-        }
-      )
-      await resetAppSecret(record.id)
-      ElMessage.success(t('message.updateSuccess'))
-      search()
-    } catch (error) {
-      console.error('重置密钥失败:', error)
-    }
-  }
-
-  const AddModalRef = useTemplateRef('AddModalRef')
-  const onAdd = () => {
-    AddModalRef.value?.onAdd()
-  }
-
-  const onUpdate = (record: AppResp) => {
-    AddModalRef.value?.onUpdate(record.id)
-  }
-
-  const DetailDrawerRef = useTemplateRef('DetailDrawerRef')
-  const onDetail = (record: AppResp) => {
-    DetailDrawerRef.value?.onOpen(record.id)
-  }
+const DetailDrawerRef = useTemplateRef('DetailDrawerRef')
+const onDetail = (record: AppResp) => {
+  DetailDrawerRef.value?.onOpen(record.id)
+}
 </script>
 
 <style scoped lang="scss">

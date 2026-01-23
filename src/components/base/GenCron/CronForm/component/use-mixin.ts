@@ -1,4 +1,5 @@
-import { computed, reactive, ref, watch, type ComputedRef, type Reactive, type Ref } from 'vue'
+import type { ComputedRef, Reactive, Ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 
 // 类型定义
 export const TypeEnum = {
@@ -36,8 +37,8 @@ export interface FormSetupOptions {
   defaultType?: TypeEnumValue
   minValue?: number
   maxValue?: number
-  valueRange?: { start: number; end: number }
-  valueLoop?: { start: number; interval: number }
+  valueRange?: { start: number, end: number }
+  valueLoop?: { start: number, interval: number }
   valueWork?: number
   disabled?: boolean | (() => boolean) | Ref<boolean> | ComputedRef<boolean>
 }
@@ -47,8 +48,8 @@ export interface FormSetupReturn {
   type: Ref<TypeEnumValue>
   TypeEnum: typeof TypeEnum
   defaultValue: Ref<string>
-  valueRange: Reactive<{ start: number; end: number }>
-  valueLoop: Reactive<{ start: number; interval: number }>
+  valueRange: Reactive<{ start: number, end: number }>
+  valueLoop: Reactive<{ start: number, interval: number }>
   valueList: Ref<number[]>
   valueWork: Ref<number>
   maxValue: Ref<number>
@@ -95,7 +96,7 @@ export interface FormSetupReturn {
 }
 
 // 公共 props
-export function useFormProps(options: { defaultValue?: string; props?: Record<string, any> }) {
+export function useFormProps(options: { defaultValue?: string, props?: Record<string, any> }) {
   return {
     modelValue: {
       type: String,

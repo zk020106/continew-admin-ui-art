@@ -16,7 +16,7 @@
  * @module store/modules/app
  */
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 
 /**
  * 应用状态管理
@@ -75,7 +75,7 @@ export const useAppStore = defineStore(
      * 设置站点信息
      * @param info 包含 copyright 和 beian 的对象
      */
-    const setSiteInfo = (info: { copyright?: string; beian?: string }) => {
+    const setSiteInfo = (info: { copyright?: string, beian?: string }) => {
       if (info.copyright !== undefined) {
         copyright.value = info.copyright
       }

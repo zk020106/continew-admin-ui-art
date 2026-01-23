@@ -10,17 +10,17 @@
 </template>
 
 <script setup lang="ts">
-  import { SuccessFilled, WarningFilled } from '@element-plus/icons-vue'
+import { SuccessFilled, WarningFilled } from '@element-plus/icons-vue'
 
-  defineOptions({ name: 'CaCellStatus' })
+defineOptions({ name: 'CaCellStatus' })
 
-  const props = withDefaults(defineProps<Props>(), {
-    status: 1
-  })
+const props = withDefaults(defineProps<Props>(), {
+  status: 1
+})
 
-  interface Props {
-    status?: number | undefined
-  }
+interface Props {
+  status?: number | undefined
+}
 </script>
 
 <style scoped lang="scss">

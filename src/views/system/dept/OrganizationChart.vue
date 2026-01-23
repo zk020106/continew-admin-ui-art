@@ -28,7 +28,7 @@
       <div
         v-if="contextMenu.visible"
         class="custom-context-menu"
-        :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }"
+        :style="{ left: `${contextMenu.x}px`, top: `${contextMenu.y}px` }"
       >
         <div class="menu-item" @click.stop="handleMenuAdd">
           <ElIcon><Plus /></ElIcon>
@@ -56,130 +56,131 @@
 </template>
 
 <script setup lang="ts">
-  import { listDept, type DeptResp } from '@/apis/system/dept'
-  import { Delete, Edit, Plus } from '@element-plus/icons-vue'
-  import { useI18n } from 'vue-i18n'
-  import { Vue3TreeOrg } from 'vue3-tree-org'
-  import 'vue3-tree-org/lib/vue3-tree-org.css'
+import type { DeptResp } from '@/apis/system/dept'
+import { Delete, Edit, Plus } from '@element-plus/icons-vue'
+import { Vue3TreeOrg } from 'vue3-tree-org'
+import { useI18n } from 'vue-i18n'
+import { listDept } from '@/apis/system/dept'
+import 'vue3-tree-org/lib/vue3-tree-org.css'
 
-  defineOptions({ name: 'DeptOrganizationChart' })
+defineOptions({ name: 'DeptOrganizationChart' })
 
-  const emit = defineEmits<{
-    add: [parentId?: string]
-    edit: [id: string]
-    delete: [record: DeptResp]
-  }>()
+const emit = defineEmits<{
+  add: [parentId?: string]
+  edit: [id: string]
+  delete: [record: DeptResp]
+}>()
 
-  const { t } = useI18n()
-  const loading = ref(true)
-  const treeData = ref<any[]>([])
-  const treeRef = ref()
-  const nodeExpandAll = ref<boolean>(true)
+const { t } = useI18n()
+const loading = ref(true)
+const treeData = ref<any[]>([])
+const treeRef = ref()
+const nodeExpandAll = ref<boolean>(true)
 
-  // 右键菜单状态
-  const contextMenu = reactive({
-    visible: false,
-    x: 0,
-    y: 0,
-    node: null as any
+// 右键菜单状态
+const contextMenu = reactive({
+  visible: false,
+  x: 0,
+  y: 0,
+  node: null as any
+})
+
+// 将部门数据转换为树形结构
+const convertToTreeData = (data: DeptResp[]) => {
+  if (data.length === 1) {
+    return [data[0]]
+  } else if (data.length > 1) {
+    return [
+      {
+        id: 'root',
+        name: t('dept.organization.root'),
+        description: '',
+        status: 1,
+        isSystem: false,
+        children: data
+      }
+    ]
+  }
+  return []
+}
+
+// 处理右键菜单
+const handleContextMenu = (event: MouseEvent, node: any) => {
+  event.preventDefault()
+  event.stopPropagation()
+
+  contextMenu.node = node
+  contextMenu.x = event.clientX
+  contextMenu.y = event.clientY
+  contextMenu.visible = true
+
+  // 点击其他地方关闭菜单
+  nextTick(() => {
+    document.addEventListener('click', closeContextMenu)
+    document.addEventListener('contextmenu', closeContextMenu)
   })
+}
 
-  // 将部门数据转换为树形结构
-  const convertToTreeData = (data: DeptResp[]) => {
-    if (data.length === 1) {
-      return [data[0]]
-    } else if (data.length > 1) {
-      return [
-        {
-          id: 'root',
-          name: t('dept.organization.root'),
-          description: '',
-          status: 1,
-          isSystem: false,
-          children: data
-        }
-      ]
-    }
-    return []
+// 关闭右键菜单
+const closeContextMenu = () => {
+  contextMenu.visible = false
+  document.removeEventListener('click', closeContextMenu)
+  document.removeEventListener('contextmenu', closeContextMenu)
+}
+
+// 新增部门
+const handleMenuAdd = () => {
+  if (contextMenu.node?.id !== 'root') {
+    emit('add', contextMenu.node.id)
   }
+  closeContextMenu()
+}
 
-  // 处理右键菜单
-  const handleContextMenu = (event: MouseEvent, node: any) => {
-    event.preventDefault()
-    event.stopPropagation()
-
-    contextMenu.node = node
-    contextMenu.x = event.clientX
-    contextMenu.y = event.clientY
-    contextMenu.visible = true
-
-    // 点击其他地方关闭菜单
-    nextTick(() => {
-      document.addEventListener('click', closeContextMenu)
-      document.addEventListener('contextmenu', closeContextMenu)
-    })
+// 编辑部门
+const handleMenuEdit = () => {
+  if (contextMenu.node?.id !== 'root') {
+    emit('edit', contextMenu.node.id)
   }
+  closeContextMenu()
+}
 
-  // 关闭右键菜单
-  const closeContextMenu = () => {
-    contextMenu.visible = false
-    document.removeEventListener('click', closeContextMenu)
-    document.removeEventListener('contextmenu', closeContextMenu)
+// 删除部门
+const handleMenuDelete = () => {
+  if (contextMenu.node?.id !== 'root' && !contextMenu.node?.isSystem) {
+    emit('delete', contextMenu.node)
   }
+  closeContextMenu()
+}
 
-  // 新增部门
-  const handleMenuAdd = () => {
-    if (contextMenu.node?.id !== 'root') {
-      emit('add', contextMenu.node.id)
-    }
-    closeContextMenu()
+// 获取部门列表
+const getDeptList = async () => {
+  loading.value = true
+  try {
+    const data = await listDept({})
+    treeData.value = convertToTreeData(data)
+  } catch (error) {
+    console.error('获取部门列表失败:', error)
+  } finally {
+    loading.value = false
   }
+}
 
-  // 编辑部门
-  const handleMenuEdit = () => {
-    if (contextMenu.node?.id !== 'root') {
-      emit('edit', contextMenu.node.id)
-    }
-    closeContextMenu()
-  }
+// 暴露刷新方法
+const refresh = () => {
+  getDeptList()
+}
 
-  // 删除部门
-  const handleMenuDelete = () => {
-    if (contextMenu.node?.id !== 'root' && !contextMenu.node?.isSystem) {
-      emit('delete', contextMenu.node)
-    }
-    closeContextMenu()
-  }
+onMounted(() => {
+  getDeptList()
+})
 
-  // 获取部门列表
-  const getDeptList = async () => {
-    loading.value = true
-    try {
-      const data = await listDept({})
-      treeData.value = convertToTreeData(data)
-    } catch (error) {
-      console.error('获取部门列表失败:', error)
-    } finally {
-      loading.value = false
-    }
-  }
+onUnmounted(() => {
+  closeContextMenu()
+})
 
-  // 暴露刷新方法
-  const refresh = () => {
-    getDeptList()
-  }
-
-  onMounted(() => {
-    getDeptList()
-  })
-
-  onUnmounted(() => {
-    closeContextMenu()
-  })
-
-  defineExpose({
-    refresh
-  })
+defineExpose({
+  refresh
+})
 </script>
 
 <style scoped lang="scss">
@@ -263,9 +264,9 @@
       max-width: 200px;
       margin-bottom: 8px;
       overflow: hidden;
+      text-overflow: ellipsis;
       font-size: 12px;
       color: var(--el-text-color-secondary);
-      text-overflow: ellipsis;
       white-space: nowrap;
     }
 

@@ -1,3 +1,4 @@
+import type { Emitter } from 'mitt'
 /**
  * 全局事件总线模块
  *
@@ -41,7 +42,7 @@
  * @module utils/sys/mittBus
  * @author Art Design Pro Team
  */
-import mitt, { type Emitter } from 'mitt'
+import mitt from 'mitt'
 
 // 定义事件类型映射
 type Events = {

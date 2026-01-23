@@ -31,44 +31,45 @@
 </template>
 
 <script setup lang="ts">
-  import { Loading } from '@element-plus/icons-vue'
-  import VueOfficeDocx from '@vue-office/docx'
-  import '@vue-office/docx/lib/index.css'
-  import VueOfficeExcel from '@vue-office/excel'
-  import '@vue-office/excel/lib/index.css'
-  import VueOfficePdf from '@vue-office/pdf'
-  const props = defineProps<{
-    fileUrl: string
-    type: 'word' | 'excel' | 'pdf'
-  }>()
+import { Loading } from '@element-plus/icons-vue'
+import VueOfficeDocx from '@vue-office/docx'
+import VueOfficeExcel from '@vue-office/excel'
+import VueOfficePdf from '@vue-office/pdf'
+import '@vue-office/docx/lib/index.css'
+import '@vue-office/excel/lib/index.css'
 
-  defineEmits<{
-    (e: 'download'): void
-  }>()
+const props = defineProps<{
+  fileUrl: string
+  type: 'word' | 'excel' | 'pdf'
+}>()
 
-  const loading = ref(true)
-  const error = ref('')
+defineEmits<{
+  (e: 'download'): void
+}>()
 
-  // const options = {
-  //   className: 'office-document',
-  //   table: {
-  //     row: { height: 20 },
-  //     col: { width: 100 }
-  //   }
-  // }
-  console.log('fileUrl', props.fileUrl)
+const loading = ref(true)
+const error = ref('')
 
-  const onRendered = () => {
-    console.log('11111')
+// const options = {
+//   className: 'office-document',
+//   table: {
+//     row: { height: 20 },
+//     col: { width: 100 }
+//   }
+// }
+console.log('fileUrl', props.fileUrl)
 
-    loading.value = false
-  }
+const onRendered = () => {
+  console.log('11111')
 
-  const onError = (err: any) => {
-    console.error('Office preview error:', err)
-    loading.value = false
-    error.value = err.message || '文档加载失败'
-  }
+  loading.value = false
+}
+
+const onError = (err: any) => {
+  console.error('Office preview error:', err)
+  loading.value = false
+  error.value = err.message || '文档加载失败'
+}
 </script>
 
 <style lang="scss" scoped>

@@ -2,14 +2,18 @@
   <div class="cron-config-list">
     <el-radio-group :model-value="type" @update:model-value="type = $event as any">
       <div class="item">
-        <el-radio :value="TypeEnum.every" v-bind="beforeRadioAttrs">{{
+        <el-radio :value="TypeEnum.every" v-bind="beforeRadioAttrs">
+{{
           $t('components.genCron.type.every', { unit: $t('components.genCron.unit.minute') })
-        }}</el-radio>
+        }}
+</el-radio>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.range" v-bind="beforeRadioAttrs">{{
+        <el-radio :value="TypeEnum.range" v-bind="beforeRadioAttrs">
+{{
           $t('components.genCron.type.range')
-        }}</el-radio>
+        }}
+</el-radio>
         <div class="item-config">
           <span>{{ $t('components.genCron.unit.from') }}</span>
           <el-input-number v-model="valueRange.start" v-bind="typeRangeAttrs" />
@@ -19,9 +23,11 @@
         </div>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.loop" v-bind="beforeRadioAttrs">{{
+        <el-radio :value="TypeEnum.loop" v-bind="beforeRadioAttrs">
+{{
           $t('components.genCron.type.loop')
-        }}</el-radio>
+        }}
+</el-radio>
         <div class="item-config">
           <span>{{ $t('components.genCron.unit.from') }}</span>
           <el-input-number v-model="valueLoop.start" v-bind="typeLoopAttrs" />
@@ -34,9 +40,11 @@
         </div>
       </div>
       <div class="item">
-        <el-radio :value="TypeEnum.specify" v-bind="beforeRadioAttrs">{{
+        <el-radio :value="TypeEnum.specify" v-bind="beforeRadioAttrs">
+{{
           $t('components.genCron.type.specify')
-        }}</el-radio>
+        }}
+</el-radio>
         <div class="list">
           <el-checkbox-group v-model="valueList">
             <el-checkbox v-for="i in specifyRange" :key="i" :value="i" v-bind="typeSpecifyAttrs">
@@ -50,47 +58,47 @@
 </template>
 
 <script setup lang="ts">
-  import { useFormSetup } from './use-mixin'
-  import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
+import { useFormSetup } from './use-mixin'
 
-  defineOptions({ name: 'MinuteForm' })
+defineOptions({ name: 'MinuteForm' })
 
-  const { t } = useI18n()
+const props = withDefaults(
+  defineProps<{
+    modelValue?: string
+    disabled?: boolean
+  }>(),
+  {
+    modelValue: '*',
+    disabled: false
+  }
+)
 
-  const props = withDefaults(
-    defineProps<{
-      modelValue?: string
-      disabled?: boolean
-    }>(),
-    {
-      modelValue: '*',
-      disabled: false
-    }
-  )
+const emit = defineEmits<{
+  (e: 'change', value: string): void
+  (e: 'update:modelValue', value: string): void
+}>()
 
-  const emit = defineEmits<{
-    (e: 'change', value: string): void
-    (e: 'update:modelValue', value: string): void
-  }>()
+const { t: _t } = useI18n()
 
-  const setup = useFormSetup(props, emit, {
-    defaultValue: '*',
-    minValue: 0,
-    maxValue: 59,
-    valueRange: { start: 0, end: 59 },
-    valueLoop: { start: 0, interval: 1 }
-  })
+const setup = useFormSetup(props, emit, {
+  defaultValue: '*',
+  minValue: 0,
+  maxValue: 59,
+  valueRange: { start: 0, end: 59 },
+  valueLoop: { start: 0, interval: 1 }
+})
 
-  const {
-    type,
-    TypeEnum,
-    valueRange,
-    valueLoop,
-    valueList,
-    specifyRange,
-    beforeRadioAttrs,
-    typeRangeAttrs,
-    typeLoopAttrs,
-    typeSpecifyAttrs
-  } = setup
+const {
+  type,
+  TypeEnum,
+  valueRange,
+  valueLoop,
+  valueList,
+  specifyRange,
+  beforeRadioAttrs,
+  typeRangeAttrs,
+  typeLoopAttrs,
+  typeSpecifyAttrs
+} = setup
 </script>

@@ -14,31 +14,31 @@
 </template>
 
 <script setup lang="ts">
-  import { ElTabPane, ElTabs } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
-  import LoginLog from './login/index.vue'
-  import OperationLog from './operation/index.vue'
+import { ElTabPane, ElTabs } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import LoginLog from './login/index.vue'
+import OperationLog from './operation/index.vue'
 
-  defineOptions({ name: 'MonitorSystemLog' })
+defineOptions({ name: 'MonitorSystemLog' })
 
-  const route = useRoute()
-  const router = useRouter()
-  const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
+const { t } = useI18n()
 
-  const activeKey = ref('1')
-  watch(
-    () => route.query,
-    () => {
-      if (route.query.tabKey) {
-        activeKey.value = String(route.query.tabKey)
-      }
-    },
-    { immediate: true }
-  )
+const activeKey = ref('1')
+watch(
+  () => route.query,
+  () => {
+    if (route.query.tabKey) {
+      activeKey.value = String(route.query.tabKey)
+    }
+  },
+  { immediate: true }
+)
 
-  const change = (key: string) => {
-    router.replace({ path: route.path, query: { tabKey: key } })
-  }
+const change = (key: string) => {
+  router.replace({ path: route.path, query: { tabKey: key } })
+}
 </script>
 
 <style lang="scss" scoped>

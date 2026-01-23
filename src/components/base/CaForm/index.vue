@@ -1,11 +1,11 @@
 <template>
   <ElForm ref="formRef" :class="getClass" v-bind="formProps" :model="props.modelValue">
     <CaGrid
+      v-bind="props.gridProps"
+      :key="useId()"
       class="w-full ca-form-grid"
       :col-gap="12"
-      v-bind="props.gridProps"
       :collapsed="collapsed"
-      :key="useId()"
     >
       <template v-for="(item, index) in props.columns">
         <GridItem v-if="item.type === 'title'" :key="`title${index}`" :span="100">
@@ -118,266 +118,266 @@
 </template>
 
 <script lang="tsx" setup>
-  import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
-  import type { FormInstance } from 'element-plus'
-  import * as El from 'element-plus'
-  import { ElButton, ElForm, ElFormItem, ElSpace, ElText } from 'element-plus'
-  import { computed, getCurrentInstance, onMounted, ref, useAttrs, useId } from 'vue'
-  import { useI18n } from 'vue-i18n'
-  import InputSearch from '../CaInputSearch/index.vue'
-  import type { FormColumnItem, FormColumnType, FormProps } from './type'
+import type { FormInstance } from 'element-plus'
+import type { FormColumnItem, FormColumnType, FormProps } from './type'
+import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
+import * as El from 'element-plus'
+import { ElButton, ElForm, ElFormItem, ElSpace, ElText } from 'element-plus'
+import { computed, getCurrentInstance, onMounted, ref, useAttrs, useId } from 'vue'
+import { useI18n } from 'vue-i18n'
+import InputSearch from '../CaInputSearch/index.vue'
 
-  const props = withDefaults(defineProps<FormProps>(), {
-    columns: () => [],
-    labelWidth: 'auto',
-    scrollToError: true,
-    showMessage: true,
-    gridItemProps: () => ({ span: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 } }),
-    search: false,
-    searchText: undefined,
-    hideFoldBtn: false,
-    defaultCollapsed: undefined,
-    fc: () => ({})
+const props = withDefaults(defineProps<FormProps>(), {
+  columns: () => [],
+  labelWidth: 'auto',
+  scrollToError: true,
+  showMessage: true,
+  gridItemProps: () => ({ span: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 } }),
+  search: false,
+  searchText: undefined,
+  hideFoldBtn: false,
+  defaultCollapsed: undefined,
+  fc: () => ({})
+})
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: any): void
+  (e: 'search'): void
+  (e: 'reset'): void
+}>()
+
+const { t } = useI18n()
+
+const attrs = useAttrs()
+const collapsed = ref(props?.defaultCollapsed ?? props.search)
+const instance = getCurrentInstance()
+
+const globalConfig = instance?.appContext.config.globalProperties.$config
+const clearable = globalConfig?.clearable ?? false
+// 字典数据存储
+const dictData = ref<Record<string, any[]>>({})
+
+/** 组件静态配置 */
+const STATIC_PROPS = new Map([
+  ['input', { clearable, maxlength: 20 }],
+  ['textarea', { clearable, type: 'textarea', maxlength: 200, showWordLimit: true }],
+  ['input-number', {}],
+  ['input-tag', { clearable }],
+  ['select', { clearable }],
+  ['select-v2', { clearable }],
+  ['tree-select', { clearable }],
+  ['cascader', { clearable }],
+  ['slider', {}],
+  ['switch', {}],
+  ['rate', {}],
+  ['checkbox-group', {}],
+  ['checkbox', {}],
+  ['radio-group', {}],
+  ['radio', {}],
+  ['date-picker', { clearable }],
+  ['time-picker', { clearable }],
+  ['time-select', { clearable }],
+  ['color-picker', {}],
+  ['transfer', {}],
+  ['autocomplete', {}],
+  ['upload', {}],
+  ['title', {}]
+])
+
+// 获取字典数据
+const loadDictData = async () => {
+  const dictCodes: string[] = []
+  // 收集所有需要的字典编码
+  props.columns?.forEach((item) => {
+    if (item.dictCode) {
+      dictCodes.push(item.dictCode)
+    }
   })
-
-  const { t } = useI18n()
-
-  const emit = defineEmits<{
-    (e: 'update:modelValue', value: any): void
-    (e: 'search'): void
-    (e: 'reset'): void
-  }>()
-
-  const attrs = useAttrs()
-  const collapsed = ref(props?.defaultCollapsed ?? props.search)
-  const instance = getCurrentInstance()
-
-  const globalConfig = instance?.appContext.config.globalProperties.$config
-  const clearable = globalConfig?.clearable ?? false
-  // 字典数据存储
-  const dictData = ref<Record<string, any[]>>({})
-
-  /** 组件静态配置 */
-  const STATIC_PROPS = new Map([
-    ['input', { clearable, maxlength: 20 }],
-    ['textarea', { clearable, type: 'textarea', maxlength: 200, showWordLimit: true }],
-    ['input-number', {}],
-    ['input-tag', { clearable }],
-    ['select', { clearable }],
-    ['select-v2', { clearable }],
-    ['tree-select', { clearable }],
-    ['cascader', { clearable }],
-    ['slider', {}],
-    ['switch', {}],
-    ['rate', {}],
-    ['checkbox-group', {}],
-    ['checkbox', {}],
-    ['radio-group', {}],
-    ['radio', {}],
-    ['date-picker', { clearable }],
-    ['time-picker', { clearable }],
-    ['time-select', { clearable }],
-    ['color-picker', {}],
-    ['transfer', {}],
-    ['autocomplete', {}],
-    ['upload', {}],
-    ['title', {}]
-  ])
-
-  // 获取字典数据
-  const loadDictData = async () => {
-    const dictCodes: string[] = []
-    // 收集所有需要的字典编码
-    props.columns?.forEach((item) => {
-      if (item.dictCode) {
-        dictCodes.push(item.dictCode)
-      }
+  if (!dictCodes.length) return
+  if (!globalConfig?.dictRequest) {
+    return El.ElMessage.error(t('components.form.message.dictRequestNotConfigured'))
+  }
+  try {
+    // 使用Promise.all并行处理所有字典请求
+    const dictResponses = await Promise.all(
+      dictCodes.map((code) =>
+        globalConfig.dictRequest(code).then((response: any) => ({ code, response }))
+      )
+    )
+    // 处理所有响应结果
+    dictResponses.forEach(({ code, response }) => {
+      dictData.value[code] = response
     })
-    if (!dictCodes.length) return
-    if (!globalConfig?.dictRequest) {
-      return El.ElMessage.error(t('components.form.message.dictRequestNotConfigured'))
-    }
-    try {
-      // 使用Promise.all并行处理所有字典请求
-      const dictResponses = await Promise.all(
-        dictCodes.map((code) =>
-          globalConfig.dictRequest(code).then((response: any) => ({ code, response }))
-        )
-      )
-      // 处理所有响应结果
-      dictResponses.forEach(({ code, response }) => {
-        dictData.value[code] = response
-      })
-    } catch (error) {
-      console.error('Failed to load dictionary data:', error)
-      El.ElMessage.error(t('components.form.message.dictLoadFailed'))
-    }
+  } catch (error) {
+    console.error('Failed to load dictionary data:', error)
+    El.ElMessage.error(t('components.form.message.dictLoadFailed'))
   }
+}
 
-  // 组件挂载时获取字典数据
-  onMounted(() => {
-    loadDictData()
-  })
+// 组件挂载时获取字典数据
+onMounted(() => {
+  loadDictData()
+})
 
-  // 获取搜索按钮文本
-  const searchText = computed(() => {
-    return props.searchText || t('common.button.search')
-  })
+// 获取搜索按钮文本
+const searchText = computed(() => {
+  return props.searchText || t('common.button.search')
+})
 
-  /** 获取占位文本 */
-  const getPlaceholder = (item: FormColumnItem) => {
-    if (!item.type) return undefined
-    if (['input', 'input-number', 'input-tag'].includes(item.type)) {
-      return t('components.form.placeholder.input', { label: item.label })
-    }
-    if (['textarea'].includes(item.type)) {
-      return t('components.form.placeholder.input', { label: item.label })
-    }
-    if (
-      ['select', 'select-v2', 'tree-select', 'cascader', 'time-select', 'input-search'].includes(
-        item.type
-      )
-    ) {
-      return t('components.form.placeholder.select', { label: item.label })
-    }
-    if (['date-picker'].includes(item.type)) {
-      return t('components.form.placeholder.date')
-    }
-    if (['time-picker'].includes(item.type)) {
-      return t('components.form.placeholder.time')
-    }
-    return undefined
+/** 获取占位文本 */
+const getPlaceholder = (item: FormColumnItem) => {
+  if (!item.type) return undefined
+  if (['input', 'input-number', 'input-tag'].includes(item.type)) {
+    return t('components.form.placeholder.input', { label: item.label })
   }
-
-  // 组件的默认props配置
-  function getComponentBindProps(item: FormColumnItem) {
-    // 获取默认配置
-    const defaultProps: any = STATIC_PROPS.get(item.type) || {}
-    defaultProps.placeholder = getPlaceholder(item)
-    if (item.type === 'date-picker') {
-      defaultProps.valueFormat =
-        item?.props?.type === 'datetime' ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
-    }
-    // 如果配置了dictCode且存在对应的字典数据，设置options
-    if (item.dictCode && dictData.value[item.dictCode]) {
-      defaultProps.options = dictData.value[item.dictCode]
-    }
-    // 合并默认配置和自定义配置
-    return { ...defaultProps, ...(item?.props || {}) }
+  if (['textarea'].includes(item.type)) {
+    return t('components.form.placeholder.input', { label: item.label })
   }
-
-  const formProps = computed(() => {
-    return {
-      ...attrs,
-      ...props,
-      columns: undefined,
-      gridProps: undefined,
-      gridItemProps: undefined,
-      search: undefined,
-      searchText: undefined,
-      hideFoldBtn: undefined,
-      defaultCollapsed: undefined,
-      modelValue: undefined,
-      fc: undefined
-    }
-  })
-
-  const getClass = computed(() => {
-    const arr: string[] = ['ca-form']
-    if (props.search) {
-      arr.push('ca-form--search')
-    }
-    return arr.join(' ')
-  })
-
-  const CompMap: Record<Exclude<FormColumnType, 'slot'>, any> = {
-    input: El.ElInput,
-    textarea: El.ElInput,
-    'input-number': El.ElInputNumber,
-    'input-tag': El.ElInputTag,
-    'input-search': InputSearch,
-    select: El.ElSelect,
-    'select-v2': El.ElSelectV2,
-    'tree-select': El.ElTreeSelect,
-    cascader: El.ElCascader,
-    slider: El.ElSlider,
-    switch: El.ElSwitch,
-    rate: El.ElRate,
-    'checkbox-group': El.ElCheckboxGroup,
-    checkbox: El.ElCheckbox,
-    'radio-group': El.ElRadioGroup,
-    radio: El.ElRadio,
-    'date-picker': El.ElDatePicker,
-    'time-picker': El.ElTimePicker,
-    'time-select': El.ElTimeSelect,
-    'color-picker': El.ElColorPicker,
-    transfer: El.ElTransfer,
-    autocomplete: El.ElAutocomplete,
-    upload: El.ElUpload,
-    title: El.ElAlert
+  if (
+    ['select', 'select-v2', 'tree-select', 'cascader', 'time-select', 'input-search'].includes(
+      item.type
+    )
+  ) {
+    return t('components.form.placeholder.select', { label: item.label })
   }
-
-  const formRef = ref<FormInstance>()
-
-  /** 获取动态 disabled 状态 */
-  const getItemDisabled = (item: FormColumnItem) => {
-    if (typeof item.props?.disabled === 'function') {
-      return item.props.disabled(props.modelValue)
-    }
-    return isDisabled(item)
+  if (['date-picker'].includes(item.type)) {
+    return t('components.form.placeholder.date')
   }
-
-  /** 获取动态 hide 状态 */
-  const getItemHide = (item: FormColumnItem) => {
-    if (typeof item.hide === 'function') {
-      return item.hide(props.modelValue)
-    }
-    return isHide(item)
+  if (['time-picker'].includes(item.type)) {
+    return t('components.form.placeholder.time')
   }
+  return undefined
+}
 
-  /** 表单项校验规则 */
-  function getFormItemRules(item: FormColumnItem) {
-    if (item.required) {
-      return [
-        { required: true, message: t('components.form.validate.required', { label: item.label }) },
-        ...(Array.isArray(item.rules) ? item.rules : [])
-      ]
-    }
-    if (props.fc?.[item.field]?.required) {
-      return [
-        {
-          required: props.fc?.[item.field]?.required,
-          message: t('components.form.validate.required', { label: item.label })
-        },
-        ...(Array.isArray(item.rules) ? item.rules : [])
-      ]
-    }
-    return item.rules
+// 组件的默认props配置
+function getComponentBindProps(item: FormColumnItem) {
+  // 获取默认配置
+  const defaultProps: any = STATIC_PROPS.get(item.type) || {}
+  defaultProps.placeholder = getPlaceholder(item)
+  if (item.type === 'date-picker') {
+    defaultProps.valueFormat
+      = item?.props?.type === 'datetime' ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'
   }
-
-  /** 隐藏表单项 */
-  function isHide(item: FormColumnItem) {
-    if (typeof item.hide === 'boolean') return item.hide
-    if (typeof item.hide === 'function') {
-      return item.hide(props.modelValue)
-    }
-    if (props.fc?.[item.field]?.hidden) return true
-    if (item.hide === undefined) return false
+  // 如果配置了dictCode且存在对应的字典数据，设置options
+  if (item.dictCode && dictData.value[item.dictCode]) {
+    defaultProps.options = dictData.value[item.dictCode]
   }
+  // 合并默认配置和自定义配置
+  return { ...defaultProps, ...(item?.props || {}) }
+}
 
-  /** 禁用表单项 */
-  function isDisabled(item: FormColumnItem) {
-    if (item?.props?.disabled !== undefined) return item?.props?.disabled
-    if (props.fc?.[item.field]?.disabled === true) return true
-    return false
+const formProps = computed(() => {
+  return {
+    ...attrs,
+    ...props,
+    columns: undefined,
+    gridProps: undefined,
+    gridItemProps: undefined,
+    search: undefined,
+    searchText: undefined,
+    hideFoldBtn: undefined,
+    defaultCollapsed: undefined,
+    modelValue: undefined,
+    fc: undefined
   }
+})
 
-  /** 表单数据更新  */
-  function updateModelValue(value: any, item: FormColumnItem) {
-    emit('update:modelValue', Object.assign(props.modelValue, { [item.field]: value }))
+const getClass = computed(() => {
+  const arr: string[] = ['ca-form']
+  if (props.search) {
+    arr.push('ca-form--search')
   }
+  return arr.join(' ')
+})
 
-  defineExpose({ formRef })
+const CompMap: Record<Exclude<FormColumnType, 'slot'>, any> = {
+  'input': El.ElInput,
+  'textarea': El.ElInput,
+  'input-number': El.ElInputNumber,
+  'input-tag': El.ElInputTag,
+  'input-search': InputSearch,
+  'select': El.ElSelect,
+  'select-v2': El.ElSelectV2,
+  'tree-select': El.ElTreeSelect,
+  'cascader': El.ElCascader,
+  'slider': El.ElSlider,
+  'switch': El.ElSwitch,
+  'rate': El.ElRate,
+  'checkbox-group': El.ElCheckboxGroup,
+  'checkbox': El.ElCheckbox,
+  'radio-group': El.ElRadioGroup,
+  'radio': El.ElRadio,
+  'date-picker': El.ElDatePicker,
+  'time-picker': El.ElTimePicker,
+  'time-select': El.ElTimeSelect,
+  'color-picker': El.ElColorPicker,
+  'transfer': El.ElTransfer,
+  'autocomplete': El.ElAutocomplete,
+  'upload': El.ElUpload,
+  'title': El.ElAlert
+}
+
+const formRef = ref<FormInstance>()
+
+/** 获取动态 disabled 状态 */
+const getItemDisabled = (item: FormColumnItem) => {
+  if (typeof item.props?.disabled === 'function') {
+    return item.props.disabled(props.modelValue)
+  }
+  return isDisabled(item)
+}
+
+/** 获取动态 hide 状态 */
+const getItemHide = (item: FormColumnItem) => {
+  if (typeof item.hide === 'function') {
+    return item.hide(props.modelValue)
+  }
+  return isHide(item)
+}
+
+/** 表单项校验规则 */
+function getFormItemRules(item: FormColumnItem) {
+  if (item.required) {
+    return [
+      { required: true, message: t('components.form.validate.required', { label: item.label }) },
+      ...(Array.isArray(item.rules) ? item.rules : [])
+    ]
+  }
+  if (props.fc?.[item.field]?.required) {
+    return [
+      {
+        required: props.fc?.[item.field]?.required,
+        message: t('components.form.validate.required', { label: item.label })
+      },
+      ...(Array.isArray(item.rules) ? item.rules : [])
+    ]
+  }
+  return item.rules
+}
+
+/** 隐藏表单项 */
+function isHide(item: FormColumnItem) {
+  if (typeof item.hide === 'boolean') return item.hide
+  if (typeof item.hide === 'function') {
+    return item.hide(props.modelValue)
+  }
+  if (props.fc?.[item.field]?.hidden) return true
+  if (item.hide === undefined) return false
+}
+
+/** 禁用表单项 */
+function isDisabled(item: FormColumnItem) {
+  if (item?.props?.disabled !== undefined) return item?.props?.disabled
+  if (props.fc?.[item.field]?.disabled === true) return true
+  return false
+}
+
+/** 表单数据更新  */
+function updateModelValue(value: any, item: FormColumnItem) {
+  emit('update:modelValue', { ...props.modelValue, [item.field]: value })
+}
+
+defineExpose({ formRef })
 </script>
 
 <style lang="scss" scoped>

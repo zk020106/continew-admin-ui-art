@@ -11,7 +11,7 @@
           <ElIcon><Search /></ElIcon>
         </template>
       </ElInput>
-      <ElButton @click="handleAdd" :icon="Plus" type="primary" />
+      <ElButton :icon="Plus" type="primary" @click="handleAdd" />
     </div>
 
     <div class="dict-list-wrapper">
@@ -58,126 +58,127 @@
 </template>
 
 <script setup lang="ts">
-  import { type DictResp, clearDictCache, deleteDict, listDict } from '@/apis/system/dict'
-  import { MoreFilled, Plus, Search } from '@element-plus/icons-vue'
-  import { ElEmpty, ElMessage, ElMessageBox } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
-  import AddDrawer from '../AddDrawer.vue'
+import type { DictResp } from '@/apis/system/dict'
+import { MoreFilled, Plus, Search } from '@element-plus/icons-vue'
+import { ElEmpty, ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { clearDictCache, deleteDict, listDict } from '@/apis/system/dict'
+import AddDrawer from '../AddDrawer.vue'
 
-  const emit = defineEmits<{
-    (e: 'node-click', keys: DictResp): void
-  }>()
+const emit = defineEmits<{
+  (e: 'node-click', keys: DictResp): void
+}>()
 
-  const { t } = useI18n()
-  const selectedDict = ref<DictResp | null>(null)
-  const dictList = ref<DictResp[]>([])
-  const loading = ref(false)
+const { t } = useI18n()
+const selectedDict = ref<DictResp | null>(null)
+const dictList = ref<DictResp[]>([])
+const loading = ref(false)
 
-  // 选中字典
-  const selectDict = (dictItem: DictResp) => {
-    if (selectedDict.value?.id === dictItem.id) {
-      return
-    }
-    selectedDict.value = dictItem
-    emit('node-click', dictItem)
+// 选中字典
+const selectDict = (dictItem: DictResp) => {
+  if (selectedDict.value?.id === dictItem.id) {
+    return
   }
+  selectedDict.value = dictItem
+  emit('node-click', dictItem)
+}
 
-  // 查询字典列表
-  const getDictList = async () => {
+// 查询字典列表
+const getDictList = async () => {
+  try {
+    loading.value = true
+    const data = await listDict({ sort: ['createTime,desc'] })
+    dictList.value = data
+
+    // 默认选中第一个字典
+    await nextTick(() => {
+      if (dictList.value.length > 0 && !selectedDict.value) {
+        selectDict(dictList.value[0])
+      }
+    })
+  } catch (error) {
+    console.error('获取字典列表失败:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+// 搜索关键词
+const searchKey = ref('')
+
+// 搜索处理
+const handleSearch = (value: string) => {
+  searchKey.value = value
+}
+
+// 过滤后的字典列表
+const filteredDictList = computed(() => {
+  if (!searchKey.value) return dictList.value
+  const keyword = searchKey.value.toLowerCase()
+  return dictList.value.filter(
+    (item) =>
+      item.name?.toLowerCase().includes(keyword)
+      || item.code?.toLowerCase().includes(keyword)
+      || item.description?.toLowerCase().includes(keyword)
+  )
+})
+
+const AddDrawerRef = useTemplateRef('AddDrawerRef')
+
+// 新增字典
+const handleAdd = () => {
+  AddDrawerRef.value?.onAdd()
+}
+
+// 点击菜单项
+const onMenuItemClick = async (command: string, dictItem: DictResp) => {
+  if (command === 'update') {
+    AddDrawerRef.value?.onUpdate(dictItem.id)
+  } else if (command === 'delete') {
     try {
-      loading.value = true
-      const data = await listDict({ sort: ['createTime,desc'] })
-      dictList.value = data
-
-      // 默认选中第一个字典
-      await nextTick(() => {
-        if (dictList.value.length > 0 && !selectedDict.value) {
-          selectDict(dictList.value[0])
+      await ElMessageBox.confirm(
+        `${t('message.selected')} ${dictItem.name}，${t('message.confirmDelete')}`,
+        t('common.tips'),
+        {
+          confirmButtonText: t('common.confirm'),
+          cancelButtonText: t('common.cancel'),
+          type: 'warning'
         }
-      })
-    } catch (error) {
-      console.error('获取字典列表失败:', error)
-    } finally {
-      loading.value = false
+      )
+
+      const res = await deleteDict(dictItem.id)
+      if (res.success) {
+        ElMessage.success(t('dict.message.deleteSuccess'))
+        await getDictList()
+      }
+    } catch {
+      // 用户取消或其他错误
+    }
+  } else if (command === 'clearCache') {
+    try {
+      await ElMessageBox.confirm(
+        t('dict.message.confirmClearCache', { code: dictItem.code }),
+        t('common.tips'),
+        {
+          confirmButtonText: t('common.confirm'),
+          cancelButtonText: t('common.cancel'),
+          type: 'warning'
+        }
+      )
+
+      const res = await clearDictCache(dictItem.code)
+      if (res.success) {
+        ElMessage.success(t('dict.message.clearCacheSuccess'))
+      }
+    } catch {
+      // 用户取消或其他错误
     }
   }
+}
 
-  // 搜索关键词
-  const searchKey = ref('')
-
-  // 搜索处理
-  const handleSearch = (value: string) => {
-    searchKey.value = value
-  }
-
-  // 过滤后的字典列表
-  const filteredDictList = computed(() => {
-    if (!searchKey.value) return dictList.value
-    const keyword = searchKey.value.toLowerCase()
-    return dictList.value.filter(
-      (item) =>
-        item.name?.toLowerCase().includes(keyword) ||
-        item.code?.toLowerCase().includes(keyword) ||
-        item.description?.toLowerCase().includes(keyword)
-    )
-  })
-
-  const AddDrawerRef = useTemplateRef('AddDrawerRef')
-
-  // 新增字典
-  const handleAdd = () => {
-    AddDrawerRef.value?.onAdd()
-  }
-
-  // 点击菜单项
-  const onMenuItemClick = async (command: string, dictItem: DictResp) => {
-    if (command === 'update') {
-      AddDrawerRef.value?.onUpdate(dictItem.id)
-    } else if (command === 'delete') {
-      try {
-        await ElMessageBox.confirm(
-          `${t('message.selected')} ${dictItem.name}，${t('message.confirmDelete')}`,
-          t('common.tips'),
-          {
-            confirmButtonText: t('common.confirm'),
-            cancelButtonText: t('common.cancel'),
-            type: 'warning'
-          }
-        )
-
-        const res = await deleteDict(dictItem.id)
-        if (res.success) {
-          ElMessage.success(t('dict.message.deleteSuccess'))
-          await getDictList()
-        }
-      } catch {
-        // 用户取消或其他错误
-      }
-    } else if (command === 'clearCache') {
-      try {
-        await ElMessageBox.confirm(
-          t('dict.message.confirmClearCache', { code: dictItem.code }),
-          t('common.tips'),
-          {
-            confirmButtonText: t('common.confirm'),
-            cancelButtonText: t('common.cancel'),
-            type: 'warning'
-          }
-        )
-
-        const res = await clearDictCache(dictItem.code)
-        if (res.success) {
-          ElMessage.success(t('dict.message.clearCacheSuccess'))
-        }
-      } catch {
-        // 用户取消或其他错误
-      }
-    }
-  }
-
-  onMounted(() => {
-    getDictList()
-  })
+onMounted(() => {
+  getDictList()
+})
 </script>
 
 <style scoped lang="scss">
@@ -243,18 +244,18 @@
       .dict-name {
         margin-bottom: 4px;
         overflow: hidden;
+        text-overflow: ellipsis;
         font-size: 14px;
         font-weight: 500;
         color: var(--el-text-color-primary);
-        text-overflow: ellipsis;
         white-space: nowrap;
       }
 
       .dict-desc {
         overflow: hidden;
+        text-overflow: ellipsis;
         font-size: 12px;
         color: var(--el-text-color-secondary);
-        text-overflow: ellipsis;
         white-space: nowrap;
       }
     }

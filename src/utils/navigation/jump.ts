@@ -14,7 +14,7 @@
  * @module utils/navigation/jump
  * @author Art Design Pro Team
  */
-import { AppRouteRecord } from '@/types/router'
+import type { AppRouteRecord } from '@/types/router'
 import { router } from '@/router'
 
 // 打开外部链接
@@ -26,7 +26,6 @@ export const openExternalLink = (link: string) => {
  * 菜单跳转
  * @param item 菜单项
  * @param jumpToFirst 是否跳转到第一个子菜单
- * @returns
  */
 export const handleMenuJump = (item: AppRouteRecord, jumpToFirst: boolean = false) => {
   // 处理外部链接

@@ -45,34 +45,34 @@
 </template>
 
 <script setup lang="ts">
-  import type { TenantResp } from '@/apis'
-  import { getTenant } from '@/apis/tenant/management'
-  import CaTag from '@/components/base/CaTag/index.vue'
-  import { ElDescriptions, ElDescriptionsItem, ElDrawer, ElText } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { TenantResp } from '@/apis'
+import { ElDescriptions, ElDescriptionsItem, ElDrawer, ElText } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { getTenant } from '@/apis/tenant/management'
+import CaTag from '@/components/base/CaTag/index.vue'
 
-  defineOptions({ name: 'TenantManagementDetailDrawer' })
+defineOptions({ name: 'TenantManagementDetailDrawer' })
 
-  const { t } = useI18n()
+const { t } = useI18n()
 
-  const visible = ref(false)
-  const detail = ref<TenantResp>()
+const visible = ref(false)
+const detail = ref<TenantResp>()
 
-  const title = computed(() => t('common.detail'))
+const title = computed(() => t('common.detail'))
 
-  const onOpen = async (id: string) => {
-    try {
-      const data = await getTenant(id)
-      detail.value = data
-      visible.value = true
-    } catch (error) {
-      console.error('获取租户详情失败:', error)
-    }
+const onOpen = async (id: string) => {
+  try {
+    const data = await getTenant(id)
+    detail.value = data
+    visible.value = true
+  } catch (error) {
+    console.error('获取租户详情失败:', error)
   }
+}
 
-  defineExpose({
-    onOpen
-  })
+defineExpose({
+  onOpen
+})
 </script>
 
 <style scoped lang="scss"></style>

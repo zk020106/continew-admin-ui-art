@@ -1,14 +1,14 @@
-import { ref, computed, watch } from 'vue'
-import { useSettingStore } from '@/store/modules/setting'
-import { storeToRefs } from 'pinia'
 import { useBreakpoints } from '@vueuse/core'
+import { storeToRefs } from 'pinia'
+import { computed, ref, watch } from 'vue'
 import AppConfig from '@/config'
-import { SystemThemeEnum, MenuTypeEnum } from '@/enums/appEnum'
-import { mittBus } from '@/utils/sys'
-import { useTheme } from '@/hooks/core/useTheme'
+import { MenuTypeEnum, SystemThemeEnum } from '@/enums/appEnum'
 import { useCeremony } from '@/hooks/core/useCeremony'
-import { useSettingsState } from './useSettingsState'
+import { useTheme } from '@/hooks/core/useTheme'
+import { useSettingStore } from '@/store/modules/setting'
+import { mittBus } from '@/utils/sys'
 import { useSettingsHandlers } from './useSettingsHandlers'
+import { useSettingsState } from './useSettingsState'
 
 /**
  * 设置面板核心逻辑管理

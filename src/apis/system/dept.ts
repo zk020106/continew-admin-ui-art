@@ -1,6 +1,6 @@
-import http from '@/utils/http'
-import { TreeNodeData } from 'element-plus'
+import type { TreeNodeData } from 'element-plus'
 import type * as T from './type'
+import http from '@/utils/http'
 
 export type * from './type'
 

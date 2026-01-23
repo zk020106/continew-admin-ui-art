@@ -15,11 +15,11 @@
  * @author Art Design Pro Team
  */
 
-import { computed } from 'vue'
+import type { HeaderBarFeatureConfig } from '@/types'
 import { storeToRefs } from 'pinia'
-import { useSettingStore } from '@/store/modules/setting'
+import { computed } from 'vue'
 import { headerBarConfig } from '@/config/modules/headerBar'
-import { HeaderBarFeatureConfig } from '@/types'
+import { useSettingStore } from '@/store/modules/setting'
 
 /**
  * 顶部栏功能管理
@@ -32,8 +32,8 @@ export function useHeaderBar() {
   const headerBarConfigRef = computed<HeaderBarFeatureConfig>(() => headerBarConfig)
 
   // 从store中获取相关状态
-  const { showMenuButton, showFastEnter, showRefreshButton, showCrumbs, showLanguage } =
-    storeToRefs(settingStore)
+  const { showMenuButton, showFastEnter, showRefreshButton, showCrumbs, showLanguage }
+    = storeToRefs(settingStore)
 
   /**
    * 检查特定功能是否启用

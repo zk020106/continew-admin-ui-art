@@ -69,7 +69,7 @@ export function getCssVar(name: string): string {
  */
 function isValidHexColor(hex: string): boolean {
   const cleanHex = hex.trim().replace(/^#/, '')
-  return /^[0-9A-Fa-f]{3}$|^[0-9A-Fa-f]{6}$/.test(cleanHex)
+  return /^[0-9A-F]{3}$|^[0-9A-F]{6}$/i.test(cleanHex)
 }
 
 /**
@@ -107,7 +107,7 @@ export function hexToRgba(hex: string, opacity: number): RgbaResult {
   }
 
   // 解析 RGB 值
-  const [red, green, blue] = cleanHex.match(/\w\w/g)!.map((x) => parseInt(x, 16))
+  const [red, green, blue] = cleanHex.match(/\w\w/g)!.map((x) => Number.parseInt(x, 16))
 
   // 确保 opacity 在有效范围内
   const validOpacity = Math.max(0, Math.min(1, opacity))
@@ -145,7 +145,7 @@ export function hexToRgb(hexColor: string): number[] {
     throw new Error('Invalid hex color format')
   }
 
-  return hexPairs.map((hexPair) => parseInt(hexPair, 16))
+  return hexPairs.map((hexPair) => Number.parseInt(hexPair, 16))
 }
 
 /**

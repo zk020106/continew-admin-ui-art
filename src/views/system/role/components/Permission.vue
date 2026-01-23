@@ -35,172 +35,174 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    getRole,
-    listRolePermissionTree,
-    RolePermissionResp,
-    RoleResp,
-    updateRolePermission
-  } from '@/apis/system/role'
-  import has from '@/utils/sys/permission'
-  import { ElMessage, ElRadioButton, ElRadioGroup, ElTree } from 'element-plus'
-  import { onMounted, ref, watch } from 'vue'
-  import { useI18n } from 'vue-i18n'
+import type {
+  RolePermissionResp,
+  RoleResp
+} from '@/apis/system/role'
+import { ElMessage, ElRadioButton, ElRadioGroup, ElTree } from 'element-plus'
+import { onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import {
+  getRole,
+  listRolePermissionTree,
+  updateRolePermission
+} from '@/apis/system/role'
+import has from '@/utils/sys/permission'
 
-  const props = defineProps<{
-    role: RoleResp
-  }>()
-  interface ExtendRolePermissionResp extends RolePermissionResp {
-    horizontalChildren?: boolean
-    disabled?: boolean
-  }
-  const treeRef = ref<InstanceType<typeof ElTree>>()
-  const loading = ref(false)
-  const isCascade = ref(true)
-  const treeData = ref<any[]>([])
-  const processedTreeData = ref<any[]>([])
-  const checkedKeys = ref<string[]>([])
-  const disabled = ref(false)
-  const { t } = useI18n()
+const props = defineProps<{
+  role: RoleResp
+}>()
+interface ExtendRolePermissionResp extends RolePermissionResp {
+  horizontalChildren?: boolean
+  disabled?: boolean
+}
+const treeRef = ref<InstanceType<typeof ElTree>>()
+const loading = ref(false)
+const isCascade = ref(true)
+const treeData = ref<any[]>([])
+const processedTreeData = ref<any[]>([])
+const checkedKeys = ref<string[]>([])
+const disabled = ref(false)
+const { t } = useI18n()
 
-  const treeProps = {
-    label: 'title',
-    children: 'children',
-    isLeaf: (data: any) => data.type === 3
-  }
+const treeProps = {
+  label: 'title',
+  children: 'children',
+  isLeaf: (data: any) => data.type === 3
+}
 
-  const getNodeClass = (data: any) => {
-    if (data.type === 2) return 'type-2-node'
-    if (data.type === 3) return 'type-3-node'
-    if (data.horizontalChildren) return 'horizontal-children'
-    return ''
-  }
+// 设置树组件的勾选状态
+const setCheckedKeys = () => {
+  if (!treeRef.value) return
+  treeRef.value.setCheckedKeys(checkedKeys.value)
+}
 
-  // 设置权限树的禁用状态
-  const setDisabledStatus = async () => {
-    disabled.value = !has.hasPermOr(['system:role:updatePermission'])
-    // 如果有操作权限，再检查是否为系统角色
-    if (!disabled.value && props.role?.isSystem) {
-      disabled.value = true
+// 处理树数据，标记需要横向排列的节点
+const processTreeData = (data: ExtendRolePermissionResp[], level = 1): any[] => {
+  return data.map((item) => {
+    const newItem = { ...item, disabled: disabled.value ? true : item.disabled }
+    if (item.title.startsWith('menus')) {
+      newItem.title = t(item.title)
     }
+    if (item.children && item.children.length > 0) {
+      newItem.children = processTreeData(item.children, level + 1)
 
-    // 重新处理树数据以应用新的禁用状态
-    if (treeData.value.length > 0) {
-      processedTreeData.value = processTreeData(treeData.value)
-    }
-  }
+      // 检查子节点是否需要横向排列
+      const hasLevel3Leaf = newItem.children.some((child: any) => {
+        return (
+          (level === 2 && child.type === 3 && (!child.children || child.children.length === 0))
+          || (level === 3 && child.children && child.children.length > 0)
+        )
+      })
 
-  // 处理树数据，标记需要横向排列的节点
-  const processTreeData = (data: ExtendRolePermissionResp[], level = 1): any[] => {
-    return data.map((item) => {
-      const newItem = { ...item, disabled: disabled.value ? true : item.disabled }
-      if (item.title.startsWith('menus')) {
-        newItem.title = t(item.title)
+      if (hasLevel3Leaf) {
+        newItem.horizontalChildren = true
       }
-      if (item.children && item.children.length > 0) {
-        newItem.children = processTreeData(item.children, level + 1)
+    }
+    return newItem
+  })
+}
 
-        // 检查子节点是否需要横向排列
-        const hasLevel3Leaf = newItem.children.some((child: any) => {
-          return (
-            (level === 2 && child.type === 3 && (!child.children || child.children.length === 0)) ||
-            (level === 3 && child.children && child.children.length > 0)
-          )
-        })
+const getNodeClass = (data: any) => {
+  if (data.type === 2) return 'type-2-node'
+  if (data.type === 3) return 'type-3-node'
+  if (data.horizontalChildren) return 'horizontal-children'
+  return ''
+}
 
-        if (hasLevel3Leaf) {
-          newItem.horizontalChildren = true
-        }
-      }
-      return newItem
-    })
+// 设置权限树的禁用状态
+const setDisabledStatus = async () => {
+  disabled.value = !has.hasPermOr(['system:role:updatePermission'])
+  // 如果有操作权限，再检查是否为系统角色
+  if (!disabled.value && props.role?.isSystem) {
+    disabled.value = true
   }
 
-  // 获取权限树
-  const fetchTree = async () => {
-    try {
-      loading.value = true
-      const data = await listRolePermissionTree()
-      treeData.value = data
-      processedTreeData.value = processTreeData(data)
-
-      // 权限树加载完成后，如果已有checkedKeys，则设置勾选状态
-      if (checkedKeys.value.length > 0) {
-        setCheckedKeys()
-      }
-    } catch (e: any) {
-      console.error('加载权限树失败:', e)
-      ElMessage.error(t('role.message.loadPermissionTreeFailed'))
-    } finally {
-      loading.value = false
-    }
+  // 重新处理树数据以应用新的禁用状态
+  if (treeData.value.length > 0) {
+    processedTreeData.value = processTreeData(treeData.value)
   }
+}
 
-  // 获取角色权限ID列表
-  const fetchRolePermissions = async () => {
-    if (!props.role.id) {
-      checkedKeys.value = []
-      return
-    }
+// 获取权限树
+const fetchTree = async () => {
+  try {
+    loading.value = true
+    const data = await listRolePermissionTree()
+    treeData.value = data
+    processedTreeData.value = processTreeData(data)
 
-    try {
-      const roleDetail = await getRole(props.role.id)
-      checkedKeys.value = roleDetail.menuIds.map(String)
+    // 权限树加载完成后，如果已有checkedKeys，则设置勾选状态
+    if (checkedKeys.value.length > 0) {
       setCheckedKeys()
-    } catch (e) {
-      console.error('加载角色权限失败:', e)
     }
+  } catch (e: any) {
+    console.error('加载权限树失败:', e)
+    ElMessage.error(t('role.message.loadPermissionTreeFailed'))
+  } finally {
+    loading.value = false
+  }
+}
+
+// 获取角色权限ID列表
+const fetchRolePermissions = async () => {
+  if (!props.role.id) {
+    checkedKeys.value = []
+    return
   }
 
-  // 设置树组件的勾选状态
-  const setCheckedKeys = () => {
-    if (!treeRef.value) return
-    treeRef.value.setCheckedKeys(checkedKeys.value)
+  try {
+    const roleDetail = await getRole(props.role.id)
+    checkedKeys.value = roleDetail.menuIds.map(String)
+    setCheckedKeys()
+  } catch (e) {
+    console.error('加载角色权限失败:', e)
+  }
+}
+
+const handleSave = async () => {
+  if (!props.role.id) {
+    ElMessage.warning(t('role.message.pleaseSelectRole'))
+    return
   }
 
-  const handleSave = async () => {
-    if (!props.role.id) {
-      ElMessage.warning(t('role.message.pleaseSelectRole'))
-      return
-    }
+  const checkedKeys = treeRef.value?.getCheckedKeys() || []
+  const halfCheckedKeys = treeRef.value?.getHalfCheckedKeys() || []
 
-    const checkedKeys = treeRef.value?.getCheckedKeys() || []
-    const halfCheckedKeys = treeRef.value?.getHalfCheckedKeys() || []
+  const allKeys = Array.from(new Set([...checkedKeys, ...halfCheckedKeys]))
 
-    const allKeys = Array.from(new Set([...checkedKeys, ...halfCheckedKeys]))
+  await updateRolePermission(props.role.id, {
+    menuIds: allKeys.map(Number),
+    menuCheckStrictly: isCascade.value
+  })
 
-    await updateRolePermission(props.role.id, {
-      menuIds: allKeys.map(Number),
-      menuCheckStrictly: isCascade.value
-    })
+  ElMessage.success(t('role.message.saveSuccess'))
+}
 
-    ElMessage.success(t('role.message.saveSuccess'))
-  }
-
-  // 监听角色变化
-  watch(
-    () => props.role,
-    async (newRole) => {
-      if (newRole) {
-        await setDisabledStatus()
-        if (newRole.id && processedTreeData.value.length > 0) {
-          await fetchRolePermissions()
-        }
-      }
-    },
-    { immediate: true, deep: true }
-  )
-
-  onMounted(async () => {
-    await fetchTree()
-    // 权限树加载完成后，如果已有角色，则设置禁用状态并加载角色权限
-    if (props.role) {
+// 监听角色变化
+watch(
+  () => props.role,
+  async (newRole) => {
+    if (newRole) {
       await setDisabledStatus()
-      if (props.role.id) {
+      if (newRole.id && processedTreeData.value.length > 0) {
         await fetchRolePermissions()
       }
     }
-  })
+  },
+  { immediate: true, deep: true }
+)
+
+onMounted(async () => {
+  await fetchTree()
+  // 权限树加载完成后，如果已有角色，则设置禁用状态并加载角色权限
+  if (props.role) {
+    await setDisabledStatus()
+    if (props.role.id) {
+      await fetchRolePermissions()
+    }
+  }
+})
 </script>
 
 <style lang="scss">

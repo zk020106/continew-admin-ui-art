@@ -1,3 +1,4 @@
+import type { AppRouteRecord } from '@/types/router'
 /**
  * 菜单状态管理模块
  *
@@ -30,9 +31,8 @@
  */
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { AppRouteRecord } from '@/types/router'
-import { getFirstMenuPath } from '@/utils'
 import { HOME_PAGE_PATH } from '@/router'
+import { getFirstMenuPath } from '@/utils'
 
 /**
  * 菜单状态管理

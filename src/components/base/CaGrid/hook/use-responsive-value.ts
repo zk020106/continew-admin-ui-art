@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
-import { computed } from 'vue'
 import type { ResponsiveValue } from '../interface'
+import { computed } from 'vue'
 import { isNumber, isObject } from '../utils/is'
 import { responsiveArray } from '../utils/responsive-observe'
 

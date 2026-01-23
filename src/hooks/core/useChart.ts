@@ -49,11 +49,12 @@
  * @author Art Design Pro Team
  */
 
-import { echarts, type EChartsOption } from '@/plugins/echarts'
+import type { EChartsOption } from '@/plugins/echarts'
+import type { BaseChartProps, ChartThemeConfig, UseChartOptions } from '@/types/component/chart'
 import { storeToRefs } from 'pinia'
+import { echarts } from '@/plugins/echarts'
 import { useSettingStore } from '@/store/modules/setting'
 import { getCssVar } from '@/utils/ui'
-import type { BaseChartProps, ChartThemeConfig, UseChartOptions } from '@/types/component/chart'
 
 // 图表主题配置
 export const useChartOps = (): ChartThemeConfig => ({
@@ -472,8 +473,8 @@ export function useChart(options: UseChartOptions = {}) {
 
       // 确保父容器有相对定位
       if (
-        chartRef.value.style.position !== 'relative' &&
-        chartRef.value.style.position !== 'absolute'
+        chartRef.value.style.position !== 'relative'
+        && chartRef.value.style.position !== 'absolute'
       ) {
         chartRef.value.style.position = 'relative'
       }

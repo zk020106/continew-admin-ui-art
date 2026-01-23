@@ -5,5 +5,5 @@ export function isObject(obj: unknown): obj is Record<string, any> {
 }
 
 export function isNumber(obj: any): obj is number {
-  return opt.call(obj) === '[object Number]' && obj === obj
+  return opt.call(obj) === '[object Number]' && !Number.isNaN(obj)
 }

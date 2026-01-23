@@ -44,7 +44,7 @@
  * @author Art Design Pro Team
  */
 
-import { App, Directive, DirectiveBinding } from 'vue'
+import type { App, Directive, DirectiveBinding } from 'vue'
 import has from '@/utils/sys/permission'
 
 interface RolesBinding extends DirectiveBinding {

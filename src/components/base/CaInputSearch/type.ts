@@ -1,4 +1,5 @@
-import InputSearch from './index.vue'
+import type InputSearch from './index.vue'
+
 export interface InputSearchProps {
   disabled?: boolean
   readonly?: boolean

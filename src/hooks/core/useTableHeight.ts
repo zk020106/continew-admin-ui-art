@@ -15,7 +15,8 @@
  * @author Art Design Pro Team
  */
 
-import { computed, type Ref } from 'vue'
+import type { Ref } from 'vue'
+import { computed } from 'vue'
 
 /**
  * 表格高度计算器配置接口

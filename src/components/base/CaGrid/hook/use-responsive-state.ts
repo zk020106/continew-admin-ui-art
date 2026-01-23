@@ -1,8 +1,8 @@
 import type { Ref } from 'vue'
-import { computed, onMounted, onUnmounted, ref } from 'vue'
 import type { ResponsiveValue } from '../interface'
-import { isObject } from '../utils/is'
 import type { ScreenMap } from '../utils/responsive-observe'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
+import { isObject } from '../utils/is'
 import ResponsiveObserve, { responsiveArray } from '../utils/responsive-observe'
 
 function isResponsiveValue(val: number | ResponsiveValue): val is ResponsiveValue {
@@ -28,8 +28,8 @@ export function useResponsiveState(
       for (let i = 0; i < responsiveArray.length; i++) {
         const breakpoint = responsiveArray[i]
         if (
-          (screens.value[breakpoint] || (breakpoint === 'xs' && fallbackToXs)) &&
-          val.value[breakpoint] !== undefined
+          (screens.value[breakpoint] || (breakpoint === 'xs' && fallbackToXs))
+          && val.value[breakpoint] !== undefined
         ) {
           res = val.value[breakpoint] as number
           break

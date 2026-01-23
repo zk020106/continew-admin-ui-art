@@ -15,80 +15,80 @@
 </template>
 
 <script setup lang="ts">
-  import type { TenantAdminPwdReq } from '@/apis'
-  import { updateTenantAdminUserPwd } from '@/apis/tenant/management'
-  import type { FormColumnItem } from '@/components/base/CaForm/type'
-  import { ElDialog, ElMessage } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { TenantAdminPwdReq } from '@/apis'
+import type { FormColumnItem } from '@/components/base/CaForm/type'
+import { ElDialog, ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { updateTenantAdminUserPwd } from '@/apis/tenant/management'
 
-  defineOptions({ name: 'TenantManagementAdminUserPwdUpdateModal' })
+defineOptions({ name: 'TenantManagementAdminUserPwdUpdateModal' })
 
-  const emit = defineEmits<{
-    'save-success': []
-  }>()
+const emit = defineEmits<{
+  'save-success': []
+}>()
 
-  const { t } = useI18n()
+const { t } = useI18n()
 
-  const visible = ref(false)
-  const tenantId = ref<string>()
+const visible = ref(false)
+const tenantId = ref<string>()
 
-  const form = ref<TenantAdminPwdReq>({
+const form = ref<TenantAdminPwdReq>({
+  password: ''
+})
+
+const formColumns = computed(
+  () =>
+    [
+      {
+        type: 'input',
+        label: t('pages.tenantManagement.field.adminPassword'),
+        field: 'password',
+        props: {
+          type: 'password',
+          placeholder: t('pages.tenantManagement.placeholder.newPassword'),
+          showPassword: true
+        },
+        rules: [
+          {
+            required: true,
+            message: t('components.form.validate.required', {
+              label: t('pages.tenantManagement.field.adminPassword')
+            })
+          }
+        ]
+      }
+    ] as FormColumnItem[]
+)
+
+const title = computed(() => t('pages.tenantManagement.button.updateAdminPwd'))
+
+const open = (id: string) => {
+  tenantId.value = id
+  form.value = {
     password: ''
-  })
-
-  const formColumns = computed(
-    () =>
-      [
-        {
-          type: 'input',
-          label: t('pages.tenantManagement.field.adminPassword'),
-          field: 'password',
-          props: {
-            type: 'password',
-            placeholder: t('pages.tenantManagement.placeholder.newPassword'),
-            showPassword: true
-          },
-          rules: [
-            {
-              required: true,
-              message: t('components.form.validate.required', {
-                label: t('pages.tenantManagement.field.adminPassword')
-              })
-            }
-          ]
-        }
-      ] as FormColumnItem[]
-  )
-
-  const title = computed(() => t('pages.tenantManagement.button.updateAdminPwd'))
-
-  const open = (id: string) => {
-    tenantId.value = id
-    form.value = {
-      password: ''
-    }
-    visible.value = true
   }
+  visible.value = true
+}
 
-  const handleConfirm = async () => {
-    if (!tenantId.value) return
-    try {
-      await updateTenantAdminUserPwd(form.value, tenantId.value)
-      ElMessage.success(t('message.updateSuccess'))
-      visible.value = false
-      emit('save-success')
-    } catch (error) {
-      console.error('修改管理员密码失败:', error)
-    }
-  }
-
-  const handleCancel = () => {
+const handleConfirm = async () => {
+  if (!tenantId.value) return
+  try {
+    await updateTenantAdminUserPwd(form.value, tenantId.value)
+    ElMessage.success(t('message.updateSuccess'))
     visible.value = false
+    emit('save-success')
+  } catch (error) {
+    console.error('修改管理员密码失败:', error)
   }
+}
 
-  defineExpose({
-    open
-  })
+const handleCancel = () => {
+  visible.value = false
+}
+
+defineExpose({
+  open
+})
 </script>
 
 <style scoped lang="scss"></style>

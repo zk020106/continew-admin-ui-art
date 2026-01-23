@@ -31,9 +31,11 @@
       <ElFormItem :label="t('role.deptPermission')">
         <div class="menu-permission-wrapper">
           <div class="menu-permission-header">
-            <ElCheckbox v-model="form.menuCheckStrictly">{{
+            <ElCheckbox v-model="form.menuCheckStrictly">
+{{
               t('role.parentChildLinkage')
-            }}</ElCheckbox>
+            }}
+</ElCheckbox>
           </div>
           <div class="menu-tree-wrapper">
             <ElTree
@@ -60,53 +62,73 @@
 </template>
 
 <script setup lang="ts">
-  import {
-    addTenantPackage,
-    getTenantPackage,
-    listTenantPackageMenu,
-    updateTenantPackage
-  } from '@/apis/tenant/package'
-  import type { TenantPackageMenuResp, TenantPackageReq } from '@/apis/tenant/type'
-  import { ElMessage } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { TenantPackageMenuResp, TenantPackageReq } from '@/apis/tenant/type'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import {
+  addTenantPackage,
+  getTenantPackage,
+  listTenantPackageMenu,
+  updateTenantPackage
+} from '@/apis/tenant/package'
 
-  defineOptions({ name: 'TenantPackageAddDrawer' })
+defineOptions({ name: 'TenantPackageAddDrawer' })
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { t } = useI18n()
+const { t } = useI18n()
 
-  const dataId = ref('')
-  const visible = ref(false)
-  const saving = ref(false)
-  const isUpdate = computed(() => !!dataId.value)
-  const title = computed(() => (isUpdate.value ? t('common.button.edit') : t('common.button.add')))
-  const formRef = ref()
-  const menuList = ref<TenantPackageMenuResp[]>([])
-  const menuTreeRef = ref<any>()
+const dataId = ref('')
+const visible = ref(false)
+const saving = ref(false)
+const isUpdate = computed(() => !!dataId.value)
+const title = computed(() => (isUpdate.value ? t('common.button.edit') : t('common.button.add')))
+const formRef = ref()
+const menuList = ref<TenantPackageMenuResp[]>([])
+const menuTreeRef = ref<any>()
 
-  const rules = {
-    name: [
-      {
-        required: true,
-        message: t('components.form.validate.required', {
-          label: t('pages.tenantPackage.field.name')
-        }),
-        trigger: 'blur'
-      }
-    ],
-    status: [
-      {
-        required: true,
-        message: t('components.form.validate.required', { label: t('common.status') }),
-        trigger: 'change'
-      }
-    ]
-  }
+const rules = {
+  name: [
+    {
+      required: true,
+      message: t('components.form.validate.required', {
+        label: t('pages.tenantPackage.field.name')
+      }),
+      trigger: 'blur'
+    }
+  ],
+  status: [
+    {
+      required: true,
+      message: t('components.form.validate.required', { label: t('common.status') }),
+      trigger: 'change'
+    }
+  ]
+}
 
-  const form = reactive<TenantPackageReq>({
+const form = reactive<TenantPackageReq>({
+  name: '',
+  sort: 999,
+  status: '1',
+  menuCheckStrictly: true,
+  description: '',
+  menuIds: []
+})
+
+const getTenantPackageMenuList = async () => {
+  const data = await listTenantPackageMenu()
+  menuList.value = data.map((item) => {
+    item.title = t(item.title)
+    return item
+  })
+}
+
+const reset = () => {
+  menuTreeRef.value?.setCheckedKeys([])
+  formRef.value?.resetFields()
+  Object.assign(form, {
     name: '',
     sort: 999,
     status: '1',
@@ -114,79 +136,59 @@
     description: '',
     menuIds: []
   })
+}
 
-  const getTenantPackageMenuList = async () => {
-    const data = await listTenantPackageMenu()
-    menuList.value = data.map((item) => {
-      item.title = t(item.title)
-      return item
-    })
-  }
+const getMenuAllCheckedKeys = () => {
+  const checkedNodes = menuTreeRef.value?.getCheckedNodes() || []
+  const checkedKeys = checkedNodes.map((item: any) => item.id)
+  const halfCheckedNodes = menuTreeRef.value?.getHalfCheckedNodes() || []
+  const halfCheckedKeys = halfCheckedNodes.map((item: any) => item.id)
+  checkedKeys.push(...halfCheckedKeys)
+  return checkedKeys
+}
 
-  const reset = () => {
-    menuTreeRef.value?.setCheckedKeys([])
-    formRef.value?.resetFields()
-    Object.assign(form, {
-      name: '',
-      sort: 999,
-      status: '1',
-      menuCheckStrictly: true,
-      description: '',
-      menuIds: []
-    })
-  }
+const handleSave = async () => {
+  try {
+    await formRef.value?.validate()
+    form.menuIds = getMenuAllCheckedKeys()
+    saving.value = true
 
-  const getMenuAllCheckedKeys = () => {
-    const checkedNodes = menuTreeRef.value?.getCheckedNodes() || []
-    const checkedKeys = checkedNodes.map((item: any) => item.id)
-    const halfCheckedNodes = menuTreeRef.value?.getHalfCheckedNodes() || []
-    const halfCheckedKeys = halfCheckedNodes.map((item: any) => item.id)
-    checkedKeys.push(...halfCheckedKeys)
-    return checkedKeys
-  }
-
-  const handleSave = async () => {
-    try {
-      await formRef.value?.validate()
-      form.menuIds = getMenuAllCheckedKeys()
-      saving.value = true
-
-      if (isUpdate.value) {
-        await updateTenantPackage(form, dataId.value)
-        ElMessage.success(t('message.updateSuccess'))
-      } else {
-        await addTenantPackage(form)
-        ElMessage.success(t('message.addSuccess'))
-      }
-
-      emit('save-success')
-      visible.value = false
-    } catch (error) {
-      console.error('保存失败:', error)
-    } finally {
-      saving.value = false
+    if (isUpdate.value) {
+      await updateTenantPackage(form, dataId.value)
+      ElMessage.success(t('message.updateSuccess'))
+    } else {
+      await addTenantPackage(form)
+      ElMessage.success(t('message.addSuccess'))
     }
+
+    emit('save-success')
+    visible.value = false
+  } catch (error) {
+    console.error('保存失败:', error)
+  } finally {
+    saving.value = false
   }
+}
 
-  const onAdd = async () => {
-    reset()
-    await getTenantPackageMenuList()
-    dataId.value = ''
-    visible.value = true
-  }
+const onAdd = async () => {
+  reset()
+  await getTenantPackageMenuList()
+  dataId.value = ''
+  visible.value = true
+}
 
-  const onUpdate = async (id: string) => {
-    reset()
-    await getTenantPackageMenuList()
-    dataId.value = id
-    const data = await getTenantPackage(id)
+const onUpdate = async (id: string) => {
+  reset()
+  await getTenantPackageMenuList()
+  dataId.value = id
+  const data = await getTenantPackage(id)
 
-    Object.assign(form, data)
-    if (data.menuIds?.length) menuTreeRef.value?.setCheckedKeys(data.menuIds.map(String))
-    visible.value = true
-  }
+  Object.assign(form, data)
+  if (data.menuIds?.length) menuTreeRef.value?.setCheckedKeys(data.menuIds.map(String))
+  visible.value = true
+}
 
-  defineExpose({ onAdd, onUpdate })
+defineExpose({ onAdd, onUpdate })
 </script>
 
 <style scoped lang="scss">

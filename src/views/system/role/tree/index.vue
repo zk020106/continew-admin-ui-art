@@ -11,7 +11,7 @@
           <ElIcon><Search /></ElIcon>
         </template>
       </ElInput>
-      <ElButton @click="handleAdd" :icon="Plus" type="primary" />
+      <ElButton :icon="Plus" type="primary" @click="handleAdd" />
     </div>
 
     <div class="role-list-wrapper">
@@ -60,107 +60,108 @@
 </template>
 
 <script setup lang="ts">
-  import { type RoleResp, deleteRole, listRole } from '@/apis/system/role'
-  import { MoreFilled, Plus, Search } from '@element-plus/icons-vue'
-  import { ElEmpty, ElMessage, ElMessageBox } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
-  import AddDrawer from '../AddDrawer.vue'
+import type { RoleResp } from '@/apis/system/role'
+import { MoreFilled, Plus, Search } from '@element-plus/icons-vue'
+import { ElEmpty, ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { deleteRole, listRole } from '@/apis/system/role'
+import AddDrawer from '../AddDrawer.vue'
 
-  const emit = defineEmits<{
-    (e: 'node-click', keys: RoleResp): void
-  }>()
+const emit = defineEmits<{
+  (e: 'node-click', keys: RoleResp): void
+}>()
 
-  const { t } = useI18n()
-  const selectedRole = ref<RoleResp | null>(null)
-  const roleList = ref<RoleResp[]>([])
-  const loading = ref(false)
+const { t } = useI18n()
+const selectedRole = ref<RoleResp | null>(null)
+const roleList = ref<RoleResp[]>([])
+const loading = ref(false)
 
-  // 选中角色
-  const selectRole = (role: RoleResp) => {
-    console.log(selectedRole.value)
+// 选中角色
+const selectRole = (role: RoleResp) => {
+  console.log(selectedRole.value)
 
-    if (selectedRole.value?.id === role.id) {
-      return
-    }
-    selectedRole.value = role
-    emit('node-click', role)
+  if (selectedRole.value?.id === role.id) {
+    return
   }
+  selectedRole.value = role
+  emit('node-click', role)
+}
 
-  // 查询角色列表
-  const getRoleList = async () => {
-    try {
-      loading.value = true
-      const data = await listRole({ sort: ['sort,asc'] })
-      roleList.value = data
+// 查询角色列表
+const getRoleList = async () => {
+  try {
+    loading.value = true
+    const data = await listRole({ sort: ['sort,asc'] })
+    roleList.value = data
 
-      // 默认选中第一个角色
-      await nextTick(() => {
-        if (roleList.value.length > 0 && !selectedRole.value) {
-          selectRole(roleList.value[0])
-        }
-      })
-    } catch (error) {
-      console.error('获取角色列表失败:', error)
-    } finally {
-      loading.value = false
-    }
-  }
-
-  // 搜索关键词
-  const searchKey = ref('')
-
-  // 搜索处理
-  const handleSearch = (value: string) => {
-    searchKey.value = value
-  }
-
-  // 过滤后的角色列表
-  const filteredRoleList = computed(() => {
-    if (!searchKey.value) return roleList.value
-    const keyword = searchKey.value.toLowerCase()
-    return roleList.value.filter(
-      (item) =>
-        item.name?.toLowerCase().includes(keyword) || item.code?.toLowerCase().includes(keyword)
-    )
-  })
-
-  const AddDrawerRef = useTemplateRef('AddDrawerRef')
-
-  // 新增角色
-  const handleAdd = () => {
-    AddDrawerRef.value?.onAdd()
-  }
-
-  // 点击菜单项
-  const onMenuItemClick = async (command: string, role: RoleResp) => {
-    if (command === 'update') {
-      AddDrawerRef.value?.onUpdate(role.id)
-    } else if (command === 'delete') {
-      try {
-        await ElMessageBox.confirm(
-          `${t('message.selected')} ${role.name}，${t('message.confirmDelete')}`,
-          t('common.tips'),
-          {
-            confirmButtonText: t('common.confirm'),
-            cancelButtonText: t('common.cancel'),
-            type: 'warning'
-          }
-        )
-
-        const res = await deleteRole(role.id)
-        if (res.success) {
-          ElMessage.success(t('role.message.deleteSuccess'))
-          await getRoleList()
-        }
-      } catch {
-        // 用户取消或其他错误
+    // 默认选中第一个角色
+    await nextTick(() => {
+      if (roleList.value.length > 0 && !selectedRole.value) {
+        selectRole(roleList.value[0])
       }
+    })
+  } catch (error) {
+    console.error('获取角色列表失败:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+// 搜索关键词
+const searchKey = ref('')
+
+// 搜索处理
+const handleSearch = (value: string) => {
+  searchKey.value = value
+}
+
+// 过滤后的角色列表
+const filteredRoleList = computed(() => {
+  if (!searchKey.value) return roleList.value
+  const keyword = searchKey.value.toLowerCase()
+  return roleList.value.filter(
+    (item) =>
+      item.name?.toLowerCase().includes(keyword) || item.code?.toLowerCase().includes(keyword)
+  )
+})
+
+const AddDrawerRef = useTemplateRef('AddDrawerRef')
+
+// 新增角色
+const handleAdd = () => {
+  AddDrawerRef.value?.onAdd()
+}
+
+// 点击菜单项
+const onMenuItemClick = async (command: string, role: RoleResp) => {
+  if (command === 'update') {
+    AddDrawerRef.value?.onUpdate(role.id)
+  } else if (command === 'delete') {
+    try {
+      await ElMessageBox.confirm(
+        `${t('message.selected')} ${role.name}，${t('message.confirmDelete')}`,
+        t('common.tips'),
+        {
+          confirmButtonText: t('common.confirm'),
+          cancelButtonText: t('common.cancel'),
+          type: 'warning'
+        }
+      )
+
+      const res = await deleteRole(role.id)
+      if (res.success) {
+        ElMessage.success(t('role.message.deleteSuccess'))
+        await getRoleList()
+      }
+    } catch {
+      // 用户取消或其他错误
     }
   }
+}
 
-  onMounted(() => {
-    getRoleList()
-  })
+onMounted(() => {
+  getRoleList()
+})
 </script>
 
 <style scoped lang="scss">
@@ -244,18 +245,18 @@
       .role-name {
         margin-bottom: 4px;
         overflow: hidden;
+        text-overflow: ellipsis;
         font-size: 14px;
         font-weight: 500;
         color: var(--el-text-color-primary);
-        text-overflow: ellipsis;
         white-space: nowrap;
       }
 
       .role-desc {
         overflow: hidden;
+        text-overflow: ellipsis;
         font-size: 12px;
         color: var(--el-text-color-secondary);
-        text-overflow: ellipsis;
         white-space: nowrap;
       }
     }

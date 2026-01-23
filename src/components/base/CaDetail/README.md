@@ -24,37 +24,37 @@ CaDetail 是一个配置化的详情展示组件，支持国际化、自定义�
 </template>
 
 <script setup lang="ts">
-  import CaDetail from '@/components/base/CaDetail'
-  import type { DetailField } from '@/components/base/CaDetail'
+import type { DetailField } from '@/components/base/CaDetail'
+import CaDetail from '@/components/base/CaDetail'
 
-  const userDetail = {
-    id: '123',
-    username: 'admin',
-    status: 1
-  }
+const userDetail = {
+  id: '123',
+  username: 'admin',
+  status: 1
+}
 
-  const detailFields: DetailField[] = [
-    {
-      key: 'id',
-      label: 'ID',
-      type: 'text',
-      copyable: true
-    },
-    {
-      key: 'username',
-      label: '用户名',
-      type: 'text'
-    },
-    {
-      key: 'status',
-      label: '状态',
-      type: 'enum',
-      enum: {
-        '1': { label: '启用', type: 'success' },
-        '0': { label: '禁用', type: 'danger' }
-      }
+const detailFields: DetailField[] = [
+  {
+    key: 'id',
+    label: 'ID',
+    type: 'text',
+    copyable: true
+  },
+  {
+    key: 'username',
+    label: '用户名',
+    type: 'text'
+  },
+  {
+    key: 'status',
+    label: '状态',
+    type: 'enum',
+    enum: {
+      1: { label: '启用', type: 'success' },
+      0: { label: '禁用', type: 'danger' }
     }
-  ]
+  }
+]
 </script>
 ```
 

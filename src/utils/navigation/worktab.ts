@@ -1,3 +1,7 @@
+import type { RouteLocationNormalized } from 'vue-router'
+import { useCommon } from '@/hooks/core/useCommon'
+import { IframeRouteManager } from '@/router/core'
+import { useSettingStore } from '@/store/modules/setting'
 /**
  * 工作标签页管理模块
  *
@@ -22,11 +26,7 @@
  * @author Art Design Pro Team
  */
 import { useWorktabStore } from '@/store/modules/worktab'
-import { RouteLocationNormalized } from 'vue-router'
 import { isIframe } from './route'
-import { useSettingStore } from '@/store/modules/setting'
-import { IframeRouteManager } from '@/router/core'
-import { useCommon } from '@/hooks/core/useCommon'
 
 /**
  * 根据当前路由信息设置工作标签页（worktab）

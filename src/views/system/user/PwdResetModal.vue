@@ -16,72 +16,72 @@
 </template>
 
 <script setup lang="ts">
-  import { resetUserPwd } from '@/apis/system/user'
-  import CaButton from '@/components/base/CaButton/index.vue'
-  import CaForm from '@/components/base/CaForm/index.vue'
-  import { FormColumnItem } from '@/components/base/CaForm/type'
-  import { useResetReactive } from '@/hooks'
-  import { encryptByRsa } from '@/utils/encrypt'
-  import { useWindowSize } from '@vueuse/core'
-  import { ElMessage } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { FormColumnItem } from '@/components/base/CaForm/type'
+import { useWindowSize } from '@vueuse/core'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { resetUserPwd } from '@/apis/system/user'
+import CaButton from '@/components/base/CaButton/index.vue'
+import CaForm from '@/components/base/CaForm/index.vue'
+import { useResetReactive } from '@/hooks'
+import { encryptByRsa } from '@/utils/encrypt'
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { width } = useWindowSize()
-  const dataId = ref('')
-  const visible = ref(false)
-  const formRef = useTemplateRef('formRef')
+const { width } = useWindowSize()
+const dataId = ref('')
+const visible = ref(false)
+const formRef = useTemplateRef('formRef')
 
-  const [form, resetForm] = useResetReactive({})
+const [form, resetForm] = useResetReactive({})
 
-  const { t } = useI18n()
-  const columns = reactive([
-    {
-      label: t('user.field.password'),
-      field: 'newPassword',
-      type: 'input',
-      span: 24,
-      props: {
-        type: 'password',
-        max: 20,
-        showPassword: true
-      },
-      required: true
-    }
-  ] as FormColumnItem[])
-
-  // 重置
-  const reset = () => {
-    formRef.value?.formRef?.resetFields()
-    resetForm()
+const { t } = useI18n()
+const columns = reactive([
+  {
+    label: t('user.field.password'),
+    field: 'newPassword',
+    type: 'input',
+    span: 24,
+    props: {
+      type: 'password',
+      max: 20,
+      showPassword: true
+    },
+    required: true
   }
+] as FormColumnItem[])
 
-  // 保存
-  const save = async () => {
-    try {
-      await formRef.value?.formRef?.validate()
-      await resetUserPwd({ newPassword: encryptByRsa(form.newPassword) || '' }, dataId.value)
-      ElMessage.success(t('message.updateSuccess'))
-      emit('save-success')
-      visible.value = false
-      return true
-    } catch (err) {
-      console.error(err)
-      return false
-    }
+// 重置
+const reset = () => {
+  formRef.value?.formRef?.resetFields()
+  resetForm()
+}
+
+// 保存
+const save = async () => {
+  try {
+    await formRef.value?.formRef?.validate()
+    await resetUserPwd({ newPassword: encryptByRsa(form.newPassword) || '' }, dataId.value)
+    ElMessage.success(t('message.updateSuccess'))
+    emit('save-success')
+    visible.value = false
+    return true
+  } catch (err) {
+    console.error(err)
+    return false
   }
+}
 
-  // 打开
-  const onOpen = (id: string) => {
-    reset()
-    dataId.value = id
-    visible.value = true
-  }
+// 打开
+const onOpen = (id: string) => {
+  reset()
+  dataId.value = id
+  visible.value = true
+}
 
-  defineExpose({ onOpen })
+defineExpose({ onOpen })
 </script>
 
 <style scoped lang="scss"></style>

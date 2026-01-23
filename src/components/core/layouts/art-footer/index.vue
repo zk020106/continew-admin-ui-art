@@ -9,14 +9,14 @@
 </template>
 
 <script lang="ts" setup>
-  defineOptions({ name: 'ArtFooter' })
+import { computed } from 'vue'
+import { useAppStore } from '@/store/modules/app'
 
-  import { useAppStore } from '@/store/modules/app'
-  import { computed } from 'vue'
+defineOptions({ name: 'ArtFooter' })
 
-  const appStore = useAppStore()
+const appStore = useAppStore()
 
-  const footerInfo = computed(() => appStore.getFooterInfo)
+const footerInfo = computed(() => appStore.getFooterInfo)
 </script>
 
 <style lang="scss" scoped>

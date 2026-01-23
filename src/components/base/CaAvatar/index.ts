@@ -4,8 +4,8 @@
  * @module components/base/ca-avatar
  */
 
-import CaAvatar from './index.vue'
 import type { AvatarEmits, AvatarFit, AvatarProps, AvatarShape, AvatarSize } from './types'
+import CaAvatar from './index.vue'
 
 // 导出组件
 export { CaAvatar }

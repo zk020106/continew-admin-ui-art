@@ -2,9 +2,11 @@
   <ElTableColumn v-bind="columnProps">
     <!-- 处理render函数 -->
     <template v-if="column.render" #default="scope">
-      <template v-if="typeof column.render(scope) === 'string'">{{
+      <template v-if="typeof column.render(scope) === 'string'">
+{{
         column.render(scope)
-      }}</template>
+      }}
+</template>
       <component :is="column.render(scope)" v-else />
     </template>
 
@@ -30,20 +32,20 @@
 </template>
 
 <script lang="ts" setup>
-  import { ElTableColumn } from 'element-plus'
-  import { computed } from 'vue'
-  import TableColumn from './TableColumn.vue'
-  import type { TableColumnItem } from './type'
+import type { TableColumnItem } from './type'
+import { ElTableColumn } from 'element-plus'
+import { computed } from 'vue'
+import TableColumn from './TableColumn.vue'
 
-  const props = defineProps<{
-    column: TableColumnItem
-  }>()
+const props = defineProps<{
+  column: TableColumnItem
+}>()
 
-  // 计算el-table-column需要的属性
-  const columnProps = computed(() => {
-    const { ...restProps } = props.column
-    return restProps
-  })
+// 计算el-table-column需要的属性
+const columnProps = computed(() => {
+  const { ...restProps } = props.column
+  return restProps
+})
 </script>
 
 <style scoped></style>

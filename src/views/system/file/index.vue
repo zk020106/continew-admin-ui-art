@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-  import FileMain from './components/FileMain.vue'
+import FileMain from './components/FileMain.vue'
 </script>
 
 <style lang="scss" scoped>

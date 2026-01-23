@@ -62,8 +62,8 @@
                 v-model="form.triggerType"
                 :placeholder="t('schedule.job.form.triggerTypePlaceholder')"
                 :options="job_trigger_type_enum"
-                @change="triggerTypeChange"
                 style="width: 100%"
+                @change="triggerTypeChange"
               />
             </ElFormItem>
           </ElCol>
@@ -77,9 +77,11 @@
                 v-model="form.triggerInterval"
                 :placeholder="t('schedule.job.form.triggerInterval.intervalPlaceholder')"
               >
-                <template #suffix>{{
+                <template #suffix>
+{{
                   $t('schedule.job.form.triggerInterval.intervalUnit')
-                }}</template>
+                }}
+</template>
               </ElInput>
             </ElFormItem>
             <ElFormItem
@@ -97,7 +99,7 @@
                 >
                   <template #append>
                     <ElTooltip :content="t('components.genCron.title')">
-                      <ElButton @click="openGeneratorCron(form.triggerInterval)" :icon="Clock" />
+                      <ElButton :icon="Clock" @click="openGeneratorCron(form.triggerInterval)" />
                     </ElTooltip>
                   </template>
                 </ElInput>
@@ -144,8 +146,8 @@
                 :rules="[
                   {
                     required: true,
-                    message: t('schedule.job.form.sliceParamPlaceholder', { index: index + 1 })
-                  }
+                    message: t('schedule.job.form.sliceParamPlaceholder', { index: index + 1 }),
+                  },
                 ]"
               >
                 <ElInput
@@ -155,9 +157,11 @@
               </ElFormItem>
               <ElButton type="danger" :icon="Delete" circle @click="onDeleteArgs(index)" />
             </div>
-            <ElButton type="primary" :icon="Plus" @click="onAddArgs">{{
+            <ElButton type="primary" :icon="Plus" @click="onAddArgs">
+{{
               $t('schedule.job.form.sliceParam')
-            }}</ElButton>
+            }}
+</ElButton>
           </div>
         </ElFormItem>
       </fieldset>
@@ -244,227 +248,227 @@
 </template>
 
 <script setup lang="ts">
-  import { addJob, listGroup, updateJob } from '@/apis/schedule/job'
-  import CronModal from '@/components/base/GenCron/CronModal/index.vue'
-  import { useDict, useResetReactive } from '@/hooks'
-  import type { LabelValueState } from '@/types/global'
-  import { Clock, Delete, Plus } from '@element-plus/icons-vue'
-  import { useWindowSize } from '@vueuse/core'
-  import type { FormInstance, FormRules } from 'element-plus'
-  import { ElMessage } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { FormInstance, FormRules } from 'element-plus'
+import type { LabelValueState } from '@/types/global'
+import { Clock, Delete, Plus } from '@element-plus/icons-vue'
+import { useWindowSize } from '@vueuse/core'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { addJob, listGroup, updateJob } from '@/apis/schedule/job'
+import CronModal from '@/components/base/GenCron/CronModal/index.vue'
+import { useDict, useResetReactive } from '@/hooks'
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { t } = useI18n()
-  const { width } = useWindowSize()
+const { t } = useI18n()
+const { width } = useWindowSize()
 
-  const colProps = { xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }
+const colProps = { xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }
 
-  // 内置 Cron 表达式
-  const cron_list = computed(() => [
-    { label: t('components.cronPreset.everyMinute'), value: '0 * * * * ?' },
-    { label: t('components.cronPreset.every30Minutes'), value: '0 0/30 * * * ?' },
-    { label: t('components.cronPreset.everyHour'), value: '0 0 * * * ?' },
-    { label: t('components.cronPreset.everyDay'), value: '0 0 0 * * ?' },
-    { label: t('components.cronPreset.everyMonth'), value: '0 0 0 1 * ?' },
-    { label: t('components.cronPreset.everyMonthLast'), value: '0 0 0 L * ?' },
-    { label: t('components.cronPreset.everyMonthLastWorkday'), value: '0 0 0 LW * ?' },
-    { label: t('components.cronPreset.everyWeek'), value: '0 0 0 ? * 1' }
-  ])
+// 内置 Cron 表达式
+const cron_list = computed(() => [
+  { label: t('components.cronPreset.everyMinute'), value: '0 * * * * ?' },
+  { label: t('components.cronPreset.every30Minutes'), value: '0 0/30 * * * ?' },
+  { label: t('components.cronPreset.everyHour'), value: '0 0 * * * ?' },
+  { label: t('components.cronPreset.everyDay'), value: '0 0 0 * * ?' },
+  { label: t('components.cronPreset.everyMonth'), value: '0 0 0 1 * ?' },
+  { label: t('components.cronPreset.everyMonthLast'), value: '0 0 0 L * ?' },
+  { label: t('components.cronPreset.everyMonthLastWorkday'), value: '0 0 0 LW * ?' },
+  { label: t('components.cronPreset.everyWeek'), value: '0 0 0 ? * 1' }
+])
 
-  const dataId = ref<number>()
-  const visible = ref(false)
-  const isUpdate = computed(() => !!dataId.value)
-  const title = computed(() =>
-    isUpdate.value ? t('schedule.job.button.edit') : t('schedule.job.button.add')
-  )
-  const formRef = ref<FormInstance>()
-  const groupList = ref<LabelValueState[]>([])
-  const {
-    job_trigger_type_enum,
-    job_task_type_enum,
-    job_route_strategy_enum,
-    job_block_strategy_enum
-  } = useDict(
-    'job_trigger_type_enum',
-    'job_task_type_enum',
-    'job_route_strategy_enum',
-    'job_block_strategy_enum'
-  )
-  const rules: FormRules = {
-    groupName: [
-      { required: true, message: t('schedule.job.form.groupNamePlaceholder'), trigger: 'change' }
-    ],
-    jobName: [
-      { required: true, message: t('schedule.job.form.jobNamePlaceholder'), trigger: 'blur' }
-    ],
-    triggerType: [
-      { required: true, message: t('schedule.job.form.triggerTypePlaceholder'), trigger: 'change' }
-    ],
-    taskType: [
-      { required: true, message: t('schedule.job.form.taskTypePlaceholder'), trigger: 'change' }
-    ],
-    executorInfo: [
-      { required: true, message: t('schedule.job.form.executorInfoPlaceholder'), trigger: 'blur' }
-    ],
-    routeKey: [
-      { required: true, message: t('schedule.job.form.routeKeyPlaceholder'), trigger: 'change' }
-    ],
-    blockStrategy: [
-      {
-        required: true,
-        message: t('schedule.job.form.blockStrategyPlaceholder'),
-        trigger: 'change'
-      }
-    ],
-    executorTimeout: [
-      {
-        required: true,
-        message: t('schedule.job.form.executorTimeoutPlaceholder'),
-        trigger: 'blur'
-      }
-    ],
-    maxRetryTimes: [
-      { required: true, message: t('schedule.job.form.maxRetryTimesPlaceholder'), trigger: 'blur' }
-    ],
-    retryInterval: [
-      { required: true, message: t('schedule.job.form.retryIntervalPlaceholder'), trigger: 'blur' }
-    ],
-    parallelNum: [
-      { required: true, message: t('schedule.job.form.parallelNumPlaceholder'), trigger: 'blur' }
-    ]
-  }
-
-  const [form, resetForm] = useResetReactive({
-    groupName: '',
-    jobName: '',
-    description: '',
-    triggerType: 2,
-    triggerInterval: '60',
-    taskType: 1,
-    executorInfo: '',
-    argsStr: '',
-    routeKey: 4,
-    blockStrategy: 1,
-    executorTimeout: 60,
-    maxRetryTimes: 3,
-    retryInterval: 1,
-    parallelNum: 1
-  })
-
-  const args = ref<{ value: string }[]>([{ value: '' }])
-
-  // 重置
-  const reset = () => {
-    formRef.value?.resetFields()
-    args.value = [{ value: '' }]
-    resetForm()
-  }
-
-  // 触发类型切换
-  const triggerTypeChange = () => {
-    switch (form.triggerType) {
-      case 2:
-        form.triggerInterval = '60'
-        break
-      case 3:
-        form.triggerInterval = '0 * * * * ?'
-        break
+const dataId = ref<number>()
+const visible = ref(false)
+const isUpdate = computed(() => !!dataId.value)
+const title = computed(() =>
+  isUpdate.value ? t('schedule.job.button.edit') : t('schedule.job.button.add')
+)
+const formRef = ref<FormInstance>()
+const groupList = ref<LabelValueState[]>([])
+const {
+  job_trigger_type_enum,
+  job_task_type_enum,
+  job_route_strategy_enum,
+  job_block_strategy_enum
+} = useDict(
+  'job_trigger_type_enum',
+  'job_task_type_enum',
+  'job_route_strategy_enum',
+  'job_block_strategy_enum'
+)
+const rules: FormRules = {
+  groupName: [
+    { required: true, message: t('schedule.job.form.groupNamePlaceholder'), trigger: 'change' }
+  ],
+  jobName: [
+    { required: true, message: t('schedule.job.form.jobNamePlaceholder'), trigger: 'blur' }
+  ],
+  triggerType: [
+    { required: true, message: t('schedule.job.form.triggerTypePlaceholder'), trigger: 'change' }
+  ],
+  taskType: [
+    { required: true, message: t('schedule.job.form.taskTypePlaceholder'), trigger: 'change' }
+  ],
+  executorInfo: [
+    { required: true, message: t('schedule.job.form.executorInfoPlaceholder'), trigger: 'blur' }
+  ],
+  routeKey: [
+    { required: true, message: t('schedule.job.form.routeKeyPlaceholder'), trigger: 'change' }
+  ],
+  blockStrategy: [
+    {
+      required: true,
+      message: t('schedule.job.form.blockStrategyPlaceholder'),
+      trigger: 'change'
     }
+  ],
+  executorTimeout: [
+    {
+      required: true,
+      message: t('schedule.job.form.executorTimeoutPlaceholder'),
+      trigger: 'blur'
+    }
+  ],
+  maxRetryTimes: [
+    { required: true, message: t('schedule.job.form.maxRetryTimesPlaceholder'), trigger: 'blur' }
+  ],
+  retryInterval: [
+    { required: true, message: t('schedule.job.form.retryIntervalPlaceholder'), trigger: 'blur' }
+  ],
+  parallelNum: [
+    { required: true, message: t('schedule.job.form.parallelNumPlaceholder'), trigger: 'blur' }
+  ]
+}
+
+const [form, resetForm] = useResetReactive({
+  groupName: '',
+  jobName: '',
+  description: '',
+  triggerType: 2,
+  triggerInterval: '60',
+  taskType: 1,
+  executorInfo: '',
+  argsStr: '',
+  routeKey: 4,
+  blockStrategy: 1,
+  executorTimeout: 60,
+  maxRetryTimes: 3,
+  retryInterval: 1,
+  parallelNum: 1
+})
+
+const args = ref<{ value: string }[]>([{ value: '' }])
+
+// 重置
+const reset = () => {
+  formRef.value?.resetFields()
+  args.value = [{ value: '' }]
+  resetForm()
+}
+
+// 触发类型切换
+const triggerTypeChange = () => {
+  switch (form.triggerType) {
+    case 2:
+      form.triggerInterval = '60'
+      break
+    case 3:
+      form.triggerInterval = '0 * * * * ?'
+      break
   }
+}
 
-  // 新增切片参数
-  const onAddArgs = () => {
-    args.value.push({ value: '' })
+// 新增切片参数
+const onAddArgs = () => {
+  args.value.push({ value: '' })
+}
+
+// 删除切片参数
+const onDeleteArgs = (index: number) => {
+  args.value.splice(index, 1)
+}
+
+// Cron 表达式自动完成查询
+const querySearch = (queryString: string, cb: (results: { value: string }[]) => void) => {
+  const results = queryString
+    ? cron_list.value.filter(
+        (item) => item.label.includes(queryString) || item.value.includes(queryString)
+      )
+    : cron_list
+  cb(results.map((item) => ({ value: item.value })))
+}
+
+const cronModal = ref()
+
+// 打开生成表达式
+const openGeneratorCron = (cron: string) => {
+  cronModal.value.open(cron)
+}
+
+// 保存
+const save = async () => {
+  try {
+    // 切片任务，将参数转换为 JSON 数组
+    if (form.taskType === 3) {
+      form.argsStr = JSON.stringify(args.value.map((arg) => arg.value))
+    }
+    await formRef.value?.validate()
+    if (isUpdate.value) {
+      await updateJob(form, dataId.value!)
+      ElMessage.success(t('schedule.job.message.editSuccess'))
+    } else {
+      await addJob(form)
+      ElMessage.success(t('schedule.job.message.addSuccess'))
+    }
+    emit('save-success')
+    visible.value = false
+  } catch (error) {
+    console.error(error)
   }
+}
 
-  // 删除切片参数
-  const onDeleteArgs = (index: number) => {
-    args.value.splice(index, 1)
+// 查询任务组列表
+const getGroupList = async () => {
+  const data = await listGroup()
+  groupList.value = data?.map((item: string) => ({
+    label: item,
+    value: item
+  }))
+}
+
+// 新增
+const onAdd = async () => {
+  reset()
+  dataId.value = undefined
+  if (!groupList.value.length) {
+    await getGroupList()
   }
+  visible.value = true
+}
 
-  // Cron 表达式自动完成查询
-  const querySearch = (queryString: string, cb: (results: { value: string }[]) => void) => {
-    const results = queryString
-      ? cron_list.value.filter(
-          (item) => item.label.includes(queryString) || item.value.includes(queryString)
-        )
-      : cron_list
-    cb(results.map((item) => ({ value: item.value })))
+// 修改
+const onUpdate = async (record: any) => {
+  reset()
+  dataId.value = record.id
+  if (!groupList.value.length) {
+    await getGroupList()
   }
-
-  const cronModal = ref()
-
-  // 打开生成表达式
-  const openGeneratorCron = (cron: string) => {
-    cronModal.value.open(cron)
-  }
-
-  // 保存
-  const save = async () => {
+  Object.assign(form, record)
+  // 切片任务，解析 argsStr 并赋值给 args
+  if (form.taskType === 3 && form.argsStr) {
     try {
-      // 切片任务，将参数转换为 JSON 数组
-      if (form.taskType === 3) {
-        form.argsStr = JSON.stringify(args.value.map((arg) => arg.value))
-      }
-      await formRef.value?.validate()
-      if (isUpdate.value) {
-        await updateJob(form, dataId.value!)
-        ElMessage.success(t('schedule.job.message.editSuccess'))
-      } else {
-        await addJob(form)
-        ElMessage.success(t('schedule.job.message.addSuccess'))
-      }
-      emit('save-success')
-      visible.value = false
-    } catch (error) {
-      console.error(error)
+      const parsedArgs = JSON.parse(form.argsStr)
+      args.value = parsedArgs.map((arg: any) => ({ value: arg }))
+    } catch (error: any) {
+      ElMessage.error(error.message)
     }
   }
+  visible.value = true
+}
 
-  // 查询任务组列表
-  const getGroupList = async () => {
-    const data = await listGroup()
-    groupList.value = data?.map((item: string) => ({
-      label: item,
-      value: item
-    }))
-  }
-
-  // 新增
-  const onAdd = async () => {
-    reset()
-    dataId.value = undefined
-    if (!groupList.value.length) {
-      await getGroupList()
-    }
-    visible.value = true
-  }
-
-  // 修改
-  const onUpdate = async (record: any) => {
-    reset()
-    dataId.value = record.id
-    if (!groupList.value.length) {
-      await getGroupList()
-    }
-    Object.assign(form, record)
-    // 切片任务，解析 argsStr 并赋值给 args
-    if (form.taskType === 3 && form.argsStr) {
-      try {
-        const parsedArgs = JSON.parse(form.argsStr)
-        args.value = parsedArgs.map((arg: any) => ({ value: arg }))
-      } catch (error: any) {
-        ElMessage.error(error.message)
-      }
-    }
-    visible.value = true
-  }
-
-  defineExpose({ onAdd, onUpdate })
+defineExpose({ onAdd, onUpdate })
 </script>
 
 <style scoped lang="scss">

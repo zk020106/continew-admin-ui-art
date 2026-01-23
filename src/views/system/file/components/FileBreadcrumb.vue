@@ -11,7 +11,7 @@
           <span
             :class="{
               'breadcrumb-current': index === pathList.length - 1,
-              'breadcrumb-link': index < pathList.length - 1
+              'breadcrumb-link': index < pathList.length - 1,
             }"
             @click="index < pathList.length - 1 && $emit('navigate', item.path)"
           >
@@ -24,41 +24,41 @@
 </template>
 
 <script setup lang="ts">
-  import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 
-  const { t } = useI18n()
+const props = defineProps<{
+  path: string
+}>()
 
-  interface BreadcrumbItem {
-    name: string
-    path: string
-  }
+defineEmits<{
+  (e: 'navigate', path: string): void
+}>()
 
-  const props = defineProps<{
-    path: string
-  }>()
+const { t } = useI18n()
 
-  defineEmits<{
-    (e: 'navigate', path: string): void
-  }>()
+interface BreadcrumbItem {
+  name: string
+  path: string
+}
 
-  // 将路径转换为面包屑列表
-  const getPathList = (currentPath: string): BreadcrumbItem[] => {
-    if (!currentPath || currentPath === '/') return []
+// 将路径转换为面包屑列表
+const getPathList = (currentPath: string): BreadcrumbItem[] => {
+  if (!currentPath || currentPath === '/') return []
 
-    const parts = currentPath.split('/').filter(Boolean)
-    let path = ''
-    const result: BreadcrumbItem[] = []
+  const parts = currentPath.split('/').filter(Boolean)
+  let path = ''
+  const result: BreadcrumbItem[] = []
 
-    parts.forEach((name) => {
-      path += `/${name}`
-      result.push({ name, path })
-    })
+  parts.forEach((name) => {
+    path += `/${name}`
+    result.push({ name, path })
+  })
 
-    return result
-  }
+  return result
+}
 
-  // 使用计算属性
-  const pathList = computed(() => getPathList(props.path))
+// 使用计算属性
+const pathList = computed(() => getPathList(props.path))
 </script>
 
 <style lang="scss" scoped>

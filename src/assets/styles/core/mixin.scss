@@ -25,18 +25,15 @@
 */
 @mixin userSelect($value: none) {
   user-select: $value;
-  -moz-user-select: $value;
-  -ms-user-select: $value;
-  -webkit-user-select: $value;
+  user-select: $value;
+  user-select: $value;
+  user-select: $value;
 }
 
 // 绝对定位居中
 @mixin absoluteCenter() {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  inset: 0;
   margin: auto;
 }
 
@@ -54,8 +51,8 @@
   $name: mymove,
   $animate: mymove 2s 1 linear infinite
 ) {
-  -webkit-animation: $animate;
-  -o-animation: $animate;
+  animation: $animate;
+  animation: $animate;
   animation: $animate;
 
   @keyframes #{$name} {
@@ -72,7 +69,7 @@
     }
   }
 
-  @-webkit-keyframes #{$name} {
+  @keyframes #{$name} {
     from {
       @each $key, $value in $from {
         $key: $value;
@@ -89,29 +86,29 @@
 
 // 圆形盒子
 @mixin circle($size: 11px, $bg: #fff) {
-  border-radius: 50%;
   width: $size;
   height: $size;
   line-height: $size;
   text-align: center;
   background: $bg;
+  border-radius: 50%;
 }
 
 // placeholder
 @mixin placeholder($color: #bbb) {
   // Firefox
-  &::-moz-placeholder {
+  &::placeholder {
     color: $color;
     opacity: 1;
   }
 
   // Internet Explorer 10+
-  &:-ms-input-placeholder {
+  &:input-placeholder {
     color: $color;
   }
 
   // Safari and Chrome
-  &::-webkit-input-placeholder {
+  &::input-placeholder {
     color: $color;
   }
 
@@ -124,12 +121,12 @@
 @mixin betterTransparentize($color, $alpha) {
   $c: rgba($color, $alpha);
   $ie_c: ie_hex_str($c);
+  zoom: 1;
   background: rgba($color, 1);
   background: $c;
   background: transparent \9;
-  zoom: 1;
+  filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$ie_c}, endColorstr=#{$ie_c})';
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$ie_c}, endColorstr=#{$ie_c});
-  -ms-filter: 'progid:DXImageTransform.Microsoft.gradient(startColorstr=#{$ie_c}, endColorstr=#{$ie_c})';
 }
 
 //添加浏览器前缀
@@ -147,7 +144,7 @@
 // 背景滤镜
 @mixin backdropBlur() {
   --tw-backdrop-blur: blur(30px);
-  -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness)
+  backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness)
     var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate)
     var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate)
     var(--tw-backdrop-sepia);

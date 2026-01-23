@@ -1,8 +1,8 @@
+import type { Options as PaginationOptions } from './usePagination'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { useBreakpoint } from './useBreakpoint'
 import { useLocale } from './useLocale'
 import { usePagination } from './usePagination'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import type { Options as PaginationOptions } from './usePagination'
 
 interface Options<T, U> {
   /** 数据格式化函数 */

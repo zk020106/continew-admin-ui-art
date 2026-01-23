@@ -4,7 +4,7 @@
     :title="title"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    :size="width >= 500 ? 500 : '100%'"
+    :size="width >= 500 ? 500 : '100%"
     @close="reset"
   >
     <CaForm ref="formRef" v-model="form" :columns="columns" />
@@ -16,209 +16,209 @@
 </template>
 
 <script setup lang="ts">
-  import { addUser, getUser, updateUser } from '@/apis/system/user'
-  import CaButton from '@/components/base/CaButton/index.vue'
-  import { FormColumnItem } from '@/components/base/CaForm/type'
-  import { GenderList } from '@/constant/common'
-  import { useResetReactive } from '@/hooks'
-  import { useDept, useRole } from '@/hooks/business'
-  import { EnableStatus, Gender } from '@/types/api/common'
-  import { encryptByRsa } from '@/utils/encrypt'
-  import { useWindowSize } from '@vueuse/core'
-  import { useI18n } from 'vue-i18n'
+import type { FormColumnItem } from '@/components/base/CaForm/type'
+import type { EnableStatus, Gender } from '@/types/api/common'
+import { useWindowSize } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
+import { addUser, getUser, updateUser } from '@/apis/system/user'
+import CaButton from '@/components/base/CaButton/index.vue'
+import { GenderList } from '@/constant/common'
+import { useResetReactive } from '@/hooks'
+import { useDept, useRole } from '@/hooks/business'
+import { encryptByRsa } from '@/utils/encrypt'
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { width } = useWindowSize()
+const { width } = useWindowSize()
+const { t } = useI18n()
 
-  const dataId = ref('')
-  const visible = ref(false)
-  const isUpdate = computed(() => !!dataId.value)
-  const title = computed(() =>
-    isUpdate.value ? t('user.page.title.edit') : `${t('button.add')}用户`
-  )
-  const formRef = useTemplateRef('formRef')
-  const { roleList, getRoleList } = useRole()
-  const { deptList, getDeptList } = useDept()
+const dataId = ref('')
+const visible = ref(false)
+const isUpdate = computed(() => !!dataId.value)
+const title = computed(() =>
+  isUpdate.value ? t('user.page.title.edit') : `${t('button.add')}用户`
+)
+const formRef = useTemplateRef('formRef')
+const { roleList, getRoleList } = useRole()
+const { deptList, getDeptList } = useDept()
 
-  const [form, resetForm] = useResetReactive({
-    gender: 1 as Gender,
-    status: 1 as EnableStatus
-  })
-  const { t } = useI18n()
-  const columns = reactive([
-    {
-      label: t('user.field.nickname'),
-      field: 'nickname',
-      type: 'input',
-      span: 24,
-      required: true,
-      props: {
-        maxLength: 30
-      }
+const [form, resetForm] = useResetReactive({
+  gender: 1 as Gender,
+  status: 1 as EnableStatus
+})
+const columns = reactive([
+  {
+    label: t('user.field.nickname'),
+    field: 'nickname',
+    type: 'input',
+    span: 24,
+    required: true,
+    props: {
+      maxLength: 30
+    }
+  },
+  {
+    label: t('user.field.username'),
+    field: 'username',
+    type: 'input',
+    span: 24,
+    required: true,
+    props: {
+      maxLength: 64
+    }
+  },
+  {
+    label: t('user.field.password'),
+    field: 'password',
+    type: 'input-password',
+    span: 24,
+    required: true,
+    props: {
+      maxLength: 32,
+      showWordLimit: true
     },
-    {
-      label: t('user.field.username'),
-      field: 'username',
-      type: 'input',
-      span: 24,
-      required: true,
+    hide: () => isUpdate.value
+  },
+  {
+    label: t('user.field.phone'),
+    field: 'phone',
+    type: 'input',
+    span: 24,
+    props: {
+      maxLength: 11
+    }
+  },
+  {
+    label: t('user.field.email'),
+    field: 'email',
+    type: 'input',
+    span: 24,
+    props: {
+      maxLength: 255
+    }
+  },
+  {
+    label: t('user.field.gender'),
+    field: 'gender',
+    type: 'radio-group',
+    span: 24,
+    props: {
+      options: GenderList
+    }
+  },
+  {
+    label: t('user.field.dept'),
+    field: 'deptId',
+    type: 'tree-select',
+    span: 24,
+    required: true,
+    props: {
+      data: deptList,
       props: {
-        maxLength: 64
-      }
-    },
-    {
-      label: t('user.field.password'),
-      field: 'password',
-      type: 'input-password',
-      span: 24,
-      required: true,
-      props: {
-        maxLength: 32,
-        showWordLimit: true
+        children: 'children',
+        label: 'title',
+        value: 'key'
       },
-      hide: () => isUpdate.value
-    },
-    {
-      label: t('user.field.phone'),
-      field: 'phone',
-      type: 'input',
-      span: 24,
-      props: {
-        maxLength: 11
-      }
-    },
-    {
-      label: t('user.field.email'),
-      field: 'email',
-      type: 'input',
-      span: 24,
-      props: {
-        maxLength: 255
-      }
-    },
-    {
-      label: t('user.field.gender'),
-      field: 'gender',
-      type: 'radio-group',
-      span: 24,
-      props: {
-        options: GenderList
-      }
-    },
-    {
-      label: t('user.field.dept'),
-      field: 'deptId',
-      type: 'tree-select',
-      span: 24,
-      required: true,
-      props: {
-        data: deptList,
-        props: {
-          children: 'children',
-          label: 'title',
-          value: 'key'
-        },
-        nodeKey: 'key',
-        checkStrictly: true
-      }
-    },
-    {
-      label: t('user.field.role'),
-      field: 'roleIds',
-      type: 'select',
-      span: 24,
-      required: true,
-      props: {
-        options: roleList,
-        multiple: true,
-        allowClear: true,
-        allowSearch: true
-      }
-    },
-    {
-      label: t('user.field.description'),
-      field: 'description',
-      type: 'textarea',
-      span: 24
-    },
-    {
-      label: t('user.field.status'),
-      field: 'status',
-      type: 'switch',
-      span: 24,
-      props: {
-        type: 'round',
-        activeValue: 1,
-        inactiveValue: 2,
-        activeText: t('common.statusEnabled'),
-        inactiveText: t('common.statusDisabled')
-      }
+      nodeKey: 'key',
+      checkStrictly: true
     }
-  ] as FormColumnItem[])
-
-  // 重置
-  const reset = () => {
-    formRef.value?.formRef?.resetFields()
-    resetForm()
-  }
-
-  // 保存
-  const save = async () => {
-    const rawPassword = form.password
-    try {
-      await formRef.value?.formRef?.validate()
-      if (isUpdate.value) {
-        await updateUser(form, dataId.value)
-        ElMessage.success(t('message.updateSuccess'))
-      } else {
-        if (rawPassword) {
-          form.password = encryptByRsa(rawPassword) || ''
-        }
-        await addUser(form)
-        ElMessage.success(t('message.addSuccess'))
-      }
-      emit('save-success')
-      visible.value = false
-      return true
-    } catch (err) {
-      console.error(err)
-      form.password = rawPassword
-      return false
+  },
+  {
+    label: t('user.field.role'),
+    field: 'roleIds',
+    type: 'select',
+    span: 24,
+    required: true,
+    props: {
+      options: roleList,
+      multiple: true,
+      allowClear: true,
+      allowSearch: true
+    }
+  },
+  {
+    label: t('user.field.description'),
+    field: 'description',
+    type: 'textarea',
+    span: 24
+  },
+  {
+    label: t('user.field.status'),
+    field: 'status',
+    type: 'switch',
+    span: 24,
+    props: {
+      type: 'round',
+      activeValue: 1,
+      inactiveValue: 2,
+      activeText: t('common.statusEnabled'),
+      inactiveText: t('common.statusDisabled')
     }
   }
+] as FormColumnItem[])
 
-  // 新增
-  const onAdd = async () => {
-    reset()
-    if (!deptList.value.length) {
-      await getDeptList()
+// 重置
+const reset = () => {
+  formRef.value?.formRef?.resetFields()
+  resetForm()
+}
+
+// 保存
+const save = async () => {
+  const rawPassword = form.password
+  try {
+    await formRef.value?.formRef?.validate()
+    if (isUpdate.value) {
+      await updateUser(form, dataId.value)
+      ElMessage.success(t('message.updateSuccess'))
+    } else {
+      if (rawPassword) {
+        form.password = encryptByRsa(rawPassword) || ''
+      }
+      await addUser(form)
+      ElMessage.success(t('message.addSuccess'))
     }
-    if (!roleList.value.length) {
-      await getRoleList()
-    }
-    dataId.value = ''
-    visible.value = true
+    emit('save-success')
+    visible.value = false
+    return true
+  } catch (err) {
+    console.error(err)
+    form.password = rawPassword
+    return false
   }
+}
 
-  // 修改
-  const onUpdate = async (id: string) => {
-    reset()
-    dataId.value = id
-    if (!deptList.value.length) {
-      await getDeptList()
-    }
-    if (!roleList.value.length) {
-      await getRoleList()
-    }
-    const data = await getUser(id)
-    Object.assign(form, data)
-    visible.value = true
+// 新增
+const onAdd = async () => {
+  reset()
+  if (!deptList.value.length) {
+    await getDeptList()
   }
+  if (!roleList.value.length) {
+    await getRoleList()
+  }
+  dataId.value = ''
+  visible.value = true
+}
 
-  defineExpose({ onAdd, onUpdate })
+// 修改
+const onUpdate = async (id: string) => {
+  reset()
+  dataId.value = id
+  if (!deptList.value.length) {
+    await getDeptList()
+  }
+  if (!roleList.value.length) {
+    await getRoleList()
+  }
+  const data = await getUser(id)
+  Object.assign(form, data)
+  visible.value = true
+}
+
+defineExpose({ onAdd, onUpdate })
 </script>
 
 <style scoped lang="scss"></style>

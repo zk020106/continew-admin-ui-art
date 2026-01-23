@@ -1,18 +1,18 @@
 /**
  * 详情展示字段类型
  */
-export type DetailFieldType =
-  | 'text' // 文本
-  | 'tag' // 标签
-  | 'image' // 图片
-  | 'date' // 日期
-  | 'datetime' // 日期时间
-  | 'boolean' // 布尔值
-  | 'number' // 数字
-  | 'enum' // 枚举
-  | 'dict' // 字典
-  | 'component' // 自定义组件
-  | 'slot' // 插槽
+export type DetailFieldType
+  = | 'text' // 文本
+    | 'tag' // 标签
+    | 'image' // 图片
+    | 'date' // 日期
+    | 'datetime' // 日期时间
+    | 'boolean' // 布尔值
+    | 'number' // 数字
+    | 'enum' // 枚举
+    | 'dict' // 字典
+    | 'component' // 自定义组件
+    | 'slot' // 插槽
 
 /**
  * 详情字段配置
@@ -32,7 +32,7 @@ export interface DetailField {
   defaultValue?: any // 默认值（当值为空时显示）
 
   // 枚举/字典配置
-  enum?: Record<string, { label: string; type?: string }> // 枚举映射
+  enum?: Record<string, { label: string, type?: string }> // 枚举映射
   dictCode?: string // 字典编码
 
   // 自定义渲染
@@ -91,8 +91,8 @@ export interface DetailSlots {
   title?: () => any
 
   // 字段值插槽
-  [key: `field-${string}`]: (scope: { value: any; data: any; field: DetailField }) => any
+  [key: `field-${string}`]: (scope: { value: any, data: any, field: DetailField }) => any
 
   // 默认插槽
-  default?: (scope: { data: any; fields: DetailField[] }) => any
+  default?: (scope: { data: any, fields: DetailField[] }) => any
 }

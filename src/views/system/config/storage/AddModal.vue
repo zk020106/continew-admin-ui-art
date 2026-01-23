@@ -82,123 +82,123 @@
 </template>
 
 <script setup lang="ts">
-  import type { FormInstance, FormRules } from 'element-plus'
-  import { addStorage, getStorage, updateStorage } from '@/apis/system/storage'
-  import type { StorageReq } from '@/apis/system/type'
-  import { useResetReactive } from '@/hooks'
-  import { encryptByRsa } from '@/utils/encrypt'
-  import { ElMessage } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
+import type { StorageReq } from '@/apis/system/type'
+import { ElMessage } from 'element-plus'
+import { addStorage, getStorage, updateStorage } from '@/apis/system/storage'
+import { useResetReactive } from '@/hooks'
+import { encryptByRsa } from '@/utils/encrypt'
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const dataId = ref('')
-  const visible = ref(false)
-  const saveLoading = ref(false)
-  const formRef = ref<FormInstance>()
+const dataId = ref('')
+const visible = ref(false)
+const saveLoading = ref(false)
+const formRef = ref<FormInstance>()
 
-  const isUpdate = computed(() => !!dataId.value)
-  const storageType = computed(() => (form.type === 2 ? '对象存储' : '本地存储'))
-  const title = computed(() =>
-    isUpdate.value ? `修改${storageType.value}` : `新增${storageType.value}`
-  )
+const isUpdate = computed(() => !!dataId.value)
+const storageType = computed(() => (form.type === 2 ? '对象存储' : '本地存储'))
+const title = computed(() =>
+  isUpdate.value ? `修改${storageType.value}` : `新增${storageType.value}`
+)
 
-  const [form, resetForm] = useResetReactive({
-    type: 2,
-    code: '',
-    name: '',
-    accessKey: '',
-    secretKey: '',
-    endpoint: '',
-    bucketName: '',
-    domain: '',
-    sort: 999,
-    status: 2,
-    description: ''
-  })
+const [form, resetForm] = useResetReactive({
+  type: 2,
+  code: '',
+  name: '',
+  accessKey: '',
+  secretKey: '',
+  endpoint: '',
+  bucketName: '',
+  domain: '',
+  sort: 999,
+  status: 2,
+  description: ''
+})
 
-  const rules: FormRules = {
-    name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-    code: [{ required: true, message: '请输入编码', trigger: 'blur' }],
-    accessKey: [{ required: true, message: '请输入 Access Key', trigger: 'blur' }],
-    secretKey: [
-      {
-        validator: (_rule, value, callback) => {
-          if (!isUpdate.value && !value) {
-            callback(new Error('请输入 Secret Key'))
-          } else {
-            callback()
-          }
-        },
-        trigger: 'blur'
-      }
-    ],
-    endpoint: [{ required: true, message: '请输入 Endpoint', trigger: 'blur' }],
-    bucketName: [{ required: true, message: '请输入 Bucket/存储路径', trigger: 'blur' }],
-    domain: [{ required: true, message: '请输入访问路径', trigger: 'blur' }]
-  }
-
-  const handleClose = () => {
-    formRef.value?.resetFields()
-    resetForm()
-  }
-
-  const handleOpen = () => {
-    // 数据已在 onUpdate 中加载，此处可用于重置验证状态
-    formRef.value?.clearValidate()
-  }
-
-  const handleSave = async () => {
-    const isValid = await formRef.value?.validate()
-    if (!isValid) return
-
-    saveLoading.value = true
-
-    try {
-      if (isUpdate.value) {
-        const payload: Record<string, unknown> = { ...form }
-        // 仅在用户实际输入了 secretKey 时才包含
-        if (form.type === 2 && form.secretKey) {
-          payload.secretKey = encryptByRsa(form.secretKey)
+const rules: FormRules = {
+  name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
+  code: [{ required: true, message: '请输入编码', trigger: 'blur' }],
+  accessKey: [{ required: true, message: '请输入 Access Key', trigger: 'blur' }],
+  secretKey: [
+    {
+      validator: (_rule, value, callback) => {
+        if (!isUpdate.value && !value) {
+          callback(new Error('请输入 Secret Key'))
         } else {
-          delete payload.secretKey
+          callback()
         }
-        await updateStorage(payload as StorageReq, dataId.value)
-        ElMessage.success('修改成功')
-      } else {
-        const payload: StorageReq = { ...form }
-        // 仅在添加模式下且用户输入了 secretKey 时才加密
-        if (form.type === 2 && form.secretKey) {
-          payload.secretKey = encryptByRsa(form.secretKey)
-        }
-        await addStorage(payload)
-        ElMessage.success('新增成功')
-      }
-
-      emit('save-success')
-      visible.value = false
-    } catch (error) {
-      console.error('Failed to save storage:', error)
-    } finally {
-      saveLoading.value = false
+      },
+      trigger: 'blur'
     }
-  }
+  ],
+  endpoint: [{ required: true, message: '请输入 Endpoint', trigger: 'blur' }],
+  bucketName: [{ required: true, message: '请输入 Bucket/存储路径', trigger: 'blur' }],
+  domain: [{ required: true, message: '请输入访问路径', trigger: 'blur' }]
+}
 
-  const onAdd = async (type: number) => {
-    resetForm()
-    dataId.value = ''
-    form.type = type
-    visible.value = true
-  }
+const handleClose = () => {
+  formRef.value?.resetFields()
+  resetForm()
+}
 
-  const onUpdate = async (id: string) => {
-    resetForm()
-    dataId.value = id
-    const { data } = await getStorage(id)
-    Object.assign(form, data)
-    visible.value = true
-  }
+const handleOpen = () => {
+  // 数据已在 onUpdate 中加载，此处可用于重置验证状态
+  formRef.value?.clearValidate()
+}
 
-  defineExpose({ onAdd, onUpdate })
+const handleSave = async () => {
+  const isValid = await formRef.value?.validate()
+  if (!isValid) return
+
+  saveLoading.value = true
+
+  try {
+    if (isUpdate.value) {
+      const payload: Record<string, unknown> = { ...form }
+      // 仅在用户实际输入了 secretKey 时才包含
+      if (form.type === 2 && form.secretKey) {
+        payload.secretKey = encryptByRsa(form.secretKey)
+      } else {
+        delete payload.secretKey
+      }
+      await updateStorage(payload as StorageReq, dataId.value)
+      ElMessage.success('修改成功')
+    } else {
+      const payload: StorageReq = { ...form }
+      // 仅在添加模式下且用户输入了 secretKey 时才加密
+      if (form.type === 2 && form.secretKey) {
+        payload.secretKey = encryptByRsa(form.secretKey)
+      }
+      await addStorage(payload)
+      ElMessage.success('新增成功')
+    }
+
+    emit('save-success')
+    visible.value = false
+  } catch (error) {
+    console.error('Failed to save storage:', error)
+  } finally {
+    saveLoading.value = false
+  }
+}
+
+const onAdd = async (type: number) => {
+  resetForm()
+  dataId.value = ''
+  form.type = type
+  visible.value = true
+}
+
+const onUpdate = async (id: string) => {
+  resetForm()
+  dataId.value = id
+  const { data } = await getStorage(id)
+  Object.assign(form, data)
+  visible.value = true
+}
+
+defineExpose({ onAdd, onUpdate })
 </script>

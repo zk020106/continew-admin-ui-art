@@ -25,56 +25,56 @@
 </template>
 
 <script lang="ts" setup>
-  import { ElSplitter, ElSplitterPanel } from 'element-plus'
-  import { computed, ref, useSlots } from 'vue'
-  import SplitButton from './components/SplitButton.vue'
-  import type { PageLayoutProps } from './type'
+import type { PageLayoutProps } from './type'
+import { ElSplitter, ElSplitterPanel } from 'element-plus'
+import { computed, ref, useSlots } from 'vue'
+import SplitButton from './components/SplitButton.vue'
 
-  const props = withDefaults(defineProps<PageLayoutProps>(), {
-    size: 270,
-    bordered: false,
-    collapse: true,
-    leftStyle: () => ({}),
-    headerStyle: () => ({}),
-    toolStyle: () => ({}),
-    bodyStyle: () => ({})
-  })
+const props = withDefaults(defineProps<PageLayoutProps>(), {
+  size: 270,
+  bordered: false,
+  collapse: true,
+  leftStyle: () => ({}),
+  headerStyle: () => ({}),
+  toolStyle: () => ({}),
+  bodyStyle: () => ({})
+})
 
-  defineSlots<{
-    header: () => void
-    left: () => void
-    tool: () => void
-    default: () => void
-  }>()
+defineSlots<{
+  header: () => void
+  left: () => void
+  tool: () => void
+  default: () => void
+}>()
 
-  const slots = useSlots()
-  const size = ref(props.size)
-  const collapsing = ref(false)
+const slots = useSlots()
+const size = ref(props.size)
+const collapsing = ref(false)
 
-  const getClass = computed(() => {
-    const arr: string[] = ['ca-page-layout']
-    if (props.bordered) {
-      arr.push('ca-page-layout--bordered')
-    }
-    if (slots.header) {
-      arr.push('ca-page-layout--has-header')
-    }
-    if (slots.tool) {
-      arr.push('ca-page-layout--has-tool')
-    }
-    if (collapsing.value) {
-      arr.push('ca-page-layout--collapsing')
-    }
-    return arr.join(' ')
-  })
-
-  function handleClick() {
-    collapsing.value = true
-    setTimeout(() => {
-      collapsing.value = false
-    }, 300)
-    size.value = Number(size.value) > 30 ? 0 : props.size
+const getClass = computed(() => {
+  const arr: string[] = ['ca-page-layout']
+  if (props.bordered) {
+    arr.push('ca-page-layout--bordered')
   }
+  if (slots.header) {
+    arr.push('ca-page-layout--has-header')
+  }
+  if (slots.tool) {
+    arr.push('ca-page-layout--has-tool')
+  }
+  if (collapsing.value) {
+    arr.push('ca-page-layout--collapsing')
+  }
+  return arr.join(' ')
+})
+
+function handleClick() {
+  collapsing.value = true
+  setTimeout(() => {
+    collapsing.value = false
+  }, 300)
+  size.value = Number(size.value) > 30 ? 0 : props.size
+}
 </script>
 
 <style lang="scss" scoped>

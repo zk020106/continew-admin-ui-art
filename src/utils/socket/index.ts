@@ -334,7 +334,7 @@ export default class WebSocketClient {
     // 基础延迟 + 随机值，避免多个客户端同时重连
     const jitter = Math.random() * 1000 // 0-1秒的随机延迟
     const baseDelay = Math.min(
-      this.reconnectInterval * Math.pow(1.5, this.reconnectAttempts - 1),
+      this.reconnectInterval * 1.5 ** (this.reconnectAttempts - 1),
       this.reconnectInterval * 5
     )
     return baseDelay + jitter

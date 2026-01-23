@@ -13,53 +13,55 @@
     <!-- 页脚 -->
     <template #footer>
       <el-button size="small" @click="handlerClose">{{ t('common.cancel') }}</el-button>
-      <el-button size="small" type="primary" @click="handlerOk">{{
+      <el-button size="small" type="primary" @click="handlerOk">
+{{
         t('common.confirm')
-      }}</el-button>
+      }}
+</el-button>
     </template>
   </el-dialog>
 </template>
 
 <script setup lang="ts">
-  import { ElMessage } from 'element-plus'
-  import { ref } from 'vue'
-  import CronForm from '../CronForm/index.vue'
-  import { useI18n } from 'vue-i18n'
+import { ElMessage } from 'element-plus'
+import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import CronForm from '../CronForm/index.vue'
 
-  defineOptions({ name: 'CronModal' })
+defineOptions({ name: 'CronModal' })
 
-  const { t } = useI18n()
+const emit = defineEmits<{
+  (e: 'ok', value: string): void
+}>()
 
-  const emit = defineEmits<{
-    (e: 'ok', value: string): void
-  }>()
+const { t } = useI18n()
 
-  const visible = ref(false)
-  const cronInputRef = ref<InstanceType<typeof CronForm>>()
-  const cronExpression = ref('')
+const visible = ref(false)
+const cronInputRef = ref<InstanceType<typeof CronForm>>()
+const cronExpression = ref('')
 
-  // 打开弹窗
-  const open = (cron: string = '') => {
-    cronExpression.value = cron
-    visible.value = true
+// 打开弹窗
+const open = (cron: string = '') => {
+  cronExpression.value = cron
+  visible.value = true
+}
+
+// 确定
+const handlerOk = () => {
+  if (cronInputRef.value?.checkCron()) {
+    ElMessage.error(t('components.genCron.tip.dayWeekOnlyOneUnset'))
+    return
   }
+  visible.value = false
+  emit('ok', cronExpression.value)
+}
 
-  // 确定
-  const handlerOk = () => {
-    if (cronInputRef.value?.checkCron()) {
-      ElMessage.error(t('components.genCron.tip.dayWeekOnlyOneUnset'))
-      return
-    }
-    visible.value = false
-    emit('ok', cronExpression.value)
-  }
+// 关闭
+const handlerClose = () => {
+  visible.value = false
+}
 
-  // 关闭
-  const handlerClose = () => {
-    visible.value = false
-  }
-
-  defineExpose({ open })
+defineExpose({ open })
 </script>
 
 <style lang="scss" scoped></style>

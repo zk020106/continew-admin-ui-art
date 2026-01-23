@@ -114,7 +114,7 @@
                   :fit="field.props?.fit || 'contain'"
                   :style="{
                     width: field.props?.width || '100px',
-                    height: field.props?.height || '100px'
+                    height: field.props?.height || '100px',
                   }"
                 />
                 <ElText v-else type="info">{{ field.emptyText || t('common.empty') }}</ElText>
@@ -138,236 +138,236 @@
 </template>
 
 <script lang="ts" setup>
-  import { QuestionFilled } from '@element-plus/icons-vue'
-  import * as El from 'element-plus'
-  import {
-    ElDescriptions,
-    ElDescriptionsItem,
-    ElIcon,
-    ElImage,
-    ElTag,
-    ElText,
-    ElTooltip
-  } from 'element-plus'
-  import { computed, getCurrentInstance, onMounted, ref } from 'vue'
-  import { useI18n } from 'vue-i18n'
-  import type { DetailField, DetailProps } from './type'
+import type { DetailField, DetailProps } from './type'
+import { QuestionFilled } from '@element-plus/icons-vue'
+import * as El from 'element-plus'
+import {
+  ElDescriptions,
+  ElDescriptionsItem,
+  ElIcon,
+  ElImage,
+  ElTag,
+  ElText,
+  ElTooltip
+} from 'element-plus'
+import { computed, getCurrentInstance, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-  const props = withDefaults(defineProps<DetailProps>(), {
-    column: 2,
-    labelWidth: 'auto',
-    border: true,
-    showTitle: false,
-    size: 'large',
-    responsive: () => ({})
-  })
+const props = withDefaults(defineProps<DetailProps>(), {
+  column: 2,
+  labelWidth: 'auto',
+  border: true,
+  showTitle: false,
+  size: 'large',
+  responsive: () => ({})
+})
 
-  const { t } = useI18n()
-  const instance = getCurrentInstance()
+const { t } = useI18n()
+const instance = getCurrentInstance()
 
-  // 全局配置
-  const globalConfig = instance?.appContext.config.globalProperties.$config
-  const dictData = ref<Record<string, any[]>>({})
+// 全局配置
+const globalConfig = instance?.appContext.config.globalProperties.$config
+const dictData = ref<Record<string, any[]>>({})
 
-  // 可见字段过滤
-  const visibleFields = computed(() => {
-    return props.fields.filter((field) => {
-      if (typeof field.show === 'function') {
-        return field.show(props.data)
-      }
-      return field.show !== false
-    })
-  })
-
-  /**
-   * 获取字段标签
-   */
-  function getFieldLabel(field: DetailField): string {
-    // 如果label包含点，视为i18n key
-    if (field.label.includes('.')) {
-      return t(field.label)
+// 可见字段过滤
+const visibleFields = computed(() => {
+  return props.fields.filter((field) => {
+    if (typeof field.show === 'function') {
+      return field.show(props.data)
     }
-    return field.label
+    return field.show !== false
+  })
+})
+
+/**
+ * 获取字段标签
+ */
+function getFieldLabel(field: DetailField): string {
+  // 如果label包含点，视为i18n key
+  if (field.label.includes('.')) {
+    return t(field.label)
+  }
+  return field.label
+}
+
+/**
+ * 获取字段值
+ */
+function getFieldValue(field: DetailField): any {
+  const value = props.data?.[field.key]
+  if (value === undefined || value === null || value === '') {
+    return field.defaultValue ?? ''
+  }
+  return value
+}
+
+/**
+ * 格式化值
+ */
+function formatValue(field: DetailField): any {
+  const value = getFieldValue(field)
+
+  // 空值处理
+  if (value === '' || value === undefined || value === null) {
+    return field.emptyText || t('common.empty')
   }
 
-  /**
-   * 获取字段值
-   */
-  function getFieldValue(field: DetailField): any {
-    const value = props.data?.[field.key]
-    if (value === undefined || value === null || value === '') {
-      return field.defaultValue ?? ''
-    }
+  // 自定义渲染
+  if (field.render) {
+    return field.render(value, props.data, field)
+  }
+
+  // 枚举渲染
+  if (field.type === 'enum' && field.enum) {
+    const enumItem = field.enum[value]
+    return enumItem?.label || field.emptyText || t('common.empty')
+  }
+
+  // 字典渲染
+  if (field.type === 'dict' && field.dictCode && dictData.value[field.dictCode]) {
+    const dictItem = dictData.value[field.dictCode].find((item) => item.value === value)
+    return dictItem?.label || field.emptyText || t('common.empty')
+  }
+
+  // 布尔值渲染
+  if (field.type === 'boolean') {
+    return value ? t('common.true') : t('common.false')
+  }
+
+  return value
+}
+
+/**
+ * 获取枚举值
+ */
+function getEnumValue(field: DetailField) {
+  const value = getFieldValue(field)
+  return field.enum?.[value]
+}
+
+/**
+ * 获取字典值
+ */
+function getDictValue(field: DetailField) {
+  const value = getFieldValue(field)
+  if (field.dictCode && dictData.value[field.dictCode]) {
+    const dictItem = dictData.value[field.dictCode].find((item) => item.value === value)
+    return dictItem?.label
+  }
+  return ''
+}
+
+/**
+ * 获取标签类型
+ */
+function getTagType(field: DetailField): string {
+  const value = getFieldValue(field)
+  if (field.enum?.[value]?.type) {
+    return field.enum[value].type
+  }
+  if (field.props?.type) {
+    return field.props.type
+  }
+  return 'info'
+}
+
+/**
+ * 格式化日期
+ */
+function formatDate(field: DetailField, format: string): string {
+  const value = getFieldValue(field)
+  if (!value) {
+    return field.emptyText || t('common.empty')
+  }
+
+  // 获取当前语言
+  const locale = instance?.appContext.config.globalProperties.$i18n?.locale || 'zh-CN'
+
+  // 如果是时间戳或日期字符串
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) {
     return value
   }
 
-  /**
-   * 格式化值
-   */
-  function formatValue(field: DetailField): any {
-    const value = getFieldValue(field)
+  // 根据format参数格式化
+  const options: Intl.DateTimeFormatOptions = {}
 
-    // 空值处理
-    if (value === '' || value === undefined || value === null) {
-      return field.emptyText || t('common.empty')
-    }
-
-    // 自定义渲染
-    if (field.render) {
-      return field.render(value, props.data, field)
-    }
-
-    // 枚举渲染
-    if (field.type === 'enum' && field.enum) {
-      const enumItem = field.enum[value]
-      return enumItem?.label || field.emptyText || t('common.empty')
-    }
-
-    // 字典渲染
-    if (field.type === 'dict' && field.dictCode && dictData.value[field.dictCode]) {
-      const dictItem = dictData.value[field.dictCode].find((item) => item.value == value)
-      return dictItem?.label || field.emptyText || t('common.empty')
-    }
-
-    // 布尔值渲染
-    if (field.type === 'boolean') {
-      return value ? t('common.true') : t('common.false')
-    }
-
-    return value
+  if (format.includes('YYYY')) {
+    options.year = 'numeric'
+  }
+  if (format.includes('MM')) {
+    options.month = '2-digit'
+  }
+  if (format.includes('DD')) {
+    options.day = '2-digit'
+  }
+  if (format.includes('HH')) {
+    options.hour = '2-digit'
+    options.hour12 = false
+  }
+  if (format.includes('mm')) {
+    options.minute = '2-digit'
+  }
+  if (format.includes('ss')) {
+    options.second = '2-digit'
   }
 
-  /**
-   * 获取枚举值
-   */
-  function getEnumValue(field: DetailField) {
-    const value = getFieldValue(field)
-    return field.enum?.[value]
-  }
-
-  /**
-   * 获取字典值
-   */
-  function getDictValue(field: DetailField) {
-    const value = getFieldValue(field)
-    if (field.dictCode && dictData.value[field.dictCode]) {
-      const dictItem = dictData.value[field.dictCode].find((item) => item.value == value)
-      return dictItem?.label
-    }
-    return ''
-  }
-
-  /**
-   * 获取标签类型
-   */
-  function getTagType(field: DetailField): string {
-    const value = getFieldValue(field)
-    if (field.enum?.[value]?.type) {
-      return field.enum[value].type
-    }
-    if (field.props?.type) {
-      return field.props.type
-    }
-    return 'info'
-  }
-
-  /**
-   * 格式化日期
-   */
-  function formatDate(field: DetailField, format: string): string {
-    const value = getFieldValue(field)
-    if (!value) {
-      return field.emptyText || t('common.empty')
-    }
-
-    // 获取当前语言
-    const locale = instance?.appContext.config.globalProperties.$i18n?.locale || 'zh-CN'
-
-    // 如果是时间戳或日期字符串
-    const date = new Date(value)
-    if (isNaN(date.getTime())) {
-      return value
-    }
-
-    // 根据format参数格式化
-    const options: Intl.DateTimeFormatOptions = {}
-
-    if (format.includes('YYYY')) {
-      options.year = 'numeric'
-    }
-    if (format.includes('MM')) {
-      options.month = '2-digit'
-    }
-    if (format.includes('DD')) {
-      options.day = '2-digit'
-    }
-    if (format.includes('HH')) {
-      options.hour = '2-digit'
-      options.hour12 = false
-    }
-    if (format.includes('mm')) {
-      options.minute = '2-digit'
-    }
-    if (format.includes('ss')) {
-      options.second = '2-digit'
-    }
-
-    // 如果format只包含日期部分，使用toLocaleDateString
-    if (format === 'YYYY-MM-DD') {
-      return date.toLocaleDateString(locale, {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      })
-    }
-
-    // 如果format包含时间部分，使用toLocaleString
-    return date.toLocaleString(locale, options)
-  }
-
-  /**
-   * 获取组件Props
-   */
-  function getComponentProps(field: DetailField) {
-    return {
-      ...field.props
-    }
-  }
-
-  /**
-   * 加载字典数据
-   */
-  const loadDictData = async () => {
-    const dictCodes: string[] = []
-    props.fields?.forEach((field) => {
-      if (field.type === 'dict' && field.dictCode) {
-        dictCodes.push(field.dictCode)
-      }
+  // 如果format只包含日期部分，使用toLocaleDateString
+  if (format === 'YYYY-MM-DD') {
+    return date.toLocaleDateString(locale, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
     })
+  }
 
-    if (!dictCodes.length) return
-    if (!globalConfig?.dictRequest) {
-      return El.ElMessage.error('请配置全局字典请求方法dictRequest')
+  // 如果format包含时间部分，使用toLocaleString
+  return date.toLocaleString(locale, options)
+}
+
+/**
+ * 获取组件Props
+ */
+function getComponentProps(field: DetailField) {
+  return {
+    ...field.props
+  }
+}
+
+/**
+ * 加载字典数据
+ */
+const loadDictData = async () => {
+  const dictCodes: string[] = []
+  props.fields?.forEach((field) => {
+    if (field.type === 'dict' && field.dictCode) {
+      dictCodes.push(field.dictCode)
     }
+  })
 
-    try {
-      const dictResponses = await Promise.all(
-        dictCodes.map((code) =>
-          globalConfig.dictRequest(code).then((response: any) => ({ code, response }))
-        )
+  if (!dictCodes.length) return
+  if (!globalConfig?.dictRequest) {
+    return El.ElMessage.error('请配置全局字典请求方法dictRequest')
+  }
+
+  try {
+    const dictResponses = await Promise.all(
+      dictCodes.map((code) =>
+        globalConfig.dictRequest(code).then((response: any) => ({ code, response }))
       )
-      dictResponses.forEach(({ code, response }) => {
-        dictData.value[code] = response
-      })
-    } catch (error) {
-      console.error('获取字典数据失败:', error)
-      El.ElMessage.error('获取字典数据失败')
-    }
+    )
+    dictResponses.forEach(({ code, response }) => {
+      dictData.value[code] = response
+    })
+  } catch (error) {
+    console.error('获取字典数据失败:', error)
+    El.ElMessage.error('获取字典数据失败')
   }
+}
 
-  onMounted(() => {
-    loadDictData()
-  })
+onMounted(() => {
+  loadDictData()
+})
 </script>
 
 <style lang="scss" scoped>

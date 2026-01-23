@@ -1,7 +1,7 @@
-import { listCommonDict } from '@/apis/system'
 import type { DictItem } from '@/store/modules/dict'
-import { useDictStore } from '@/store/modules/dict'
 import { computed, ref, shallowRef } from 'vue'
+import { listCommonDict } from '@/apis/system'
+import { useDictStore } from '@/store/modules/dict'
 
 const pendingRequests = new Map<string, Promise<DictItem[]>>()
 

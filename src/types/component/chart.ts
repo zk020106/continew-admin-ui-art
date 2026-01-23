@@ -32,15 +32,15 @@ import type { EChartsOption } from '@/plugins/echarts'
 // 图例位置类型
 export type LegendPosition = 'bottom' | 'top' | 'left' | 'right'
 
-export type SymbolType =
-  | 'circle'
-  | 'rect'
-  | 'roundRect'
-  | 'triangle'
-  | 'diamond'
-  | 'pin'
-  | 'arrow'
-  | 'none'
+export type SymbolType
+  = | 'circle'
+    | 'rect'
+    | 'roundRect'
+    | 'triangle'
+    | 'diamond'
+    | 'pin'
+    | 'arrow'
+    | 'none'
 
 // 图表主题配置
 export interface ChartThemeConfig {
@@ -183,7 +183,7 @@ export interface RadarDataItem {
 // 雷达图 Props 接口 - 统一雷达图配置
 export interface RadarChartProps extends BaseChartProps, InteractionProps {
   /** 雷达图指标配置 */
-  indicator?: Array<{ name: string; max: number }>
+  indicator?: Array<{ name: string, max: number }>
   /** 图表数据 */
   data?: RadarDataItem[]
 }

@@ -7,7 +7,8 @@
  * @author Art Design Pro Team
  */
 
-import axios, { CancelTokenSource } from 'axios'
+import type { CancelTokenSource } from 'axios'
+import axios from 'axios'
 
 /** 请求取消令牌存储 */
 const pendingRequests = new Map<string, CancelTokenSource>()

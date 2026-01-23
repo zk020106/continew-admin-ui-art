@@ -9,35 +9,36 @@
     <ArtLineChart
       height="calc(100% - 56px)"
       :data="data"
-      :xAxisData="xAxisData"
-      :showAreaColor="true"
-      :showAxisLine="false"
+      :x-axis-data="xAxisData"
+      :show-area-color="true"
+      :show-axis-line="false"
     />
   </div>
 </template>
 
+/* eslint-disable ts/no-use-before-define */
 <script setup lang="ts">
-  /**
-   * 全年访问量数据
-   * 记录每月的访问量统计
-   */
-  const data = [50, 25, 40, 20, 70, 35, 65, 30, 35, 20, 40, 44]
+/**
+ * 全年访问量数据
+ * 记录每月的访问量统计
+ */
+const data = [50, 25, 40, 20, 70, 35, 65, 30, 35, 20, 40, 44]
 
-  /**
-   * X 轴月份标签
-   */
-  const xAxisData = [
-    '1月',
-    '2月',
-    '3月',
-    '4月',
-    '5月',
-    '6月',
-    '7月',
-    '8月',
-    '9月',
-    '10月',
-    '11月',
-    '12月'
-  ]
+/**
+ * X 轴月份标签
+ */
+const xAxisData = [
+  '1月',
+  '2月',
+  '3月',
+  '4月',
+  '5月',
+  '6月',
+  '7月',
+  '8月',
+  '9月',
+  '10月',
+  '11月',
+  '12月'
+]
 </script>

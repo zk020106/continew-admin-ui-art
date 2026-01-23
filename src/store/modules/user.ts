@@ -31,26 +31,28 @@
  * @module store/modules/user
  * @author Art Design Pro Team
  */
-import {
+import type {
   AccountLoginReq,
-  AuthTypeConstants,
   EmailLoginReq,
+  PhoneLoginReq,
+  UserInfo
+} from '@/apis/auth'
+import type { AppRouteRecord } from '@/types/router'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+import {
+  AuthTypeConstants,
   accountLogin as fetchAccountLogin,
   emailLogin as fetchEmailLogin,
   phoneLogin as fetchPhoneLogin,
   socialAuth as fetchSocialAuth,
-  getUserInfo as fetchUserInfo,
-  PhoneLoginReq,
-  UserInfo
+  getUserInfo as fetchUserInfo
 } from '@/apis/auth'
 import { LanguageEnum } from '@/enums/appEnum'
 import { router } from '@/router'
 import { resetRouterState } from '@/router/guards/beforeEach'
-import { AppRouteRecord } from '@/types/router'
 import { setPageTitle } from '@/utils/router'
 import { StorageConfig } from '@/utils/storage/storage-config'
-import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
 import { useMenuStore } from './menu'
 import { useSettingStore } from './setting'
 import { useTenantStore } from './tenant'

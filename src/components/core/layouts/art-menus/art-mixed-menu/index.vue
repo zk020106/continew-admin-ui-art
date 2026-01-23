@@ -22,7 +22,7 @@
             v-if="!item.meta.isHide"
             class="menu-item relative flex-shrink-0 h-10 px-3 text-sm flex-c c-p hover:text-theme"
             :class="{
-              'menu-item-active text-theme': item.isActive
+              'menu-item-active text-theme': item.isActive,
             }"
             @click="handleMenuJump(item, true)"
           >
@@ -54,195 +54,195 @@
 </template>
 
 <script setup lang="ts">
-  import type { AppRouteRecord } from '@/types/router'
-  import { handleMenuJump } from '@/utils/navigation'
-  import { formatMenuTitle } from '@/utils/router'
-  import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
-  import { useThrottleFn } from '@vueuse/core'
-  import { computed, nextTick, onMounted, ref } from 'vue'
+import type { AppRouteRecord } from '@/types/router'
+import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+import { useThrottleFn } from '@vueuse/core'
+import { computed, nextTick, onMounted, ref } from 'vue'
+import { handleMenuJump } from '@/utils/navigation'
+import { formatMenuTitle } from '@/utils/router'
 
-  defineOptions({ name: 'ArtMixedMenu' })
+defineOptions({ name: 'ArtMixedMenu' })
 
-  interface Props {
-    /** 菜单列表数据 */
-    list: AppRouteRecord[]
-  }
+const props = withDefaults(defineProps<Props>(), {
+  list: () => []
+})
 
-  interface ProcessedMenuItem extends AppRouteRecord {
-    isActive: boolean
-    formattedTitle: string
-  }
+interface Props {
+  /** 菜单列表数据 */
+  list: AppRouteRecord[]
+}
 
-  type ScrollDirection = 'left' | 'right'
+interface ProcessedMenuItem extends AppRouteRecord {
+  isActive: boolean
+  formattedTitle: string
+}
 
-  const route = useRoute()
+type ScrollDirection = 'left' | 'right'
 
-  const props = withDefaults(defineProps<Props>(), {
-    list: () => []
-  })
+const route = useRoute()
 
-  const scrollbarRef = ref<any>()
-  const showLeftArrow = ref(false)
-  const showRightArrow = ref(false)
+const scrollbarRef = ref<any>()
+const showLeftArrow = ref(false)
+const showRightArrow = ref(false)
 
-  /** 滚动配置 */
-  const SCROLL_CONFIG = {
-    /** 点击按钮时的滚动距离 */
-    BUTTON_SCROLL_DISTANCE: 200,
-    /** 鼠标滚轮快速滚动时的步长 */
-    WHEEL_FAST_STEP: 35,
-    /** 鼠标滚轮慢速滚动时的步长 */
-    WHEEL_SLOW_STEP: 30,
-    /** 区分快慢滚动的阈值 */
-    WHEEL_FAST_THRESHOLD: 100
-  }
+/** 滚动配置 */
+const SCROLL_CONFIG = {
+  /** 点击按钮时的滚动距离 */
+  BUTTON_SCROLL_DISTANCE: 200,
+  /** 鼠标滚轮快速滚动时的步长 */
+  WHEEL_FAST_STEP: 35,
+  /** 鼠标滚轮慢速滚动时的步长 */
+  WHEEL_SLOW_STEP: 30,
+  /** 区分快慢滚动的阈值 */
+  WHEEL_FAST_THRESHOLD: 100
+}
 
-  /**
-   * 获取当前激活路径
-   * 使用computed缓存，避免重复计算
-   */
-  const currentActivePath = computed(() => {
-    return String(route.meta.activePath || route.path)
-  })
+/**
+ * 获取当前激活路径
+ * 使用computed缓存，避免重复计算
+ */
+const currentActivePath = computed(() => {
+  return String(route.meta.activePath || route.path)
+})
 
-  /**
-   * 判断菜单项是否为激活状态
-   * 递归检查子菜单中是否包含当前路径
-   * @param item 菜单项数据
-   * @returns 是否为激活状态
-   */
-  const isMenuItemActive = (item: AppRouteRecord): boolean => {
-    const activePath = currentActivePath.value
+/**
+ * 判断菜单项是否为激活状态
+ * 递归检查子菜单中是否包含当前路径
+ * @param item 菜单项数据
+ * @returns 是否为激活状态
+ */
+const isMenuItemActive = (item: AppRouteRecord): boolean => {
+  const activePath = currentActivePath.value
 
-    // 如果有子菜单，递归检查子菜单
-    if (item.children?.length) {
-      return item.children.some((child) => {
-        if (child.children?.length) {
-          return isMenuItemActive(child)
-        }
-        return child.path === activePath
-      })
-    }
-
-    // 直接比较路径
-    return item.path === activePath
-  }
-
-  /**
-   * 预处理菜单列表
-   * 缓存每个菜单项的激活状态和格式化标题
-   */
-  const processedMenuList = computed<ProcessedMenuItem[]>(() => {
-    return props.list.map((item) => ({
-      ...item,
-      isActive: isMenuItemActive(item),
-      formattedTitle: formatMenuTitle(item.meta.title)
-    }))
-  })
-
-  /**
-   * 处理滚动事件的核心逻辑
-   * 根据滚动位置显示/隐藏滚动按钮
-   */
-  const handleScrollCore = (): void => {
-    if (!scrollbarRef.value?.wrapRef) return
-
-    const { scrollLeft, scrollWidth, clientWidth } = scrollbarRef.value.wrapRef
-
-    // 判断是否显示左侧滚动按钮
-    showLeftArrow.value = scrollLeft > 0
-
-    // 判断是否显示右侧滚动按钮
-    showRightArrow.value = scrollLeft + clientWidth < scrollWidth
-  }
-
-  /**
-   * 节流后的滚动事件处理函数
-   * 调整节流间隔为16ms，约等于60fps
-   */
-  const handleScroll = useThrottleFn(handleScrollCore, 16)
-
-  /**
-   * 滚动菜单容器
-   * @param direction 滚动方向，left 或 right
-   */
-  const scroll = (direction: ScrollDirection): void => {
-    if (!scrollbarRef.value?.wrapRef) return
-
-    const currentScroll = scrollbarRef.value.wrapRef.scrollLeft
-    const targetScroll =
-      direction === 'left'
-        ? currentScroll - SCROLL_CONFIG.BUTTON_SCROLL_DISTANCE
-        : currentScroll + SCROLL_CONFIG.BUTTON_SCROLL_DISTANCE
-
-    // 平滑滚动到目标位置
-    scrollbarRef.value.wrapRef.scrollTo({
-      left: targetScroll,
-      behavior: 'smooth'
+  // 如果有子菜单，递归检查子菜单
+  if (item.children?.length) {
+    return item.children.some((child) => {
+      if (child.children?.length) {
+        return isMenuItemActive(child)
+      }
+      return child.path === activePath
     })
   }
 
-  /**
-   * 处理鼠标滚轮事件
-   * 优化滚轮响应性能
-   * @param event 滚轮事件
-   */
-  const handleWheel = (event: WheelEvent): void => {
-    // 立即阻止默认滚动行为和事件冒泡，避免页面滚动
-    event.preventDefault()
-    event.stopPropagation()
+  // 直接比较路径
+  return item.path === activePath
+}
 
-    // 直接处理滚动，提升响应性
-    if (!scrollbarRef.value?.wrapRef) return
+/**
+ * 预处理菜单列表
+ * 缓存每个菜单项的激活状态和格式化标题
+ */
+const processedMenuList = computed<ProcessedMenuItem[]>(() => {
+  return props.list.map((item) => ({
+    ...item,
+    isActive: isMenuItemActive(item),
+    formattedTitle: formatMenuTitle(item.meta.title)
+  }))
+})
 
-    const { wrapRef } = scrollbarRef.value
-    const { scrollLeft, scrollWidth, clientWidth } = wrapRef
+/**
+ * 处理滚动事件的核心逻辑
+ * 根据滚动位置显示/隐藏滚动按钮
+ */
+const handleScrollCore = (): void => {
+  if (!scrollbarRef.value?.wrapRef) return
 
-    // 使用更小的滚动步长，让滚动更平滑
-    const scrollStep =
-      Math.abs(event.deltaY) > SCROLL_CONFIG.WHEEL_FAST_THRESHOLD
-        ? SCROLL_CONFIG.WHEEL_FAST_STEP
-        : SCROLL_CONFIG.WHEEL_SLOW_STEP
-    const scrollDelta = event.deltaY > 0 ? scrollStep : -scrollStep
-    const targetScroll = Math.max(0, Math.min(scrollLeft + scrollDelta, scrollWidth - clientWidth))
+  const { scrollLeft, scrollWidth, clientWidth } = scrollbarRef.value.wrapRef
 
-    // 立即滚动，无动画
-    wrapRef.scrollLeft = targetScroll
+  // 判断是否显示左侧滚动按钮
+  showLeftArrow.value = scrollLeft > 0
 
-    // 更新滚动按钮状态
+  // 判断是否显示右侧滚动按钮
+  showRightArrow.value = scrollLeft + clientWidth < scrollWidth
+}
+
+/**
+ * 节流后的滚动事件处理函数
+ * 调整节流间隔为16ms，约等于60fps
+ */
+const handleScroll = useThrottleFn(handleScrollCore, 16)
+
+/**
+ * 滚动菜单容器
+ * @param direction 滚动方向，left 或 right
+ */
+const scroll = (direction: ScrollDirection): void => {
+  if (!scrollbarRef.value?.wrapRef) return
+
+  const currentScroll = scrollbarRef.value.wrapRef.scrollLeft
+  const targetScroll
+    = direction === 'left'
+      ? currentScroll - SCROLL_CONFIG.BUTTON_SCROLL_DISTANCE
+      : currentScroll + SCROLL_CONFIG.BUTTON_SCROLL_DISTANCE
+
+  // 平滑滚动到目标位置
+  scrollbarRef.value.wrapRef.scrollTo({
+    left: targetScroll,
+    behavior: 'smooth'
+  })
+}
+
+/**
+ * 处理鼠标滚轮事件
+ * 优化滚轮响应性能
+ * @param event 滚轮事件
+ */
+const handleWheel = (event: WheelEvent): void => {
+  // 立即阻止默认滚动行为和事件冒泡，避免页面滚动
+  event.preventDefault()
+  event.stopPropagation()
+
+  // 直接处理滚动，提升响应性
+  if (!scrollbarRef.value?.wrapRef) return
+
+  const { wrapRef } = scrollbarRef.value
+  const { scrollLeft, scrollWidth, clientWidth } = wrapRef
+
+  // 使用更小的滚动步长，让滚动更平滑
+  const scrollStep
+    = Math.abs(event.deltaY) > SCROLL_CONFIG.WHEEL_FAST_THRESHOLD
+      ? SCROLL_CONFIG.WHEEL_FAST_STEP
+      : SCROLL_CONFIG.WHEEL_SLOW_STEP
+  const scrollDelta = event.deltaY > 0 ? scrollStep : -scrollStep
+  const targetScroll = Math.max(0, Math.min(scrollLeft + scrollDelta, scrollWidth - clientWidth))
+
+  // 立即滚动，无动画
+  wrapRef.scrollLeft = targetScroll
+
+  // 更新滚动按钮状态
+  handleScrollCore()
+}
+
+/**
+ * 初始化滚动状态
+ */
+const initScrollState = (): void => {
+  nextTick(() => {
     handleScrollCore()
-  }
+  })
+}
 
-  /**
-   * 初始化滚动状态
-   */
-  const initScrollState = (): void => {
-    nextTick(() => {
-      handleScrollCore()
-    })
-  }
-
-  onMounted(initScrollState)
+onMounted(initScrollState)
 </script>
 
 <style scoped>
   @reference '@styles/core/tailwind.css';
 
   .button-arrow {
-    @apply absolute 
+    @apply absolute
     top-1/2
-    z-2 
+    z-2
     flex
     items-center
     justify-center
     size-7.5
-    text-g-600 
+    text-g-600
     cursor-pointer
-    rounded 
+    rounded
     transition-all
     duration-300
-    -translate-y-1/2 
-    hover:text-g-900 
+    -translate-y-1/2
+    hover:text-g-900
     hover:bg-g-200;
   }
 </style>

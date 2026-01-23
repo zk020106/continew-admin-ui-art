@@ -10,21 +10,21 @@
           <h3 class="title">{{ $t('forgetPassword.title') }}</h3>
           <p class="sub-title">{{ $t('forgetPassword.subTitle') }}</p>
           <div class="mt-5">
-            <span class="input-label" v-if="showInputLabel">账号</span>
+            <span v-if="showInputLabel" class="input-label">账号</span>
             <ElInput
+              v-model.trim="username"
               class="custom-height"
               :placeholder="$t('forgetPassword.placeholder')"
-              v-model.trim="username"
             />
           </div>
 
           <div style="margin-top: 15px">
             <ElButton
+              v-ripple
               class="w-full custom-height"
               type="primary"
-              @click="register"
               :loading="loading"
-              v-ripple
+              @click="register"
             >
               {{ $t('forgetPassword.submitBtnText') }}
             </ElButton>
@@ -42,19 +42,19 @@
 </template>
 
 <script setup lang="ts">
-  defineOptions({ name: 'ForgetPassword' })
+defineOptions({ name: 'ForgetPassword' })
 
-  const router = useRouter()
-  const showInputLabel = ref(false)
+const router = useRouter()
+const showInputLabel = ref(false)
 
-  const username = ref('')
-  const loading = ref(false)
+const username = ref('')
+const loading = ref(false)
 
-  const register = async () => {}
+const register = async () => {}
 
-  const toLogin = () => {
-    router.push({ name: 'Login' })
-  }
+const toLogin = () => {
+  router.push({ name: 'Login' })
+}
 </script>
 
 <style scoped>

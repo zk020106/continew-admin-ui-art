@@ -24,7 +24,7 @@ export function useFileNavigation() {
     const parts = currentPath.value.split('/').filter(Boolean)
     return parts.map((part, index) => ({
       name: part,
-      path: '/' + parts.slice(0, index + 1).join('/')
+      path: `/${parts.slice(0, index + 1).join('/')}`
     }))
   })
 
@@ -35,6 +35,24 @@ export function useFileNavigation() {
     canBack: historyIndex.value > 0,
     canForward: historyIndex.value < historyStack.value.length - 1
   }))
+
+  /**
+   * 保存最近访问路径
+   */
+  const saveRecentPath = (path: string) => {
+    try {
+      const recent = JSON.parse(localStorage.getItem(STORAGE_KEYS.RECENT_PATHS) || '[]') as string[]
+      // 移除已存在的路径
+      const filtered = recent.filter((p) => p !== path)
+      // 添加到开头
+      filtered.unshift(path)
+      // 只保留最近 10 条
+      const limited = filtered.slice(0, 10)
+      localStorage.setItem(STORAGE_KEYS.RECENT_PATHS, JSON.stringify(limited))
+    } catch {
+      // ignore
+    }
+  }
 
   /**
    * 跳转到指定路径
@@ -114,24 +132,6 @@ export function useFileNavigation() {
     }
     // 保存排序偏好
     localStorage.setItem(STORAGE_KEYS.SORT_PREFERENCE, JSON.stringify(sortInfo.value))
-  }
-
-  /**
-   * 保存最近访问路径
-   */
-  const saveRecentPath = (path: string) => {
-    try {
-      const recent = JSON.parse(localStorage.getItem(STORAGE_KEYS.RECENT_PATHS) || '[]') as string[]
-      // 移除已存在的路径
-      const filtered = recent.filter((p) => p !== path)
-      // 添加到开头
-      filtered.unshift(path)
-      // 只保留最近 10 条
-      const limited = filtered.slice(0, 10)
-      localStorage.setItem(STORAGE_KEYS.RECENT_PATHS, JSON.stringify(limited))
-    } catch {
-      // ignore
-    }
   }
 
   /**

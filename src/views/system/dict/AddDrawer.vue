@@ -27,152 +27,153 @@
 </template>
 
 <script setup lang="tsx">
-  import { addDict, DictReq, getDict, updateDict } from '@/apis/system/dict'
-  import CaForm from '@/components/base/CaForm/index.vue'
-  import { FormColumnItem } from '@/components/base/CaForm/type'
-  import { useResetReactive } from '@/hooks'
-  import { useWindowSize } from '@vueuse/core'
-  import { ElButton, ElDrawer, ElMessage, ElTooltip } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { DictReq } from '@/apis/system/dict'
+import type { FormColumnItem } from '@/components/base/CaForm/type'
+import { useWindowSize } from '@vueuse/core'
+import { ElButton, ElDrawer, ElMessage, ElTooltip } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { addDict, getDict, updateDict } from '@/apis/system/dict'
+import CaForm from '@/components/base/CaForm/index.vue'
+import { useResetReactive } from '@/hooks'
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { t } = useI18n()
-  const { width } = useWindowSize()
+const { t } = useI18n()
+const { width } = useWindowSize()
 
-  const dataId = ref('')
-  const visible = ref(false)
-  const saving = ref(false)
-  const isUpdate = computed(() => !!dataId.value)
-  const title = computed(() => (isUpdate.value ? t('dict.page.edit') : t('dict.page.add')))
-  const formRef = useTemplateRef('formRef')
+const dataId = ref('')
+const visible = ref(false)
+const saving = ref(false)
+const isUpdate = computed(() => !!dataId.value)
+const title = computed(() => (isUpdate.value ? t('dict.page.edit') : t('dict.page.add')))
+const formRef = useTemplateRef('formRef')
 
-  // 表单控制
-  const fc = computed(() => ({
-    code: { disabled: isUpdate.value }
-  }))
+// 表单控制
+const fc = computed(() => ({
+  code: { disabled: isUpdate.value }
+}))
 
-  // 表单字段配置
-  const columns = computed(
-    () =>
-      [
-        {
-          type: 'input',
-          label: t('dict.field.name'),
-          field: 'name',
-          props: {
-            placeholder: t('dict.placeholder.name'),
-            maxlength: 30,
-            showWordLimit: true
-          },
-          rules: [{ required: true, message: t('dict.validate.nameRequired'), trigger: 'blur' }]
+// 表单字段配置
+const columns = computed(
+  () =>
+    [
+      {
+        type: 'input',
+        label: t('dict.field.name'),
+        field: 'name',
+        props: {
+          placeholder: t('dict.placeholder.name'),
+          maxlength: 30,
+          showWordLimit: true
         },
-        {
-          type: 'input',
-          labelRender: () => (
-            <ElTooltip content={t('dict.form.codeTip')} placement="top">
-              {t('dict.field.code')}
-            </ElTooltip>
-          ),
-          field: 'code',
-          props: {
-            placeholder: t('dict.placeholder.code'),
-            maxlength: 30,
-            showWordLimit: true
-          },
-          rules: [
-            { required: true, message: t('dict.validate.codeRequired'), trigger: 'blur' },
-            {
-              pattern: /^[a-zA-Z_][a-zA-Z0-9_]*$/,
-              message: t('dict.validate.codeFormat'),
-              trigger: 'blur'
-            }
-          ]
+        rules: [{ required: true, message: t('dict.validate.nameRequired'), trigger: 'blur' }]
+      },
+      {
+        type: 'input',
+        labelRender: () => (
+          <ElTooltip content={t('dict.form.codeTip')} placement="top">
+            {t('dict.field.code')}
+          </ElTooltip>
+        ),
+        field: 'code',
+        props: {
+          placeholder: t('dict.placeholder.code'),
+          maxlength: 30,
+          showWordLimit: true
         },
-        {
-          type: 'textarea',
-          label: t('dict.field.description'),
-          field: 'description',
-          props: {
-            placeholder: t('dict.placeholder.description'),
-            maxlength: 500,
-            showWordLimit: true,
-            rows: 3,
-            resize: 'none'
+        rules: [
+          { required: true, message: t('dict.validate.codeRequired'), trigger: 'blur' },
+          {
+            pattern: /^[a-z_]\w*$/i,
+            message: t('dict.validate.codeFormat'),
+            trigger: 'blur'
           }
+        ]
+      },
+      {
+        type: 'textarea',
+        label: t('dict.field.description'),
+        field: 'description',
+        props: {
+          placeholder: t('dict.placeholder.description'),
+          maxlength: 500,
+          showWordLimit: true,
+          rows: 3,
+          resize: 'none'
         }
-      ] as FormColumnItem[]
-  )
-
-  // 表单数据
-  const [form, resetForm] = useResetReactive<DictReq>({
-    name: '',
-    code: '',
-    description: ''
-  })
-
-  // 重置表单
-  const reset = () => {
-    saving.value = false
-    resetForm()
-  }
-
-  // 保存
-  const handleSave = async () => {
-    if (saving.value) return
-
-    try {
-      const valid = await formRef.value?.formRef?.validate()
-      if (!valid) return
-
-      saving.value = true
-
-      if (isUpdate.value) {
-        await updateDict(form, dataId.value)
-        ElMessage.success(t('dict.message.updateSuccess'))
-      } else {
-        await addDict(form)
-        ElMessage.success(t('dict.message.addSuccess'))
       }
+    ] as FormColumnItem[]
+)
 
-      visible.value = false
-      emit('save-success')
-    } catch (error) {
-      console.error('保存字典失败:', error)
-      // ElMessage.error(t('dict.message.fetchFailed'))
-    } finally {
-      saving.value = false
+// 表单数据
+const [form, resetForm] = useResetReactive<DictReq>({
+  name: '',
+  code: '',
+  description: ''
+})
+
+// 重置表单
+const reset = () => {
+  saving.value = false
+  resetForm()
+}
+
+// 保存
+const handleSave = async () => {
+  if (saving.value) return
+
+  try {
+    const valid = await formRef.value?.formRef?.validate()
+    if (!valid) return
+
+    saving.value = true
+
+    if (isUpdate.value) {
+      await updateDict(form, dataId.value)
+      ElMessage.success(t('dict.message.updateSuccess'))
+    } else {
+      await addDict(form)
+      ElMessage.success(t('dict.message.addSuccess'))
     }
+
+    visible.value = false
+    emit('save-success')
+  } catch (error) {
+    console.error('保存字典失败:', error)
+    // ElMessage.error(t('dict.message.fetchFailed'))
+  } finally {
+    saving.value = false
+  }
+}
+
+// 新增
+const onAdd = async () => {
+  reset()
+  dataId.value = ''
+  visible.value = true
+}
+
+// 修改
+const onUpdate = async (id: string) => {
+  reset()
+  dataId.value = id
+  try {
+    const data = await getDict(id)
+    Object.assign(form, data)
+  } catch (error) {
+    console.error('获取字典详情失败:', error)
+    ElMessage.error(t('dict.message.fetchFailed'))
   }
 
-  // 新增
-  const onAdd = async () => {
-    reset()
-    dataId.value = ''
-    visible.value = true
-  }
+  visible.value = true
+}
 
-  // 修改
-  const onUpdate = async (id: string) => {
-    reset()
-    dataId.value = id
-    try {
-      const data = await getDict(id)
-      Object.assign(form, data)
-    } catch (error) {
-      console.error('获取字典详情失败:', error)
-      ElMessage.error(t('dict.message.fetchFailed'))
-    }
-
-    visible.value = true
-  }
-
-  defineExpose({
-    onAdd,
-    onUpdate
-  })
+defineExpose({
+  onAdd,
+  onUpdate
+})
 </script>
 
 <style scoped lang="scss">

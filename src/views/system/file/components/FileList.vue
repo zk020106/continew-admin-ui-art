@@ -127,15 +127,21 @@
         <el-table-column :label="t('common.action')" width="240" align="center" fixed="right">
           <template #default="{ row }">
             <el-space>
-              <el-link v-if="row.type !== 0" type="primary" @click.stop="handlePreview(row)">{{
+              <el-link v-if="row.type !== 0" type="primary" @click.stop="handlePreview(row)">
+{{
                 t('file.contextMenu.preview')
-              }}</el-link>
-              <el-link type="primary" @click.stop="handleDownload(row)">{{
+              }}
+</el-link>
+              <el-link type="primary" @click.stop="handleDownload(row)">
+{{
                 t('file.contextMenu.download')
-              }}</el-link>
-              <el-link type="primary" @click.stop="handleRename(row)">{{
+              }}
+</el-link>
+              <el-link type="primary" @click.stop="handleRename(row)">
+{{
                 t('file.contextMenu.rename')
-              }}</el-link>
+              }}
+</el-link>
               <el-dropdown trigger="click" @command="(cmd) => handleMoreCommand(cmd, row)">
                 <el-button text>
                   <ElIcon><MoreFilled /></ElIcon>
@@ -187,7 +193,7 @@
         <div
           v-for="item in sortedData"
           :key="item.id"
-          :class="['grid-item', { selected: selectedIds.includes(item.id) }]"
+          class="grid-item" :class="[{ selected: selectedIds.includes(item.id) }]"
           @click="handleItemClick(item, $event)"
           @dblclick="handleItemDblClick(item)"
           @contextmenu="handleItemContextMenu(item, $event)"
@@ -239,232 +245,232 @@
 </template>
 
 <script setup lang="ts">
-  import type { FileItem } from '@/apis/system/file'
-  import { MoreFilled } from '@element-plus/icons-vue'
-  import { useI18n } from 'vue-i18n'
-  import type { SortField, SortOrder, ViewMode } from '../types'
-  import { getFileIconByType, isImageFile } from '../utils/fileIcons'
+import type { SortField, SortOrder, ViewMode } from '../types'
+import type { FileItem } from '@/apis/system/file'
+import { MoreFilled } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
+import { getFileIconByType, isImageFile } from '../utils/fileIcons'
 
-  const { t } = useI18n()
+const props = defineProps<{
+  data: FileItem[]
+  loading: boolean
+  viewMode: ViewMode
+  selectedIds: string[]
+  sortField: SortField
+  sortOrder: SortOrder
+  isRoot: boolean
+  pagination: {
+    current: number
+    pageSize: number
+    total: number
+  }
+}>()
 
-  const props = defineProps<{
-    data: FileItem[]
-    loading: boolean
-    viewMode: ViewMode
-    selectedIds: string[]
-    sortField: SortField
-    sortOrder: SortOrder
-    isRoot: boolean
-    pagination: {
-      current: number
-      pageSize: number
-      total: number
+const emit = defineEmits<{
+  (e: 'select', ids: string[]): void
+  (e: 'click', file: FileItem, event: MouseEvent): void
+  (e: 'dblclick', file: FileItem): void
+  (e: 'contextmenu', file: FileItem[], event: MouseEvent): void
+  (e: 'preview', file: FileItem): void
+  (e: 'download', file: FileItem): void
+  (e: 'rename', file: FileItem): void
+  (e: 'move', file: FileItem): void
+  (e: 'copy', file: FileItem): void
+  (e: 'share', file: FileItem): void
+  (e: 'delete', file: FileItem): void
+  (e: 'upload', files: File[]): void
+  (e: 'sizeChange', size: number): void
+  (e: 'currentChange', current: number): void
+}>()
+
+const { t } = useI18n()
+
+const tableRef = ref()
+const isDragging = ref(false)
+
+// 排序后的数据
+const sortedData = computed(() => {
+  const list = [...props.data]
+  list.sort((a, b) => {
+    // 文件夹排在前面
+    if (a.type !== b.type) {
+      return a.type === 0 ? -1 : 1
     }
-  }>()
 
-  const emit = defineEmits<{
-    (e: 'select', ids: string[]): void
-    (e: 'click', file: FileItem, event: MouseEvent): void
-    (e: 'dblclick', file: FileItem): void
-    (e: 'contextmenu', file: FileItem[], event: MouseEvent): void
-    (e: 'preview', file: FileItem): void
-    (e: 'download', file: FileItem): void
-    (e: 'rename', file: FileItem): void
-    (e: 'move', file: FileItem): void
-    (e: 'copy', file: FileItem): void
-    (e: 'share', file: FileItem): void
-    (e: 'delete', file: FileItem): void
-    (e: 'upload', files: File[]): void
-    (e: 'sizeChange', size: number): void
-    (e: 'currentChange', current: number): void
-  }>()
+    let compareResult = 0
+    switch (props.sortField) {
+      case 'name':
+        compareResult = a.originalName.localeCompare(b.originalName, 'zh-CN', { numeric: true })
+        break
+      case 'size':
+        compareResult = (a.size || 0) - (b.size || 0)
+        break
+      case 'extension':
+        compareResult = (a.extension || '').localeCompare(b.extension || '')
+        break
+      case 'updateTime':
+        compareResult
+          = new Date(b.updateTime || 0).getTime() - new Date(a.updateTime || 0).getTime()
+        break
+    }
 
-  const tableRef = ref()
-  const isDragging = ref(false)
-
-  // 排序后的数据
-  const sortedData = computed(() => {
-    const list = [...props.data]
-    list.sort((a, b) => {
-      // 文件夹排在前面
-      if (a.type !== b.type) {
-        return a.type === 0 ? -1 : 1
-      }
-
-      let compareResult = 0
-      switch (props.sortField) {
-        case 'name':
-          compareResult = a.originalName.localeCompare(b.originalName, 'zh-CN', { numeric: true })
-          break
-        case 'size':
-          compareResult = (a.size || 0) - (b.size || 0)
-          break
-        case 'extension':
-          compareResult = (a.extension || '').localeCompare(b.extension || '')
-          break
-        case 'updateTime':
-          compareResult =
-            new Date(b.updateTime || 0).getTime() - new Date(a.updateTime || 0).getTime()
-          break
-      }
-
-      return props.sortOrder === 'asc' ? compareResult : -compareResult
-    })
-    return list
+    return props.sortOrder === 'asc' ? compareResult : -compareResult
   })
+  return list
+})
 
-  // 空状态描述
-  const emptyDescription = computed(() => {
-    if (props.isRoot) return t('file.list.empty.root')
-    return t('file.list.empty.folder')
-  })
+// 空状态描述
+const emptyDescription = computed(() => {
+  if (props.isRoot) return t('file.list.empty.root')
+  return t('file.list.empty.folder')
+})
 
-  // 判断是否有缩略图
-  const hasThumbnail = (file: FileItem): boolean => {
-    return file.type !== 0 && isImageFile(file.extension) && !!file.thumbnailUrl
+// 判断是否有缩略图
+const hasThumbnail = (file: FileItem): boolean => {
+  return file.type !== 0 && isImageFile(file.extension) && !!file.thumbnailUrl
+}
+
+// 获取预览图片列表
+const getPreviewSrcList = (file: FileItem): string[] => {
+  // 收集当前文件夹中所有图片的原始 URL（如果有 url 字段则使用 url，否则使用 thumbnailUrl）
+  const allImages = props.data
+    .filter((f) => f.type !== 0 && isImageFile(f.extension) && f.url)
+    .map((f) => f.url as string)
+  return allImages.length > 0 ? allImages : [file.thumbnailUrl || '']
+}
+
+// 格式化文件大小
+const formatSize = (bytes: number): string => {
+  if (bytes === 0 || !bytes) return '-'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`
+}
+
+// 格式化时间
+const formatTime = (time: string): string => {
+  if (!time) return '-'
+  const date = new Date(time)
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day} ${hours}:${minutes}`
+}
+
+// 列表视图选择变化
+const handleSelectionChange = (rows: FileItem[]) => {
+  emit(
+    'select',
+    rows.map((r) => r.id)
+  )
+}
+
+// 行点击
+const handleRowClick = (row: FileItem) => {
+  emit('click', row, {} as MouseEvent)
+}
+
+// 行双击
+const handleRowDblClick = (row: FileItem) => {
+  emit('dblclick', row)
+}
+
+// 行右键菜单
+const handleRowContextMenu = (row: FileItem, column: any, event: MouseEvent) => {
+  event.preventDefault()
+  emit('contextmenu', [row], event)
+}
+
+// 网格视图项点击
+const handleItemClick = (item: FileItem, event: MouseEvent) => {
+  emit('click', item, event)
+}
+
+// 网格视图项双击
+const handleItemDblClick = (item: FileItem) => {
+  emit('dblclick', item)
+}
+
+// 网格视图项右键菜单
+const handleItemContextMenu = (item: FileItem, event: MouseEvent) => {
+  event.preventDefault()
+  emit('contextmenu', [item], event)
+}
+
+// 预览
+const handlePreview = (file: FileItem) => {
+  emit('preview', file)
+}
+
+// 下载
+const handleDownload = (file: FileItem) => {
+  emit('download', file)
+}
+
+// 重命名
+const handleRename = (file: FileItem) => {
+  emit('rename', file)
+}
+
+// 更多操作
+const handleMoreCommand = (command: string, file: FileItem) => {
+  switch (command) {
+    case 'move':
+      emit('move', file)
+      break
+    case 'copy':
+      emit('copy', file)
+      break
+    case 'share':
+      emit('share', file)
+      break
+    case 'delete':
+      emit('delete', file)
+      break
   }
+}
 
-  // 获取预览图片列表
-  const getPreviewSrcList = (file: FileItem): string[] => {
-    // 收集当前文件夹中所有图片的原始 URL（如果有 url 字段则使用 url，否则使用 thumbnailUrl）
-    const allImages = props.data
-      .filter((f) => f.type !== 0 && isImageFile(f.extension) && f.url)
-      .map((f) => f.url as string)
-    return allImages.length > 0 ? allImages : [file.thumbnailUrl || '']
-  }
+// 拖拽处理
+const handleDragOver = (e: DragEvent) => {
+  e.preventDefault()
+  isDragging.value = true
+}
 
-  // 格式化文件大小
-  const formatSize = (bytes: number): string => {
-    if (bytes === 0 || !bytes) return '-'
-    const k = 1024
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-  }
-
-  // 格式化时间
-  const formatTime = (time: string): string => {
-    if (!time) return '-'
-    const date = new Date(time)
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const hours = String(date.getHours()).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    return `${year}-${month}-${day} ${hours}:${minutes}`
-  }
-
-  // 列表视图选择变化
-  const handleSelectionChange = (rows: FileItem[]) => {
-    emit(
-      'select',
-      rows.map((r) => r.id)
-    )
-  }
-
-  // 行点击
-  const handleRowClick = (row: FileItem) => {
-    emit('click', row, {} as MouseEvent)
-  }
-
-  // 行双击
-  const handleRowDblClick = (row: FileItem) => {
-    emit('dblclick', row)
-  }
-
-  // 行右键菜单
-  const handleRowContextMenu = (row: FileItem, column: any, event: MouseEvent) => {
-    event.preventDefault()
-    emit('contextmenu', [row], event)
-  }
-
-  // 网格视图项点击
-  const handleItemClick = (item: FileItem, event: MouseEvent) => {
-    emit('click', item, event)
-  }
-
-  // 网格视图项双击
-  const handleItemDblClick = (item: FileItem) => {
-    emit('dblclick', item)
-  }
-
-  // 网格视图项右键菜单
-  const handleItemContextMenu = (item: FileItem, event: MouseEvent) => {
-    event.preventDefault()
-    emit('contextmenu', [item], event)
-  }
-
-  // 预览
-  const handlePreview = (file: FileItem) => {
-    emit('preview', file)
-  }
-
-  // 下载
-  const handleDownload = (file: FileItem) => {
-    emit('download', file)
-  }
-
-  // 重命名
-  const handleRename = (file: FileItem) => {
-    emit('rename', file)
-  }
-
-  // 更多操作
-  const handleMoreCommand = (command: string, file: FileItem) => {
-    switch (command) {
-      case 'move':
-        emit('move', file)
-        break
-      case 'copy':
-        emit('copy', file)
-        break
-      case 'share':
-        emit('share', file)
-        break
-      case 'delete':
-        emit('delete', file)
-        break
-    }
-  }
-
-  // 拖拽处理
-  const handleDragOver = (e: DragEvent) => {
-    e.preventDefault()
-    isDragging.value = true
-  }
-
-  const handleDragLeave = (e: DragEvent) => {
-    // 检查是否真的离开了区域
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
-    if (
-      e.clientX <= rect.left ||
-      e.clientX >= rect.right ||
-      e.clientY <= rect.top ||
-      e.clientY >= rect.bottom
-    ) {
-      isDragging.value = false
-    }
-  }
-
-  const handleDrop = (e: DragEvent) => {
-    e.preventDefault()
+const handleDragLeave = (e: DragEvent) => {
+  // 检查是否真的离开了区域
+  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()
+  if (
+    e.clientX <= rect.left
+    || e.clientX >= rect.right
+    || e.clientY <= rect.top
+    || e.clientY >= rect.bottom
+  ) {
     isDragging.value = false
-
-    const files = e.dataTransfer?.files
-    if (files && files.length > 0) {
-      emit('upload', Array.from(files))
-    }
   }
+}
 
-  // 分页大小变化
-  const handleSizeChange = (size: number) => {
-    emit('sizeChange', size)
-  }
+const handleDrop = (e: DragEvent) => {
+  e.preventDefault()
+  isDragging.value = false
 
-  // 当前页变化
-  const handleCurrentChange = (current: number) => {
-    emit('currentChange', current)
+  const files = e.dataTransfer?.files
+  if (files && files.length > 0) {
+    emit('upload', Array.from(files))
   }
+}
+
+// 分页大小变化
+const handleSizeChange = (size: number) => {
+  emit('sizeChange', size)
+}
+
+// 当前页变化
+const handleCurrentChange = (current: number) => {
+  emit('currentChange', current)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -484,7 +490,7 @@
     align-items: center;
     justify-content: center;
     pointer-events: none;
-    background: rgba(var(--el-color-primary-rgb), 0.1);
+    background: rgb(var(--el-color-primary-rgb), 0.1);
     border: 2px dashed var(--el-color-primary);
   }
 
@@ -604,8 +610,8 @@
     }
 
     &.selected {
-      background: var(--el-color-primary-light-9);
       outline: 2px solid var(--el-color-primary);
+      background: var(--el-color-primary-light-9);
     }
   }
 
@@ -646,10 +652,10 @@
   .item-name {
     width: 100%;
     overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 13px;
     color: var(--el-text-color-primary);
     text-align: center;
-    text-overflow: ellipsis;
     white-space: nowrap;
   }
 

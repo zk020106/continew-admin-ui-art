@@ -10,9 +10,11 @@
   >
     <div class="add-content">
       <ElIcon :size="24" class="add-icon"><Plus /></ElIcon>
-      <div class="add-text">{{
+      <div class="add-text">
+{{
         t('storage.createHint', { type: type === 1 ? t('storage.local') : t('storage.object') })
-      }}</div>
+      }}
+</div>
     </div>
   </ElCard>
 
@@ -20,30 +22,30 @@
 </template>
 
 <script setup lang="ts">
-  import { Plus } from '@element-plus/icons-vue'
-  import AddModal from '../AddModal.vue'
-  import { useI18n } from 'vue-i18n'
+import { Plus } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
+import AddModal from '../AddModal.vue'
 
-  interface Props {
-    type: number
-  }
+interface Props {
+  type: number
+}
 
-  const props = defineProps<Props>()
+const props = defineProps<Props>()
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { t } = useI18n()
-  const AddModalRef = ref<InstanceType<typeof AddModal>>()
+const { t } = useI18n()
+const AddModalRef = ref<InstanceType<typeof AddModal>>()
 
-  const onAdd = () => {
-    AddModalRef.value?.onAdd(props.type)
-  }
+const onAdd = () => {
+  AddModalRef.value?.onAdd(props.type)
+}
 
-  const onSaveSuccess = () => {
-    emit('save-success')
-  }
+const onSaveSuccess = () => {
+  emit('save-success')
+}
 </script>
 
 <style scoped lang="scss">

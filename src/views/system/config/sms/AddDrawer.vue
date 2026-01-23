@@ -67,7 +67,7 @@
           v-model="formData.supplierConfig"
           type="textarea"
           :rows="3"
-          placeholder='{"sdkAppId":""}'
+          placeholder="{&quot;sdkAppId&quot;:&quot;&quot;}"
         />
       </ElFormItem>
       <ElFormItem :label="t('common.status')" prop="status">
@@ -88,29 +88,82 @@
 </template>
 
 <script setup lang="ts">
-  import { ElMessage } from 'element-plus'
-  import { addSmsConfig, getSmsConfig, updateSmsConfig } from '@/apis/system/smsConfig'
-  import type { SmsConfigReq } from '@/apis/system/type'
-  import { useI18n } from 'vue-i18n'
+import type { SmsConfigReq } from '@/apis/system/type'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { addSmsConfig, getSmsConfig, updateSmsConfig } from '@/apis/system/smsConfig'
 
-  defineOptions({ name: 'SmsConfigAddDrawer' })
+defineOptions({ name: 'SmsConfigAddDrawer' })
 
-  const emit = defineEmits<{
-    'save-success': []
-  }>()
+const emit = defineEmits<{
+  'save-success': []
+}>()
 
-  const { t } = useI18n()
-  const width = ref(document.documentElement.clientWidth)
-  const visible = ref(false)
-  const formRef = ref()
-  const isEdit = ref(false)
-  const currentId = ref('')
+const { t } = useI18n()
+const width = ref(document.documentElement.clientWidth)
+const visible = ref(false)
+const formRef = ref()
+const isEdit = ref(false)
+const currentId = ref('')
 
-  const drawerTitle = computed(() =>
-    isEdit.value ? t('system.config.sms.editTitle') : t('system.config.sms.addTitle')
-  )
+const drawerTitle = computed(() =>
+  isEdit.value ? t('system.config.sms.editTitle') : t('system.config.sms.addTitle')
+)
 
-  const formData = ref<SmsConfigReq>({
+const formData = ref<SmsConfigReq>({
+  name: '',
+  supplier: '',
+  accessKey: '',
+  secretKey: '',
+  signature: '',
+  templateId: '',
+  weight: '10',
+  retryInterval: '60',
+  maxRetries: '3',
+  maximum: '1000',
+  supplierConfig: '',
+  status: 1,
+  isDefault: false
+})
+
+const formRules = computed(() => ({
+  name: [{ required: true, message: t('system.config.sms.namePlaceholder'), trigger: 'blur' }],
+  supplier: [
+    { required: true, message: t('system.config.sms.supplierPlaceholder'), trigger: 'change' }
+  ],
+  accessKey: [
+    { required: true, message: t('system.config.sms.accessKeyPlaceholder'), trigger: 'blur' }
+  ],
+  secretKey: [{ required: true, message: t('system.config.sms.secretKey'), trigger: 'blur' }],
+  signature: [
+    { required: true, message: t('system.config.sms.signaturePlaceholder'), trigger: 'blur' }
+  ],
+  templateId: [
+    { required: true, message: t('system.config.sms.templateIdPlaceholder'), trigger: 'blur' }
+  ]
+}))
+
+const onAdd = () => {
+  isEdit.value = false
+  currentId.value = ''
+  resetForm()
+  visible.value = true
+}
+
+const onUpdate = async (id: string) => {
+  isEdit.value = true
+  currentId.value = id
+  try {
+    const res = await getSmsConfig(id)
+    formData.value = { ...res }
+    visible.value = true
+  } catch (error) {
+    console.error('Failed to fetch SMS config detail:', error)
+  }
+}
+
+const resetForm = () => {
+  formData.value = {
     name: '',
     supplier: '',
     accessKey: '',
@@ -124,87 +177,34 @@
     supplierConfig: '',
     status: 1,
     isDefault: false
-  })
-
-  const formRules = computed(() => ({
-    name: [{ required: true, message: t('system.config.sms.namePlaceholder'), trigger: 'blur' }],
-    supplier: [
-      { required: true, message: t('system.config.sms.supplierPlaceholder'), trigger: 'change' }
-    ],
-    accessKey: [
-      { required: true, message: t('system.config.sms.accessKeyPlaceholder'), trigger: 'blur' }
-    ],
-    secretKey: [{ required: true, message: t('system.config.sms.secretKey'), trigger: 'blur' }],
-    signature: [
-      { required: true, message: t('system.config.sms.signaturePlaceholder'), trigger: 'blur' }
-    ],
-    templateId: [
-      { required: true, message: t('system.config.sms.templateIdPlaceholder'), trigger: 'blur' }
-    ]
-  }))
-
-  const onAdd = () => {
-    isEdit.value = false
-    currentId.value = ''
-    resetForm()
-    visible.value = true
   }
+  formRef.value?.clearValidate()
+}
 
-  const onUpdate = async (id: string) => {
-    isEdit.value = true
-    currentId.value = id
-    try {
-      const res = await getSmsConfig(id)
-      formData.value = { ...res }
-      visible.value = true
-    } catch (error) {
-      console.error('Failed to fetch SMS config detail:', error)
+const handleConfirm = async () => {
+  try {
+    await formRef.value?.validate()
+    if (isEdit.value) {
+      await updateSmsConfig(formData.value, currentId.value)
+    } else {
+      await addSmsConfig(formData.value)
     }
-  }
-
-  const resetForm = () => {
-    formData.value = {
-      name: '',
-      supplier: '',
-      accessKey: '',
-      secretKey: '',
-      signature: '',
-      templateId: '',
-      weight: '10',
-      retryInterval: '60',
-      maxRetries: '3',
-      maximum: '1000',
-      supplierConfig: '',
-      status: 1,
-      isDefault: false
-    }
-    formRef.value?.clearValidate()
-  }
-
-  const handleConfirm = async () => {
-    try {
-      await formRef.value?.validate()
-      if (isEdit.value) {
-        await updateSmsConfig(formData.value, currentId.value)
-      } else {
-        await addSmsConfig(formData.value)
-      }
-      ElMessage.success(t('common.success'))
-      visible.value = false
-      emit('save-success')
-    } catch (error) {
-      console.error('Failed to save SMS config:', error)
-    }
-  }
-
-  const handleClose = () => {
+    ElMessage.success(t('common.success'))
     visible.value = false
+    emit('save-success')
+  } catch (error) {
+    console.error('Failed to save SMS config:', error)
   }
+}
 
-  defineExpose({
-    onAdd,
-    onUpdate
-  })
+const handleClose = () => {
+  visible.value = false
+}
+
+defineExpose({
+  onAdd,
+  onUpdate
+})
 </script>
 
 <style scoped lang="scss">

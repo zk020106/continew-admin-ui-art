@@ -1,6 +1,6 @@
+import type { LabelValueState } from '@/types/global'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { LabelValueState } from '@/types/global'
 
 export type DictItem = LabelValueState
 

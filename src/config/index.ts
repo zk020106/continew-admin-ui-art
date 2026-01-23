@@ -29,8 +29,8 @@
  * @author Art Design Pro Team
  */
 
+import type { SystemConfig } from '@/types/config'
 import { MenuThemeEnum, MenuTypeEnum, SystemThemeEnum } from '@/enums/appEnum'
-import { SystemConfig } from '@/types/config'
 import { configImages } from './assets/images'
 import fastEnterConfig from './modules/fastEnter'
 import { headerBarConfig } from './modules/headerBar'

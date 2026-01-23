@@ -138,112 +138,114 @@
           {{ filter.label }}: {{ filter.value }}
         </el-tag>
       </div>
-      <el-button text size="small" @click="handleClearFilters">{{
+      <el-button text size="small" @click="handleClearFilters">
+{{
         t('file.header.clearFilters')
-      }}</el-button>
+      }}
+</el-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { useI18n } from 'vue-i18n'
-  import { Search } from '@element-plus/icons-vue'
-  import type { UploadFile } from 'element-plus'
-  import type { SortField, SortOrder, ViewMode } from '../types'
-  import FileBreadcrumb from './FileBreadcrumb.vue'
+import type { UploadFile } from 'element-plus'
+import type { SortField, SortOrder, ViewMode } from '../types'
+import { Search } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
+import FileBreadcrumb from './FileBreadcrumb.vue'
 
-  const { t } = useI18n()
+defineProps<{
+  currentPath: string
+  viewMode: ViewMode
+  sortField: SortField
+  sortOrder: SortOrder
+  canGoBack: boolean
+  canGoForward: boolean
+  canGoUp: boolean
+}>()
 
-  defineProps<{
-    currentPath: string
-    viewMode: ViewMode
-    sortField: SortField
-    sortOrder: SortOrder
-    canGoBack: boolean
-    canGoForward: boolean
-    canGoUp: boolean
-  }>()
+const emit = defineEmits<{
+  (e: 'navigate', path: string): void
+  (e: 'go-back'): void
+  (e: 'go-forward'): void
+  (e: 'go-up'): void
+  (e: 'create-folder'): void
+  (e: 'upload', files: File[]): void
+  (e: 'search', keyword: string): void
+  (e: 'sort', field: SortField): void
+  (e: 'view-change', mode: ViewMode): void
+  (e: 'refresh'): void
+  (e: 'toggle-detail-panel'): void
+  (e: 'select-all'): void
+}>()
 
-  const emit = defineEmits<{
-    (e: 'navigate', path: string): void
-    (e: 'go-back'): void
-    (e: 'go-forward'): void
-    (e: 'go-up'): void
-    (e: 'create-folder'): void
-    (e: 'upload', files: File[]): void
-    (e: 'search', keyword: string): void
-    (e: 'sort', field: SortField): void
-    (e: 'view-change', mode: ViewMode): void
-    (e: 'refresh'): void
-    (e: 'toggle-detail-panel'): void
-    (e: 'select-all'): void
-  }>()
+const { t } = useI18n()
 
-  const uploadRef = ref()
-  const searchKeyword = ref('')
+const uploadRef = ref()
+const searchKeyword = ref('')
 
-  const sortOptions = computed(() => [
-    { label: t('file.header.sortOptions.name'), value: 'name' as SortField },
-    { label: t('file.header.sortOptions.size'), value: 'size' as SortField },
-    { label: t('file.header.sortOptions.type'), value: 'extension' as SortField },
-    { label: t('file.header.sortOptions.updateTime'), value: 'updateTime' as SortField }
-  ])
+const sortOptions = computed(() => [
+  { label: t('file.header.sortOptions.name'), value: 'name' as SortField },
+  { label: t('file.header.sortOptions.size'), value: 'size' as SortField },
+  { label: t('file.header.sortOptions.type'), value: 'extension' as SortField },
+  { label: t('file.header.sortOptions.updateTime'), value: 'updateTime' as SortField }
+])
 
-  // 筛选相关
-  const filters = ref<Record<string, any>>({})
+// 筛选相关
+const filters = ref<Record<string, any>>({})
 
-  const activeFilters = computed(() => {
-    return Object.entries(filters.value)
-      .filter(([value]) => value !== undefined && value !== '')
-      .map(([key, value]) => ({
-        key,
-        label: getFilterLabel(key),
-        value: getFilterValueLabel(key, value)
-      }))
-  })
+const activeFilters = computed(() => {
+  return Object.entries(filters.value)
+    .filter(([value]) => value !== undefined && value !== '')
+    .map(([key, value]) => ({
+      key,
+      label: getFilterLabel(key),
+      value: getFilterValueLabel(key, value)
+    }))
+})
 
-  const hasFilters = computed(() => activeFilters.value.length > 0)
+const hasFilters = computed(() => activeFilters.value.length > 0)
 
-  const getFilterLabel = (key: string): string => {
-    return t(`file.filter.${key}`)
-  }
+const getFilterLabel = (key: string): string => {
+  return t(`file.filter.${key}`)
+}
 
-  const getFilterValueLabel = (key: string, value: any): string => {
-    if (key === 'type') {
-      const typeMap: Record<string, string> = {
-        image: t('file.statistics.image'),
-        video: t('file.statistics.video'),
-        audio: t('file.statistics.audio'),
-        document: t('file.statistics.document'),
-        archive: t('file.statistics.archive'),
-        code: t('file.statistics.code')
-      }
-      return typeMap[value] || value
+const getFilterValueLabel = (key: string, value: any): string => {
+  if (key === 'type') {
+    const typeMap: Record<string, string> = {
+      image: t('file.statistics.image'),
+      video: t('file.statistics.video'),
+      audio: t('file.statistics.audio'),
+      document: t('file.statistics.document'),
+      archive: t('file.statistics.archive'),
+      code: t('file.statistics.code')
     }
-    return String(value)
+    return typeMap[value] || value
   }
+  return String(value)
+}
 
-  const handleFileChange = (file: UploadFile) => {
-    if (file.raw) {
-      emit('upload', [file.raw])
-    }
+const handleFileChange = (file: UploadFile) => {
+  if (file.raw) {
+    emit('upload', [file.raw])
   }
+}
 
-  const handleSearch = () => {
-    emit('search', searchKeyword.value)
-  }
+const handleSearch = () => {
+  emit('search', searchKeyword.value)
+}
 
-  const handleSortCommand = (field: SortField) => {
-    emit('sort', field)
-  }
+const handleSortCommand = (field: SortField) => {
+  emit('sort', field)
+}
 
-  const handleRemoveFilter = (key: string) => {
-    delete filters.value[key]
-  }
+const handleRemoveFilter = (key: string) => {
+  delete filters.value[key]
+}
 
-  const handleClearFilters = () => {
-    filters.value = {}
-  }
+const handleClearFilters = () => {
+  filters.value = {}
+}
 </script>
 
 <style lang="scss" scoped>

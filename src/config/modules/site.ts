@@ -10,8 +10,8 @@
  * - 提供配置初始化和设置方法
  */
 
-import { listSiteOptionDict } from '@/apis/system/common'
 import type { OptionResp, SiteConfig } from '@/apis/system/type'
+import { listSiteOptionDict } from '@/apis/system/common'
 import { useAppStore } from '@/store/modules/app'
 
 /**

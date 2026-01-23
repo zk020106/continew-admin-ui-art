@@ -116,36 +116,102 @@
 </template>
 
 <script setup lang="ts">
-  import { addStorage, getStorage, updateStorage } from '@/apis/system/storage'
-  import type { StorageReq } from '@/apis/system/type'
-  import { ElMessage } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { StorageReq } from '@/apis/system/type'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { addStorage, getStorage, updateStorage } from '@/apis/system/storage'
 
-  defineOptions({ name: 'StorageAddDrawer' })
+defineOptions({ name: 'StorageAddDrawer' })
 
-  const emit = defineEmits<{
-    'save-success': []
-  }>()
+const emit = defineEmits<{
+  'save-success': []
+}>()
 
-  const { t } = useI18n()
-  const width = ref(document.documentElement.clientWidth)
-  const visible = ref(false)
-  const formRef = ref()
-  const isEdit = ref(false)
-  const currentId = ref('')
+const { t } = useI18n()
+const width = ref(document.documentElement.clientWidth)
+const visible = ref(false)
+const formRef = ref()
+const isEdit = ref(false)
+const currentId = ref('')
 
-  const drawerTitle = computed(() => {
-    if (isEdit.value) {
-      return formData.value.type === 1
-        ? t('system.config.storage.editLocalTitle')
-        : t('system.config.storage.editOssTitle')
-    }
+const formData = ref<StorageReq>({
+  name: '',
+  code: '',
+  type: 1,
+  accessKey: '',
+  secretKey: '',
+  endpoint: '',
+  bucketName: '',
+  domain: '',
+  description: '',
+  isDefault: false,
+  sort: 0,
+  status: 1
+})
+const drawerTitle = computed(() => {
+  if (isEdit.value) {
     return formData.value.type === 1
-      ? t('system.config.storage.addLocalTitle')
-      : t('system.config.storage.addOssTitle')
-  })
+      ? t('system.config.storage.editLocalTitle')
+      : t('system.config.storage.editOssTitle')
+  }
+  return formData.value.type === 1
+    ? t('system.config.storage.addLocalTitle')
+    : t('system.config.storage.addOssTitle')
+})
 
-  const formData = ref<StorageReq>({
+const formRules = computed(() => ({
+  name: [
+    {
+      required: true,
+      message: t('common.placeholder.status', { label: t('system.config.storage.name') }),
+      trigger: 'blur'
+    }
+  ],
+  code: [
+    {
+      required: true,
+      message: t('common.placeholder.status', { label: t('system.config.storage.code') }),
+      trigger: 'blur'
+    }
+  ],
+  type: [
+    {
+      required: true,
+      message: t('common.placeholder.select', { label: t('system.config.storage.type') }),
+      trigger: 'change'
+    }
+  ],
+  bucketName: [
+    {
+      required: true,
+      message: t('common.placeholder.status', { label: t('system.config.storage.bucketName') }),
+      trigger: 'blur'
+    }
+  ]
+}))
+
+const onAdd = (type: number) => {
+  isEdit.value = false
+  currentId.value = ''
+  resetForm()
+  formData.value.type = type
+  visible.value = true
+}
+
+const onUpdate = async (id: string) => {
+  isEdit.value = true
+  currentId.value = id
+  try {
+    const res = await getStorage(id)
+    formData.value = { ...res }
+    visible.value = true
+  } catch (error) {
+    console.error('Failed to fetch storage detail:', error)
+  }
+}
+
+const resetForm = () => {
+  formData.value = {
     name: '',
     code: '',
     type: 1,
@@ -158,100 +224,33 @@
     isDefault: false,
     sort: 0,
     status: 1
-  })
-
-  const formRules = computed(() => ({
-    name: [
-      {
-        required: true,
-        message: t('common.placeholder.status', { label: t('system.config.storage.name') }),
-        trigger: 'blur'
-      }
-    ],
-    code: [
-      {
-        required: true,
-        message: t('common.placeholder.status', { label: t('system.config.storage.code') }),
-        trigger: 'blur'
-      }
-    ],
-    type: [
-      {
-        required: true,
-        message: t('common.placeholder.select', { label: t('system.config.storage.type') }),
-        trigger: 'change'
-      }
-    ],
-    bucketName: [
-      {
-        required: true,
-        message: t('common.placeholder.status', { label: t('system.config.storage.bucketName') }),
-        trigger: 'blur'
-      }
-    ]
-  }))
-
-  const onAdd = (type: number) => {
-    isEdit.value = false
-    currentId.value = ''
-    resetForm()
-    formData.value.type = type
-    visible.value = true
   }
+  formRef.value?.clearValidate()
+}
 
-  const onUpdate = async (id: string) => {
-    isEdit.value = true
-    currentId.value = id
-    try {
-      const res = await getStorage(id)
-      formData.value = { ...res }
-      visible.value = true
-    } catch (error) {
-      console.error('Failed to fetch storage detail:', error)
+const handleConfirm = async () => {
+  try {
+    await formRef.value?.validate()
+    if (isEdit.value) {
+      await updateStorage(formData.value, currentId.value)
+    } else {
+      await addStorage(formData.value)
     }
-  }
-
-  const resetForm = () => {
-    formData.value = {
-      name: '',
-      code: '',
-      type: 1,
-      accessKey: '',
-      secretKey: '',
-      endpoint: '',
-      bucketName: '',
-      domain: '',
-      description: '',
-      isDefault: false,
-      sort: 0,
-      status: 1
-    }
-    formRef.value?.clearValidate()
-  }
-
-  const handleConfirm = async () => {
-    try {
-      await formRef.value?.validate()
-      if (isEdit.value) {
-        await updateStorage(formData.value, currentId.value)
-      } else {
-        await addStorage(formData.value)
-      }
-      ElMessage.success(t('common.success'))
-      visible.value = false
-      emit('save-success')
-    } catch (error) {
-      if (error === false) return // 表单验证失败
-      console.error('Failed to save storage:', error)
-    }
-  }
-
-  const handleClose = () => {
+    ElMessage.success(t('common.success'))
     visible.value = false
+    emit('save-success')
+  } catch (error) {
+    if (error === false) return // 表单验证失败
+    console.error('Failed to save storage:', error)
   }
+}
 
-  defineExpose({
-    onAdd,
-    onUpdate
-  })
+const handleClose = () => {
+  visible.value = false
+}
+
+defineExpose({
+  onAdd,
+  onUpdate
+})
 </script>

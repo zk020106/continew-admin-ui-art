@@ -20,25 +20,25 @@
 </template>
 
 <script setup lang="ts">
-  import type { RoleResp } from '@/apis/system/role'
-  import { useI18n } from 'vue-i18n'
+import type { RoleResp } from '@/apis/system/role'
+import { useI18n } from 'vue-i18n'
 
-  interface Props {
-    data: RoleResp
-  }
+interface Props {
+  data: RoleResp
+}
 
-  const props = withDefaults(defineProps<Props>(), {})
+const props = withDefaults(defineProps<Props>(), {})
 
-  const emit = defineEmits<{
-    (e: 'on-menu-item-click', mode: string, data: RoleResp): void
-  }>()
+const emit = defineEmits<{
+  (e: 'on-menu-item-click', mode: string, data: RoleResp): void
+}>()
 
-  const { t } = useI18n()
+const { t } = useI18n()
 
-  // 点击菜单项
-  const onClick = (mode: string) => {
-    emit('on-menu-item-click', mode, props.data)
-  }
+// 点击菜单项
+const onClick = (mode: string) => {
+  emit('on-menu-item-click', mode, props.data)
+}
 </script>
 
 <style scoped lang="scss">

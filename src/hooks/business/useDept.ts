@@ -1,7 +1,7 @@
-import { listDeptDictTree } from '@/apis/system'
 import type { DeptDictTreeNode } from '@/types/api/system'
-
 import { ref } from 'vue'
+
+import { listDeptDictTree } from '@/apis/system'
 
 /**
  * 部门业务逻辑 Hook

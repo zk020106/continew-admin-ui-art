@@ -16,82 +16,82 @@
 </template>
 
 <script setup lang="ts">
-  import { getUser, updateUserRole } from '@/apis/system/user'
-  import CaButton from '@/components/base/CaButton/index.vue'
-  import CaForm from '@/components/base/CaForm/index.vue'
-  import { FormColumnItem } from '@/components/base/CaForm/type'
-  import { useResetReactive } from '@/hooks'
-  import { useRole } from '@/hooks/business'
-  import { useWindowSize } from '@vueuse/core'
-  import { ElMessage } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { FormColumnItem } from '@/components/base/CaForm/type'
+import { useWindowSize } from '@vueuse/core'
+import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { getUser, updateUserRole } from '@/apis/system/user'
+import CaButton from '@/components/base/CaButton/index.vue'
+import CaForm from '@/components/base/CaForm/index.vue'
+import { useResetReactive } from '@/hooks'
+import { useRole } from '@/hooks/business'
 
-  const emit = defineEmits<{
-    (e: 'save-success'): void
-  }>()
+const emit = defineEmits<{
+  (e: 'save-success'): void
+}>()
 
-  const { width } = useWindowSize()
-  const dataId = ref('')
-  const visible = ref(false)
-  const formRef = useTemplateRef('formRef')
-  const { roleList, getRoleList } = useRole()
-  const { t } = useI18n()
-  const [form, resetForm] = useResetReactive({})
+const { width } = useWindowSize()
+const dataId = ref('')
+const visible = ref(false)
+const formRef = useTemplateRef('formRef')
+const { roleList, getRoleList } = useRole()
+const { t } = useI18n()
+const [form, resetForm] = useResetReactive({})
 
-  const columns = computed(
-    () =>
-      [
-        {
-          label: t('user.field.role'),
-          field: 'roleIds',
-          type: 'select',
-          span: 24,
-          required: true,
-          props: {
-            options: roleList.value,
-            multiple: true,
-            clearable: true,
-            placeholder: t('user.placeholder.role')
-          }
+const columns = computed(
+  () =>
+    [
+      {
+        label: t('user.field.role'),
+        field: 'roleIds',
+        type: 'select',
+        span: 24,
+        required: true,
+        props: {
+          options: roleList.value,
+          multiple: true,
+          clearable: true,
+          placeholder: t('user.placeholder.role')
         }
-      ] as FormColumnItem[]
-  )
+      }
+    ] as FormColumnItem[]
+)
 
-  // 重置
-  const reset = () => {
-    formRef.value?.formRef?.resetFields()
-    resetForm()
+// 重置
+const reset = () => {
+  formRef.value?.formRef?.resetFields()
+  resetForm()
+}
+
+// 保存
+const save = async () => {
+  try {
+    await formRef.value?.formRef?.validate()
+
+    await updateUserRole({ roleIds: form.roleIds }, dataId.value)
+    ElMessage.success(t('role.message.assignSuccess'))
+    emit('save-success')
+    visible.value = false
+    return true
+  } catch (err) {
+    console.error(err)
+    return false
   }
+}
 
-  // 保存
-  const save = async () => {
-    try {
-      await formRef.value?.formRef?.validate()
-
-      await updateUserRole({ roleIds: form.roleIds }, dataId.value)
-      ElMessage.success(t('role.message.assignSuccess'))
-      emit('save-success')
-      visible.value = false
-      return true
-    } catch (err) {
-      console.error(err)
-      return false
-    }
+// 初始化
+const onOpen = async (id: string) => {
+  reset()
+  dataId.value = id
+  if (!roleList.value.length) {
+    await getRoleList()
   }
+  const data = await getUser(id)
+  Object.assign(form, data)
+  visible.value = true
+}
 
-  // 初始化
-  const onOpen = async (id: string) => {
-    reset()
-    dataId.value = id
-    if (!roleList.value.length) {
-      await getRoleList()
-    }
-    const data = await getUser(id)
-    Object.assign(form, data)
-    visible.value = true
-  }
-
-  defineExpose({ onOpen })
+defineExpose({ onOpen })
 </script>
 
 <style scoped lang="scss"></style>

@@ -1,3 +1,5 @@
+import type { AxiosError } from 'axios'
+import { ElMessage } from 'element-plus'
 /**
  * HTTP 错误处理模块
  *
@@ -22,8 +24,6 @@
  * @author Art Design Pro Team
  */
 import { $t } from '@/locales'
-import { AxiosError } from 'axios'
-import { ElMessage } from 'element-plus'
 import { ApiStatus } from './status'
 
 // 错误响应接口
@@ -117,7 +117,6 @@ const getErrorMessage = (status: string): string => {
 /**
  * 处理错误
  * @param error 错误对象
- * @returns 错误对象
  */
 export function handleError(error: AxiosError<ErrorResponse>): never {
   // 处理取消的请求

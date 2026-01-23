@@ -2,9 +2,9 @@
   <SectionTitle :title="$t('setting.theme.title')" />
   <div class="setting-box-wrap">
     <div
-      class="setting-item"
       v-for="(item, index) in configOptions.themeList"
       :key="item.theme"
+      class="setting-item"
       @click="switchThemeStyles(item.theme)"
     >
       <div class="box" :class="{ 'is-active': item.theme === systemThemeMode }">
@@ -16,13 +16,13 @@
 </template>
 
 <script setup lang="ts">
-  import SectionTitle from './SectionTitle.vue'
-  import { useSettingStore } from '@/store/modules/setting'
-  import { useSettingsConfig } from '../composables/useSettingsConfig'
-  import { useTheme } from '@/hooks/core/useTheme'
+import { useTheme } from '@/hooks/core/useTheme'
+import { useSettingStore } from '@/store/modules/setting'
+import { useSettingsConfig } from '../composables/useSettingsConfig'
+import SectionTitle from './SectionTitle.vue'
 
-  const settingStore = useSettingStore()
-  const { systemThemeMode } = storeToRefs(settingStore)
-  const { configOptions } = useSettingsConfig()
-  const { switchThemeStyles } = useTheme()
+const settingStore = useSettingStore()
+const { systemThemeMode } = storeToRefs(settingStore)
+const { configOptions } = useSettingsConfig()
+const { switchThemeStyles } = useTheme()
 </script>

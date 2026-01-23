@@ -4,19 +4,18 @@
       <div v-if="visible" class="context-menu-overlay" @click="handleClickOutside">
         <div
           class="context-menu"
-          :style="{ left: position.x + 'px', top: position.y + 'px' }"
+          :style="{ left: `${position.x}px`, top: `${position.y}px` }"
           @click.stop
         >
           <div
             v-for="item in menuItems"
             :key="item.action"
-            :class="[
-              'menu-item',
+            class="menu-item" :class="[
               {
                 'is-divider': item.divider,
                 'is-disabled': item.disabled,
-                'is-danger': item.danger
-              }
+                'is-danger': item.danger,
+              },
             ]"
             @click="handleItemClick(item)"
           >
@@ -32,28 +31,28 @@
 </template>
 
 <script setup lang="ts">
-  import type { ContextMenuAction, ContextMenuItem } from '../types'
+import type { ContextMenuAction, ContextMenuItem } from '../types'
 
-  defineProps<{
-    visible: boolean
-    position: { x: number; y: number }
-    menuItems: ContextMenuItem[]
-  }>()
+defineProps<{
+  visible: boolean
+  position: { x: number, y: number }
+  menuItems: ContextMenuItem[]
+}>()
 
-  const emit = defineEmits<{
-    (e: 'update:visible', visible: boolean): void
-    (e: 'action', action: ContextMenuAction): void
-  }>()
+const emit = defineEmits<{
+  (e: 'update:visible', visible: boolean): void
+  (e: 'action', action: ContextMenuAction): void
+}>()
 
-  const handleClickOutside = () => {
-    emit('update:visible', false)
-  }
+const handleClickOutside = () => {
+  emit('update:visible', false)
+}
 
-  const handleItemClick = (item: ContextMenuItem) => {
-    if (item.disabled || item.divider) return
-    emit('action', item.action)
-    emit('update:visible', false)
-  }
+const handleItemClick = (item: ContextMenuItem) => {
+  if (item.disabled || item.divider) return
+  emit('action', item.action)
+  emit('update:visible', false)
+}
 </script>
 
 <style lang="scss" scoped>

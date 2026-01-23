@@ -1,3 +1,4 @@
+import { SystemThemeEnum } from '@/enums/appEnum'
 /**
  * 主题动画工具模块
  *
@@ -29,8 +30,8 @@
  */
 import { useCommon } from '@/hooks/core/useCommon'
 import { useTheme } from '@/hooks/core/useTheme'
-import { SystemThemeEnum } from '@/enums/appEnum'
 import { useSettingStore } from '@/store/modules/setting'
+
 const { LIGHT, DARK } = SystemThemeEnum
 
 /**
@@ -44,9 +45,9 @@ export const themeAnimation = (e: any) => {
   const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))
 
   // 设置CSS变量
-  document.documentElement.style.setProperty('--x', x + 'px')
-  document.documentElement.style.setProperty('--y', y + 'px')
-  document.documentElement.style.setProperty('--r', endRadius + 'px')
+  document.documentElement.style.setProperty('--x', `${x}px`)
+  document.documentElement.style.setProperty('--y', `${y}px`)
+  document.documentElement.style.setProperty('--r', `${endRadius}px`)
 
   if (document.startViewTransition) {
     document.startViewTransition(() => toggleTheme())

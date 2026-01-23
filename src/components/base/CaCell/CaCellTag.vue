@@ -1,46 +1,56 @@
 <template>
   <span v-if="!dictItem"></span>
   <span v-else-if="!dictItem.extra">{{ dictItem.label }}</span>
-  <el-tag v-else-if="dictItem.extra === 'primary'" type="primary" size="small">{{
+  <el-tag v-else-if="dictItem.extra === 'primary'" type="primary" size="small">
+{{
     dictItem.label
-  }}</el-tag>
-  <el-tag v-else-if="dictItem.extra === 'success'" type="success" size="small">{{
+  }}
+</el-tag>
+  <el-tag v-else-if="dictItem.extra === 'success'" type="success" size="small">
+{{
     dictItem.label
-  }}</el-tag>
-  <el-tag v-else-if="dictItem.extra === 'warning'" type="warning" size="small">{{
+  }}
+</el-tag>
+  <el-tag v-else-if="dictItem.extra === 'warning'" type="warning" size="small">
+{{
     dictItem.label
-  }}</el-tag>
-  <el-tag v-else-if="dictItem.extra === 'error'" type="danger" size="small">{{
+  }}
+</el-tag>
+  <el-tag v-else-if="dictItem.extra === 'error'" type="danger" size="small">
+{{
     dictItem.label
-  }}</el-tag>
-  <el-tag v-else-if="dictItem.extra === 'default'" type="info" size="small">{{
+  }}
+</el-tag>
+  <el-tag v-else-if="dictItem.extra === 'default'" type="info" size="small">
+{{
     dictItem.label
-  }}</el-tag>
+  }}
+</el-tag>
   <span v-else>{{ dictItem.label }}</span>
 </template>
 
 <script setup lang="ts">
-  import type { LabelValueState } from '@/types/global'
-  import type { CaCellTagType } from './types'
+import type { CaCellTagType } from './types'
+import type { LabelValueState } from '@/types/global'
 
-  defineOptions({ name: 'CaCellTag' })
+defineOptions({ name: 'CaCellTag' })
 
-  const props = withDefaults(defineProps<Partial<CaCellTagType>>(), {
-    data: () => [],
-    value: ''
-  })
+const props = withDefaults(defineProps<Partial<CaCellTagType>>(), {
+  data: () => [],
+  value: ''
+})
 
-  const dictItem = computed((): LabelValueState => {
-    try {
-      return (
-        props.data.find(
-          (d) => d.value === String(props.value) || d.value === Number(props.value)
-        ) || { label: '', value: '' }
-      )
-    } catch {
-      return { label: '', value: '' }
-    }
-  })
+const dictItem = computed((): LabelValueState => {
+  try {
+    return (
+      props.data.find(
+        (d) => d.value === String(props.value) || d.value === Number(props.value)
+      ) || { label: '', value: '' }
+    )
+  } catch {
+    return { label: '', value: '' }
+  }
+})
 </script>
 
 <style scoped lang="scss"></style>

@@ -1,3 +1,4 @@
+import { ElNotification } from 'element-plus'
 /**
  * 系统版本升级管理模块
  *
@@ -35,7 +36,6 @@
  * @author Art Design Pro Team
  */
 import { upgradeLogList } from '@/mock/upgrade/changeLog'
-import { ElNotification } from 'element-plus'
 import { useUserStore } from '@/store/modules/user'
 import { StorageConfig } from '@/utils/storage/storage-config'
 
@@ -89,13 +89,13 @@ class VersionManager {
   /**
    * 查找旧的存储结构
    */
-  private findLegacyStorage(): { oldSysKey: string | null; oldVersionKeys: string[] } {
+  private findLegacyStorage(): { oldSysKey: string | null, oldVersionKeys: string[] } {
     const storageKeys = Object.keys(localStorage)
     const currentVersionPrefix = StorageConfig.generateStorageKey('').slice(0, -1) // 移除末尾的 '-'
 
     // 查找旧的单一存储结构
-    const oldSysKey =
-      storageKeys.find(
+    const oldSysKey
+      = storageKeys.find(
         (key) =>
           StorageConfig.isVersionedKey(key) && key !== currentVersionPrefix && !key.includes('-')
       ) || null
@@ -103,9 +103,9 @@ class VersionManager {
     // 查找旧版本的分离存储键
     const oldVersionKeys = storageKeys.filter(
       (key) =>
-        StorageConfig.isVersionedKey(key) &&
-        !StorageConfig.isCurrentVersionKey(key) &&
-        key.includes('-')
+        StorageConfig.isVersionedKey(key)
+        && !StorageConfig.isCurrentVersionKey(key)
+        && key.includes('-')
     )
 
     return { oldSysKey, oldVersionKeys }

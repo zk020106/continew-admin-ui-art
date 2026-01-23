@@ -8,22 +8,24 @@
       <ArtSvgIcon :icon="icon"></ArtSvgIcon>
     </div>
     <div class="flex-1">
-      <p class="m-0 text-lg font-medium" :style="{ color: textColor }" v-if="title">
+      <p v-if="title" class="m-0 text-lg font-medium" :style="{ color: textColor }">
         {{ title }}
       </p>
       <ArtCountTo
-        class="m-0 text-2xl font-medium"
         v-if="count !== undefined"
+        class="m-0 text-2xl font-medium"
         :target="count"
         :duration="2000"
         :decimals="decimals"
         :separator="separator"
       />
       <p
+        v-if="description"
         class="mt-1 text-sm text-g-500 opacity-90"
         :style="{ color: textColor }"
-        v-if="description"
-        >{{ description }}</p
+        >
+{{ description }}
+</p
       >
     </div>
     <div v-if="showArrow">
@@ -33,35 +35,35 @@
 </template>
 
 <script setup lang="ts">
-  defineOptions({ name: 'ArtStatsCard' })
+defineOptions({ name: 'ArtStatsCard' })
 
-  interface StatsCardProps {
-    /** 盒子样式 */
-    boxStyle?: string
-    /** 图标 */
-    icon?: string
-    /** 图标样式 */
-    iconStyle?: string
-    /** 标题 */
-    title?: string
-    /** 数值 */
-    count?: number
-    /** 小数位 */
-    decimals?: number
-    /** 分隔符 */
-    separator?: string
-    /** 描述 */
-    description: string
-    /** 文本颜色 */
-    textColor?: string
-    /** 是否显示箭头 */
-    showArrow?: boolean
-  }
+withDefaults(defineProps<StatsCardProps>(), {
+  iconSize: 30,
+  iconBgRadius: 50,
+  decimals: 0,
+  separator: ','
+})
 
-  withDefaults(defineProps<StatsCardProps>(), {
-    iconSize: 30,
-    iconBgRadius: 50,
-    decimals: 0,
-    separator: ','
-  })
+interface StatsCardProps {
+  /** 盒子样式 */
+  boxStyle?: string
+  /** 图标 */
+  icon?: string
+  /** 图标样式 */
+  iconStyle?: string
+  /** 标题 */
+  title?: string
+  /** 数值 */
+  count?: number
+  /** 小数位 */
+  decimals?: number
+  /** 分隔符 */
+  separator?: string
+  /** 描述 */
+  description: string
+  /** 文本颜色 */
+  textColor?: string
+  /** 是否显示箭头 */
+  showArrow?: boolean
+}
 </script>

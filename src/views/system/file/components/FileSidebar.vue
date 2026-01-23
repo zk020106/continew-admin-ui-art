@@ -13,7 +13,7 @@
         <div
           v-for="item in quickAccessItems"
           :key="item.path"
-          :class="['quick-access-item', { active: currentPath === item.path }]"
+          class="quick-access-item" :class="[{ active: currentPath === item.path }]"
           @click="$emit('navigate', item.path)"
         >
           <ArtSvgIcon :icon="item.icon" :size="18" />
@@ -34,7 +34,7 @@
         <div
           v-for="(path, index) in recentPaths"
           :key="index"
-          :class="['recent-item', { active: currentPath === path }]"
+          class="recent-item" :class="[{ active: currentPath === path }]"
           @click="$emit('navigate', path)"
         >
           <ArtSvgIcon icon="ri:time-line" :size="16" />
@@ -46,61 +46,62 @@
 </template>
 
 <script setup lang="ts">
-  import { useI18n } from 'vue-i18n'
-  import { ElSkeleton } from 'element-plus'
-  import { FileStatisticsResp } from '@/apis'
-  import { STORAGE_KEYS } from '../utils/constants'
-  import StorageUsageCard from './StorageUsageCard.vue'
+import type { FileStatisticsResp } from '@/apis'
+import { ElSkeleton } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { STORAGE_KEYS } from '../utils/constants'
+import StorageUsageCard from './StorageUsageCard.vue'
 
-  const { t } = useI18n()
+defineProps<{
+  currentPath: string
+  statistics: FileStatisticsResp
+  loading?: boolean
+}>()
 
-  defineProps<{
-    currentPath: string
-    statistics: FileStatisticsResp
-    loading?: boolean
-  }>()
-  defineEmits<{
-    (e: 'navigate', path: string): void
-  }>()
+defineEmits<{
+  (e: 'navigate', path: string): void
+}>()
 
-  const recentPaths = ref<string[]>([])
+const { t } = useI18n()
 
-  // 快速访问项
-  const quickAccessItems = computed(() => [
-    { path: '/', label: t('file.sidebar.allFiles'), icon: 'ri:folder-3-fill' },
-    { path: '/images', label: t('file.sidebar.images'), icon: 'ri:image-fill' },
-    { path: '/documents', label: t('file.sidebar.documents'), icon: 'ri:file-text-fill' },
-    { path: '/videos', label: t('file.sidebar.videos'), icon: 'ri:film-fill' },
-    { path: '/music', label: t('file.sidebar.music'), icon: 'ri:music-2-fill' }
-  ])
+const recentPaths = ref<string[]>([])
 
-  // 加载最近访问
-  const loadRecentPaths = () => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.RECENT_PATHS)
-      recentPaths.value = saved ? JSON.parse(saved) : []
-    } catch {
-      recentPaths.value = []
-    }
-  }
+// 快速访问项
+const quickAccessItems = computed(() => [
+  { path: '/', label: t('file.sidebar.allFiles'), icon: 'ri:folder-3-fill' },
+  { path: '/images', label: t('file.sidebar.images'), icon: 'ri:image-fill' },
+  { path: '/documents', label: t('file.sidebar.documents'), icon: 'ri:file-text-fill' },
+  { path: '/videos', label: t('file.sidebar.videos'), icon: 'ri:film-fill' },
+  { path: '/music', label: t('file.sidebar.music'), icon: 'ri:music-2-fill' }
+])
 
-  // 清除最近访问
-  const clearRecentPaths = () => {
-    localStorage.removeItem(STORAGE_KEYS.RECENT_PATHS)
+// 加载最近访问
+const loadRecentPaths = () => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEYS.RECENT_PATHS)
+    recentPaths.value = saved ? JSON.parse(saved) : []
+  } catch {
     recentPaths.value = []
   }
+}
 
-  // 获取路径显示名称
-  const getDisplayName = (path: string): string => {
-    if (path === '/') return t('file.sidebar.rootDirectory')
-    const parts = path.split('/').filter(Boolean)
-    return parts[parts.length - 1] || path
-  }
+// 清除最近访问
+const clearRecentPaths = () => {
+  localStorage.removeItem(STORAGE_KEYS.RECENT_PATHS)
+  recentPaths.value = []
+}
 
-  // 初始化
-  onMounted(() => {
-    loadRecentPaths()
-  })
+// 获取路径显示名称
+const getDisplayName = (path: string): string => {
+  if (path === '/') return t('file.sidebar.rootDirectory')
+  const parts = path.split('/').filter(Boolean)
+  return parts[parts.length - 1] || path
+}
+
+// 初始化
+onMounted(() => {
+  loadRecentPaths()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -173,8 +174,8 @@
     .item-label {
       flex: 1;
       overflow: hidden;
-      font-size: 13px;
       text-overflow: ellipsis;
+      font-size: 13px;
       white-space: nowrap;
     }
   }
@@ -213,8 +214,8 @@
 
       .node-label {
         overflow: hidden;
-        font-size: 13px;
         text-overflow: ellipsis;
+        font-size: 13px;
         white-space: nowrap;
       }
     }

@@ -4,9 +4,9 @@
  * @module components/base/CaQueryForm
  */
 
-import CaQueryForm from './index.vue'
-import type { FormColumnItem } from '@/components/base/CaForm/type'
 import type { QueryFormEmits, QueryFormExpose, QueryFormMode } from './type'
+import type { FormColumnItem } from '@/components/base/CaForm/type'
+import CaQueryForm from './index.vue'
 
 // 导出组件
 export { CaQueryForm }

@@ -1,8 +1,8 @@
+import type { MultipartUploadInfo, UploadStatus, UploadTask } from '../types'
 import type { FileItem } from '@/apis/system/file'
+import { ElMessage } from 'element-plus'
 import * as fileApi from '@/apis/system/file'
 import * as multipartApi from '@/apis/system/multipart-upload'
-import { ElMessage } from 'element-plus'
-import type { MultipartUploadInfo, UploadStatus, UploadTask } from '../types'
 import { CHUNK_SIZE, MAX_CONCURRENT_UPLOADS } from '../utils/constants'
 
 /**
@@ -99,7 +99,7 @@ export function useFileUpload() {
     partNumber: number,
     chunk: Blob,
     path: string
-  ): Promise<{ partNumber: number; eTag: string } | null> => {
+  ): Promise<{ partNumber: number, eTag: string } | null> => {
     try {
       const res = await multipartApi.uploadPart({
         uploadId,
@@ -118,7 +118,7 @@ export function useFileUpload() {
    */
   const completeMultipartUpload = async (
     uploadId: string,
-    partETags: Array<{ partNumber: number; eTag: string }>
+    partETags: Array<{ partNumber: number, eTag: string }>
   ): Promise<boolean> => {
     try {
       await multipartApi.completeMultipartUpload({ uploadId, partETags })
@@ -131,7 +131,6 @@ export function useFileUpload() {
   /**
    * 取消分片上传
    */
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
   const abortMultipartUpload = async (uploadId: string): Promise<void> => {
     try {
       await multipartApi.cancelUpload({ uploadId })
@@ -189,7 +188,7 @@ export function useFileUpload() {
       const totalParts = Math.ceil(file.size / partSize)
 
       // 上传分片
-      const partETags: Array<{ partNumber: number; eTag: string }> = []
+      const partETags: Array<{ partNumber: number, eTag: string }> = []
 
       for (let partNumber = 1; partNumber <= totalParts; partNumber++) {
         // 检查是否已暂停

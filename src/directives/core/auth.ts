@@ -29,8 +29,8 @@
  * @author Art Design Pro Team
  */
 
+import type { App, Directive, DirectiveBinding } from 'vue'
 import has from '@/utils/sys/permission'
-import { App, Directive, DirectiveBinding } from 'vue'
 
 interface AuthBinding extends DirectiveBinding {
   value: string | string[]
@@ -63,9 +63,9 @@ function removeElement(el: HTMLElement): void {
   if (el.parentNode && el.parentNode.nodeType === Node.ELEMENT_NODE) {
     const parent = el.parentNode as Element
     // 检查父元素是否是 template（Vue slot）或 SVG foreignObject
-    const isSlotParent =
-      parent.tagName.toLowerCase() === 'template' ||
-      parent.tagName.toLowerCase() === 'foreignobject'
+    const isSlotParent
+      = parent.tagName.toLowerCase() === 'template'
+        || parent.tagName.toLowerCase() === 'foreignobject'
     if (isSlotParent) {
       el.style.display = 'none'
     } else {

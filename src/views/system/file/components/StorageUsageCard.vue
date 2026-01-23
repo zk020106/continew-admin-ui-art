@@ -21,11 +21,11 @@
       <!-- 扇形图 -->
       <ArtRingChart
         :data="chartData"
-        :height="'180px'"
+        height="180px"
         :radius="['0%', '70%']"
         :border-radius="0"
         :show-legend="true"
-        :legend-position="'right'"
+        legend-position="right"
         :colors="chartColors"
         :show-tooltip="true"
       />
@@ -34,70 +34,70 @@
 </template>
 
 <script setup lang="ts">
-  import { FileStatisticsResp } from '@/apis'
-  import ArtRingChart from '@/components/core/charts/art-ring-chart/index.vue'
-  import { useI18n } from 'vue-i18n'
+import type { FileStatisticsResp } from '@/apis'
+import { useI18n } from 'vue-i18n'
+import ArtRingChart from '@/components/core/charts/art-ring-chart/index.vue'
 
-  const { t } = useI18n()
+const props = defineProps<{
+  statistics: FileStatisticsResp
+}>()
 
-  const props = defineProps<{
-    statistics: FileStatisticsResp
-  }>()
+const { t } = useI18n()
 
-  // 文件类型枚举（使用数字，与 API 返回类型一致）
-  enum FileType {
-    FOLDER = 0,
-    IMAGE = 1,
-    VIDEO = 2,
-    AUDIO = 3,
-    DOCUMENT = 5,
-    ARCHIVE = 6,
-    CODE = 7
-  }
+// 文件类型枚举（使用数字，与 API 返回类型一致）
+enum FileType {
+  FOLDER = 0,
+  IMAGE = 1,
+  VIDEO = 2,
+  AUDIO = 3,
+  DOCUMENT = 5,
+  ARCHIVE = 6,
+  CODE = 7
+}
 
-  // 类型配置
-  const typeConfig: Record<number, { label: string; color: string }> = {
-    [FileType.IMAGE]: { label: t('file.statistics.image'), color: '#409EFF' },
-    [FileType.VIDEO]: { label: t('file.statistics.video'), color: '#67C23A' },
-    [FileType.AUDIO]: { label: t('file.statistics.audio'), color: '#E6A23C' },
-    [FileType.DOCUMENT]: { label: t('file.statistics.document'), color: '#909399' },
-    [FileType.ARCHIVE]: { label: t('file.statistics.archive'), color: '#F56C6C' },
-    [FileType.CODE]: { label: t('file.statistics.code'), color: '#F7DF1E' },
-    [FileType.FOLDER]: { label: t('file.statistics.folder'), color: '#FFA000' }
-  }
+// 类型配置
+const typeConfig: Record<number, { label: string, color: string }> = {
+  [FileType.IMAGE]: { label: t('file.statistics.image'), color: '#409EFF' },
+  [FileType.VIDEO]: { label: t('file.statistics.video'), color: '#67C23A' },
+  [FileType.AUDIO]: { label: t('file.statistics.audio'), color: '#E6A23C' },
+  [FileType.DOCUMENT]: { label: t('file.statistics.document'), color: '#909399' },
+  [FileType.ARCHIVE]: { label: t('file.statistics.archive'), color: '#F56C6C' },
+  [FileType.CODE]: { label: t('file.statistics.code'), color: '#F7DF1E' },
+  [FileType.FOLDER]: { label: t('file.statistics.folder'), color: '#FFA000' }
+}
 
-  // 图表数据
-  const chartData = computed(() => {
-    const config = props.statistics.data || []
-    const total = props.statistics.number || 1
+// 图表数据
+const chartData = computed(() => {
+  const config = props.statistics.data || []
+  const total = props.statistics.number || 1
 
-    const data = config
-      .map((item) => {
-        const typeConf = typeConfig[Number(item.type)]
-        return {
-          name: typeConf?.label || t('file.statistics.other'),
-          value: item.number,
-          itemStyle: { color: typeConf?.color }
-        }
-      })
-      .filter((item) => item.value > 0)
-      .sort((a, b) => b.value - a.value)
-    return data
-  })
+  const data = config
+    .map((item) => {
+      const typeConf = typeConfig[Number(item.type)]
+      return {
+        name: typeConf?.label || t('file.statistics.other'),
+        value: item.number,
+        itemStyle: { color: typeConf?.color }
+      }
+    })
+    .filter((item) => item.value > 0)
+    .sort((a, b) => b.value - a.value)
+  return data
+})
 
-  // 图表颜色
-  const chartColors = computed(() => {
-    return chartData.value.map((item) => item.itemStyle?.color as string)
-  })
+// 图表颜色
+const chartColors = computed(() => {
+  return chartData.value.map((item) => item.itemStyle?.color as string)
+})
 
-  // 格式化文件大小
-  const formatSize = (bytes: number): string => {
-    if (bytes === 0) return '0 B'
-    const k = 1024
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-    const i = Math.floor(Math.log(bytes) / Math.log(k))
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
-  }
+// 格式化文件大小
+const formatSize = (bytes: number): string => {
+  if (bytes === 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return `${Number.parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`
+}
 </script>
 
 <style lang="scss" scoped>

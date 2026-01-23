@@ -58,132 +58,132 @@
 </template>
 
 <script setup lang="ts">
-  import { useSettingStore } from '@/store/modules/setting'
-  import type { AppRouteRecord } from '@/types/router'
-  import { handleMenuJump } from '@/utils/navigation'
-  import { formatMenuTitle } from '@/utils/router'
-  import { computed } from 'vue'
+import type { AppRouteRecord } from '@/types/router'
+import { computed } from 'vue'
+import { useSettingStore } from '@/store/modules/setting'
+import { handleMenuJump } from '@/utils/navigation'
+import { formatMenuTitle } from '@/utils/router'
 
-  interface MenuTheme {
-    iconColor?: string
-  }
+interface MenuTheme {
+  iconColor?: string
+}
 
-  interface Props {
-    /** 菜单标题 */
-    title?: string
-    /** 菜单列表 */
-    list?: AppRouteRecord[]
-    /** 主题配置 */
-    theme?: MenuTheme
-    /** 是否为移动端模式 */
-    isMobile?: boolean
-    /** 菜单层级 */
-    level?: number
-  }
+interface Props {
+  /** 菜单标题 */
+  title?: string
+  /** 菜单列表 */
+  list?: AppRouteRecord[]
+  /** 主题配置 */
+  theme?: MenuTheme
+  /** 是否为移动端模式 */
+  isMobile?: boolean
+  /** 菜单层级 */
+  level?: number
+}
 
-  interface Emits {
-    /** 关闭菜单事件 */
-    (e: 'close'): void
-  }
+interface Emits {
+  /** 关闭菜单事件 */
+  (e: 'close'): void
+}
 
-  const props = withDefaults(defineProps<Props>(), {
-    title: '',
-    list: () => [],
-    theme: () => ({}),
-    isMobile: false,
-    level: 0
-  })
+const props = withDefaults(defineProps<Props>(), {
+  title: '',
+  list: () => [],
+  theme: () => ({}),
+  isMobile: false,
+  level: 0
+})
 
-  const emit = defineEmits<Emits>()
+const emit = defineEmits<Emits>()
 
-  const settingStore = useSettingStore()
+const settingStore = useSettingStore()
 
-  const { menuOpen } = storeToRefs(settingStore)
+const { menuOpen } = storeToRefs(settingStore)
 
-  /**
-   * 过滤后的菜单项列表
-   * 只显示未隐藏的菜单项
-   * 使用 JSON 序列化/反序列化来完全断开响应式链接
-   */
-  const filteredMenuItems = computed(() => {
-    // 使用 JSON 序列化来完全断开响应式引用
-    const listCopy = JSON.parse(JSON.stringify(props.list))
-    return filterRoutes(listCopy)
-  })
+/**
+ * 递归过滤菜单路由，移除隐藏的菜单项
+ * 父菜单始终显示，即使所有子菜单都被隐藏
+ * @param items 菜单项数组
+ * @returns 过滤后的菜单项数组
+ */
+const filterRoutes = (items: AppRouteRecord[]): AppRouteRecord[] => {
+  return items
+    .map((item) => {
+      // 创建新对象避免修改原始数据
+      const newItem = { ...item }
 
-  /**
-   * 跳转到指定页面
-   * @param item 菜单项数据
-   */
-  const goPage = (item: AppRouteRecord): void => {
-    closeMenu()
-    handleMenuJump(item)
-  }
+      // 如果有子菜单，递归过滤子菜单
+      if (newItem.children && newItem.children.length > 0) {
+        newItem.children = filterRoutes(newItem.children)
+      }
 
-  /**
-   * 关闭菜单
-   * 触发父组件的关闭事件
-   */
-  const closeMenu = (): void => {
-    emit('close')
-  }
+      return newItem
+    })
+    .filter((item) => {
+      // 如果当前项被隐藏，直接过滤掉
+      if (item.meta.isHide) {
+        return false
+      }
 
-  /**
-   * 递归过滤菜单路由，移除隐藏的菜单项
-   * 父菜单始终显示，即使所有子菜单都被隐藏
-   * @param items 菜单项数组
-   * @returns 过滤后的菜单项数组
-   */
-  const filterRoutes = (items: AppRouteRecord[]): AppRouteRecord[] => {
-    return items
-      .map((item) => {
-        // 创建新对象避免修改原始数据
-        const newItem = { ...item }
+      // 叶子节点且未被隐藏，保留
+      return true
+    })
+}
 
-        // 如果有子菜单，递归过滤子菜单
-        if (newItem.children && newItem.children.length > 0) {
-          newItem.children = filterRoutes(newItem.children)
-        }
+/**
+ * 过滤后的菜单项列表
+ * 只显示未隐藏的菜单项
+ * 使用 JSON 序列化/反序列化来完全断开响应式链接
+ */
+const filteredMenuItems = computed(() => {
+  // 使用 JSON 序列化来完全断开响应式引用
+  const listCopy = JSON.parse(JSON.stringify(props.list))
+  return filterRoutes(listCopy)
+})
 
-        return newItem
-      })
-      .filter((item) => {
-        // 如果当前项被隐藏，直接过滤掉
-        if (item.meta.isHide) {
-          return false
-        }
+/**
+ * 关闭菜单
+ * 触发父组件的关闭事件
+ */
+const closeMenu = (): void => {
+  emit('close')
+}
 
-        // 叶子节点且未被隐藏，保留
-        return true
-      })
-  }
+/**
+ * 跳转到指定页面
+ * @param item 菜单项数据
+ */
+const goPage = (item: AppRouteRecord): void => {
+  closeMenu()
+  handleMenuJump(item)
+}
 
-  /**
-   * 判断菜单项是否包含子菜单（原始数据）
-   * @param item 菜单项数据
-   * @returns 是否包含子菜单
-   */
-  const hasChildren = (item: AppRouteRecord): boolean => {
-    return !!(item.children && item.children.length > 0)
-  }
+/**
+ * 判断菜单项是否包含子菜单（原始数据）
+ * @param item 菜单项数据
+ * @returns 是否包含子菜单
+ */
+const hasChildren = (item: AppRouteRecord): boolean => {
+  return !!(item.children && item.children.length > 0)
+}
 
-  /**
-   * 判断是否为外部链接
-   * @param item 菜单项数据
-   * @returns 是否为外部链接
-   */
-  const isExternalLink = (item: AppRouteRecord): boolean => {
-    return !!(item.meta.link && !item.meta.isIframe)
-  }
+/**
+ * 判断是否为外部链接
+ * @param item 菜单项数据
+ * @returns 是否为外部链接
+ */
+const isExternalLink = (item: AppRouteRecord): boolean => {
+  return !!(item.meta.link && !item.meta.isIframe)
+}
 
-  /**
-   * 生成唯一的 key
-   * 使用 path、title 和 index 组合确保唯一性
-   * @param item 菜单项数据
-   * @param index 索引
-   * @returns 唯一的 key
-   */
-  const getUniqueKey = (item: AppRouteRecord, index: number): string => {
-    return `${item.path || item.meta.title || 'menu'}-${props.level}-${index}`
-  }
+/**
+ * 生成唯一的 key
+ * 使用 path、title 和 index 组合确保唯一性
+ * @param item 菜单项数据
+ * @param index 索引
+ * @returns 唯一的 key
+ */
+const getUniqueKey = (item: AppRouteRecord, index: number): string => {
+  return `${item.path || item.meta.title || 'menu'}-${props.level}-${index}`
+}
 </script>

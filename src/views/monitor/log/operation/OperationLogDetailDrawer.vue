@@ -87,52 +87,52 @@
 </template>
 
 <script setup lang="ts">
-  import type { LogDetailResp } from '@/apis/monitor'
-  import { getLog as getDetail } from '@/apis/monitor'
-  import CaTag from '@/components/base/CaTag/index.vue'
-  import JsonViewer from '@/components/base/JsonViewer/index.vue'
-  import { useWindowSize } from '@vueuse/core'
-  import {
-    ElDescriptions,
-    ElDescriptionsItem,
-    ElDrawer,
-    ElTabPane,
-    ElTabs,
-    ElText
-  } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { LogDetailResp } from '@/apis/monitor'
+import { useWindowSize } from '@vueuse/core'
+import {
+  ElDescriptions,
+  ElDescriptionsItem,
+  ElDrawer,
+  ElTabPane,
+  ElTabs,
+  ElText
+} from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { getLog as getDetail } from '@/apis/monitor'
+import CaTag from '@/components/base/CaTag/index.vue'
+import JsonViewer from '@/components/base/JsonViewer/index.vue'
 
-  defineOptions({ name: 'OperationLogDetailDrawer' })
+defineOptions({ name: 'OperationLogDetailDrawer' })
 
-  const { t } = useI18n()
-  const { width } = useWindowSize()
+const { t } = useI18n()
+const { width } = useWindowSize()
 
-  const dataId = ref('')
-  const dataDetail = ref<LogDetailResp>()
-  const visible = ref(false)
+const dataId = ref('')
+const dataDetail = ref<LogDetailResp>()
+const visible = ref(false)
 
-  // 获取耗时标签类型
-  const getTimeTakenType = (timeTaken?: number): 'success' | 'warning' | 'danger' => {
-    if (!timeTaken) return 'success'
-    if (timeTaken > 500) return 'danger'
-    if (timeTaken > 200) return 'warning'
-    return 'success'
-  }
+// 获取耗时标签类型
+const getTimeTakenType = (timeTaken?: number): 'success' | 'warning' | 'danger' => {
+  if (!timeTaken) return 'success'
+  if (timeTaken > 500) return 'danger'
+  if (timeTaken > 200) return 'warning'
+  return 'success'
+}
 
-  // 查询详情
-  const getDataDetail = async () => {
-    const data = await getDetail(dataId.value)
-    dataDetail.value = data
-  }
+// 查询详情
+const getDataDetail = async () => {
+  const data = await getDetail(dataId.value)
+  dataDetail.value = data
+}
 
-  // 打开
-  const onOpen = async (id: string) => {
-    dataId.value = id
-    await getDataDetail()
-    visible.value = true
-  }
+// 打开
+const onOpen = async (id: string) => {
+  dataId.value = id
+  await getDataDetail()
+  visible.value = true
+}
 
-  defineExpose({ onOpen })
+defineExpose({ onOpen })
 </script>
 
 <style lang="scss" scoped>

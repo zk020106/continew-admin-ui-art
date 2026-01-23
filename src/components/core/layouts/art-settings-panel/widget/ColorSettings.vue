@@ -11,9 +11,9 @@
           @click="colorHandlers.selectColor(color)"
         >
           <ArtSvgIcon
+            v-show="color === systemThemeColor"
             icon="ri:check-fill"
             class="text-base !text-white"
-            v-show="color === systemThemeColor"
           />
         </div>
       </div>
@@ -22,14 +22,14 @@
 </template>
 
 <script setup lang="ts">
-  import SectionTitle from './SectionTitle.vue'
-  import { useSettingStore } from '@/store/modules/setting'
-  import { useSettingsConfig } from '../composables/useSettingsConfig'
-  import { useSettingsHandlers } from '../composables/useSettingsHandlers'
-  import { storeToRefs } from 'pinia'
+import { storeToRefs } from 'pinia'
+import { useSettingStore } from '@/store/modules/setting'
+import { useSettingsConfig } from '../composables/useSettingsConfig'
+import { useSettingsHandlers } from '../composables/useSettingsHandlers'
+import SectionTitle from './SectionTitle.vue'
 
-  const settingStore = useSettingStore()
-  const { systemThemeColor } = storeToRefs(settingStore)
-  const { configOptions } = useSettingsConfig()
-  const { colorHandlers } = useSettingsHandlers()
+const settingStore = useSettingStore()
+const { systemThemeColor } = storeToRefs(settingStore)
+const { configOptions } = useSettingsConfig()
+const { colorHandlers } = useSettingsHandlers()
 </script>

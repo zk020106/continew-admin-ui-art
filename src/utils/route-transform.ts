@@ -1,5 +1,5 @@
-import { RouteItem } from '@/apis/auth/type'
-import { AppRouteRecord, RouteMeta } from '@/types'
+import type { RouteItem } from '@/apis/auth/type'
+import type { AppRouteRecord, RouteMeta } from '@/types'
 
 /**
  * 将路由响应数据转换为应用路由记录

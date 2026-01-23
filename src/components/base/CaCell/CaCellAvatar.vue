@@ -15,32 +15,30 @@
 </template>
 
 <script setup lang="ts">
-  defineOptions({ name: 'CaCellAvatar' })
+defineOptions({ name: 'CaCellAvatar' })
 
-  const props = withDefaults(defineProps<Props>(), {
-    avatar: '',
-    name: '',
-    isLink: false
-  })
-  console.log(props)
+const props = withDefaults(defineProps<Props>(), {
+  avatar: '',
+  name: '',
+  isLink: false
+})
+const emit = defineEmits<{
+  (e: 'click'): void
+}>()
 
-  const emit = defineEmits<{
-    (e: 'click'): void
-  }>()
-
-  interface Props {
-    avatar?: string
-    name: string
-    isLink?: boolean
-  }
+interface Props {
+  avatar?: string
+  name: string
+  isLink?: boolean
+}
 </script>
 
 <style scoped lang="scss">
-  .link-text {
-    display: inline-block;
-    max-width: 200px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.link-text {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 </style>

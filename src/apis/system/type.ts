@@ -1,4 +1,4 @@
-import { Gender } from '@/types/api/common'
+import type { Gender } from '@/types/api/common'
 
 /** 用户类型 */
 export interface UserResp {

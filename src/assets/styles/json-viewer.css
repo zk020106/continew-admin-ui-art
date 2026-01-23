@@ -14,11 +14,11 @@
 
 /* Hover background color */
 .json-node:not(.has-collapse-btn) .node-header:hover {
-  background-color: var(--json-hover-bg, rgba(187, 187, 187, 0.15));
+  background-color: var(--json-hover-bg, rgb(187 187 187 / 15%));
 }
 
 .dark .json-node:not(.has-collapse-btn) .node-header:hover {
-  background-color: var(--json-hover-bg-dark, rgba(255, 255, 255, 0.1));
+  background-color: var(--json-hover-bg-dark, rgb(255 255 255 / 10%));
 }
 
 .json-key-text {
@@ -77,15 +77,15 @@
 
 .json-btn-collapse:hover,
 .json-btn-copy:hover {
-  background-color: rgba(187, 187, 187, 0.3);
+  background-color: rgb(187 187 187 / 30%);
 }
 
 .json-node:hover .node-header {
-  background-color: rgba(187, 187, 187, 0.15);
+  background-color: rgb(187 187 187 / 15%);
 }
 
 .json-error {
   @apply p-2 rounded-md font-bold;
   color: #f48771;
-  background-color: rgba(244, 135, 113, 0.1);
+  background-color: rgb(244 135 113 / 10%);
 }

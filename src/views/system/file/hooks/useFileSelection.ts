@@ -1,5 +1,5 @@
-import type { FileItem } from '@/apis/system/file'
 import type { SelectionMode } from '../types'
+import type { FileItem } from '@/apis/system/file'
 
 /**
  * 文件选择 Hook
@@ -25,35 +25,6 @@ export function useFileSelection(mode: Ref<SelectionMode>) {
    */
   const getSelectedTotalSize = (allFiles: FileItem[]): number => {
     return getSelectedFiles(allFiles).reduce((sum, file) => sum + (file.size || 0), 0)
-  }
-
-  /**
-   * 选择单个文件
-   */
-  const selectOne = (id: string, allFiles: FileItem[], event?: MouseEvent | KeyboardEvent) => {
-    if (mode.value === 'none') return
-
-    // Ctrl/Cmd + 点击：切换选择
-    if (event && (event.ctrlKey || event.metaKey)) {
-      toggleSelection(id)
-    }
-    // Shift + 点击：范围选择
-    else if (event && event.shiftKey && rangeStartId.value) {
-      selectRange(id, allFiles)
-    }
-    // 普通点击：单选
-    else {
-      if (mode.value === 'single') {
-        selectedIds.value = [id]
-      } else {
-        // 如果已选中且不是多选模式，则取消其他选择
-        if (!selectedIds.value.includes(id)) {
-          selectedIds.value = [id]
-        }
-      }
-      rangeStartId.value = id
-    }
-    lastSelectedId.value = id
   }
 
   /**
@@ -88,6 +59,35 @@ export function useFileSelection(mode: Ref<SelectionMode>) {
 
     const rangeIds = allFiles.slice(min, max + 1).map((f) => f.id)
     selectedIds.value = rangeIds
+  }
+
+  /**
+   * 选择单个文件
+   */
+  const selectOne = (id: string, allFiles: FileItem[], event?: MouseEvent | KeyboardEvent) => {
+    if (mode.value === 'none') return
+
+    // Ctrl/Cmd + 点击：切换选择
+    if (event && (event.ctrlKey || event.metaKey)) {
+      toggleSelection(id)
+    }
+    // Shift + 点击：范围选择
+    else if (event && event.shiftKey && rangeStartId.value) {
+      selectRange(id, allFiles)
+    }
+    // 普通点击：单选
+    else {
+      if (mode.value === 'single') {
+        selectedIds.value = [id]
+      } else {
+        // 如果已选中且不是多选模式，则取消其他选择
+        if (!selectedIds.value.includes(id)) {
+          selectedIds.value = [id]
+        }
+      }
+      rangeStartId.value = id
+    }
+    lastSelectedId.value = id
   }
 
   /**

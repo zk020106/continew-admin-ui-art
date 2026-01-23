@@ -31,36 +31,36 @@
 </template>
 
 <script setup lang="ts">
-  import { RoleResp } from '@/apis'
-  import { ElTabPane, ElTabs } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
-  import Permission from './components/Permission.vue'
-  import RoleUser from './components/RoleUser.vue'
-  import RoleTree from './tree/index.vue'
+import type { RoleResp } from '@/apis'
+import { ElTabPane, ElTabs } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import Permission from './components/Permission.vue'
+import RoleUser from './components/RoleUser.vue'
+import RoleTree from './tree/index.vue'
 
-  defineOptions({ name: 'SystemRole' })
+defineOptions({ name: 'SystemRole' })
 
-  const { t } = useI18n()
-  const activeTab = ref('1')
-  const role = ref<RoleResp>({
-    id: '',
-    name: '',
-    code: '',
-    sort: 0,
-    description: '',
-    dataScope: 0,
-    isSystem: false,
-    createUserString: '',
-    createTime: '',
-    updateUserString: '',
-    updateTime: '',
-    disabled: false
-  })
+const { t } = useI18n()
+const activeTab = ref('1')
+const role = ref<RoleResp>({
+  id: '',
+  name: '',
+  code: '',
+  sort: 0,
+  description: '',
+  dataScope: 0,
+  isSystem: false,
+  createUserString: '',
+  createTime: '',
+  updateUserString: '',
+  updateTime: '',
+  disabled: false
+})
 
-  // 根据选中角色查询
-  const handleSelectRole = (data: RoleResp) => {
-    role.value = data
-  }
+// 根据选中角色查询
+const handleSelectRole = (data: RoleResp) => {
+  role.value = data
+}
 </script>
 
 <style scoped lang="scss">

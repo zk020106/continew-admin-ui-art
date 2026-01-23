@@ -8,27 +8,27 @@
 </template>
 
 <script setup lang="ts">
-  import { DocumentCopy } from '@element-plus/icons-vue'
-  import { ElButton, ElIcon, ElMessage } from 'element-plus'
+import { DocumentCopy } from '@element-plus/icons-vue'
+import { ElButton, ElIcon, ElMessage } from 'element-plus'
 
-  defineOptions({ name: 'CellCopy' })
+defineOptions({ name: 'CellCopy' })
 
-  const props = withDefaults(defineProps<Props>(), {
-    content: ''
-  })
+const props = withDefaults(defineProps<Props>(), {
+  content: ''
+})
 
-  interface Props {
-    content: string
+interface Props {
+  content: string
+}
+
+const handleCopy = async () => {
+  try {
+    await navigator.clipboard.writeText(props.content)
+    ElMessage.success('复制成功')
+  } catch {
+    ElMessage.error('复制失败')
   }
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(props.content)
-      ElMessage.success('复制成功')
-    } catch {
-      ElMessage.error('复制失败')
-    }
-  }
+}
 </script>
 
 <style scoped lang="scss">

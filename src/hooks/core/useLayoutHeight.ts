@@ -16,8 +16,8 @@
  * @author Art Design Pro Team
  */
 
-import { ref, computed, watch, onMounted } from 'vue'
 import { useElementSize } from '@vueuse/core'
+import { computed, onMounted, ref, watch } from 'vue'
 
 /**
  * 页面容器高度配置

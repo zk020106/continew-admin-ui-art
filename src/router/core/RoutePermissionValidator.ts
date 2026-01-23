@@ -107,7 +107,7 @@ export class RoutePermissionValidator {
     targetPath: string,
     menuList: AppRouteRecord[],
     homePath: string = '/'
-  ): { path: string; hasPermission: boolean } {
+  ): { path: string, hasPermission: boolean } {
     const hasPermission = this.hasPermission(targetPath, menuList)
 
     if (hasPermission) {

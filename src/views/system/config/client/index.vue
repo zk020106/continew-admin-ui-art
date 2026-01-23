@@ -44,107 +44,107 @@
 </template>
 
 <script setup lang="ts">
-  import { deleteClient, listClient } from '@/apis/system/client'
-  import type { ClientQuery, ClientResp } from '@/apis/system/type'
-  import CaCellTag from '@/components/base/CaCell/CaCellTag.vue'
-  import CaTable from '@/components/base/CaTable/index.vue'
-  import { TableColumnItem } from '@/components/base/CaTable/type'
-  import { useDict } from '@/hooks'
-  import { useTable } from '@/hooks/core/useTable'
-  import { Plus } from '@element-plus/icons-vue'
-  import { useI18n } from 'vue-i18n'
-  import AddModal from './AddModal.vue'
-  import DetailModal from './DetailModal.vue'
+import type { ClientQuery, ClientResp } from '@/apis/system/type'
+import type { TableColumnItem } from '@/components/base/CaTable/type'
+import { Plus } from '@element-plus/icons-vue'
+import { useI18n } from 'vue-i18n'
+import { deleteClient, listClient } from '@/apis/system/client'
+import CaCellTag from '@/components/base/CaCell/CaCellTag.vue'
+import CaTable from '@/components/base/CaTable/index.vue'
+import { useDict } from '@/hooks'
+import { useTable } from '@/hooks/core/useTable'
+import AddModal from './AddModal.vue'
+import DetailModal from './DetailModal.vue'
 
-  defineOptions({ name: 'ClientConfig' })
+defineOptions({ name: 'ClientConfig' })
 
-  const { t } = useI18n()
-  const { client_type, auth_type_enum } = useDict('client_type', 'auth_type_enum')
+const { t } = useI18n()
+const { client_type, auth_type_enum } = useDict('client_type', 'auth_type_enum')
 
-  const queryForm = reactive<ClientQuery>({
-    clientType: '',
-    status: '',
-    sort: ['createTime,desc']
+const queryForm = reactive<ClientQuery>({
+  clientType: '',
+  status: '',
+  sort: ['createTime,desc']
+})
+
+const { loading, tableData, pagination, search, handleDelete } = useTable(
+  (page) => listClient({ ...queryForm, ...page }),
+  { immediate: true }
+)
+
+const columns = computed(
+  () =>
+    [
+      { label: t('common.index'), prop: 'index', slotName: 'index', width: 66, align: 'center' },
+      { label: t('system.config.client.clientId'), prop: 'clientId', minWidth: 180 },
+      {
+        label: t('system.config.client.clientType'),
+        prop: 'clientType',
+        slotName: 'clientType',
+        width: 120,
+        align: 'center'
+      },
+      {
+        label: t('system.config.client.authType'),
+        prop: 'authType',
+        slotName: 'authType',
+        width: 150,
+        align: 'center'
+      },
+      {
+        label: t('system.config.client.activeTimeout'),
+        prop: 'activeTimeout',
+        width: 140,
+        align: 'center',
+        render: ({ row }) => `${row.activeTimeout}${t('system.config.client.activeTimeoutUnit')}`
+      },
+      {
+        label: t('system.config.client.timeout'),
+        prop: 'timeout',
+        width: 120,
+        align: 'center',
+        render: ({ row }) => `${row.timeout}${t('system.config.client.timeoutUnit')}`
+      },
+      {
+        label: t('common.status'),
+        prop: 'status',
+        slotName: 'status',
+        width: 100,
+        align: 'center'
+      },
+
+      { label: t('common.createTime'), prop: 'createTime', width: 180 },
+      {
+        label: t('common.action'),
+        prop: 'action',
+        slotName: 'action',
+        width: 200,
+        align: 'center',
+        fixed: 'right'
+      }
+    ] as TableColumnItem[]
+)
+
+const onDelete = (row: ClientResp) => {
+  handleDelete(() => deleteClient(row.id), {
+    content: t('system.config.client.deleteConfirm', { clientId: row.clientId })
   })
+}
 
-  const { loading, tableData, pagination, search, handleDelete } = useTable(
-    (page) => listClient({ ...queryForm, ...page }),
-    { immediate: true }
-  )
+const AddModalRef = ref<InstanceType<typeof AddModal>>()
+const DetailModalRef = ref<InstanceType<typeof DetailModal>>()
 
-  const columns = computed(
-    () =>
-      [
-        { label: t('common.index'), prop: 'index', slotName: 'index', width: 66, align: 'center' },
-        { label: t('system.config.client.clientId'), prop: 'clientId', minWidth: 180 },
-        {
-          label: t('system.config.client.clientType'),
-          prop: 'clientType',
-          slotName: 'clientType',
-          width: 120,
-          align: 'center'
-        },
-        {
-          label: t('system.config.client.authType'),
-          prop: 'authType',
-          slotName: 'authType',
-          width: 150,
-          align: 'center'
-        },
-        {
-          label: t('system.config.client.activeTimeout'),
-          prop: 'activeTimeout',
-          width: 140,
-          align: 'center',
-          render: ({ row }) => `${row.activeTimeout}${t('system.config.client.activeTimeoutUnit')}`
-        },
-        {
-          label: t('system.config.client.timeout'),
-          prop: 'timeout',
-          width: 120,
-          align: 'center',
-          render: ({ row }) => `${row.timeout}${t('system.config.client.timeoutUnit')}`
-        },
-        {
-          label: t('common.status'),
-          prop: 'status',
-          slotName: 'status',
-          width: 100,
-          align: 'center'
-        },
+const onAdd = () => {
+  AddModalRef.value?.onAdd()
+}
 
-        { label: t('common.createTime'), prop: 'createTime', width: 180 },
-        {
-          label: t('common.action'),
-          prop: 'action',
-          slotName: 'action',
-          width: 200,
-          align: 'center',
-          fixed: 'right'
-        }
-      ] as TableColumnItem[]
-  )
+const onUpdate = (record: ClientResp) => {
+  AddModalRef.value?.onUpdate(record.id)
+}
 
-  const onDelete = (row: ClientResp) => {
-    handleDelete(() => deleteClient(row.id), {
-      content: t('system.config.client.deleteConfirm', { clientId: row.clientId })
-    })
-  }
-
-  const AddModalRef = ref<InstanceType<typeof AddModal>>()
-  const DetailModalRef = ref<InstanceType<typeof DetailModal>>()
-
-  const onAdd = () => {
-    AddModalRef.value?.onAdd()
-  }
-
-  const onUpdate = (record: ClientResp) => {
-    AddModalRef.value?.onUpdate(record.id)
-  }
-
-  const onDetail = (record: ClientResp) => {
-    DetailModalRef.value?.onDetail(record.id)
-  }
+const onDetail = (record: ClientResp) => {
+  DetailModalRef.value?.onDetail(record.id)
+}
 </script>
 
 <style scoped lang="scss">

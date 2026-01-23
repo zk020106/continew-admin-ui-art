@@ -11,68 +11,68 @@
 </template>
 
 <script setup lang="ts">
-  import CaPageLayout from '@/components/base/CaPageLayout/index.vue'
-  import { ElTabPane, ElTabs } from 'element-plus'
-  import type { Component } from 'vue'
-  import { computed, defineAsyncComponent, ref, watch } from 'vue'
-  import { useI18n } from 'vue-i18n'
-  import { useRoute, useRouter } from 'vue-router'
+import type { Component } from 'vue'
+import { ElTabPane, ElTabs } from 'element-plus'
+import { computed, defineAsyncComponent, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRoute, useRouter } from 'vue-router'
+import CaPageLayout from '@/components/base/CaPageLayout/index.vue'
 
-  defineOptions({ name: 'SystemConfig' })
+defineOptions({ name: 'SystemConfig' })
 
-  const { t } = useI18n()
-  const router = useRouter()
+const { t } = useI18n()
+const router = useRouter()
 
-  // 配置项标签页列表
-  const configTabs = computed(() => [
-    { key: 'site', name: t('system.config.tabs.site') },
-    { key: 'security', name: t('system.config.tabs.security') },
-    { key: 'login', name: t('system.config.tabs.login') },
-    { key: 'mail', name: t('system.config.tabs.mail') },
-    { key: 'sms', name: t('system.config.tabs.sms') },
-    { key: 'storage', name: t('system.config.tabs.storage') },
-    { key: 'client', name: t('system.config.tabs.client') }
-  ])
+// 配置项标签页列表
+const configTabs = computed(() => [
+  { key: 'site', name: t('system.config.tabs.site') },
+  { key: 'security', name: t('system.config.tabs.security') },
+  { key: 'login', name: t('system.config.tabs.login') },
+  { key: 'mail', name: t('system.config.tabs.mail') },
+  { key: 'sms', name: t('system.config.tabs.sms') },
+  { key: 'storage', name: t('system.config.tabs.storage') },
+  { key: 'client', name: t('system.config.tabs.client') }
+])
 
-  // 允许的 tab keys
-  const allowedKeys = configTabs.value.map((tab) => tab.key)
+// 允许的 tab keys
+const allowedKeys = configTabs.value.map((tab) => tab.key)
 
-  // 当前激活的标签页 key，从 URL query 参数读取
-  const route = useRoute()
-  const activeKey = ref<string>('site')
+// 当前激活的标签页 key，从 URL query 参数读取
+const route = useRoute()
+const activeKey = ref<string>('site')
 
-  // 监听路由 query 参数变化，更新 activeKey
-  watch(
-    () => route.query.tab,
-    (newTab) => {
-      if (newTab && allowedKeys.includes(newTab as string)) {
-        activeKey.value = newTab as string
-      } else if (!newTab) {
-        activeKey.value = 'site'
-      }
-    },
-    { immediate: true }
-  )
+// 监听路由 query 参数变化，更新 activeKey
+watch(
+  () => route.query.tab,
+  (newTab) => {
+    if (newTab && allowedKeys.includes(newTab as string)) {
+      activeKey.value = newTab as string
+    } else if (!newTab) {
+      activeKey.value = 'site'
+    }
+  },
+  { immediate: true }
+)
 
-  // 标签页点击事件
-  const handleTabClick = (tab: any) => {
-    activeKey.value = tab.props.name
-    router.replace({ query: { ...route.query, tab: activeKey.value } })
-  }
+// 标签页点击事件
+const handleTabClick = (tab: any) => {
+  activeKey.value = tab.props.name
+  router.replace({ query: { ...route.query, tab: activeKey.value } })
+}
 
-  // 动态组件映射
-  const components: Record<string, Component> = {
-    site: defineAsyncComponent(() => import('./site/index.vue')),
-    security: defineAsyncComponent(() => import('./security/index.vue')),
-    login: defineAsyncComponent(() => import('./login/index.vue')),
-    mail: defineAsyncComponent(() => import('./mail/index.vue')),
-    sms: defineAsyncComponent(() => import('./sms/index.vue')),
-    storage: defineAsyncComponent(() => import('./storage/index.vue')),
-    client: defineAsyncComponent(() => import('./client/index.vue'))
-  }
+// 动态组件映射
+const components: Record<string, Component> = {
+  site: defineAsyncComponent(() => import('./site/index.vue')),
+  security: defineAsyncComponent(() => import('./security/index.vue')),
+  login: defineAsyncComponent(() => import('./login/index.vue')),
+  mail: defineAsyncComponent(() => import('./mail/index.vue')),
+  sms: defineAsyncComponent(() => import('./sms/index.vue')),
+  storage: defineAsyncComponent(() => import('./storage/index.vue')),
+  client: defineAsyncComponent(() => import('./client/index.vue'))
+}
 
-  // 当前激活的组件 - 安全回退到 site
-  const activeComponent = computed(() => components[activeKey.value] || components['site'])
+// 当前激活的组件 - 安全回退到 site
+const activeComponent = computed(() => components[activeKey.value] || components['site'])
 </script>
 
 <style scoped lang="scss">

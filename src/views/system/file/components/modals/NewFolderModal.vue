@@ -33,72 +33,72 @@
 </template>
 
 <script setup lang="ts">
-  import { useI18n } from 'vue-i18n'
-  import type { FormInstance, FormRules } from 'element-plus'
+import type { FormInstance, FormRules } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 
-  const { t } = useI18n()
+const props = defineProps<{
+  modelValue: boolean
+}>()
 
-  const props = defineProps<{
-    modelValue: boolean
-  }>()
+const emit = defineEmits<{
+  (e: 'update:modelValue', visible: boolean): void
+  (e: 'confirm', name: string): void
+}>()
 
-  const emit = defineEmits<{
-    (e: 'update:modelValue', visible: boolean): void
-    (e: 'confirm', name: string): void
-  }>()
+const { t } = useI18n()
 
-  const visible = computed({
-    get: () => props.modelValue,
-    set: (val) => emit('update:modelValue', val)
-  })
+const visible = computed({
+  get: () => props.modelValue,
+  set: (val) => emit('update:modelValue', val)
+})
 
-  const formRef = ref<FormInstance>()
-  const loading = ref(false)
-  const form = ref({
-    name: ''
-  })
+const formRef = ref<FormInstance>()
+const loading = ref(false)
+const form = ref({
+  name: ''
+})
 
-  const rules: FormRules = {
-    name: [
-      { required: true, message: t('file.modal.newFolder.validate.required'), trigger: 'blur' },
-      {
-        pattern: /^[^/\\:*?"<>|]+$/,
-        message: t('file.modal.newFolder.validate.invalidChars'),
-        trigger: 'blur'
-      },
-      {
-        min: 1,
-        max: 100,
-        message: t('file.modal.newFolder.validate.lengthRange'),
-        trigger: 'blur'
-      }
-    ]
-  }
-
-  watch(
-    () => props.modelValue,
-    (val) => {
-      if (val) {
-        form.value.name = ''
-        nextTick(() => formRef.value?.clearValidate())
-      }
+const rules: FormRules = {
+  name: [
+    { required: true, message: t('file.modal.newFolder.validate.required'), trigger: 'blur' },
+    {
+      pattern: /^[^/\\:*?"<>|]+$/,
+      message: t('file.modal.newFolder.validate.invalidChars'),
+      trigger: 'blur'
+    },
+    {
+      min: 1,
+      max: 100,
+      message: t('file.modal.newFolder.validate.lengthRange'),
+      trigger: 'blur'
     }
-  )
+  ]
+}
 
-  const handleClose = () => {
-    visible.value = false
-  }
-
-  const handleSubmit = async () => {
-    try {
-      await formRef.value?.validate()
-      loading.value = true
-      emit('confirm', form.value.name)
-      handleClose()
-    } catch {
-      // validation failed
-    } finally {
-      loading.value = false
+watch(
+  () => props.modelValue,
+  (val) => {
+    if (val) {
+      form.value.name = ''
+      nextTick(() => formRef.value?.clearValidate())
     }
   }
+)
+
+const handleClose = () => {
+  visible.value = false
+}
+
+const handleSubmit = async () => {
+  try {
+    await formRef.value?.validate()
+    loading.value = true
+    emit('confirm', form.value.name)
+    handleClose()
+  } catch {
+    // validation failed
+  } finally {
+    loading.value = false
+  }
+}
 </script>

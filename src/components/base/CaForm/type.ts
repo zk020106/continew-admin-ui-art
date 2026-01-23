@@ -1,36 +1,36 @@
-import { GridItemProps, GridProps } from '@/components/base/CaGrid/interface'
-import { MergeMultiple } from '@/types/component/tools'
 import type * as El from 'element-plus'
 import type { FormProps as ElFormProps } from 'element-plus'
 import type { VNode } from 'vue'
-import { InputSearchInstance } from '../CaInputSearch/type'
+import type { InputSearchInstance } from '../CaInputSearch/type'
+import type { GridItemProps, GridProps } from '@/components/base/CaGrid/interface'
+import type { MergeMultiple } from '@/types/component/tools'
 
-export type FormColumnType =
-  | 'input'
-  | 'textarea'
-  | 'input-number'
-  | 'input-tag'
-  | 'input-search'
-  | 'select'
-  | 'select-v2'
-  | 'tree-select'
-  | 'cascader'
-  | 'slider'
-  | 'switch'
-  | 'rate'
-  | 'checkbox-group'
-  | 'checkbox'
-  | 'radio-group'
-  | 'radio'
-  | 'date-picker'
-  | 'time-picker'
-  | 'time-select'
-  | 'color-picker'
-  | 'transfer'
-  | 'autocomplete'
-  | 'upload'
-  | 'title'
-  | 'slot'
+export type FormColumnType
+  = | 'input'
+    | 'textarea'
+    | 'input-number'
+    | 'input-tag'
+    | 'input-search'
+    | 'select'
+    | 'select-v2'
+    | 'tree-select'
+    | 'cascader'
+    | 'slider'
+    | 'switch'
+    | 'rate'
+    | 'checkbox-group'
+    | 'checkbox'
+    | 'radio-group'
+    | 'radio'
+    | 'date-picker'
+    | 'time-picker'
+    | 'time-select'
+    | 'color-picker'
+    | 'transfer'
+    | 'autocomplete'
+    | 'upload'
+    | 'title'
+    | 'slot'
 
 /**
  * 表单列属性类型，根据组件类型使用对应的属性类型
@@ -62,31 +62,31 @@ export type FormColumnProps = MergeMultiple<
   ]
 >
 type FormColumnTypeMap = {
-  input: El.InputProps
+  'input': El.InputProps
   'input-number': El.InputNumberProps
   'input-tag': El.InputTagProps
   'input-search': InputSearchInstance['$props']
-  textarea: El.InputProps
-  select: El.SelectProps
+  'textarea': El.InputProps
+  'select': El.SelectProps
   'select-v2': El.SelectV2Props
   'tree-select': El.TreeInstance['$props']
-  cascader: El.CascaderProps
-  slider: El.SliderProps
-  switch: El.SwitchProps
-  rate: El.RateProps
+  'cascader': El.CascaderProps
+  'slider': El.SliderProps
+  'switch': El.SwitchProps
+  'rate': El.RateProps
   'checkbox-group': El.CheckboxGroupProps
-  checkbox: El.CheckboxProps
+  'checkbox': El.CheckboxProps
   'radio-group': El.RadioGroupProps
-  radio: El.RadioProps
+  'radio': El.RadioProps
   'date-picker': El.DatePickerProps
   'time-picker': El.TimePickerDefaultProps
   'time-select': El.TimeSelectProps
   'color-picker': El.ColorPickerProps
-  transfer: El.TransferProps
-  autocomplete: El.AutocompleteProps
-  upload: El.UploadProps
-  title: any
-  slot: Record<string, any> // slot 类型自定义插槽
+  'transfer': El.TransferProps
+  'autocomplete': El.AutocompleteProps
+  'upload': El.UploadProps
+  'title': any
+  'slot': Record<string, any> // slot 类型自定义插槽
 }
 
 export type FormColumnItemHide<F> = boolean | ((form: F) => boolean)
@@ -126,7 +126,7 @@ export interface FormColumnItem<F = any> {
 export interface FormProps extends Partial<ElFormProps> {
   modelValue: any
   columns?: FormColumnItem[]
-  fc?: Record<string, { disabled?: boolean; hidden?: boolean; required?: boolean }> // 表单控制
+  fc?: Record<string, { disabled?: boolean, hidden?: boolean, required?: boolean }> // 表单控制
   gridProps?: GridProps // grid默认配置
   gridItemProps?: GridItemProps // grid-item默认配置
   search?: boolean

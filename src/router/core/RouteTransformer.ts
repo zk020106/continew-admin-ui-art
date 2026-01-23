@@ -7,9 +7,9 @@
  * @author Art Design Pro Team
  */
 
-import type { AppRouteRecord } from '@/types/router'
 import type { RouteRecordRaw } from 'vue-router'
-import { ComponentLoader } from './ComponentLoader'
+import type { ComponentLoader } from './ComponentLoader'
+import type { AppRouteRecord } from '@/types/router'
 import { IframeRouteManager } from './IframeRouteManager'
 
 interface ConvertedRoute extends Omit<RouteRecordRaw, 'children'> {
@@ -124,8 +124,8 @@ export class RouteTransformer {
     route.meta.isFirstLevel = true
 
     // 处理 component：如果是函数形式直接使用，否则通过 loader 加载
-    const resolvedComponent =
-      typeof component === 'function'
+    const resolvedComponent
+      = typeof component === 'function'
         ? component
         : component
           ? this.componentLoader.load(component)

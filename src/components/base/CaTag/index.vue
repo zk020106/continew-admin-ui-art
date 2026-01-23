@@ -6,27 +6,27 @@
 </template>
 
 <script setup lang="ts">
-  import type { TagProps as ElTagProps } from 'element-plus'
-  import { ElTag } from 'element-plus'
-  import { computed } from 'vue'
+import type { TagProps as ElTagProps } from 'element-plus'
+import { ElTag } from 'element-plus'
+import { computed } from 'vue'
 
-  export interface CaTagProps {
-    /** 标签类型 */
-    type?: '' | 'success' | 'info' | 'warning' | 'danger'
-    /** 是否显示点 */
-    dot?: boolean
-    /** 标签文本 */
-    text?: string
-  }
+export interface CaTagProps {
+  /** 标签类型 */
+  type?: '' | 'success' | 'info' | 'warning' | 'danger'
+  /** 是否显示点 */
+  dot?: boolean
+  /** 标签文本 */
+  text?: string
+}
 
-  const props = withDefaults(defineProps<CaTagProps>(), {
-    type: '',
-    dot: false
-  })
+const props = withDefaults(defineProps<CaTagProps>(), {
+  type: '',
+  dot: false
+})
 
-  const bindProps = computed<Partial<ElTagProps>>(() => ({
-    type: props.type || undefined
-  }))
+const bindProps = computed<Partial<ElTagProps>>(() => ({
+  type: props.type || undefined
+}))
 </script>
 
 <style lang="scss" scoped>

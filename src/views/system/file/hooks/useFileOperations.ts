@@ -1,7 +1,7 @@
-import type { FileItem } from '@/apis/system/file'
-import * as fileApi from '@/apis/system/file'
-import { ElMessage, ElMessageBox } from 'element-plus'
 import type { FileOperationOptions, MoveCopyOptions } from '../types'
+import type { FileItem } from '@/apis/system/file'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import * as fileApi from '@/apis/system/file'
 
 /**
  * 文件操作 Hook
@@ -231,7 +231,6 @@ export function useFileOperations() {
   /**
    * 移动文件（暂时未实现）
    */
-  /* eslint-disable @typescript-eslint/no-unused-vars */
   const moveFile = async (
     _file: FileItem,
     _options: MoveCopyOptions,
@@ -241,12 +240,10 @@ export function useFileOperations() {
     ElMessage.info('文件移动功能开发中')
     return false
   }
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   /**
    * 复制文件（暂时未实现）
    */
-  /* eslint-disable @typescript-eslint/no-unused-vars */
   const copyFile = async (
     _file: FileItem,
     _options: MoveCopyOptions,
@@ -256,12 +253,10 @@ export function useFileOperations() {
     ElMessage.info('文件复制功能开发中')
     return false
   }
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   /**
    * 批量移动文件（暂时未实现）
    */
-  /* eslint-disable @typescript-eslint/no-unused-vars */
   const moveFiles = async (
     _files: FileItem[],
     _options: MoveCopyOptions,
@@ -271,12 +266,10 @@ export function useFileOperations() {
     ElMessage.info('批量移动功能开发中')
     return false
   }
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   /**
    * 批量复制文件（暂时未实现）
    */
-  /* eslint-disable @typescript-eslint/no-unused-vars */
   const copyFiles = async (
     _files: FileItem[],
     _options: MoveCopyOptions,
@@ -286,7 +279,6 @@ export function useFileOperations() {
     ElMessage.info('批量复制功能开发中')
     return false
   }
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   /**
    * 检查文件是否存在（根据 SHA256）

@@ -41,47 +41,47 @@
 </template>
 
 <script setup lang="ts">
-  import { listStorage } from '@/apis/system/storage'
-  import type { StorageQuery, StorageResp } from '@/apis/system/type'
-  import { useI18n } from 'vue-i18n'
-  import { groupBy } from 'xe-utils'
-  import AddModal from './AddModal.vue'
-  import CardAdd from './components/CardAdd.vue'
-  import CardBlock from './components/CardBlock.vue'
+import type { StorageQuery, StorageResp } from '@/apis/system/type'
+import { useI18n } from 'vue-i18n'
+import { groupBy } from 'xe-utils'
+import { listStorage } from '@/apis/system/storage'
+import AddModal from './AddModal.vue'
+import CardAdd from './components/CardAdd.vue'
+import CardBlock from './components/CardBlock.vue'
 
-  defineOptions({ name: 'StorageConfig' })
+defineOptions({ name: 'StorageConfig' })
 
-  const { t } = useI18n()
-  const loading = ref(false)
-  const storageList = ref<StorageResp[]>([])
-  const dataMap = ref<Record<string, StorageResp[]>>({})
+const { t } = useI18n()
+const loading = ref(false)
+const storageList = ref<StorageResp[]>([])
+const dataMap = ref<Record<string, StorageResp[]>>({})
 
-  const queryForm = reactive<StorageQuery>({
-    sort: ['isDefault,desc', 'sort,asc']
-  })
+const queryForm = reactive<StorageQuery>({
+  sort: ['isDefault,desc', 'sort,asc']
+})
 
-  const localList = computed(() => dataMap.value['1'] || [])
-  const ossList = computed(() => dataMap.value['2'] || [])
+const localList = computed(() => dataMap.value['1'] || [])
+const ossList = computed(() => dataMap.value['2'] || [])
 
-  const fetchData = async () => {
-    try {
-      loading.value = true
-      const data = await listStorage(queryForm)
-      const list = data || []
-      storageList.value = list
-      dataMap.value = groupBy(list, 'type')
-    } catch (error) {
-      console.error('Failed to fetch storage list:', error)
-    } finally {
-      loading.value = false
-    }
+const fetchData = async () => {
+  try {
+    loading.value = true
+    const data = await listStorage(queryForm)
+    const list = data || []
+    storageList.value = list
+    dataMap.value = groupBy(list, 'type')
+  } catch (error) {
+    console.error('Failed to fetch storage list:', error)
+  } finally {
+    loading.value = false
   }
+}
 
-  const AddModalRef = ref<InstanceType<typeof AddModal>>()
+const AddModalRef = ref<InstanceType<typeof AddModal>>()
 
-  onMounted(() => {
-    fetchData()
-  })
+onMounted(() => {
+  fetchData()
+})
 </script>
 
 <style scoped lang="scss">

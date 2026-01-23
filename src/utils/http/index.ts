@@ -1,14 +1,16 @@
-import i18n, { $t } from '@/locales'
-import { useTenantStore } from '@/store/modules/tenant'
-import { useUserStore } from '@/store/modules/user'
-import axios, {
+import type {
   AxiosError,
   AxiosRequestConfig,
   AxiosResponse,
   InternalAxiosRequestConfig
 } from 'axios'
+import type { ErrorResponse } from './error'
+import axios from 'axios'
 import { unref } from 'vue'
-import { ErrorResponse, HttpError, handleError, showError, showSuccess } from './error'
+import i18n, { $t } from '@/locales'
+import { useTenantStore } from '@/store/modules/tenant'
+import { useUserStore } from '@/store/modules/user'
+import { handleError, HttpError, showError, showSuccess } from './error'
 import { ApiStatus } from './status'
 
 const REQUEST_TIMEOUT = 30000
@@ -41,7 +43,8 @@ export interface PageQuery {
  * - 请求失败自动重试（可配置）
  * - 统一的成功/错误消息提示
  * - 支持 GET/POST/PUT/DELETE/PATCH 等常用方法
-/** 简化的 HTTP 请求封装（Axios） */
+/** 简化的 HTTP 请求封装（Axios）
+ */
 
 const RETRY_DELAY = 1000
 const UNAUTHORIZED_DEBOUNCE_TIME = 3000
@@ -118,9 +121,9 @@ axiosInstance.interceptors.request.use(
 
     // 处理请求数据
     if (
-      request.data &&
-      !(request.data instanceof FormData) &&
-      !request.headers?.get('Content-Type')
+      request.data
+      && !(request.data instanceof FormData)
+      && !request.headers?.get('Content-Type')
     ) {
       request.headers.set('Content-Type', 'application/json')
     }
@@ -268,9 +271,9 @@ async function retryRequest<T>(
 async function http<T = any>(config: ExtendedAxiosRequestConfig): Promise<T> {
   // POST | PUT 参数自动填充
   if (
-    ['POST', 'PUT', 'PATCH'].includes(config.method?.toUpperCase() || '') &&
-    config.params &&
-    !config.data
+    ['POST', 'PUT', 'PATCH'].includes(config.method?.toUpperCase() || '')
+    && config.params
+    && !config.data
   ) {
     config.data = config.params
     config.params = undefined
@@ -307,9 +310,9 @@ async function httpRaw<T = any>(
 ): Promise<AxiosResponse<ApiRes<T>>> {
   // POST | PUT 参数自动填充
   if (
-    ['POST', 'PUT', 'PATCH'].includes(config.method?.toUpperCase() || '') &&
-    config.params &&
-    !config.data
+    ['POST', 'PUT', 'PATCH'].includes(config.method?.toUpperCase() || '')
+    && config.params
+    && !config.data
   ) {
     config.data = config.params
     config.params = undefined

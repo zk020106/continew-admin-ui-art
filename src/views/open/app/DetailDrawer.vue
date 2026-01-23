@@ -38,35 +38,35 @@
 </template>
 
 <script setup lang="ts">
-  import type { AppResp } from '@/apis/open/app'
-  import { getApp } from '@/apis/open/app'
-  import CaTag from '@/components/base/CaTag/index.vue'
-  import { CellCopy } from '@/components/base/CellCopy'
-  import { ElDescriptions, ElDescriptionsItem, ElDrawer, ElText } from 'element-plus'
-  import { useI18n } from 'vue-i18n'
+import type { AppResp } from '@/apis/open/app'
+import { ElDescriptions, ElDescriptionsItem, ElDrawer, ElText } from 'element-plus'
+import { useI18n } from 'vue-i18n'
+import { getApp } from '@/apis/open/app'
+import CaTag from '@/components/base/CaTag/index.vue'
+import { CellCopy } from '@/components/base/CellCopy'
 
-  defineOptions({ name: 'OpenAppDetailDrawer' })
+defineOptions({ name: 'OpenAppDetailDrawer' })
 
-  const { t } = useI18n()
+const { t } = useI18n()
 
-  const visible = ref(false)
-  const detail = ref<AppResp>()
+const visible = ref(false)
+const detail = ref<AppResp>()
 
-  const title = computed(() => t('common.detail'))
+const title = computed(() => t('common.detail'))
 
-  const onOpen = async (id: string) => {
-    try {
-      const data = await getApp(id)
-      detail.value = data
-      visible.value = true
-    } catch (error) {
-      console.error('获取应用详情失败:', error)
-    }
+const onOpen = async (id: string) => {
+  try {
+    const data = await getApp(id)
+    detail.value = data
+    visible.value = true
+  } catch (error) {
+    console.error('获取应用详情失败:', error)
   }
+}
 
-  defineExpose({
-    onOpen
-  })
+defineExpose({
+  onOpen
+})
 </script>
 
 <style scoped lang="scss"></style>

@@ -1,5 +1,5 @@
-import type { FileItem } from '@/apis/system/file'
 import type { ContextMenuAction, ContextMenuItem } from '../types'
+import type { FileItem } from '@/apis/system/file'
 import {
   DEFAULT_CONTEXT_MENU_ITEMS,
   EMPTY_CONTEXT_MENU_ITEMS,

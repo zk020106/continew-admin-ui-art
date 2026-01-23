@@ -10,8 +10,8 @@
 import type { Router, RouteRecordRaw } from 'vue-router'
 import type { AppRouteRecord } from '@/types/router'
 import { ComponentLoader } from './ComponentLoader'
-import { RouteValidator } from './RouteValidator'
 import { RouteTransformer } from './RouteTransformer'
+import { RouteValidator } from './RouteValidator'
 
 export class RouteRegistry {
   private router: Router

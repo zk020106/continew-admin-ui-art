@@ -1,3 +1,5 @@
+import type { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
+import NProgress from 'nprogress'
 /**
  * 路由工具函数
  *
@@ -7,9 +9,7 @@
  */
 import AppConfig from '@/config'
 import i18n, { $t } from '@/locales'
-import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
-import { RouteLocationNormalized, RouteRecordRaw } from 'vue-router'
 
 /** 扩展的路由配置类型 */
 export type AppRouteRecordRaw = RouteRecordRaw & {
@@ -24,19 +24,6 @@ export const configureNProgress = () => {
     showSpinner: false,
     parent: 'body'
   })
-}
-
-/**
- * 设置页面标题，根据路由元信息和系统信息拼接标题
- * @param to 当前路由对象
- */
-export const setPageTitle = (to: RouteLocationNormalized): void => {
-  const { title } = to.meta
-  if (title) {
-    setTimeout(() => {
-      document.title = `${formatMenuTitle(String(title))} - ${AppConfig.systemInfo.name}`
-    }, 150)
-  }
 }
 
 /**
@@ -58,4 +45,17 @@ export const formatMenuTitle = (title: string): string => {
     return title
   }
   return ''
+}
+
+/**
+ * 设置页面标题，根据路由元信息和系统信息拼接标题
+ * @param to 当前路由对象
+ */
+export const setPageTitle = (to: RouteLocationNormalized): void => {
+  const { title } = to.meta
+  if (title) {
+    setTimeout(() => {
+      document.title = `${formatMenuTitle(String(title))} - ${AppConfig.systemInfo.name}`
+    }, 150)
+  }
 }

@@ -31,13 +31,13 @@
  * @author Art Design Pro Team
  */
 
-import { useSettingStore } from '@/store/modules/setting'
-import { SystemThemeEnum } from '@/enums/appEnum'
-import AppConfig from '@/config'
-import { SystemThemeTypes } from '@/types/store'
-import { getDarkColor, getLightColor, setElementThemeColor } from '@/utils/ui'
+import type { SystemThemeTypes } from '@/types/store'
 import { usePreferredDark } from '@vueuse/core'
 import { watch } from 'vue'
+import AppConfig from '@/config'
+import { SystemThemeEnum } from '@/enums/appEnum'
+import { useSettingStore } from '@/store/modules/setting'
+import { getDarkColor, getLightColor, setElementThemeColor } from '@/utils/ui'
 
 export function useTheme() {
   const settingStore = useSettingStore()

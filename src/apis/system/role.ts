@@ -1,6 +1,6 @@
 import type * as T from './type'
-import http from '@/utils/http'
 import type { LabelValueState } from '@/types/global'
+import http from '@/utils/http'
 
 export type * from './type'
 
@@ -62,6 +62,6 @@ export function listRoleUserId(id: string) {
 }
 
 /** @desc 查询角色字典 */
-export function listRoleDict(query?: { name: string; status: number }) {
+export function listRoleDict(query?: { name: string, status: number }) {
   return http.get<LabelValueState[]>(`${BASE_URL}/dict`, query)
 }
