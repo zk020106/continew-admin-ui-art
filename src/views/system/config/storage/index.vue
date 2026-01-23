@@ -53,8 +53,6 @@
 
   const { t } = useI18n()
   const loading = ref(false)
-  const searchText = ref('')
-  const activeTab = ref('all')
   const storageList = ref<StorageResp[]>([])
   const dataMap = ref<Record<string, StorageResp[]>>({})
 

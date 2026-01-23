@@ -24,16 +24,7 @@
         <CaCellTag :value="row.clientType" :dict="client_type" />
       </template>
       <template #authType="{ row }">
-        <template v-if="row.authType">
-          <el-tag
-            v-for="(item, index) in row.authType.split(',')"
-            :key="index"
-            size="small"
-            class="mr-1"
-          >
-            {{ auth_type.find((d) => d.value === item)?.label || item }}
-          </el-tag>
-        </template>
+        <CaCellTags :value="row.authType" :data="auth_type" />
       </template>
       <template #replacedRange="{ row }">
         <CaCellTag :value="row.replacedRange" :dict="replaced_range_enum" />
