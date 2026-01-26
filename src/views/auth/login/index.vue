@@ -1,6 +1,6 @@
 <!-- 登录页面 -->
 <template>
-  <div class="flex w-full h-screen">
+  <div class="flex w-full h-screen bg-[var(--art-color)]">
     <LoginLeftView />
 
     <div class="relative flex-1">
