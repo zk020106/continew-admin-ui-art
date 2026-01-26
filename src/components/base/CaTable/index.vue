@@ -88,7 +88,7 @@
       </TableColumn>
     </ElTable>
 
-    <ElRow justify="end" class="ca-table-pagination">
+    <ElRow v-if="!props.hidePagination" justify="end" class="ca-table-pagination">
       <ElPagination
         v-bind="paginationProps"
         v-model:current-page="paginationProps.currentPage"
@@ -123,7 +123,8 @@ const props = withDefaults(defineProps<TableProps<T>>(), {
   data: () => [],
   columns: () => [],
   pagination: () => ({}),
-  toolbar: () => ({})
+  toolbar: () => ({}),
+  hidePagination: false
 })
 // 定义事件
 const emit = defineEmits<{

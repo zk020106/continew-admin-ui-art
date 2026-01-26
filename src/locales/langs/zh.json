@@ -477,7 +477,7 @@
         "placeholder": "请输入文件夹名称",
         "title": "新建文件夹",
         "validate": {
-          "invalidChars": "文件夹名称不能包含 / \\ : * ? \" < > | 字符",
+          "invalidChars": "文件夹名称不能包含 ／＼：＊？＂＜＞｜ 字符",
           "lengthRange": "文件夹名称长度应在 1 到 100 个字符之间",
           "required": "请输入文件夹名称"
         }
@@ -489,7 +489,7 @@
         "folderTitle": "重命名文件夹",
         "placeholder": "请输入新名称",
         "validate": {
-          "invalidChars": "名称不能包含 / \\ : * ? \" < > | 字符",
+          "invalidChars": "名称不能包含 ／＼：＊？＂＜＞｜ 字符",
           "keepExtension": "请保留文件扩展名 .{extension}",
           "required": "请输入新名称"
         }

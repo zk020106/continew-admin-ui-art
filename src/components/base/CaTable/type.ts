@@ -6,11 +6,11 @@ export type DefaultRow = Record<PropertyKey, any>
 /** 分页器位置配置 */
 export type PaginationPosition
   = | 'top-left'
-    | 'top-center'
-    | 'top-right'
-    | 'bottom-left'
-    | 'bottom-center'
-    | 'bottom-right'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right'
 
 /** 工具栏按钮类型 */
 export type Tools = 'refresh' | 'size' | 'fullscreen' | 'columnSetting'
@@ -50,6 +50,7 @@ export interface TableProps<T extends DefaultRow = any> extends Omit<
   data?: T[]
   columns?: TableColumnItem[]
   pagination?: Partial<PaginationProps>
+  hidePagination?: boolean
   /** 滚动配置 */
   scroll?: ScrollConfig
   /** 分页器位置，默认 'bottom-right' */

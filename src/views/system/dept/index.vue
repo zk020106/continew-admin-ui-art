@@ -6,7 +6,7 @@
           ref="tableRef"
           :data="deptList"
           :columns="columns"
-          :pagination="{ hideOnSinglePage: true }"
+          :hide-pagination="true"
           :disabled-tools="['columnSetting']"
           row-key="id"
           :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"

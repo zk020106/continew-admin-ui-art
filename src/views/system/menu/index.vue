@@ -4,7 +4,7 @@
       ref="tableRef"
       :data="menuList"
       :columns="columns"
-      :pagination="{ hideOnSinglePage: true }"
+      hide-pagination
       row-key="id"
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       @refresh="getMenuList"
