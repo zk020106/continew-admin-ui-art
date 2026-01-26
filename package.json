@@ -14,9 +14,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:style": "stylelint \"**/*.{vue,scss,css}\" --cache",
-    "lint:style:fix": "stylelint \"**/*.{vue,scss,css}\" --cache --fix",
-    "prepare": "husky",
-    "commit": "git-cz"
+    "stylelint:fix": "stylelint \"**/*.{vue,scss,css}\" --cache --fix",
+    "lint:lint-staged": "lint-staged",
+    "prepare": "husky"
   },
   "config": {
     "commitizen": {
@@ -103,5 +103,13 @@
     "vue-demi": "^0.14.10",
     "vue-img-cutter": "^3.0.7",
     "vue-tsc": "~2.1.10"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": [
+      "eslint --fix"
+    ],
+    "*.{vue,scss,css}": [
+      "stylelint --fix"
+    ]
   }
 }
