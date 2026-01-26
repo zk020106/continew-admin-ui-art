@@ -1,0 +1,205 @@
+@use './var.scss' as *;
+@use './util.scss' as *;
+
+.el-select__popper {
+  @include set-ele-var('select', $ele);
+
+  .el-select-dropdown {
+    background: inherit;
+    border-radius: inherit;
+  }
+
+  .el-select-dropdown__list {
+    padding: eleVar('select', 'padding') !important;
+    margin: 0 !important;
+  }
+
+  .el-select-dropdown__item {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    height: eleVar('select', 'item-height');
+    padding: eleVar('select', 'item-padding');
+    line-height: eleVar('select', 'item-height');
+    border-radius: eleVar('select', 'item-radius');
+    transition: (color $transition-base, background-color $transition-base);
+
+    & > span {
+      flex: 1;
+    }
+
+    & + .el-select-dropdown__item {
+      margin-top: eleVar('select', 'item-margin');
+    }
+
+    &.selected,
+    &.is-selected {
+      font-weight: eleVar('select', 'item-active-font-weight');
+      background: eleVar('select', 'item-active-bg');
+
+      &:hover,
+      &.hover,
+      &.is-hovering {
+        background: eleVar('select', 'item-active-hover-bg');
+      }
+    }
+  }
+
+  .el-select-dropdown__list .el-select-dropdown__item > span {
+    font-size: inherit;
+  }
+
+  .el-select-dropdown.is-multiple .el-select-dropdown__item.selected,
+  .el-select-dropdown.is-multiple .el-select-dropdown__item.is-selected {
+    background: eleVar('select', 'item-active-bg');
+
+    &:hover,
+    &.hover,
+    &.is-hovering {
+      background: eleVar('select', 'item-active-hover-bg');
+    }
+
+    &::after {
+      position: static;
+      top: auto;
+      right: auto;
+      display: inline-block;
+      width: eleVar('select', 'icon-size');
+      height: eleVar('select', 'icon-size');
+      margin: eleVar('select', 'icon-margin');
+      transform: none;
+    }
+  }
+
+  .el-select-group__title {
+    padding: eleVar('select', 'item-padding');
+  }
+
+  .el-select-group__wrap:not(:last-of-type) {
+    padding-bottom: 0;
+
+    &::after {
+      display: none;
+    }
+  }
+}
+
+/* 多选标签 */
+.el-select-tags-wrapper .el-tag__content,
+.el-select__collapse-tag .el-tag__content,
+.el-select__selected-item .el-tag__content {
+  display: inline-flex;
+  align-items: center;
+}
+
+.el-select .el-tag__content .el-select__tags-text {
+  line-height: 1;
+}
+
+.el-select .el-select-tags-wrapper.has-prefix {
+  box-sizing: border-box;
+  margin: 0 !important;
+}
+
+.el-select .el-select__tags {
+  left: 0;
+  box-sizing: border-box;
+  padding: 0 0 0 4px;
+}
+
+.el-select .el-select__selection.is-near {
+  box-sizing: border-box;
+  gap: 0;
+  padding: 1px 0 1px 3px;
+  margin: 0 0 0 calc(0px - #{eleVar('input', 'padding-left', 12px)});
+}
+
+.el-select .el-select__tags .el-tag,
+.el-select__collapse-tags .el-select__collapse-tag .el-tag {
+  flex-shrink: 0;
+  height: calc(elVar('component-size') - 4px - 4px);
+  margin: 2px 4px 2px 0;
+  border: none;
+}
+
+.el-select .el-select__tags .el-select__input {
+  margin: 0 0 0 5.8px !important;
+}
+
+.el-select__selection.is-near > .el-select__selected-item,
+.el-popper > .el-select__selection > .el-select__selected-item {
+  flex-shrink: 0;
+  margin: 2px 4px 2px 0;
+}
+
+.el-select__selection .el-select__selected-item > .el-tag {
+  height: calc(elVar('component-size') - 4px - 4px);
+  border: none;
+}
+
+.el-select .el-select__wrapper.is-disabled .el-select__selected-item .el-tag {
+  color: elVar('disabled', 'text-color');
+  pointer-events: auto;
+  background: hsl(0deg 0% 60% / 15%);
+}
+
+/* 小尺寸 */
+.el-select--small .el-select__tags .el-tag--small,
+.el-select__collapse-tags .el-select__collapse-tag .el-tag--small {
+  height: calc(elVar('component-size', 'small') - 4px - 2px);
+  margin: 1px 4px 1px 0;
+}
+
+.el-select--small .el-select__selection.is-near {
+  padding: 1px 0 1px 3px;
+  margin: 0 0 0 calc(0px - #{eleVar('input-sm', 'padding-left', 8px)});
+}
+
+.el-select--small .el-select__selection.is-near > .el-select__selected-item {
+  margin: 1px 4px 1px 0;
+}
+
+.el-select--small .el-select__selected-item > .el-tag,
+.el-popper > .el-select__selection .el-tag--small {
+  height: calc(elVar('component-size', 'small') - 4px - 2px);
+}
+
+.el-select--small .el-select__tags .el-select__input {
+  margin: 0 0 0 3.8px !important;
+}
+
+/* 大尺寸 */
+.el-select--large .el-select__tags {
+  padding: 1px 0 1px 6px;
+}
+
+
+.el-select--large .el-select__tags .el-tag,
+.el-select--large .el-select__selected-item > .el-tag {
+  height: calc(elVar('component-size', 'large') - 8px - 4px);
+}
+
+.el-select--large .el-select__selection.is-near {
+  padding: 3px 0 3px 5px;
+  margin: 0 0 0 calc(0px - #{eleVar('input-lg', 'padding-left', 16px)});
+}
+
+.el-select--large .el-select__tags .el-select__input {
+  margin: 0 0 0 7.8px !important;
+}
+
+/* 多选搜索框 */
+.el-select-tags-wrapper.has-prefix + .el-select__input {
+  margin: 0 0 0 2px !important;
+}
+
+/* 标签溢出气泡 */
+.el-popper > .el-select__collapse-tags,
+.el-popper > .el-select__selection {
+  box-sizing: border-box;
+  gap: 0;
+  padding: 8px 10px;
+  margin: -5px -11px;
+  background: inherit;
+  border-radius: inherit;
+}

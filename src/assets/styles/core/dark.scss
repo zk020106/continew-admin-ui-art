@@ -39,12 +39,6 @@ html.dark {
     border-right-color: var(--dark-border-color) !important;
   }
 
-  // 富文本编辑器
-  .editor-wrapper {
-    *:not(pre code *) {
-      color: inherit !important;
-    }
-  }
   // 分隔线
   .w-e-bar-divider {
     background-color: var(--art-gray-300) !important;
@@ -82,6 +76,10 @@ html.dark {
   }
 
   .editor-wrapper {
+    *:not(pre code *) {
+      color: inherit !important;
+    }
+
     .w-e-text-container [data-slate-editor] .table-container th:last-of-type {
       border-right: 1px solid var(--default-border-dashed) !important;
     }

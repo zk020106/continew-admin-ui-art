@@ -1,0 +1,14 @@
+// 基础 Element Plus 变量覆盖
+// 补充亮色主题的基础样式，确保组件颜色正确
+
+:root {
+  // 页面内容区域内边距
+  --page-content-padding: 10px 10px;
+
+  // 系统主色
+  --main-color: var(--el-color-primary);
+
+  // 修复颜色变量
+  --el-color-white: white !important;
+  --el-color-black: white !important;
+}

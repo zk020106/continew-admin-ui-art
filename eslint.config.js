@@ -69,7 +69,8 @@ export default antfu(
       'jsdoc/check-param-names': 0, // JSDoc 参数检查
       'no-useless-return': 0, // 无用的 return
       'unused-imports/no-unused-imports': 0, // 未使用的导入
-      'style/brace-style': 0 // 大括号样式
+      'style/brace-style': 0, // 大括号样式
+      'eol-last': 0 // 文件末尾空行
     }
   }
 )

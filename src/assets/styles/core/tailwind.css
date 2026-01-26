@@ -4,7 +4,7 @@
 /* ==================== Light Mode Variables ==================== */
 :root {
   /* Base Colors */
-  --art-color: #fff;
+  --art-color: #ffffff;
   --theme-color: var(--main-color);
 
   /* Theme Colors - OKLCH Format */
@@ -28,14 +28,14 @@
   --art-gray-900: #323251;
 
   /* Border Colors */
-  --art-card-border: rgb(0 0 0 / 8%);
+  --art-card-border: rgba(0, 0, 0, 0.08);
 
   --default-border: #e2e8ee;
   --default-border-dashed: #dbdfe9;
 
   /* Background Colors */
   --default-bg-color: #fafbfc;
-  --default-box-color: #fff;
+  --default-box-color: #ffffff;
 
   /* Hover Color */
   --art-hover-color: #edeff0;
@@ -50,7 +50,7 @@
 /* ==================== Dark Mode Variables ==================== */
 .dark {
   /* Base Colors */
-  --art-color: #000;
+  --art-color: #000000;
 
   /* Gray Scale - Dark Mode */
   --art-gray-100: #110f0f;
@@ -64,9 +64,9 @@
   --art-gray-900: #e3e3e8;
 
   /* Border Colors */
-  --art-card-border: rgb(255 255 255 / 8%);
+  --art-card-border: rgba(255, 255, 255, 0.08);
 
-  --default-border: rgb(255 255 255 / 10%);
+  --default-border: rgba(255, 255, 255, 0.1);
   --default-border-dashed: #363843;
 
   /* Background Colors */

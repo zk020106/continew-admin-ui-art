@@ -18,7 +18,6 @@
 </template>
 
 <script setup lang="ts">
-import type { FormExpose } from 'element-plus'
 import type { QueryFormEmits, QueryFormMode } from './type'
 import type { FormProps } from '@/components/base/CaForm/type'
 import { computed, onMounted, ref, watch } from 'vue'
@@ -87,7 +86,7 @@ const props = withDefaults(defineProps<CaQueryFormProps>(), {
 
 const emit = defineEmits<QueryFormEmits>()
 
-const formRef = ref<FormExpose>()
+const formRef = useTemplateRef('formRef')
 
 // 是否显示按钮区域（click-search 模式且显示查询按钮时）
 const showButtonArea = computed(() => {
@@ -179,6 +178,4 @@ defineExpose({
 })
 </script>
 
-<style lang="scss" scoped>
-  // 继承 CaForm 的样式
-</style>
+<style lang="scss" scoped></style>

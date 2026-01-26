@@ -4,7 +4,7 @@
     :title="title"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    :size="width >= 500 ? 500 : '100%"
+    :size="width >= 500 ? 500 : '100%'"
     @close="reset"
   >
     <CaForm ref="formRef" v-model="form" :columns="columns" />

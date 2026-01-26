@@ -15,6 +15,7 @@ export default {
     'scss/double-slash-comment-whitespace-inside': null, // 双斜杠注释内部需要空格
     'scss/dollar-variable-empty-line-before': null, // $变量前需要空行
     'scss/at-rule-conditional-no-parentheses': null, // @规则条件不使用括号
+    'scss/at-function-pattern': null, // 强制函数名称格式
     'no-descending-specificity': null, // 禁止选择器优先级降低
     'declaration-block-no-duplicate-properties': null, // 禁止声明块中重复的属性
     'keyframes-name-pattern': null, // 限制keyframes名称格式
@@ -26,8 +27,43 @@ export default {
     // 其他基础规则
     'no-empty-source': null, // 禁止空源码
     'selector-class-pattern': null, // 强制选择器类名的格式
-    // 字符串引号规则
-    'string-quotes': null // 允许使用双引号
+    'scss/at-mixin-pattern': null, // 强制mixin名称格式
+    /* 关闭原生规则，交给 scss 版本 */
+    'at-rule-no-unknown': null,
+    /* 允许 Tailwind / 构建工具的 at-rule */
+    'scss/at-rule-no-unknown': [true, {
+      ignoreAtRules: [
+        'tailwind',
+        'layer',
+        'apply',
+        'screen',
+        'variants',
+        'responsive',
+        'reference',
+        'use',
+        'forward',
+        'custom-variant',
+        'theme',
+        'utility'
+      ]
+    }],
+    'custom-property-pattern': null,
+    /* Tailwind 经常用 @apply，不限制 */
+    'scss/at-extend-no-missing-placeholder': null,
+    'block-no-redundant-nested-style-rules': null,
+    /* class 顺序别管（Tailwind 自己会排） */
+    'order/properties-alphabetical-order': null,
+    'selector-pseudo-element-no-unknown': [true, {
+      ignorePseudoElements: ['v-deep', 'deep']
+    }],
+
+    'selector-pseudo-class-no-unknown': [
+      true,
+      {
+        ignorePseudoClasses: ['input-placeholder', 'deep', 'v-deep']
+      }
+    ],
+    'function-name-case': null
   },
   overrides: [
     {

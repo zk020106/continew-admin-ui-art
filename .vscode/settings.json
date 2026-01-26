@@ -96,14 +96,25 @@
   "css.validate": false,
   "scss.validate": false,
   "cssVariables.lookupFiles": [
-    "node_modules/@arco-themes/vue-gi-demo/theme.css"
+    "node_modules/element-plus/dist/index.css"
   ],
-  "i18n-ally.localesPaths": ["src/locales/langs", "src/locales"],
-  "i18n-ally.enabledParsers": ["json"],
+  "i18n-ally.localesPaths": [
+    "src/locales/langs",
+    "src/locales"
+  ],
+  "i18n-ally.enabledParsers": [
+    "json"
+  ],
   "i18n-ally.sourceLanguage": "zh",
   "i18n-ally.displayLanguage": "zh",
-  "i18n-ally.enabledFrameworks": ["vue", "react"],
+  "i18n-ally.enabledFrameworks": [
+    "vue",
+    "react"
+  ],
   "i18n-ally.keystyle": "nested",
   "i18n-ally.sortKeys": true,
-  "i18n-ally.namespace": true
+  "i18n-ally.namespace": true,
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
 }

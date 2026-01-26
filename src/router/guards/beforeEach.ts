@@ -55,9 +55,6 @@ import { RoutesAlias } from '../routesAlias'
 // 路由注册器实例
 let routeRegistry: RouteRegistry | null = null
 
-// 菜单处理器实例
-const menuProcessor = new MenuProcessor()
-
 // 跟踪是否需要关闭 loading
 let pendingLoading = false
 
@@ -217,12 +214,12 @@ async function handleDynamicRoutes(
   loadingService.showLoading()
 
   try {
-    const menuList = await menuProcessor.getMenuList()
+    const menuList = await MenuProcessor.getInstance().getMenuList()
 
     // 1. 检查并清理工作台标签页
     userStore.checkAndClearWorktabs()
     // 4. 验证菜单数据
-    if (!menuProcessor.validateMenuList(menuList)) {
+    if (!MenuProcessor.getInstance().validateMenuList(menuList)) {
       throw new Error('获取菜单列表失败，请重新登录')
     }
 

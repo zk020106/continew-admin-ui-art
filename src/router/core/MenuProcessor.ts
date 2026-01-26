@@ -17,6 +17,16 @@ import { asyncRoutes } from '../routes/asyncRoutes'
 import { RoutesAlias } from '../routesAlias'
 
 export class MenuProcessor {
+  private static instance: MenuProcessor | null = null
+
+  private constructor() {}
+
+  static getInstance(): MenuProcessor {
+    if (!MenuProcessor.instance) {
+      MenuProcessor.instance = new MenuProcessor()
+    }
+    return MenuProcessor.instance
+  }
   /**
    * 获取菜单数据
    */

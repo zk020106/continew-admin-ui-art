@@ -5,17 +5,17 @@
 * @param {Number} 行数
 */
 @mixin ellipsis($rowCount: 1) {
-  @if $rowCount <=1 {
+  @if $rowCount <= 1 {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   } @else {
+    display: -webkit-box;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: $rowCount;
     -webkit-box-orient: vertical;
+    -webkit-line-clamp: $rowCount;
   }
 }
 
@@ -94,22 +94,10 @@
   border-radius: 50%;
 }
 
-// placeholder
 @mixin placeholder($color: #bbb) {
-  // Firefox
   &::placeholder {
     color: $color;
     opacity: 1;
-  }
-
-  // Internet Explorer 10+
-  &:input-placeholder {
-    color: $color;
-  }
-
-  // Safari and Chrome
-  &::input-placeholder {
-    color: $color;
   }
 
   &:placeholder-shown {
@@ -117,10 +105,11 @@
   }
 }
 
+
+
 //背景透明，文字不透明。兼容IE8
 @mixin betterTransparentize($color, $alpha) {
   $c: rgba($color, $alpha);
-  $ie_c: ie_hex_str($c);
   zoom: 1;
   background: rgba($color, 1);
   background: $c;
