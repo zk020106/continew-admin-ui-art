@@ -172,6 +172,7 @@
 <script setup lang="ts">
 import type { LanguageEnum } from '@/enums/appEnum'
 import { useFullscreen, useWindowSize } from '@vueuse/core'
+import { defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import AppConfig from '@/config'
@@ -184,7 +185,9 @@ import { useSettingStore } from '@/store/modules/setting'
 import { useUserStore } from '@/store/modules/user'
 import { mittBus } from '@/utils/sys'
 import { themeAnimation } from '@/utils/ui/animation'
-import ArtUserMenu from './widget/ArtUserMenu.vue'
+
+// 懒加载用户菜单组件
+const ArtUserMenu = defineAsyncComponent(() => import('./widget/ArtUserMenu.vue'))
 
 defineOptions({ name: 'ArtHeaderBar' })
 

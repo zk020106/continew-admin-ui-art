@@ -39,21 +39,14 @@ interface Props {
   commonStyle?: VideoPlayerStyle
 }
 
-// 设置属性默认值
-
-// 播放器实例引用
-const playerInstance = ref<Player | null>(null)
-
-// 播放器样式接口定义
 interface VideoPlayerStyle {
-  progressColor?: string // 进度条背景色
-  playedColor?: string // 已播放部分颜色
-  cachedColor?: string // 缓存部分颜色
-  sliderBtnStyle?: Record<string, string> // 滑块按钮样式
-  volumeColor?: string // 音量控制器颜色
+  progressColor?: string
+  playedColor?: string
+  cachedColor?: string
+  sliderBtnStyle?: Record<string, string>
+  volumeColor?: string
 }
 
-// 默认样式配置
 const defaultStyle: VideoPlayerStyle = {
   progressColor: 'rgba(255, 255, 255, 0.3)',
   playedColor: '#00AEED',
@@ -66,17 +59,18 @@ const defaultStyle: VideoPlayerStyle = {
   volumeColor: '#00AEED'
 }
 
-// 组件挂载时初始化播放器
+let playerInstance: any = null
+
 onMounted(() => {
-  playerInstance.value = new Player({
+  playerInstance = new Player({
     id: props.playerId,
-    lang: 'zh', // 设置界面语言为中文
+    lang: 'zh',
     volume: props.volume,
     autoplay: props.autoplay,
-    screenShot: true, // 启用截图功能
+    screenShot: true,
     url: props.videoUrl,
     poster: props.posterUrl,
-    fluid: true, // 启用流式布局，自适应容器大小
+    fluid: true,
     playbackRate: props.playbackRates,
     loop: props.loop,
     muted: props.muted,
@@ -86,26 +80,14 @@ onMounted(() => {
     }
   })
 
-  // 播放事件监听器
-  playerInstance.value.on('play', () => {
-    console.log('Video is playing')
-  })
-
-  // 暂停事件监听器
-  playerInstance.value.on('pause', () => {
-    console.log('Video is paused')
-  })
-
-  // 错误事件监听器
-  playerInstance.value.on('error', (error) => {
+  playerInstance.on('error', (error: any) => {
     console.error('Error occurred:', error)
   })
 })
 
-// 组件卸载前清理播放器实例
 onBeforeUnmount(() => {
-  if (playerInstance.value) {
-    playerInstance.value.destroy()
+  if (playerInstance) {
+    playerInstance.destroy()
   }
 })
 </script>

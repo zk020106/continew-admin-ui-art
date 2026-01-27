@@ -1,6 +1,7 @@
 # Continew Admin UI Art
 
-![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/zk020106/continew-admin-ui-art?utm_source=oss&utm_medium=github&utm_campaign=zk020106%2Fcontinew-admin-ui-art&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews) 基于 Vue 3 + Element Plus + TypeScript 的企业级后台管理系统。
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/zk020106/continew-admin-ui-art?utm_source=oss&utm_medium=github&utm_campaign=zk020106%2Fcontinew-admin-ui-art&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews) 
+基于 Vue 3 + Element Plus + TypeScript 的企业级后台管理系统。
 
 ## 特性
 
@@ -58,14 +59,11 @@ pnpm type-check
 
 ```bash
 # 检查并修复
-pnpm lint
+pnpm lint:fix
 pnpm fix
 
-# 仅 Prettier 格式化
-pnpm lint:prettier
-
 # 仅 Stylelint 格式化
-pnpm lint:stylelint
+pnpm stylelint:fix
 ```
 
 ### 提交规范

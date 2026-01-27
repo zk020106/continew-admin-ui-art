@@ -131,13 +131,16 @@
 
 <script setup lang="ts">
 import { useTimeoutFn, useWindowSize } from '@vueuse/core'
+import { defineAsyncComponent } from 'vue'
 import AppConfig from '@/config'
 import { MenuTypeEnum, MenuWidth } from '@/enums/appEnum'
 import { useCommon } from '@/hooks/core/useCommon'
 import { useMenuStore } from '@/store/modules/menu'
 import { useSettingStore } from '@/store/modules/setting'
 import { handleMenuJump, isIframe } from '@/utils/navigation'
-import SidebarSubmenu from './widget/SidebarSubmenu.vue'
+
+// 懒加载子菜单组件
+const SidebarSubmenu = defineAsyncComponent(() => import('./widget/SidebarSubmenu.vue'))
 
 defineOptions({ name: 'ArtSidebarMenu' })
 
