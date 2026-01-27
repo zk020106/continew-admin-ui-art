@@ -18,6 +18,11 @@
     "lint:lint-staged": "lint-staged",
     "prepare": "husky"
   },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
+  },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
     "@iconify/vue": "^5.0.0",
