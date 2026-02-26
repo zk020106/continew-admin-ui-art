@@ -142,7 +142,6 @@ export function useSettingsHandlers() {
     // 选择主题色
     selectColor: (theme: string) => {
       settingStore.setElementTheme(theme)
-      settingStore.reload()
     }
   }
 
@@ -151,7 +150,6 @@ export function useSettingsHandlers() {
     // 设置容器宽度
     setWidth: (type: ContainerWidthEnum) => {
       settingStore.setContainerWidth(type)
-      settingStore.reload()
     }
   }
 

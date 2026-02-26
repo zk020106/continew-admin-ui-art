@@ -21,7 +21,11 @@
             :style="{ 'background': color, '--index': index }"
             @click="changeThemeColor(color)"
           >
-            <ArtSvgIcon v-if="color === systemThemeColor" icon="ri:check-fill" class="text-white" />
+            <ArtSvgIcon
+              v-if="color === systemThemeColor"
+              icon="ri:check-fill"
+              class="text-white"
+            />
           </div>
         </div>
         <div class="btn palette-btn relative z-[2] h-8 w-8 c-p flex-cc tad-300">
@@ -44,13 +48,21 @@
         </div>
         <template #dropdown>
           <ElDropdownMenu>
-            <div v-for="lang in languageOptions" :key="lang.value" class="lang-btn-item">
+            <div
+              v-for="lang in languageOptions"
+              :key="lang.value"
+              class="lang-btn-item"
+            >
               <ElDropdownItem
                 :command="lang.value"
                 :class="{ 'is-selected': locale === lang.value }"
               >
                 <span class="menu-txt">{{ lang.label }}</span>
-                <ArtSvgIcon v-if="locale === lang.value" icon="ri:check-fill" class="text-base" />
+                <ArtSvgIcon
+                  v-if="locale === lang.value"
+                  icon="ri:check-fill"
+                  class="text-base"
+                />
               </ElDropdownItem>
             </div>
           </ElDropdownMenu>
@@ -80,8 +92,6 @@ import { useSettingStore } from '@/store/modules/setting'
 import { useUserStore } from '@/store/modules/user'
 import { themeAnimation } from '@/utils/ui/animation'
 
-defineOptions({ name: 'AuthTopBar' })
-
 const settingStore = useSettingStore()
 const userStore = useUserStore()
 const { isDark, systemThemeColor } = storeToRefs(settingStore)
@@ -100,50 +110,49 @@ const changeLanguage = (lang: LanguageEnum) => {
 const changeThemeColor = (color: string) => {
   if (systemThemeColor.value === color) return
   settingStore.setElementTheme(color)
-  settingStore.reload()
 }
 </script>
 
 <style scoped>
-  .color-dots {
-    pointer-events: none;
-    box-shadow: 0 2px 12px var(--art-gray-300);
-    backdrop-filter: blur(10px);
-    transform: translateX(10px);
-    transition:
-      opacity 0.3s ease,
-      transform 0.3s ease;
-  }
+.color-dots {
+  pointer-events: none;
+  box-shadow: 0 2px 12px var(--art-gray-300);
+  backdrop-filter: blur(10px);
+  transform: translateX(10px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
 
-  .color-dot {
-    box-shadow: 0 2px 4px rgb(0 0 0 / 15%);
-    transform: translateX(20px) scale(0.8);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    transition-delay: calc(var(--index) * 0.05s);
-  }
+.color-dot {
+  box-shadow: 0 2px 4px rgb(0 0 0 / 15%);
+  transform: translateX(20px) scale(0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: calc(var(--index) * 0.05s);
+}
 
-  .color-dot:hover {
-    box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
-    transform: translateX(0) scale(1.1);
-  }
+.color-dot:hover {
+  box-shadow: 0 4px 8px rgb(0 0 0 / 20%);
+  transform: translateX(0) scale(1.1);
+}
 
-  .color-picker-expandable:hover .color-dots {
-    pointer-events: auto;
-    opacity: 1;
-    transform: translateX(0);
-  }
+.color-picker-expandable:hover .color-dots {
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateX(0);
+}
 
-  .color-picker-expandable:hover .color-dot {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-  }
+.color-picker-expandable:hover .color-dot {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
 
-  .dark .color-dots {
-    background-color: var(--art-gray-200);
-    box-shadow: none;
-  }
+.dark .color-dots {
+  background-color: var(--art-gray-200);
+  box-shadow: none;
+}
 
-  .color-picker-expandable:hover .palette-btn :deep(.art-svg-icon) {
-    color: v-bind(color);
-  }
+.color-picker-expandable:hover .palette-btn :deep(.art-svg-icon) {
+  color: v-bind(color);
+}
 </style>

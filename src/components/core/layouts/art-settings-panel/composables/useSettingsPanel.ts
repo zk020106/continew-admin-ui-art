@@ -43,7 +43,6 @@ export function useSettingsPanel() {
     const initSystemColor = () => {
       if (!AppConfig.systemMainColor.includes(systemThemeColor.value)) {
         settingStore.setElementTheme(AppConfig.systemMainColor[0])
-        settingStore.reload()
       }
     }
 
@@ -167,6 +166,7 @@ export function useSettingsPanel() {
     }
 
     const cleanupSettings = () => {
+      mittBus.off('openSetting', openSetting)
       stopWatch()
       themeCleanup?.()
       cleanup()

@@ -1,4 +1,8 @@
-import type { ContainerWidthEnum, MenuThemeEnum, MenuTypeEnum } from '@/enums/appEnum'
+import type {
+  ContainerWidthEnum,
+  MenuThemeEnum,
+  MenuTypeEnum
+} from '@/enums/appEnum'
 import type { MenuThemeType } from '@/types/store'
 /**
  * 系统设置状态管理模块
@@ -59,14 +63,20 @@ export const useSettingStore = defineStore(
     const dualMenuShowText = ref(SETTING_DEFAULT_CONFIG.dualMenuShowText)
 
     // 主题相关设置
-    /** 系统主题类型 */
+    /**
+     * systemThemeType / systemThemeMode 用于主题持久化与状态同步。
+     * isDark 作为兼容字段保留，避免现有调用方回归。
+     */
+    /** 系统主题类型（仅用于持久化和 UI 显示） */
     const systemThemeType = ref(SETTING_DEFAULT_CONFIG.systemThemeType)
-    /** 系统主题模式 */
+    /** 系统主题模式（仅用于持久化和 UI 显示） */
     const systemThemeMode = ref(SETTING_DEFAULT_CONFIG.systemThemeMode)
     /** 菜单主题类型 */
     const menuThemeType = ref(SETTING_DEFAULT_CONFIG.menuThemeType)
     /** 系统主题颜色 */
     const systemThemeColor = ref(SETTING_DEFAULT_CONFIG.systemThemeColor)
+    /** 是否为暗色主题（兼容现有调用方） */
+    const isDark = computed(() => systemThemeType.value === SystemThemeEnum.DARK)
 
     // 界面显示设置
     /** 是否显示菜单按钮 */
@@ -100,7 +110,9 @@ export const useSettingStore = defineStore(
     /** 是否刷新 */
     const refresh = ref(SETTING_DEFAULT_CONFIG.refresh)
     /** 是否加载节日烟花 */
-    const holidayFireworksLoaded = ref(SETTING_DEFAULT_CONFIG.holidayFireworksLoaded)
+    const holidayFireworksLoaded = ref(
+      SETTING_DEFAULT_CONFIG.holidayFireworksLoaded
+    )
 
     // 样式设置
     /** 边框模式 */
@@ -120,36 +132,36 @@ export const useSettingStore = defineStore(
 
     /**
      * 获取菜单主题
-     * 根据当前主题类型和暗色模式返回对应的主题配置
      */
     const getMenuTheme = computed((): MenuThemeType => {
-      const list = AppConfig.themeList.filter((item) => item.theme === menuThemeType.value)
       if (isDark.value) {
-        return AppConfig.darkMenuStyles[0]
-      } else {
-        return list[0]
+        return AppConfig.darkMenuStyles[0] || AppConfig.themeList[0]
       }
-    })
 
-    /**
-     * 判断是否为暗色模式
-     */
-    const isDark = computed((): boolean => {
-      return systemThemeType.value === SystemThemeEnum.DARK
+      const menuTheme = AppConfig.themeList.find(
+        (item) => item.theme === menuThemeType.value
+      )
+      return menuTheme || AppConfig.themeList[0]
     })
 
     /**
      * 获取菜单展开宽度
      */
     const getMenuOpenWidth = computed((): string => {
-      return `${menuOpenWidth.value}px` || `${SETTING_DEFAULT_CONFIG.menuOpenWidth}px`
+      return (
+        `${menuOpenWidth.value}px` ||
+        `${SETTING_DEFAULT_CONFIG.menuOpenWidth}px`
+      )
     })
 
     /**
      * 获取自定义圆角
      */
     const getCustomRadius = computed((): string => {
-      return `${customRadius.value}rem` || `${SETTING_DEFAULT_CONFIG.customRadius}rem`
+      return (
+        `${customRadius.value}rem` ||
+        `${SETTING_DEFAULT_CONFIG.customRadius}rem`
+      )
     })
 
     /**
@@ -157,7 +169,9 @@ export const useSettingStore = defineStore(
      * 根据当前日期和节日日期判断是否显示烟花效果
      */
     const isShowFireworks = computed((): boolean => {
-      return festivalDate.value !== useCeremony().currentFestivalData.value?.date
+      return (
+        festivalDate.value !== useCeremony().currentFestivalData.value?.date
+      )
     })
 
     /**
@@ -177,11 +191,15 @@ export const useSettingStore = defineStore(
     }
 
     /**
-     * 设置全局主题
+     * 设置全局主题（已废弃，仅用于持久化，不触发响应式）
      * @param theme 主题类型
      * @param themeMode 主题模式
+     * @deprecated 使用 hooks/core/useTheme 的 switchThemeStyles 方法
      */
-    const setGlopTheme = (theme: SystemThemeEnum, themeMode: SystemThemeEnum) => {
+    const setGlopTheme = (
+      theme: SystemThemeEnum,
+      themeMode: SystemThemeEnum
+    ) => {
       systemThemeType.value = theme
       systemThemeMode.value = themeMode
       localStorage.setItem(StorageConfig.THEME_KEY, theme)
@@ -349,7 +367,10 @@ export const useSettingStore = defineStore(
      */
     const setCustomRadius = (radius: string) => {
       customRadius.value = radius
-      document.documentElement.style.setProperty('--custom-radius', `${radius}rem`)
+      document.documentElement.style.setProperty(
+        '--custom-radius',
+        `${radius}rem`
+      )
     }
 
     /**
@@ -377,14 +398,20 @@ export const useSettingStore = defineStore(
     }
 
     return {
+      // 菜单相关
       menuType,
       menuOpenWidth,
+      menuOpen,
+      dualMenuShowText,
+
+      // 主题相关（仅用于持久化，不用于主题判断）
       systemThemeType,
       systemThemeMode,
       menuThemeType,
       systemThemeColor,
-      boxBorderMode,
-      uniqueOpened,
+      isDark,
+
+      // 界面显示
       showMenuButton,
       showFastEnter,
       showRefreshButton,
@@ -397,20 +424,25 @@ export const useSettingStore = defineStore(
       showSettingGuide,
       pageTransition,
       tabStyle,
-      menuOpen,
       refresh,
       watermarkVisible,
       customRadius,
       holidayFireworksLoaded,
       showFestivalText,
       festivalDate,
-      dualMenuShowText,
       containerWidth,
+
+      // 样式
+      boxBorderMode,
+      uniqueOpened,
+
+      // 计算属性
       getMenuTheme,
-      isDark,
       getMenuOpenWidth,
       getCustomRadius,
       isShowFireworks,
+
+      // 方法
       switchMenuLayouts,
       setMenuOpenWidth,
       setGlopTheme,
