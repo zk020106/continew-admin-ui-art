@@ -17,7 +17,7 @@
  */
 
 import { useElementSize } from '@vueuse/core'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 
 /**
  * 页面容器高度配置
@@ -91,6 +91,8 @@ export function useAutoLayoutHeight(
 
   // 为每个 ID 创建元素引用
   const elementRefs = ref<HTMLElement[]>([])
+  let resizeObserver: ResizeObserver | null = null
+  let observeTimer: ReturnType<typeof setTimeout> | null = null
 
   // 使用 VueUse 自动监听每个元素的尺寸变化
   const elementSizes = computed(() => {
@@ -144,24 +146,28 @@ export function useAutoLayoutHeight(
       requestAnimationFrame(updateElements)
 
       // 使用 ResizeObserver 监听每个元素的变化
-      const resizeObserver = new ResizeObserver(updateElements)
+      resizeObserver = new ResizeObserver(updateElements)
       const startObserving = () => {
         headerIds.forEach((id) => {
           const element = document.getElementById(id)
           if (element) {
-            resizeObserver.observe(element)
+            resizeObserver?.observe(element)
           }
         })
       }
 
       // 延迟开始监听，确保 DOM 已渲染
-      setTimeout(startObserving, 100)
-
-      // 清理函数
-      return () => {
-        resizeObserver.disconnect()
-      }
+      observeTimer = setTimeout(startObserving, 100)
     }
+  })
+
+  onUnmounted(() => {
+    if (observeTimer) {
+      clearTimeout(observeTimer)
+      observeTimer = null
+    }
+    resizeObserver?.disconnect()
+    resizeObserver = null
   })
 
   return {

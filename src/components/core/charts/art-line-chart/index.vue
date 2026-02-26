@@ -358,9 +358,6 @@ const {
   generateOptions: () => generateChartOptions(false)
 })
 
-// 使用 VueUse 的 watchDebounced 优化数据监听（避免频繁更新）
-watch([() => props.data, () => props.xAxisData, () => props.colors], renderChart, { deep: true })
-
 // 生命周期
 onMounted(() => {
   renderChart()

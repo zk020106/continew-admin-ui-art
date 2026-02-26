@@ -66,24 +66,22 @@ export default ({ mode }: { mode: string }) => {
           // 手动分包策略
           manualChunks(id) {
             if (id.includes('node_modules')) {
-              // echarts 单独打包
               if (id.includes('echarts')) {
-                return 'echarts'
+                return 'vendor-echarts'
               }
-              // element-plus 单独打包
               if (id.includes('element-plus')) {
-                return 'element-plus'
+                return 'vendor-element-plus'
               }
-              // 其他 node_modules 统一打包
+              if (id.includes('@vue-office') || id.includes('xlsx')) {
+                return 'vendor-office'
+              }
               return 'vendor'
             }
           },
           // 优化 chunk 命名
           chunkFileNames: 'js/[name]-[hash].js',
           entryFileNames: 'js/[name]-[hash].js',
-          assetFileNames: '[ext]/[name]-[hash].[ext]',
-          // 拆分 runtime
-          runtimeChunk: 'single'
+          assetFileNames: '[ext]/[name]-[hash].[ext]'
         }
       },
       terserOptions: {
@@ -125,10 +123,6 @@ export default ({ mode }: { mode: string }) => {
         dts: 'src/types/import/components.d.ts',
         resolvers: [ElementPlusResolver()]
       }),
-      // 按需定制主题配置
-      ElementPlus({
-        useSource: true
-      }),
       // gzip 压缩
       viteCompression({
         verbose: false, // 是否在控制台输出压缩结果
@@ -138,16 +132,8 @@ export default ({ mode }: { mode: string }) => {
         threshold: 10240, // 只有大小大于该值的资源会被处理 10240B = 10KB
         deleteOriginFile: false // 压缩后是否删除原文件
       }),
-      // brotli 压缩（更高效的压缩算法）
-      viteCompression({
-        verbose: false,
-        disable: false,
-        algorithm: 'brotliCompress',
-        ext: '.br',
-        threshold: 10240,
-        deleteOriginFile: false
-      }),
-      vueDevTools()
+      // 条件化启用 Vue DevTools（仅在需要调试时启用）
+      ...(process.env.VITE_ENABLE_DEVTOOLS === 'true' ? [vueDevTools()] : [])
       // 打包分析
       // visualizer({
       //   open: true,

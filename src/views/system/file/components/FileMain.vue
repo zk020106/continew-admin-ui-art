@@ -138,6 +138,7 @@
 import type { SelectionMode, SortField, ViewMode } from '../types'
 import type { PreviewInfo } from '../utils/filePreview'
 import type { FileItem, FileStatisticsResp } from '@/apis/system/file'
+import { defineAsyncComponent } from 'vue'
 import { useI18n } from 'vue-i18n'
 import * as fileApi from '@/apis/system/file'
 import { useFileContextMenu } from '../hooks/useFileContextMenu'
@@ -154,7 +155,8 @@ import FileList from './FileList.vue'
 import FileSidebar from './FileSidebar.vue'
 import NewFolderModal from './modals/NewFolderModal.vue'
 import RenameModal from './modals/RenameModal.vue'
-import OfficePreview from './OfficePreview.vue'
+
+const OfficePreview = defineAsyncComponent(() => import('./OfficePreview.vue'))
 
 const { t } = useI18n()
 

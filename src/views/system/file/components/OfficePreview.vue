@@ -50,25 +50,18 @@ defineEmits<{
 const loading = ref(true)
 const error = ref('')
 
-// const options = {
-//   className: 'office-document',
-//   table: {
-//     row: { height: 20 },
-//     col: { width: 100 }
-//   }
-// }
-console.log('fileUrl', props.fileUrl)
-
 const onRendered = () => {
-  console.log('11111')
-
   loading.value = false
 }
 
-const onError = (err: any) => {
+const onError = (err: unknown) => {
   console.error('Office preview error:', err)
   loading.value = false
-  error.value = err.message || '文档加载失败'
+  if (err instanceof Error) {
+    error.value = err.message || '文档加载失败'
+    return
+  }
+  error.value = '文档加载失败'
 }
 </script>
 

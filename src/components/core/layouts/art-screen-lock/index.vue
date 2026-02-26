@@ -286,6 +286,7 @@ const disableDevTools = () => {
   const devtools = { open: false }
   const threshold = 160
   let devToolsInterval: ReturnType<typeof setInterval> | null = null
+  let stopLockWatch: (() => void) | null = null
 
   const checkDevTools = () => {
     if (!isLock.value || isMobile()) return
@@ -303,9 +304,33 @@ const disableDevTools = () => {
     }
   }
 
-  // 仅在桌面端启用开发者工具检测
+  const startDevToolsCheck = () => {
+    if (devToolsInterval || isMobile()) return
+    devToolsInterval = setInterval(checkDevTools, 1000)
+  }
+
+  const stopDevToolsCheck = () => {
+    if (devToolsInterval) {
+      clearInterval(devToolsInterval)
+      devToolsInterval = null
+    }
+    devtools.open = false
+    showDevToolsWarning.value = false
+  }
+
+  // 仅在锁屏状态下启动检测
   if (!isMobile()) {
-    devToolsInterval = setInterval(checkDevTools, 500)
+    stopLockWatch = watch(
+      isLock,
+      (locked) => {
+        if (locked) {
+          startDevToolsCheck()
+        } else {
+          stopDevToolsCheck()
+        }
+      },
+      { immediate: true }
+    )
   }
 
   // 返回清理函数
@@ -314,9 +339,9 @@ const disableDevTools = () => {
     document.removeEventListener('keydown', handleKeyDown, true)
     document.removeEventListener('selectstart', handleSelectStart, true)
     document.removeEventListener('dragstart', handleDragStart, true)
-    if (devToolsInterval) {
-      clearInterval(devToolsInterval)
-    }
+    stopLockWatch?.()
+    stopLockWatch = null
+    stopDevToolsCheck()
   }
 }
 
@@ -439,6 +464,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  mittBus.off('openLockScreen', openLockScreen)
   document.removeEventListener('keydown', handleKeydown)
   document.body.style.overflow = 'auto'
   // 清理禁用开发者工具的事件监听器

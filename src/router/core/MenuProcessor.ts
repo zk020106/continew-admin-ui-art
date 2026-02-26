@@ -27,6 +27,7 @@ export class MenuProcessor {
     }
     return MenuProcessor.instance
   }
+
   /**
    * 获取菜单数据
    */

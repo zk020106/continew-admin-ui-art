@@ -6,7 +6,10 @@
     :class="themeClasses"
     :style="containerStyle"
   >
-    <div class="flex-cc absolute left-0 h-full w-9 z-10" :style="{ backgroundColor: bgColor }">
+    <div
+      class="flex-cc absolute left-0 h-full w-9 z-10"
+      :style="{ backgroundColor: bgColor }"
+    >
       <ArtSvgIcon icon="ri:volume-down-line" class="text-lg" />
     </div>
 
@@ -44,23 +47,24 @@
 
 <script setup lang="ts">
 import {
+  useDark,
   useDebounceFn,
   useElementHover,
   useElementSize,
   useRafFn,
-  useTimeoutFn
+useTimeoutFn
 } from '@vueuse/core'
 import { useSettingStore } from '@/store/modules/setting'
 
-type ThemeType
-  = | 'theme'
-    | 'primary'
-    | 'secondary'
-    | 'error'
-    | 'info'
-    | 'success'
-    | 'warning'
-    | 'danger'
+type ThemeType =
+  | 'theme'
+  | 'primary'
+  | 'secondary'
+  | 'error'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'danger'
 
 /**
  * 文本滚动组件属性接口
@@ -119,11 +123,16 @@ const textSize = ref(0)
 const containerSize = ref(0)
 const shouldClone = ref(false)
 
-const isHorizontal = computed(() => props.direction === 'left' || props.direction === 'right')
-const isReverse = computed(() => props.direction === 'right' || props.direction === 'down')
+const isHorizontal = computed(
+  () => props.direction === 'left' || props.direction === 'right'
+)
+const isReverse = computed(
+  () => props.direction === 'right' || props.direction === 'down'
+)
 
 // 使用 VueUse 的 useElementSize 监听容器尺寸变化
-const { width: containerWidth, height: containerHeight } = useElementSize(containerRef)
+const { width: containerWidth, height: containerHeight } =
+  useElementSize(containerRef)
 
 // 使用 VueUse 的 useElementHover 检测鼠标悬停
 const isHovered = useElementHover(containerRef)
