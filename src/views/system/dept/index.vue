@@ -6,6 +6,7 @@
           ref="tableRef"
           :data="deptList"
           :columns="columns"
+          :loading="loading"
           :hide-pagination="true"
           :disabled-tools="['columnSetting']"
           row-key="id"
@@ -103,6 +104,7 @@ const allDeptList = ref<DeptResp[]>([])
 const searchKey = ref('')
 const isExpanded = ref(true)
 const activeTab = ref('list')
+const loading = ref(false)
 
 const columns = computed(
   () =>
@@ -206,6 +208,7 @@ const toggleExpand = () => {
 
 // 获取部门列表
 const getDeptList = async () => {
+  loading.value = true
   try {
     const data = await listDept({})
     allDeptList.value = data
@@ -217,6 +220,8 @@ const getDeptList = async () => {
   } catch (error) {
     console.error('获取部门列表失败:', error)
     ElMessage.error(t('dept.message.fetchFailed'))
+  } finally {
+    loading.value = false
   }
 }
 

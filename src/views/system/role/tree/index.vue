@@ -14,7 +14,7 @@
       <ElButton :icon="Plus" type="primary" @click="handleAdd" />
     </div>
 
-    <div class="role-list-wrapper">
+    <div v-loading="loading" class="role-list-wrapper">
       <div class="role-list">
         <div
           v-for="item in filteredRoleList"
@@ -78,8 +78,6 @@ const loading = ref(false)
 
 // 选中角色
 const selectRole = (role: RoleResp) => {
-  console.log(selectedRole.value)
-
   if (selectedRole.value?.id === role.id) {
     return
   }

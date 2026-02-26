@@ -231,10 +231,9 @@ const getRoleUserList = async () => {
       current: pagination.current,
       size: pagination.pageSize
     }
-    listRoleUser(props.role.id, query).then(({ list, total }) => {
-      tableData.value = list
-      pagination.total = total
-    })
+    const { list, total } = await listRoleUser(props.role.id, query)
+    tableData.value = list
+    pagination.total = total
   } catch (error) {
     console.error('获取角色用户列表失败:', error)
     ElMessage.error(t('role.message.unassignFailed'))

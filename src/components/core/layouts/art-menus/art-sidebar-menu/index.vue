@@ -130,6 +130,7 @@
 </template>
 
 <script setup lang="ts">
+import type { AppRouteRecord } from '@/types/router'
 import { useTimeoutFn, useWindowSize } from '@vueuse/core'
 import { defineAsyncComponent } from 'vue'
 import AppConfig from '@/config'
@@ -212,6 +213,80 @@ const findIframeMenuList = (currentPath: string, menuList: any[]) => {
   return []
 }
 
+const normalizePath = (path: string | undefined): string => {
+  return (path || '').split('?')[0].split('#')[0]
+}
+
+const isPathMatched = (menuPath: string | undefined, targetPath: string): boolean => {
+  const normalizedMenuPath = normalizePath(menuPath)
+  const normalizedTargetPath = normalizePath(targetPath)
+
+  if (!normalizedMenuPath || !normalizedTargetPath) {
+    return false
+  }
+
+  return (
+    normalizedTargetPath === normalizedMenuPath
+    || normalizedTargetPath.startsWith(`${normalizedMenuPath}/`)
+  )
+}
+
+const getMatchScore = (menu: AppRouteRecord, targetPath: string): number => {
+  const normalizedTargetPath = normalizePath(targetPath)
+  const normalizedMenuPath = normalizePath(menu.path)
+
+  let currentScore = -1
+  if (normalizedMenuPath && isPathMatched(normalizedMenuPath, normalizedTargetPath)) {
+    // 精确匹配优先级最高，前缀匹配按路径长度计分
+    currentScore = normalizedMenuPath === normalizedTargetPath
+      ? 10000 + normalizedMenuPath.length
+      : normalizedMenuPath.length
+  }
+
+  if (!menu.children?.length) {
+    return currentScore
+  }
+
+  let childrenMaxScore = -1
+  for (const child of menu.children) {
+    childrenMaxScore = Math.max(childrenMaxScore, getMatchScore(child, normalizedTargetPath))
+  }
+
+  return Math.max(currentScore, childrenMaxScore)
+}
+
+const findTopLevelMenuByPath = (menus: AppRouteRecord[], targetPath: string): AppRouteRecord | undefined => {
+  if (!targetPath) return undefined
+
+  let bestMenu: AppRouteRecord | undefined
+  let bestScore = -1
+
+  for (const menu of menus) {
+    const score = getMatchScore(menu, targetPath)
+    if (score > bestScore) {
+      bestScore = score
+      bestMenu = menu
+    }
+  }
+
+  return bestScore >= 0 ? bestMenu : undefined
+}
+
+const resolveCurrentTopMenu = (menus: AppRouteRecord[]): AppRouteRecord | undefined => {
+  const routeCandidates = [
+    String(route.meta.activePath || ''),
+    route.path,
+    ...route.matched.map((item) => String(item.path || ''))
+  ].filter(Boolean)
+
+  for (const candidatePath of routeCandidates) {
+    const topMenu = findTopLevelMenuByPath(menus, candidatePath)
+    if (topMenu) return topMenu
+  }
+
+  return undefined
+}
+
 const menuList = computed(() => {
   const menuStore = useMenuStore()
   const allMenus = menuStore.menuList
@@ -231,9 +306,8 @@ const menuList = computed(() => {
     return []
   }
 
-  // 返回当前顶级路径对应的子菜单
-  const currentTopPath = `/${route.path.split('/')[1]}`
-  const currentMenu = allMenus.find((menu) => menu.path === currentTopPath)
+  // 根据菜单树父子关系定位当前路由归属的顶级菜单
+  const currentMenu = resolveCurrentTopMenu(allMenus)
   return currentMenu?.children ?? []
 })
 

@@ -15,7 +15,7 @@
         :placeholder="$t('search.placeholder')"
         :prefix-icon="Search"
         class="h-12"
-        @input="search"
+        @input="handleSearchInput"
         @blur="searchBlur"
       >
         <template #suffix>
@@ -47,7 +47,7 @@
 
         <div v-show="!searchVal && searchResult.length === 0 && historyResult.length > 0">
           <p class="text-xs text-g-500">{{ $t('search.historyTitle') }}</p>
-          <div class="mt-1.5 w-full">
+          <div class="history-result mt-1.5 w-full">
             <div
               v-for="(item, index) in historyResult"
               :key="index"
@@ -120,6 +120,8 @@ const highlightedIndex = ref(0)
 const historyHIndex = ref(0)
 const searchResultScrollbar = ref<ScrollbarInstance>()
 const isKeyboardNavigating = ref(false) // 新增状态：是否正在使用键盘导航
+const searchIndex = ref<Array<{ titleLower: string, item: AppRouteRecord }>>([])
+let searchDebounceTimer: ReturnType<typeof setTimeout> | null = null
 
 // ==================== 对话框控制 ====================
 
@@ -135,6 +137,13 @@ const closeSearchDialog = () => {
   historyHIndex.value = 0
 }
 
+const clearSearchDebounce = () => {
+  if (searchDebounceTimer) {
+    clearTimeout(searchDebounceTimer)
+    searchDebounceTimer = null
+  }
+}
+
 // ==================== 键盘导航 ====================
 
 const focusInput = () => {
@@ -145,27 +154,23 @@ const focusInput = () => {
 
 // ==================== 工具函数 ====================
 
-const flattenAndFilterMenuItems = (items: AppRouteRecord[], val: string): AppRouteRecord[] => {
-  const lowerVal = val.toLowerCase()
-  const result: AppRouteRecord[] = []
-
-  const flattenAndMatch = (item: AppRouteRecord) => {
+const buildSearchIndex = (items: AppRouteRecord[]) => {
+  const result: Array<{ titleLower: string, item: AppRouteRecord }> = []
+  const walk = (item: AppRouteRecord) => {
     if (item.meta?.isHide) return
-
-    const lowerItemTitle = formatMenuTitle(item.meta.title).toLowerCase()
-
     if (item.children && item.children.length > 0) {
-      item.children.forEach(flattenAndMatch)
+      item.children.forEach(walk)
       return
     }
-
-    if (lowerItemTitle.includes(lowerVal) && item.path) {
-      result.push({ ...item, children: undefined })
+    if (item.path) {
+      result.push({
+        titleLower: formatMenuTitle(item.meta.title).toLowerCase(),
+        item: { ...item, children: undefined }
+      })
     }
   }
-
-  items.forEach(flattenAndMatch)
-  return result
+  items.forEach(walk)
+  searchIndex.value = result
 }
 
 const updateHistory = () => {
@@ -230,9 +235,45 @@ const scrollToHighlightedHistoryItem = () => {
 
 const search = (val: string) => {
   if (val) {
-    searchResult.value = flattenAndFilterMenuItems(menuList.value, val)
+    const lowerVal = val.toLowerCase()
+    searchResult.value = searchIndex.value
+      .filter(({ titleLower }) => titleLower.includes(lowerVal))
+      .map(({ item }) => item)
+    highlightedIndex.value = 0
   } else {
     searchResult.value = []
+  }
+}
+
+const handleSearchInput = (val: string) => {
+  clearSearchDebounce()
+  if (!val) {
+    searchResult.value = []
+    highlightedIndex.value = 0
+    return
+  }
+  searchDebounceTimer = setTimeout(() => {
+    search(val)
+  }, 120)
+}
+
+const searchBlur = () => {
+  highlightedIndex.value = 0
+}
+
+const isHighlighted = (index: number) => {
+  return highlightedIndex.value === index
+}
+
+const highlightOnHover = (index: number) => {
+  if (!isKeyboardNavigating.value && searchVal.value) {
+    highlightedIndex.value = index
+  }
+}
+
+const highlightOnHoverHistory = (index: number) => {
+  if (!isKeyboardNavigating.value && !searchVal.value) {
+    historyHIndex.value = index
   }
 }
 
@@ -338,11 +379,25 @@ const handleKeydown = (event: KeyboardEvent) => {
 // ==================== 生命周期钩子 ====================
 
 onMounted(() => {
+  buildSearchIndex(menuList.value)
   mittBus.on('openSearchDialog', openSearchDialog)
   document.addEventListener('keydown', handleKeydown)
 })
 
+watch(
+  menuList,
+  (menus) => {
+    buildSearchIndex(menus)
+    if (searchVal.value) {
+      search(searchVal.value)
+    }
+  },
+  { deep: true }
+)
+
 onUnmounted(() => {
+  clearSearchDebounce()
+  mittBus.off('openSearchDialog', openSearchDialog)
   document.removeEventListener('keydown', handleKeydown)
 })
 </script>

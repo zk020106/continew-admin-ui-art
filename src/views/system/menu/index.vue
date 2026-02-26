@@ -4,6 +4,7 @@
       ref="tableRef"
       :data="menuList"
       :columns="columns"
+      :loading="loading"
       hide-pagination
       row-key="id"
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
@@ -129,6 +130,7 @@ const menuList = ref<MenuResp[]>([])
 const allMenuList = ref<MenuResp[]>([])
 const searchKey = ref('')
 const isExpanded = ref(false)
+const loading = ref(false)
 
 const columns = computed(
   () =>
@@ -292,6 +294,7 @@ const toggleExpand = () => {
 
 // 获取菜单列表
 const getMenuList = async () => {
+  loading.value = true
   try {
     const data = await listMenu()
     allMenuList.value = data
@@ -299,6 +302,8 @@ const getMenuList = async () => {
   } catch (error) {
     console.error('获取菜单列表失败:', error)
     ElMessage.error(t('menu.message.fetchFailed'))
+  } finally {
+    loading.value = false
   }
 }
 

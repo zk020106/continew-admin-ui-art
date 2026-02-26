@@ -2,7 +2,7 @@
   <div class="permission-container">
     <div class="permission-header">
       <div class="header-left">
-        <ElButton type="primary" :loading="loading" @click="handleSave">
+        <ElButton type="primary" :loading="saveLoading" @click="handleSave">
           {{ t('role.savePermission') }}
         </ElButton>
       </div>
@@ -14,7 +14,10 @@
       </div>
     </div>
 
-    <ElScrollbar height="calc(100vh - 220px)">
+    <ElScrollbar
+      v-loading="treeLoading || permissionLoading"
+      height="calc(100vh - 220px)"
+    >
       <ElTree
         ref="treeRef"
         :data="processedTreeData"
@@ -57,7 +60,9 @@ interface ExtendRolePermissionResp extends RolePermissionResp {
   disabled?: boolean
 }
 const treeRef = ref<InstanceType<typeof ElTree>>()
-const loading = ref(false)
+const saveLoading = ref(false)
+const treeLoading = ref(false)
+const permissionLoading = ref(false)
 const isCascade = ref(true)
 const treeData = ref<any[]>([])
 const processedTreeData = ref<any[]>([])
@@ -127,7 +132,7 @@ const setDisabledStatus = async () => {
 // 获取权限树
 const fetchTree = async () => {
   try {
-    loading.value = true
+    treeLoading.value = true
     const data = await listRolePermissionTree()
     treeData.value = data
     processedTreeData.value = processTreeData(data)
@@ -140,7 +145,7 @@ const fetchTree = async () => {
     console.error('加载权限树失败:', e)
     ElMessage.error(t('role.message.loadPermissionTreeFailed'))
   } finally {
-    loading.value = false
+    treeLoading.value = false
   }
 }
 
@@ -152,11 +157,14 @@ const fetchRolePermissions = async () => {
   }
 
   try {
+    permissionLoading.value = true
     const roleDetail = await getRole(props.role.id)
     checkedKeys.value = roleDetail.menuIds.map(String)
     setCheckedKeys()
   } catch (e) {
     console.error('加载角色权限失败:', e)
+  } finally {
+    permissionLoading.value = false
   }
 }
 
@@ -170,13 +178,16 @@ const handleSave = async () => {
   const halfCheckedKeys = treeRef.value?.getHalfCheckedKeys() || []
 
   const allKeys = Array.from(new Set([...checkedKeys, ...halfCheckedKeys]))
-
-  await updateRolePermission(props.role.id, {
-    menuIds: allKeys.map(Number),
-    menuCheckStrictly: isCascade.value
-  })
-
-  ElMessage.success(t('role.message.saveSuccess'))
+  saveLoading.value = true
+  try {
+    await updateRolePermission(props.role.id, {
+      menuIds: allKeys.map(Number),
+      menuCheckStrictly: isCascade.value
+    })
+    ElMessage.success(t('role.message.saveSuccess'))
+  } finally {
+    saveLoading.value = false
+  }
 }
 
 // 监听角色变化

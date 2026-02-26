@@ -2,6 +2,7 @@
   <ElDrawer v-model="visible" :title="drawerTitle" :size="700" @close="handleClose">
     <ElForm
       ref="formRef"
+      v-loading="formLoading"
       :model="form"
       :rules="rules"
       label-width="100px"
@@ -218,9 +219,12 @@ const formRef = ref()
 const treeSelectRef = ref()
 const visible = ref(false)
 const submitLoading = ref(false)
+const treeLoading = ref(false)
+const detailLoading = ref(false)
 const mode = ref<'add' | 'edit' | 'addChild'>('add')
 const menuId = ref('')
 const parentMenuTitle = ref('')
+const formLoading = computed(() => treeLoading.value || detailLoading.value)
 
 // 菜单树数据（用于选择父菜单）
 const menuTreeData = ref<MenuResp[]>([])
@@ -321,11 +325,14 @@ const drawerTitle = computed(() => {
 
 // 获取菜单树
 const getMenuTree = async () => {
+  treeLoading.value = true
   try {
     const data = await listMenu()
     menuTreeData.value = data
   } catch (error) {
     console.error('获取菜单树失败:', error)
+  } finally {
+    treeLoading.value = false
   }
 }
 
@@ -379,28 +386,33 @@ const resetForm = () => {
 // 打开抽屉（新增）
 const onAdd = async () => {
   mode.value = 'add'
-  await getMenuTree()
+  parentMenuTitle.value = ''
   resetForm()
   visible.value = true
+  await getMenuTree()
 }
 
 // 打开抽屉（新增子菜单）
 const onAddChild = async (parentId: string, parentTitle: string) => {
   mode.value = 'addChild'
   parentMenuTitle.value = parentTitle
-  await getMenuTree()
   resetForm()
-  form.parentId = parentId
   visible.value = true
+  await getMenuTree()
+  form.parentId = parentId
 }
 
 // 打开抽屉（编辑）
 const onUpdate = async (id: string) => {
   mode.value = 'edit'
   menuId.value = id
+  parentMenuTitle.value = ''
+  resetForm()
+  visible.value = true
   await getMenuTree()
 
   try {
+    detailLoading.value = true
     const data = await getMenu(id)
     Object.assign(form, {
       type: data.type,
@@ -422,10 +434,11 @@ const onUpdate = async (id: string) => {
     nextTick(() => {
       formRef.value?.clearValidate()
     })
-    visible.value = true
   } catch (error) {
     console.error('获取菜单详情失败:', error)
     ElMessage.error(t('menu.message.fetchFailed'))
+  } finally {
+    detailLoading.value = false
   }
 }
 
