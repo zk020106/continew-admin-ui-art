@@ -25,7 +25,8 @@
           ref="treeSelectRef"
           v-model="form.parentId"
           :data="menuTreeSelectData"
-          :props="{ label: 'title', value: 'id', children: 'children' }"
+          :props="{ label: 'title', children: 'children' }"
+          node-key="id"
           :placeholder="t('menu.placeholder.parentId')"
           clearable
           check-strictly
@@ -200,6 +201,7 @@
 </template>
 
 <script setup lang="ts">
+import type { TreeNodeData } from 'element-plus'
 import type { MenuResp } from '@/apis/system/menu'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
@@ -268,9 +270,9 @@ const menuTreeSelectData = computed(() => {
 })
 
 // 树节点过滤方法
-const filterMenuNode = (value: string, data: MenuResp) => {
+const filterMenuNode = (value: string, data: TreeNodeData) => {
   if (!value) return true
-  const title = data.title || ''
+  const title = (data as MenuResp).title || ''
   return title.toLowerCase().includes(value.toLowerCase())
 }
 

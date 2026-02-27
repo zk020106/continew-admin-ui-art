@@ -157,7 +157,7 @@ const handleSave = async () => {
 
   try {
     if (isUpdate.value) {
-      const payload: Record<string, unknown> = { ...form }
+      const payload: Partial<StorageReq> = { ...form }
       // 仅在用户实际输入了 secretKey 时才包含
       if (form.type === 2 && form.secretKey) {
         payload.secretKey = encryptByRsa(form.secretKey)
@@ -195,7 +195,7 @@ const onAdd = async (type: number) => {
 const onUpdate = async (id: string) => {
   resetForm()
   dataId.value = id
-  const { data } = await getStorage(id)
+  const data = await getStorage(id)
   Object.assign(form, data)
   visible.value = true
 }

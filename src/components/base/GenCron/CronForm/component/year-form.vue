@@ -80,11 +80,8 @@ const {
   TypeEnum,
   valueRange,
   valueLoop,
-  _valueList,
-  _specifyRange,
   beforeRadioAttrs,
   typeRangeAttrs,
-  typeLoopAttrs,
-  _typeSpecifyAttrs
+  typeLoopAttrs
 } = setup
 </script>

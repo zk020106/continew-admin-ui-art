@@ -56,6 +56,14 @@ interface CountToExpose {
   readonly progress: number
 }
 
+// 常量定义
+const EPSILON = Number.EPSILON
+const MIN_DURATION = 100
+const MAX_DURATION = 60000
+const MAX_DECIMALS = 10
+const DEFAULT_EASING = 'easeOutExpo'
+const DEFAULT_DURATION = 2000
+
 const props = withDefaults(defineProps<CountToProps>(), {
   target: 0,
   duration: DEFAULT_DURATION,
@@ -69,13 +77,6 @@ const props = withDefaults(defineProps<CountToProps>(), {
   disabled: false
 })
 const emit = defineEmits<CountToEmits>()
-// 常量定义
-const EPSILON = Number.EPSILON
-const MIN_DURATION = 100
-const MAX_DURATION = 60000
-const MAX_DECIMALS = 10
-const DEFAULT_EASING = 'easeOutExpo'
-const DEFAULT_DURATION = 2000
 
 // 工具函数
 const validateNumber = (value: number, name: string, defaultValue: number): number => {

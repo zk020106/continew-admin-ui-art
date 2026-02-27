@@ -63,7 +63,14 @@ const reset = () => {
 const save = async () => {
   try {
     await formRef.value?.formRef?.validate()
-    await resetUserPwd({ newPassword: encryptByRsa(form.newPassword) || '' }, dataId.value)
+    const password = encryptByRsa(form.newPassword) || ''
+    await resetUserPwd(
+      {
+        password,
+        confirmPassword: password
+      },
+      dataId.value
+    )
     ElMessage.success(t('message.updateSuccess'))
     emit('save-success')
     visible.value = false

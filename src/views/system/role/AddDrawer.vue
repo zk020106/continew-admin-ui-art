@@ -105,16 +105,20 @@
             <div class="dept-tree-actions">
               <ElButton-group>
                 <ElButton
-                  :type="isDeptExpanded ? 'primary' : 'default'"
+                  class="action-btn"
+                  type="primary"
+                  :plain="!isDeptExpanded"
                   size="small"
-                  @click="handleDeptExpand(true)"
+                  @click="toggleDeptExpand"
                 >
                   {{ t('role.expandCollapse') }}
                 </ElButton>
                 <ElButton
-                  :type="form.deptCheckStrictly ? 'primary' : 'default'"
+                  class="action-btn"
+                  type="primary"
+                  :plain="!isDeptCascade"
                   size="small"
-                  @click="form.deptCheckStrictly = !form.deptCheckStrictly"
+                  @click="toggleDeptCascade"
                 >
                   {{ t('role.deptCheckStrictly') }}
                 </ElButton>
@@ -125,7 +129,7 @@
               ref="deptTreeRef"
               :data="deptList"
               node-key="key"
-              :check-strictly="!form.deptCheckStrictly"
+              :check-strictly="!isDeptCascade"
               :tree-props="{
                 label: 'title',
                 children: 'children',
@@ -209,6 +213,13 @@ const [form, resetForm] = useResetReactive({
 
 const deptTreeRef = ref()
 const isDeptExpanded = ref(true)
+const isDeptCascade = computed({
+  // 后端字段 deptCheckStrictly=true 表示严格模式（不联动），UI 展示为“父子联动”需取反
+  get: () => !form.deptCheckStrictly,
+  set: (value: boolean) => {
+    form.deptCheckStrictly = !value
+  }
+})
 
 // 展开/折叠部门树
 const handleDeptExpand = (expanded: boolean) => {
@@ -223,6 +234,14 @@ const handleDeptExpand = (expanded: boolean) => {
       deptTreeRef.value?.store.nodesMap[key]?.collapse()
     })
   }
+}
+
+const toggleDeptExpand = () => {
+  handleDeptExpand(!isDeptExpanded.value)
+}
+
+const toggleDeptCascade = () => {
+  isDeptCascade.value = !isDeptCascade.value
 }
 
 // 获取所有部门ID
@@ -368,10 +387,15 @@ defineExpose({
     border: 1px solid var(--el-border-color);
     border-radius: var(--el-border-radius-base);
 
-    &-actions {
+    .dept-tree-actions {
       padding-bottom: 12px;
       margin-bottom: 12px;
       border-bottom: 1px solid var(--el-border-color-lighter);
+
+      :deep(.action-btn.el-button--small) {
+        height: 28px;
+        line-height: 1;
+      }
     }
   }
 </style>

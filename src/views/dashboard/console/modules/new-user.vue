@@ -16,6 +16,7 @@
       :data="tableData"
       style="width: 100%"
       size="large"
+      table-layout="fixed"
       :border="false"
       :stripe="false"
       :header-cell-style="{ background: 'transparent' }"

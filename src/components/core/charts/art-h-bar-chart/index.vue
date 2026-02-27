@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import type { EChartsOption } from '@/plugins/echarts'
+import type { BarSeriesOption, EChartsOption } from '@/plugins/echarts'
 import type { BarChartProps, BarDataItem } from '@/types/component/chart'
 import { useChartComponent, useChartOps } from '@/hooks/core/useChart'
 import { graphic } from '@/plugins/echarts'
@@ -94,6 +94,27 @@ const getBaseItemStyle = (
   color: _color
 })
 
+// 创建系列配置
+const createSeriesItem = (config: {
+  name?: string
+  data: number[]
+  color?: string | InstanceType<typeof graphic.LinearGradient>
+  barWidth?: string | number
+  stack?: string
+}): BarSeriesOption => {
+  const barColor
+    = typeof config.color === 'string' ? createGradientColor(config.color) : config.color
+
+  return {
+    name: config.name,
+    type: 'bar',
+    data: config.data,
+    barWidth: config.barWidth ?? props.barWidth,
+    stack: config.stack,
+    itemStyle: getBaseItemStyle(barColor)
+  }
+}
+
 // 使用新的图表组件抽象
 const {
   chartRef,
@@ -101,7 +122,6 @@ const {
   getAxisLabelStyle,
   getAxisTickStyle,
   getSplitLineStyle,
-  _getAnimationConfig,
   getTooltipStyle,
   getLegendStyle,
   getGridWithLegend

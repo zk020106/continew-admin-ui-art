@@ -1,111 +1,115 @@
 <template>
   <div class="menu-container">
-    <CaTable
-      ref="tableRef"
-      :data="menuList"
-      :columns="columns"
-      :loading="loading"
-      hide-pagination
-      row-key="id"
-      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-      @refresh="getMenuList"
-    >
-      <template #toolbar-left>
-        <ElButton type="primary" @click="handleAdd">
-          <template #icon>
-            <ElIcon><Plus /></ElIcon>
-          </template>
-          {{ t('menu.button.add') }}
-        </ElButton>
-        <ElInput
-          v-model="searchKey"
-          :placeholder="t('menu.search.title')"
-          clearable
-          @input="handleSearch"
-        >
-          <template #prefix>
-            <ElIcon><Search /></ElIcon>
-          </template>
-        </ElInput>
-        <ElButton @click="handleReset">
-          {{ t('common.button.reset') }}
-        </ElButton>
-      </template>
+    <div class="menu-table-wrap" :class="{ 'is-expanding': isExpanding }">
+      <CaTable
+        ref="tableRef"
+        :data="menuList"
+        :columns="columns"
+        :loading="loading"
+        hide-pagination
+        row-key="id"
+        :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+        @refresh="getMenuList"
+      >
+        <template #toolbar-left>
+          <ElButton type="primary" @click="handleAdd">
+            <template #icon>
+              <ElIcon><Plus /></ElIcon>
+            </template>
+            {{ t('menu.button.add') }}
+          </ElButton>
+          <ElInput
+            v-model="searchKey"
+            :placeholder="t('menu.search.title')"
+            clearable
+            @input="handleSearch"
+          >
+            <template #prefix>
+              <ElIcon><Search /></ElIcon>
+            </template>
+          </ElInput>
+          <ElButton @click="handleReset">
+            {{ t('common.button.reset') }}
+          </ElButton>
+        </template>
 
-      <template #toolbar-right>
-        <ElButton type="warning" @click="onClearCache">
-          <template #icon>
-            <ElIcon><Delete /></ElIcon>
-          </template>
-          {{ t('menu.button.clearCache') }}
-        </ElButton>
-        <ElButton @click="toggleExpand">
-          <template #icon>
-            <ElIcon>
-              <ArrowDown v-if="isExpanded" />
-              <ArrowRight v-else />
-            </ElIcon>
-          </template>
-          {{ isExpanded ? t('menu.button.collapse') : t('menu.button.expand') }}
-        </ElButton>
-      </template>
+        <template #toolbar-right>
+          <ElButton type="warning" @click="onClearCache">
+            <template #icon>
+              <ElIcon><Delete /></ElIcon>
+            </template>
+            {{ t('menu.button.clearCache') }}
+          </ElButton>
+          <ElButton :loading="isExpanding" :disabled="loading || isExpanding" @click="toggleExpand">
+            <template #icon>
+              <ElIcon>
+                <Transition name="expand-icon-fade" mode="out-in">
+                  <ArrowDown v-if="isExpanded" key="expanded" />
+                  <ArrowRight v-else key="collapsed" />
+                </Transition>
+              </ElIcon>
+            </template>
+            {{ isExpanded ? t('menu.button.collapse') : t('menu.button.expand') }}
+          </ElButton>
+        </template>
 
-      <template #title="{ row }">
-        {{ formatTitle(row.title) }}
-      </template>
+        <template #title="{ row }">
+          {{ formatTitle(row.title) }}
+        </template>
 
-      <template #type="{ row }">
-        <ElTag v-if="row.type === 1" type="primary">{{ t('menu.type.directory') }}</ElTag>
-        <ElTag v-else-if="row.type === 2" type="success">{{ t('menu.type.menu') }}</ElTag>
-        <ElTag v-else-if="row.type === 3" type="warning">{{ t('menu.type.button') }}</ElTag>
-      </template>
+        <template #type="{ row }">
+          <ElTag v-if="row.type === 1" type="primary">{{ t('menu.type.directory') }}</ElTag>
+          <ElTag v-else-if="row.type === 2" type="success">{{ t('menu.type.menu') }}</ElTag>
+          <ElTag v-else-if="row.type === 3" type="warning">{{ t('menu.type.button') }}</ElTag>
+        </template>
 
-      <template #status="{ row }">
-        <ElTag :type="row.status === 1 ? 'success' : 'danger'">
-          {{ row.status === 1 ? t('common.statusEnabled') : t('common.statusDisabled') }}
-        </ElTag>
-      </template>
+        <template #status="{ row }">
+          <ElTag :type="row.status === 1 ? 'success' : 'danger'">
+            {{ row.status === 1 ? t('common.statusEnabled') : t('common.statusDisabled') }}
+          </ElTag>
+        </template>
 
-      <template #isExternal="{ row }">
-        <ElTag v-if="row.isExternal" type="success">{{ t('common.true') }}</ElTag>
-        <ElTag v-else type="warning">{{ t('common.false') }}</ElTag>
-      </template>
+        <template #isExternal="{ row }">
+          <ElTag v-if="row.isExternal" type="success">{{ t('common.true') }}</ElTag>
+          <ElTag v-else type="warning">{{ t('common.false') }}</ElTag>
+        </template>
 
-      <template #isCache="{ row }">
-        <ElTag v-if="row.isCache" type="success">{{ t('common.true') }}</ElTag>
-        <ElTag v-else type="warning">{{ t('common.false') }}</ElTag>
-      </template>
+        <template #isCache="{ row }">
+          <ElTag v-if="row.isCache" type="success">{{ t('common.true') }}</ElTag>
+          <ElTag v-else type="warning">{{ t('common.false') }}</ElTag>
+        </template>
 
-      <template #isHidden="{ row }">
-        <ElTag v-if="row.isHidden" type="danger">{{ t('common.true') }}</ElTag>
-        <ElTag v-else type="success">{{ t('common.false') }}</ElTag>
-      </template>
+        <template #isHidden="{ row }">
+          <ElTag v-if="row.isHidden" type="danger">{{ t('common.true') }}</ElTag>
+          <ElTag v-else type="success">{{ t('common.false') }}</ElTag>
+        </template>
 
-      <template #icon="{ row }">
-        <div v-if="row.icon" class="icon-cell">
-          <ArtSvgIcon :icon="row.icon" />
-        </div>
-      </template>
+        <template #icon="{ row }">
+          <div v-if="row.icon" class="icon-cell">
+            <ArtSvgIcon :icon="row.icon" />
+          </div>
+        </template>
 
-      <template #action="{ row }">
-        <ElButton
-          v-if="[1, 2].includes(row.type)"
-          type="primary"
-          size="small"
-          link
-          :disabled="row.type === 3"
-          @click="handleAddChild(row)"
-        >
-          {{ t('menu.button.addChild') }}
-        </ElButton>
-        <ElButton type="primary" size="small" link @click="handleEdit(row)">
-          {{ t('common.button.edit') }}
-        </ElButton>
-        <ElButton type="danger" size="small" link @click="handleDelete(row)">
-          {{ t('common.button.delete') }}
-        </ElButton>
-      </template>
-    </CaTable>
+        <template #action="{ row }">
+          <ElButton
+            v-if="[1, 2].includes(row.type)"
+            type="primary"
+            size="small"
+            link
+            :disabled="row.type === 3"
+            @click="handleAddChild(row)"
+          >
+            {{ t('menu.button.addChild') }}
+          </ElButton>
+          <ElButton type="primary" size="small" link @click="handleEdit(row)">
+            {{ t('common.button.edit') }}
+          </ElButton>
+          <ElButton type="danger" size="small" link @click="handleDelete(row)">
+            {{ t('common.button.delete') }}
+          </ElButton>
+        </template>
+      </CaTable>
+    </div>
 
     <AddDrawer ref="addDrawerRef" @save-success="getMenuList" />
   </div>
@@ -130,6 +134,7 @@ const menuList = ref<MenuResp[]>([])
 const allMenuList = ref<MenuResp[]>([])
 const searchKey = ref('')
 const isExpanded = ref(false)
+const isExpanding = ref(false)
 const loading = ref(false)
 
 const columns = computed(
@@ -234,6 +239,11 @@ const formatTitle = (title: string) => {
 const searchData = (keyword: string) => {
   if (!keyword) {
     menuList.value = allMenuList.value
+    if (isExpanded.value) {
+      nextTick(() => {
+        void applyExpandState(true)
+      })
+    }
     return
   }
 
@@ -260,6 +270,11 @@ const searchData = (keyword: string) => {
   }
 
   menuList.value = loop(allMenuList.value)
+  if (isExpanded.value) {
+    nextTick(() => {
+      void applyExpandState(true)
+    })
+  }
 }
 
 // 搜索处理
@@ -271,25 +286,61 @@ const handleSearch = () => {
 const handleReset = () => {
   searchKey.value = ''
   menuList.value = allMenuList.value
+  if (isExpanded.value) {
+    nextTick(() => {
+      void applyExpandState(true)
+    })
+  }
 }
 
 // 展开/折叠
-const toggleExpand = () => {
-  isExpanded.value = !isExpanded.value
-  const elTable = tableRef.value?.tableRef
-  if (!elTable) return
+const nextAnimationFrame = () => {
+  return new Promise<void>((resolve) => {
+    requestAnimationFrame(() => resolve())
+  })
+}
 
-  // 递归展开/折叠所有节点
-  const toggleAllRows = (data: MenuResp[]) => {
-    data.forEach((row) => {
-      elTable.toggleRowExpansion(row, isExpanded.value)
+const getExpandableRows = (data: MenuResp[]): MenuResp[] => {
+  const rows: MenuResp[] = []
+  const traverse = (list: MenuResp[]) => {
+    list.forEach((row) => {
       if (row.children && row.children.length > 0) {
-        toggleAllRows(row.children)
+        rows.push(row)
+        traverse(row.children)
       }
     })
   }
+  traverse(data)
+  return rows
+}
 
-  toggleAllRows(menuList.value)
+const applyExpandState = async (expanded: boolean) => {
+  const elTable = tableRef.value?.tableRef
+  if (!elTable) return
+
+  const rows = getExpandableRows(menuList.value)
+  const chunkSize = expanded ? 20 : 40
+
+  for (let i = 0; i < rows.length; i += chunkSize) {
+    rows.slice(i, i + chunkSize).forEach((row) => {
+      elTable.toggleRowExpansion(row, expanded)
+    })
+    // 分帧处理，避免一次性更新大量节点造成主线程卡顿
+    await nextAnimationFrame()
+  }
+}
+
+const toggleExpand = async () => {
+  if (isExpanding.value) return
+
+  isExpanded.value = !isExpanded.value
+  isExpanding.value = true
+
+  try {
+    await applyExpandState(isExpanded.value)
+  } finally {
+    isExpanding.value = false
+  }
 }
 
 // 获取菜单列表
@@ -299,6 +350,11 @@ const getMenuList = async () => {
     const data = await listMenu()
     allMenuList.value = data
     menuList.value = data
+    if (isExpanded.value) {
+      nextTick(() => {
+        void applyExpandState(true)
+      })
+    }
   } catch (error) {
     console.error('获取菜单列表失败:', error)
     ElMessage.error(t('menu.message.fetchFailed'))
@@ -377,6 +433,25 @@ onMounted(() => {
     box-sizing: border-box;
     height: 100%;
     padding: var(--page-content-padding);
+  }
+
+   .menu-table-wrap {
+    transition: opacity 0.24s ease;
+
+    &.is-expanding {
+      opacity: 0.88;
+    }
+  }
+
+  .expand-icon-fade-enter-active,
+  .expand-icon-fade-leave-active {
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  .expand-icon-fade-enter-from,
+  .expand-icon-fade-leave-to {
+    opacity: 0;
+    transform: scale(0.9);
   }
 
   .icon-cell {

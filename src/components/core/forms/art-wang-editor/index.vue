@@ -104,6 +104,10 @@ const toolbarConfig = computed((): Partial<IToolbarConfig> => {
   return config
 })
 
+const editorConfig = computed((): Partial<IEditorConfig> => ({
+  placeholder: props.placeholder
+}))
+
 // 应用自定义图标（带重试机制）
 const applyCustomIcons = () => {
   let retryCount = 0

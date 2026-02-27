@@ -127,8 +127,8 @@ const props = withDefaults(defineProps<CaTableSelectorProps<T>>(), {
 const emit = defineEmits<{
   (e: 'confirm', selectedRows: T[]): void
   (e: 'cancel'): void
-  (e: 'loadSuccess', data: T[]): void
-  (e: 'loadError', error: any): void
+  (e: 'load-success', data: T[]): void
+  (e: 'load-error', error: any): void
 }>()
 
 const { t } = useI18n()

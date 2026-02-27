@@ -267,8 +267,13 @@ const { width } = useWindowSize()
 
 const colProps = { xs: 24, sm: 24, md: 12, lg: 12, xl: 12, xxl: 12 }
 
+type CronPresetOption = {
+  label: string
+  value: string
+}
+
 // 内置 Cron 表达式
-const cron_list = computed(() => [
+const cron_list = computed<CronPresetOption[]>(() => [
   { label: t('components.cronPreset.everyMinute'), value: '0 * * * * ?' },
   { label: t('components.cronPreset.every30Minutes'), value: '0 0/30 * * * ?' },
   { label: t('components.cronPreset.everyHour'), value: '0 0 * * * ?' },
@@ -396,7 +401,7 @@ const querySearch = (queryString: string, cb: (results: { value: string }[]) => 
     ? cron_list.value.filter(
         (item) => item.label.includes(queryString) || item.value.includes(queryString)
       )
-    : cron_list
+    : cron_list.value
   cb(results.map((item) => ({ value: item.value })))
 }
 

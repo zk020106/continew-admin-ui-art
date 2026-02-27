@@ -198,12 +198,8 @@ const getDataList = async () => {
       MAIL_SSL_PORT: {} as OptionResp
     }
     mailConfig.value = data.reduce<MailConfig>((obj, option) => {
-      obj[option.code as keyof MailConfig] = {
-        ...option,
-        value: ['MAIL_PORT', 'MAIL_SSL_PORT', 'MAIL_SSL_ENABLED'].includes(option.code)
-          ? Number.parseInt(option.value)
-          : option.value
-      }
+      const key = option.code as keyof MailConfig
+      obj[key] = option
       return obj
     }, defaultMailConfig)
     reset()

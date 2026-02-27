@@ -65,6 +65,7 @@
 </template>
 
 <script setup lang="ts">
+import type { UserResp } from '@/apis/system/type'
 import type { FormColumnItem } from '@/components/base/CaForm/type'
 import { useWindowSize } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
@@ -86,7 +87,7 @@ const dataId = ref('')
 const visible = ref(false)
 const selectedIds = ref<string[]>([])
 const tableRef = ref()
-const tableData = ref([])
+const tableData = ref<UserResp[]>([])
 const loading = ref(false)
 
 // 搜索表单
@@ -214,7 +215,7 @@ const getUserList = async () => {
 
     // TODO: 这里可能需要后端接口支持排除已分配用户的查询
     // 暂时使用所有用户数据
-    tableData.value = data.records
+    tableData.value = data.list
     pagination.total = data.total
   } catch (error) {
     console.error('获取用户列表失败:', error)

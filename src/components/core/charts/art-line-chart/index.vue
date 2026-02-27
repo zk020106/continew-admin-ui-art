@@ -257,11 +257,11 @@ const initAnimationData = (): number[] | LineDataItem[] => {
     const multiData = props.data as LineDataItem[]
     return multiData.map((item) => ({
       ...item,
-      data: Array.from({ length: item.data.length }).fill(0)
+      data: item.data.map(() => 0)
     }))
   }
   const singleData = props.data as number[]
-  return Array.from({ length: singleData.length }).fill(0)
+  return singleData.map(() => 0)
 }
 
 // 复制真实数据（优化：使用结构化克隆）

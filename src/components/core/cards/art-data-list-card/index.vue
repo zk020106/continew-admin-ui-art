@@ -71,4 +71,8 @@ const _emit = defineEmits<{
 }>()
 
 const maxHeight = computed(() => `${ITEM_HEIGHT * props.maxCount}px`)
+
+const handleMore = () => {
+  _emit('more')
+}
 </script>

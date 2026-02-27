@@ -16,7 +16,8 @@
           ref="treeSelectRef"
           v-model="form.parentId"
           :data="deptTreeSelectData"
-          :props="{ label: 'name', value: 'id', children: 'children' }"
+          :props="{ label: 'name', children: 'children' }"
+          node-key="id"
           :placeholder="t('dept.placeholder.parentId')"
           clearable
           check-strictly
@@ -68,6 +69,7 @@
 </template>
 
 <script setup lang="ts">
+import type { TreeNodeData } from 'element-plus'
 import type { DeptResp } from '@/apis/system/dept'
 import { ElMessage } from 'element-plus'
 import { useI18n } from 'vue-i18n'
@@ -135,9 +137,9 @@ const deptTreeSelectData = computed(() => {
 })
 
 // 树节点过滤方法
-const filterDeptNode = (value: string, data: DeptResp) => {
+const filterDeptNode = (value: string, data: TreeNodeData) => {
   if (!value) return true
-  const name = data.name || ''
+  const name = (data as DeptResp).name || ''
   return name.toLowerCase().includes(value.toLowerCase())
 }
 
