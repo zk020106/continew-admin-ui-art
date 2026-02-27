@@ -263,7 +263,7 @@ export function setElementThemeColor(color: string): void {
   const elStyle = document.documentElement.style
 
   elStyle.setProperty('--el-color-primary', color)
-  handleElementThemeColor(color, useSettingStore().isDark)
+  handleElementThemeColor(color, useSettingStore().systemThemeMode === 'dark')
 
   // 生成更淡一点的颜色
   for (let i = 1; i < 16; i++) {

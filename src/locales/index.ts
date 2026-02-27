@@ -45,6 +45,46 @@ const messages = {
 }
 
 /**
+ * 判断是否为支持的语言值
+ */
+const isSupportedLanguage = (value: unknown): value is LanguageEnum => {
+  return typeof value === 'string' && Object.values(LanguageEnum).includes(value as LanguageEnum)
+}
+
+/**
+ * 从用户存储对象中提取语言
+ * 兼容不同版本的数据结构
+ */
+const extractLanguage = (storeData: unknown): LanguageEnum | null => {
+  if (!storeData || typeof storeData !== 'object') {
+    return null
+  }
+
+  const typedStoreData = storeData as Record<string, any>
+  const candidateLanguages = [
+    typedStoreData.language,
+    typedStoreData.user?.language,
+    typedStoreData.state?.language
+  ]
+
+  const matchedLanguage = candidateLanguages.find(isSupportedLanguage)
+  return matchedLanguage ?? null
+}
+
+/**
+ * 从指定 localStorage 键中读取语言
+ */
+const getLanguageFromStorage = (storageKey: string): LanguageEnum | null => {
+  const rawStore = localStorage.getItem(storageKey)
+  if (!rawStore) {
+    return null
+  }
+
+  const parsedStore = JSON.parse(rawStore)
+  return extractLanguage(parsedStore)
+}
+
+/**
  * 语言选项列表
  * 用于语言切换下拉框
  */
@@ -58,29 +98,26 @@ export const languageOptions = [
  * @returns 语言设置，如果获取失败则返回默认语言
  */
 const getDefaultLanguage = (): LanguageEnum => {
-  // 尝试从版本化的存储中获取语言设置
+  // 尝试从版本化和旧版存储中获取语言设置
   try {
-    const storageKey = storageKeyManager.getStorageKey('user')
-    const userStore = localStorage.getItem(storageKey)
+    const storageKeys = [storageKeyManager.getStorageKey('user'), 'user']
 
-    if (userStore) {
-      const { language } = JSON.parse(userStore)
-      if (language && Object.values(LanguageEnum).includes(language)) {
-        return language
+    for (const storageKey of storageKeys) {
+      const lang = getLanguageFromStorage(storageKey)
+      if (lang) {
+        return lang
       }
     }
   } catch (error) {
-    console.warn('[i18n] 从版本化存储获取语言设置失败:', error)
+    console.warn('[i18n] 从用户存储获取语言设置失败:', error)
   }
 
   // 尝试从系统存储中获取语言设置
   try {
     const sys = getSystemStorage()
-    if (sys) {
-      const { user } = JSON.parse(sys)
-      if (user?.language && Object.values(LanguageEnum).includes(user.language)) {
-        return user.language
-      }
+    const lang = extractLanguage(typeof sys === 'string' ? JSON.parse(sys) : sys)
+    if (lang) {
+      return lang
     }
   } catch (error) {
     console.warn('[i18n] 从系统存储获取语言设置失败:', error)
