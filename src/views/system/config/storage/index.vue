@@ -171,10 +171,9 @@ onMounted(() => {
   .storage-content {
     flex: 1;
     min-height: 0;
-    margin-top: 18px;
-    overflow-y: auto;
-    overflow-x: hidden;
     padding-right: 4px;
+    margin-top: 18px;
+    overflow: hidden auto;
   }
 
   .storage-section {
