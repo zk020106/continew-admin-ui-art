@@ -1,5 +1,11 @@
 <template>
-  <ElForm ref="formRef" :class="getClass" v-bind="formProps" :model="props.modelValue">
+  <ElForm
+    ref="formRef"
+    :class="getClass"
+    v-bind="formProps"
+    :model="props.modelValue"
+    @keydown.enter="handleEnterSearch"
+  >
     <CaGrid
       v-bind="props.gridProps"
       :key="useId()"
@@ -374,7 +380,22 @@ function isDisabled(item: FormColumnItem) {
 
 /** 表单数据更新  */
 function updateModelValue(value: any, item: FormColumnItem) {
-  emit('update:modelValue', { ...props.modelValue, [item.field]: value })
+  const fieldKey = item.fieldName || item.field
+  const model
+    = props.modelValue && typeof props.modelValue === 'object' ? props.modelValue : {}
+  model[fieldKey] = value
+  emit('update:modelValue', model)
+}
+
+function handleEnterSearch(event: KeyboardEvent) {
+  if (!props.search) return
+  if (event.isComposing) return
+  const target = event.target as HTMLElement | null
+  if (!target) return
+  if (target.tagName !== 'INPUT') return
+  if (!target.classList.contains('el-input__inner')) return
+  event.preventDefault()
+  emit('search')
 }
 
 defineExpose({ formRef })
