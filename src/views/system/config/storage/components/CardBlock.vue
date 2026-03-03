@@ -4,12 +4,12 @@
       <div class="card-header">
         <div class="card-title">
           <span class="title-text">{{ data.name }} ({{ data.code }})</span>
-          <ElTag v-if="data.isDefault" type="primary" size="small">
+          <ElTag v-if="data.isDefault" type="primary" size="small" class="default-tag">
             <ElIcon><Check /></ElIcon>
-            {{ t('storage.default') }}
+            <span>{{ t('system.config.storage.default') }}</span>
           </ElTag>
         </div>
-        <div class="card-actions">
+        <div v-if="showActions" class="card-actions">
           <ElDropdown trigger="click" @command="(cmd: string) => handleCommand(cmd, data)">
             <ElButton text circle size="small">
               <ElIcon><MoreFilled /></ElIcon>
@@ -17,13 +17,24 @@
             <template #dropdown>
               <ElDropdownMenu>
                 <ElDropdownItem
+                  v-if="hasAuth('system:storage:setDefault')"
                   :disabled="data.isDefault || data.status === 2"
                   command="setDefault"
                 >
-                  {{ t('storage.setDefault') }}
+                  {{ t('system.config.storage.setDefault') }}
                 </ElDropdownItem>
-                <ElDropdownItem command="edit">{{ t('common.edit') }}</ElDropdownItem>
-                <ElDropdownItem :disabled="data.isDefault" command="delete" divided>
+                <ElDropdownItem
+                  v-if="hasAuth('system:storage:update')"
+                  command="edit"
+                >
+                  {{ t('common.edit') }}
+                </ElDropdownItem>
+                <ElDropdownItem
+                  v-if="hasAuth('system:storage:delete')"
+                  :disabled="data.isDefault"
+                  command="delete"
+                  divided
+                >
                   {{ t('common.delete') }}
                 </ElDropdownItem>
               </ElDropdownMenu>
@@ -34,52 +45,58 @@
       <div class="card-subtitle">{{ data.createTime }}</div>
     </template>
 
-    <ElSkeleton v-if="loading" :rows="3" animated />
+    <ElSkeleton v-if="loading" :rows="4" animated />
     <template v-else>
       <div class="card-content" :class="{ 'content-large': data.type === 2 }">
-        <!-- 本地存储 -->
         <template v-if="data.type === 1">
           <div class="info-row">
-            <span class="label">{{ t('storage.path') }}：</span>
+            <span class="label">{{ t('system.config.storage.path') }}：</span>
             <ElTooltip :content="data.bucketName" placement="top">
               <span class="value ellipsis">{{ data.bucketName }}</span>
             </ElTooltip>
           </div>
           <div class="info-row">
-            <span class="label">{{ t('storage.accessPath') }}：</span>
+            <span class="label">{{ t('system.config.storage.accessPath') }}：</span>
             <ElTooltip :content="data.domain" placement="top">
               <span class="value ellipsis">{{ data.domain }}</span>
             </ElTooltip>
           </div>
         </template>
 
-        <!-- 对象存储 -->
         <template v-else>
           <div class="info-row">
-            <span class="label">Endpoint：</span>
+            <span class="label">{{ t('system.config.storage.accessKey') }}：</span>
+            <CellCopy :content="data.accessKey" />
+          </div>
+          <div class="info-row">
+            <span class="label">{{ t('system.config.storage.endpoint') }}：</span>
             <ElTooltip :content="data.endpoint" placement="top">
               <span class="value ellipsis">{{ data.endpoint }}</span>
             </ElTooltip>
           </div>
           <div class="info-row">
-            <span class="label">Bucket：</span>
+            <span class="label">{{ t('system.config.storage.bucketName') }}：</span>
             <ElTooltip :content="data.bucketName" placement="top">
               <span class="value ellipsis">{{ data.bucketName }}</span>
             </ElTooltip>
           </div>
-          <div v-if="data.domain" class="info-row">
-            <span class="label">{{ t('storage.customDomain') }}：</span>
+          <div class="info-row">
+            <span class="label">{{ t('system.config.storage.customDomain') }}：</span>
             <ElTooltip :content="data.domain" placement="top">
-              <span class="value ellipsis">{{ data.domain }}</span>
+              <span class="value ellipsis">{{ data.domain || '-' }}</span>
             </ElTooltip>
           </div>
         </template>
 
         <div class="info-row">
-          <span class="label">{{ t('common.status') }}：</span>
-          <ElTag :type="data.status === 1 ? 'success' : 'danger'" size="small">
-            {{ data.status === 1 ? t('common.statusEnabled') : t('common.statusDisabled') }}
-          </ElTag>
+          <span class="label">{{ t('system.config.storage.recycleBinEnabled') }}：</span>
+          <span class="value">
+            {{ data.recycleBinEnabled ? t('common.statusEnabled') : t('common.statusDisabled') }}
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="label">{{ t('system.config.storage.recycleBinPath') }}：</span>
+          <span class="value ellipsis">{{ data.recycleBinPath || '-' }}</span>
         </div>
       </div>
     </template>
@@ -88,7 +105,7 @@
       <div class="card-footer">
         <ElSwitch
           :model-value="data.status === 1"
-          :disabled="data.isDefault"
+          :disabled="data.isDefault || !hasAuth('system:storage:updateStatus')"
           :loading="switchLoading"
           :active-text="t('common.statusEnabled')"
           :inactive-text="t('common.statusDisabled')"
@@ -99,7 +116,7 @@
     </template>
   </ElCard>
 
-  <AddModal ref="AddModalRef" @save-success="onSaveSuccess" />
+  <AddModal ref="AddModalRef" @save-success="emit('save-success')" />
 </template>
 
 <script setup lang="ts">
@@ -108,6 +125,8 @@ import { Check, MoreFilled } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { deleteStorage, setDefaultStorage, updateStorageStatus } from '@/apis/system/storage'
+import { CellCopy } from '@/components/base/CellCopy'
+import { useAuth } from '@/hooks'
 import AddModal from '../AddModal.vue'
 
 interface Props {
@@ -115,34 +134,42 @@ interface Props {
   data: StorageResp
 }
 
-const props = withDefaults(defineProps<Props>(), {})
+withDefaults(defineProps<Props>(), {})
 
 const emit = defineEmits<{
   (e: 'save-success'): void
 }>()
 
 const { t } = useI18n()
+const { hasAuth } = useAuth()
 const switchLoading = ref(false)
 const AddModalRef = ref<InstanceType<typeof AddModal>>()
+const showActions = computed(
+  () =>
+    hasAuth('system:storage:setDefault')
+    || hasAuth('system:storage:update')
+    || hasAuth('system:storage:delete')
+)
 
-const status = ref(props.data.status)
+const getStorageTypeText = (item: StorageResp) => {
+  return item.type === 1
+    ? t('system.config.storage.localStorage')
+    : t('system.config.storage.objectStorage')
+}
 
-// 更新状态
 const handleStatusChange = async (item: StorageResp, enable: boolean) => {
-  const typeText = item.type === 1 ? t('storage.local') : t('storage.object')
   const actionText = enable ? t('common.statusEnabled') : t('common.statusDisabled')
-
   try {
     await ElMessageBox.confirm(
-      t('storage.statusConfirm', {
+      t('system.config.storage.statusConfirm', {
         action: actionText,
-        type: typeText,
-        name: `${item.name}(${item.code})`
+        type: getStorageTypeText(item),
+        name: item.name,
+        code: item.code
       }),
       t('common.tips'),
       { type: 'warning' }
     )
-
     switchLoading.value = true
     await updateStorageStatus({ status: enable ? 1 : 2 }, item.id)
     ElMessage.success(t('common.success'))
@@ -156,13 +183,14 @@ const handleStatusChange = async (item: StorageResp, enable: boolean) => {
   }
 }
 
-// 设为默认
 const handleSetDefault = async (item: StorageResp) => {
-  const typeText = item.type === 1 ? t('storage.local') : t('storage.object')
-
   try {
     await ElMessageBox.confirm(
-      t('storage.setDefaultConfirm', { type: typeText, name: `${item.name}(${item.code})` }),
+      t('system.config.storage.setDefaultConfirm', {
+        type: getStorageTypeText(item),
+        name: item.name,
+        code: item.code
+      }),
       t('common.tips'),
       { type: 'warning' }
     )
@@ -176,11 +204,10 @@ const handleSetDefault = async (item: StorageResp) => {
   }
 }
 
-// 删除
 const handleDelete = async (item: StorageResp) => {
   try {
     await ElMessageBox.confirm(
-      t('storage.deleteConfirm', { name: `${item.name}(${item.code})` }),
+      t('system.config.storage.deleteConfirm', { name: `${item.name}(${item.code})` }),
       t('common.tips'),
       {
         type: 'warning',
@@ -211,32 +238,37 @@ const handleCommand = (command: string, item: StorageResp) => {
       break
   }
 }
-
-const onSaveSuccess = () => {
-  emit('save-success')
-}
 </script>
 
 <style scoped lang="scss">
   .storage-card {
-    min-height: 162px;
+    min-height: 138px;
     margin-bottom: 16px;
+    border-radius: 10px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      border-color: var(--el-color-primary-light-7);
+      box-shadow: 0 8px 20px rgb(0 0 0 / 7%);
+      transform: translateY(-1px);
+    }
 
     &.is-default {
-      border-color: var(--el-color-success-light-5);
+      border-color: var(--el-color-primary-light-5);
+      background: linear-gradient(180deg, rgb(64 158 255 / 5%), transparent 35%);
     }
 
     :deep(.el-card__header) {
-      padding: 12px 16px;
+      padding: 10px 14px 8px;
       border-bottom: none;
     }
 
     :deep(.el-card__body) {
-      padding: 12px 16px;
+      padding: 8px 14px 10px;
     }
 
     :deep(.el-card__footer) {
-      padding: 12px 16px;
+      padding: 8px 14px 10px;
       border-top: 1px solid var(--el-border-color-lighter);
     }
   }
@@ -245,6 +277,7 @@ const onSaveSuccess = () => {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    gap: 8px;
   }
 
   .card-title {
@@ -255,11 +288,22 @@ const onSaveSuccess = () => {
     min-width: 0;
   }
 
+  .default-tag {
+    white-space: nowrap;
+    flex-shrink: 0;
+
+    :deep(.el-tag__content) {
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+  }
+
   .title-text {
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     white-space: nowrap;
   }
 
@@ -269,48 +313,51 @@ const onSaveSuccess = () => {
     color: var(--el-text-color-secondary);
   }
 
-  .card-actions {
-    flex-shrink: 0;
-  }
-
   .card-content {
-    min-height: 80px;
-  }
-
-  .content-large {
-    min-height: 110px;
+    min-height: 94px;
   }
 
   .info-row {
     display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-    font-size: 13px;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 6px;
+    font-size: 12px;
 
     &:last-child {
       margin-bottom: 0;
     }
+  }
 
-    .label {
-      flex-shrink: 0;
-      margin-right: 4px;
-      color: var(--el-text-color-secondary);
-    }
+  .label {
+    width: 76px;
+    flex-shrink: 0;
+    color: var(--el-text-color-secondary);
+  }
 
-    .value {
-      flex: 1;
-      color: var(--el-text-color-primary);
-    }
+  .value {
+    flex: 1;
+    color: var(--el-text-color-primary);
+  }
 
-    .ellipsis {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+  .ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .card-footer {
     display: flex;
     justify-content: flex-end;
+  }
+
+  @media (max-width: 768px) {
+    .card-content {
+      min-height: auto;
+    }
+
+    .label {
+      width: 70px;
+    }
   }
 </style>

@@ -20,12 +20,18 @@ export function useDict<T extends string>(...codes: T[]): UseDictReturn<T> {
   const dictStore = useDictStore()
   const data = shallowRef<Record<string, DictItem[]>>({})
   const loading = ref(false)
+  const setDictData = (code: string, items: DictItem[]) => {
+    data.value = {
+      ...data.value,
+      [code]: items
+    }
+  }
 
   const loadDict = async (code: string) => {
     // 先从缓存读取
     const cached = dictStore.getDict(code)
     if (cached) {
-      data.value[code] = cached
+      setDictData(code, cached)
       return
     }
 
@@ -45,7 +51,7 @@ export function useDict<T extends string>(...codes: T[]): UseDictReturn<T> {
     }
 
     const result = await pendingRequests.get(code)!
-    data.value[code] = result
+    setDictData(code, result)
   }
 
   // 加载所有字典
@@ -80,11 +86,17 @@ export function useDictList(codes: string[]) {
   const dictStore = useDictStore()
   const data = shallowRef<Record<string, DictItem[]>>({})
   const loading = ref(false)
+  const setDictData = (code: string, items: DictItem[]) => {
+    data.value = {
+      ...data.value,
+      [code]: items
+    }
+  }
 
   const loadDict = async (code: string) => {
     const cached = dictStore.getDict(code)
     if (cached) {
-      data.value[code] = cached
+      setDictData(code, cached)
       return
     }
 
@@ -103,7 +115,7 @@ export function useDictList(codes: string[]) {
     }
 
     const result = await pendingRequests.get(code)!
-    data.value[code] = result
+    setDictData(code, result)
   }
 
   if (codes.length > 0) {

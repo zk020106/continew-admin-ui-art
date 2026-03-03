@@ -280,12 +280,18 @@ export interface NoticeResp {
   id?: string
   title?: string
   type: string
+  content?: string
   noticeScope: number
+  noticeUsers?: string[] | null
   noticeMethods?: Array<number>
   isTiming: boolean
   publishTime?: string
   isTop: boolean
   status?: number
+  createUserString?: string
+  createTime?: string
+  updateUserString?: string
+  updateTime?: string
 }
 export type NoticeDetailResp = NoticeResp & {
   createUserString: string
@@ -309,10 +315,12 @@ export interface NoticeReq {
   type: string
   content: string
   noticeScope: number
+  noticeUsers?: string[] | null
   noticeMethods?: Array<number>
   isTiming?: boolean
   publishTime?: string
   isTop?: boolean
+  status?: number
 }
 
 /** 文件类型 */
@@ -377,6 +385,8 @@ export interface StorageResp {
   endpoint: string
   bucketName: string
   domain: string
+  recycleBinEnabled: boolean
+  recycleBinPath: string
   description: string
   isDefault: boolean
   sort: number
@@ -397,11 +407,13 @@ export interface StorageReq {
   name: string
   code: string
   type: number
-  accessKey: string
-  secretKey: string
-  endpoint: string
+  accessKey?: string
+  secretKey?: string
+  endpoint?: string
   bucketName: string
   domain?: string
+  recycleBinEnabled?: boolean
+  recycleBinPath?: string
   description?: string
   isDefault?: boolean
   sort?: number
