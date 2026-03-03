@@ -36,126 +36,144 @@
           </ElPopconfirm>
         </div>
 
-        <ElTable
-          v-loading="fieldLoading"
-          row-key="columnName"
-          :data="fieldDataList"
-          border
-          height="64vh"
+        <VueDraggable
+          v-model="fieldDataList"
+          target=".field-table .el-table__body-wrapper tbody"
+          handle=".drag-handle"
+          :animation="180"
+          :disabled="fieldLoading"
+          @end="handleFieldSortChange"
         >
-          <ElTableColumn type="index" label="#" width="55" align="center" />
+          <ElTable
+            v-loading="fieldLoading"
+            class="field-table"
+            row-key="columnName"
+            :data="fieldDataList"
+            border
+            height="64vh"
+          >
+            <ElTableColumn width="46" align="center">
+              <template #default>
+                <ElIcon class="drag-handle">
+                  <Rank />
+                </ElIcon>
+              </template>
+            </ElTableColumn>
 
-          <ElTableColumn label="名称" min-width="150">
-            <template #default="{ row }">
-              <ElInput v-model="row.fieldName" />
-            </template>
-          </ElTableColumn>
+            <ElTableColumn type="index" label="#" width="55" align="center" />
 
-          <ElTableColumn label="类型" min-width="140">
-            <template #default="{ row }">
-              <ElSelect
-                v-model="row.fieldType"
-                placeholder="请选择字段类型"
-                filterable
-                allow-create
-                default-first-option
-              >
-                <ElOption
-                  v-for="item in fieldTypeOptions"
-                  :key="item"
-                  :label="item"
-                  :value="item"
-                />
-              </ElSelect>
-            </template>
-          </ElTableColumn>
+            <ElTableColumn label="名称" min-width="150">
+              <template #default="{ row }">
+                <ElInput v-model="row.fieldName" />
+              </template>
+            </ElTableColumn>
 
-          <ElTableColumn label="描述" min-width="180">
-            <template #default="{ row }">
-              <ElInput v-model="row.comment" />
-            </template>
-          </ElTableColumn>
+            <ElTableColumn label="类型" min-width="140">
+              <template #default="{ row }">
+                <ElSelect
+                  v-model="row.fieldType"
+                  placeholder="请选择字段类型"
+                  filterable
+                  allow-create
+                  default-first-option
+                >
+                  <ElOption
+                    v-for="item in fieldTypeOptions"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  />
+                </ElSelect>
+              </template>
+            </ElTableColumn>
 
-          <ElTableColumn label="列表" width="70" align="center">
-            <template #default="{ row }">
-              <ElCheckbox v-model="row.showInList" />
-            </template>
-          </ElTableColumn>
+            <ElTableColumn label="描述" min-width="180">
+              <template #default="{ row }">
+                <ElInput v-model="row.comment" />
+              </template>
+            </ElTableColumn>
 
-          <ElTableColumn label="表单" width="70" align="center">
-            <template #default="{ row }">
-              <ElCheckbox v-model="row.showInForm" @change="handleShowInFormChange(row)" />
-            </template>
-          </ElTableColumn>
+            <ElTableColumn label="列表" width="70" align="center">
+              <template #default="{ row }">
+                <ElCheckbox v-model="row.showInList" />
+              </template>
+            </ElTableColumn>
 
-          <ElTableColumn label="必填" width="70" align="center">
-            <template #default="{ row }">
-              <ElCheckbox v-model="row.isRequired" :disabled="!row.showInForm" />
-            </template>
-          </ElTableColumn>
+            <ElTableColumn label="表单" width="70" align="center">
+              <template #default="{ row }">
+                <ElCheckbox v-model="row.showInForm" @change="handleShowInFormChange(row)" />
+              </template>
+            </ElTableColumn>
 
-          <ElTableColumn label="查询" width="70" align="center">
-            <template #default="{ row }">
-              <ElCheckbox v-model="row.showInQuery" @change="handleShowInQueryChange(row)" />
-            </template>
-          </ElTableColumn>
+            <ElTableColumn label="必填" width="70" align="center">
+              <template #default="{ row }">
+                <ElCheckbox v-model="row.isRequired" :disabled="!row.showInForm" />
+              </template>
+            </ElTableColumn>
 
-          <ElTableColumn label="表单类型" min-width="160">
-            <template #default="{ row }">
-              <ElSelect
-                v-if="row.showInForm || row.showInQuery"
-                v-model="row.formType"
-                placeholder="请选择表单类型"
-                clearable
-              >
-                <ElOption
-                  v-for="item in form_type_enum"
-                  :key="String(item.value)"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </ElSelect>
-              <span v-else>无需设置</span>
-            </template>
-          </ElTableColumn>
+            <ElTableColumn label="查询" width="70" align="center">
+              <template #default="{ row }">
+                <ElCheckbox v-model="row.showInQuery" @change="handleShowInQueryChange(row)" />
+              </template>
+            </ElTableColumn>
 
-          <ElTableColumn label="查询方式" min-width="160">
-            <template #default="{ row }">
-              <ElSelect
-                v-if="row.showInQuery"
-                v-model="row.queryType"
-                placeholder="请选择查询方式"
-                clearable
-              >
-                <ElOption
-                  v-for="item in query_type_enum"
-                  :key="String(item.value)"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </ElSelect>
-              <span v-else>无需设置</span>
-            </template>
-          </ElTableColumn>
+            <ElTableColumn label="表单类型" min-width="160">
+              <template #default="{ row }">
+                <ElSelect
+                  v-if="row.showInForm || row.showInQuery"
+                  v-model="row.formType"
+                  placeholder="请选择表单类型"
+                  clearable
+                >
+                  <ElOption
+                    v-for="item in form_type_enum"
+                    :key="String(item.value)"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </ElSelect>
+                <span v-else>无需设置</span>
+              </template>
+            </ElTableColumn>
 
-          <ElTableColumn label="关联字典" min-width="170">
-            <template #default="{ row }">
-              <ElSelect
-                v-model="row.dictCode"
-                placeholder="请选择字典类型"
-                filterable
-                clearable
-              >
-                <ElOption
-                  v-for="item in dictList"
-                  :key="String(item.value)"
-                  :label="item.label"
-                  :value="String(item.value)"
-                />
-              </ElSelect>
-            </template>
-          </ElTableColumn>
-        </ElTable>
+            <ElTableColumn label="查询方式" min-width="160">
+              <template #default="{ row }">
+                <ElSelect
+                  v-if="row.showInQuery"
+                  v-model="row.queryType"
+                  placeholder="请选择查询方式"
+                  clearable
+                >
+                  <ElOption
+                    v-for="item in query_type_enum"
+                    :key="String(item.value)"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </ElSelect>
+                <span v-else>无需设置</span>
+              </template>
+            </ElTableColumn>
+
+            <ElTableColumn label="关联字典" min-width="170">
+              <template #default="{ row }">
+                <ElSelect
+                  v-model="row.dictCode"
+                  placeholder="请选择字典类型"
+                  filterable
+                  clearable
+                >
+                  <ElOption
+                    v-for="item in dictList"
+                    :key="String(item.value)"
+                    :label="item.label"
+                    :value="String(item.value)"
+                  />
+                </ElSelect>
+              </template>
+            </ElTableColumn>
+          </ElTable>
+        </VueDraggable>
       </ElTabPane>
     </ElTabs>
 
@@ -172,9 +190,10 @@
 import type { FieldConfigResp, GenConfigResp } from '@/apis/code'
 import type { FormColumnItem } from '@/components/base/CaForm/type'
 import type { LabelValueState } from '@/types/global'
-import { Refresh } from '@element-plus/icons-vue'
+import { Rank, Refresh } from '@element-plus/icons-vue'
 import { useWindowSize } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
+import { VueDraggable } from 'vue-draggable-plus'
 import {
   getGenConfig,
   listFieldConfig,
@@ -343,6 +362,16 @@ const handleSync = async () => {
   await fetchFieldList(currentTableName.value, true)
 }
 
+const syncFieldSort = () => {
+  fieldDataList.value.forEach((item, index) => {
+    item.fieldSort = index + 1
+  })
+}
+
+const handleFieldSortChange = () => {
+  syncFieldSort()
+}
+
 const handleSave = async () => {
   try {
     await formRef.value?.formRef?.validate()
@@ -359,6 +388,7 @@ const handleSave = async () => {
 
   try {
     saving.value = true
+    syncFieldSort()
     await saveGenConfig(form.value.tableName, {
       genConfig: { ...form.value },
       fieldConfigs: fieldDataList.value
@@ -392,5 +422,10 @@ defineExpose({ onOpen })
     display: flex;
     justify-content: flex-end;
     margin-bottom: 10px;
+  }
+
+  .drag-handle {
+    cursor: move;
+    color: var(--el-text-color-secondary);
   }
 </style>

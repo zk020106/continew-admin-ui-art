@@ -174,6 +174,33 @@ const getNodeIcon = (node: PreviewTreeNode, expanded: boolean) => {
   return getFileIcon(node.label)
 }
 
+const mergeSingleChildDir = (node: PreviewTreeNode): PreviewTreeNode => {
+  if (node.isLeaf || !node.children?.length) return node
+
+  let mergedLabel = node.label
+  let mergedChildren = node.children
+
+  while (mergedChildren.length === 1 && !mergedChildren[0].isLeaf) {
+    const child = mergedChildren[0]
+    mergedLabel = `${mergedLabel}/${child.label}`
+    mergedChildren = child.children || []
+  }
+
+  return {
+    ...node,
+    label: mergedLabel,
+    children: mergedChildren.map((item) => mergeSingleChildDir(item))
+  }
+}
+
+const mergeTreeDirs = (nodes: PreviewTreeNode[]) => {
+  return nodes.map((item) => mergeSingleChildDir(item))
+}
+
+const getFileKey = (item: GeneratePreviewResp) => {
+  return `file:${item.path}/${item.fileName}`
+}
+
 const buildTreeData = (list: GeneratePreviewResp[]) => {
   const roots: PreviewTreeNode[] = []
   const folderMap = new Map<string, PreviewTreeNode>()
@@ -202,7 +229,7 @@ const buildTreeData = (list: GeneratePreviewResp[]) => {
       children = folderNode.children || []
     })
 
-    const fileKey = `file:${item.path}/${item.fileName}`
+    const fileKey = getFileKey(item)
     fileMap[fileKey] = item
     if (!fileKeySet.has(fileKey)) {
       children.push({
@@ -215,7 +242,7 @@ const buildTreeData = (list: GeneratePreviewResp[]) => {
   })
 
   previewMap.value = fileMap
-  treeData.value = roots
+  treeData.value = mergeTreeDirs(roots)
 }
 
 const setCurrentPreview = (key: string) => {
@@ -284,7 +311,7 @@ const onOpen = async (tableNames: string[]) => {
   }
 
   buildTreeData(previewList.value)
-  const firstFileKey = Object.keys(previewMap.value)[0]
+  const firstFileKey = getFileKey(previewList.value[0])
   setCurrentPreview(firstFileKey)
   visible.value = true
 
