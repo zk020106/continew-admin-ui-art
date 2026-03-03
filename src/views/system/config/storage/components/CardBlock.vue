@@ -64,9 +64,11 @@
         </template>
 
         <template v-else>
-          <div class="info-row">
+          <div class="info-row access-key-row">
             <span class="label">{{ t('system.config.storage.accessKey') }}：</span>
-            <CellCopy :content="data.accessKey" />
+            <span class="value value-copy">
+              <CellCopy :content="data.accessKey" />
+            </span>
           </div>
           <div class="info-row">
             <span class="label">{{ t('system.config.storage.endpoint') }}：</span>
@@ -254,8 +256,8 @@ const handleCommand = (command: string, item: StorageResp) => {
     }
 
     &.is-default {
-      border-color: var(--el-color-primary-light-5);
       background: linear-gradient(180deg, rgb(64 158 255 / 5%), transparent 35%);
+      border-color: var(--el-color-primary-light-5);
     }
 
     :deep(.el-card__header) {
@@ -275,9 +277,9 @@ const handleCommand = (command: string, item: StorageResp) => {
 
   .card-header {
     display: flex;
+    gap: 8px;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 8px;
   }
 
   .card-title {
@@ -289,8 +291,8 @@ const handleCommand = (command: string, item: StorageResp) => {
   }
 
   .default-tag {
-    white-space: nowrap;
     flex-shrink: 0;
+    white-space: nowrap;
 
     :deep(.el-tag__content) {
       display: inline-flex;
@@ -319,8 +321,8 @@ const handleCommand = (command: string, item: StorageResp) => {
 
   .info-row {
     display: flex;
-    align-items: flex-start;
     gap: 6px;
+    align-items: flex-start;
     margin-bottom: 6px;
     font-size: 12px;
 
@@ -330,14 +332,33 @@ const handleCommand = (command: string, item: StorageResp) => {
   }
 
   .label {
-    width: 76px;
     flex-shrink: 0;
+    width: 76px;
     color: var(--el-text-color-secondary);
   }
 
   .value {
     flex: 1;
     color: var(--el-text-color-primary);
+  }
+
+  .access-key-row {
+    align-items: center;
+  }
+
+  .value-copy {
+    :deep(.cell-copy-wrapper) {
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+    }
+
+    :deep(.cell-copy-content) {
+      max-width: 170px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
   .ellipsis {
@@ -351,7 +372,7 @@ const handleCommand = (command: string, item: StorageResp) => {
     justify-content: flex-end;
   }
 
-  @media (max-width: 768px) {
+  @media (width <= 768px) {
     .card-content {
       min-height: auto;
     }

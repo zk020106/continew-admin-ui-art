@@ -35,7 +35,6 @@ const handleCopy = async () => {
   .cell-copy-wrapper {
     display: inline-flex;
     gap: 4px;
-    align-items: center;
   }
 
   .cell-copy-content {
@@ -43,6 +42,7 @@ const handleCopy = async () => {
   }
 
   .cell-copy-btn {
+    align-self: center;
     padding: 0;
     margin-left: 2px;
   }
