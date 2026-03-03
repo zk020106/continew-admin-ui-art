@@ -570,9 +570,12 @@
     "captcha": "Verification code",
     "error": {
       "captchaExpired": "The verification code has expired, please refresh the verification code",
-      "passwordEncrypt": "Password encryption failed"
+      "passwordEncrypt": "Password encryption failed",
+      "invalidEmail": "Please enter a valid email address",
+      "invalidPhone": "Please enter a valid phone number",
+      "socialAuthFailed": "Failed to get third-party authorization URL"
     },
-    "expired": "Expired, please refresh",
+    "expired": "please refresh",
     "forgetPwd": "forget the password",
     "leftView": {
       "subTitle": "Beautiful and practical interface, visually optimized to ensure an excellent user experience",
@@ -581,12 +584,35 @@
     "noAccount": "Don’t have an account yet?",
     "placeholder": {
       "captcha": "Please enter the verification code",
+      "email": "Please enter email",
+      "emailCaptcha": "Please enter email verification code",
       "password": "Please enter password",
+      "phone": "Please enter phone number",
+      "phoneCaptcha": "Please enter SMS verification code",
       "slider": "Please drag the slider to complete verification",
       "tenantCode": "Please enter tenant code",
       "username": "Please enter account number"
     },
     "register": "register",
+    "otherLogin": "Other login methods",
+    "sendCaptcha": "Send code",
+    "sendingCaptcha": "Sending...",
+    "resendCaptchaIn": "Resend in {seconds}s",
+    "socialProcessing": "Third-party login in progress, please wait...",
+    "tabs": {
+      "account": "Account login",
+      "email": "Email login",
+      "phone": "Phone login"
+    },
+    "oauth": {
+      "gitee": "Gitee",
+      "github": "GitHub",
+      "wechat": "WeChat"
+    },
+    "message": {
+      "emailSent": "Verification code sent to email",
+      "smsSent": "Verification code sent to phone"
+    },
     "rememberPwd": "Remember password",
     "sliderSuccessText": "Verification successful",
     "sliderText": "Hold down the slider and drag",
@@ -768,9 +794,15 @@
     "updateSuccess": "Modification successful"
   },
   "notice": {
-    "bar": ["notify", "information", "Agent"],
+    "bar": [
+      "notify",
+      "information",
+      "Agent"
+    ],
     "btnRead": "Mark as read",
-    "text": ["None yet"],
+    "text": [
+      "None yet"
+    ],
     "title": "notify",
     "viewAll": "View all"
   },
@@ -1333,21 +1365,32 @@
       "title": "Basic configuration"
     },
     "box": {
-      "list": ["frame", "shadow"],
+      "list": [
+        "frame",
+        "shadow"
+      ],
       "title": "box style"
     },
     "color": {
       "title": "System theme color"
     },
     "container": {
-      "list": ["Covered", "fixed width"],
+      "list": [
+        "Covered",
+        "fixed width"
+      ],
       "title": "Container width"
     },
     "menu": {
       "title": "menu style"
     },
     "menuType": {
-      "list": ["vertical", "level", "mix", "double row"],
+      "list": [
+        "vertical",
+        "level",
+        "mix",
+        "double row"
+      ],
       "title": "Menu layout"
     },
     "tabStyle": {
@@ -1356,7 +1399,11 @@
       "google": "Google"
     },
     "theme": {
-      "list": ["light color", "Dark", "system"],
+      "list": [
+        "light color",
+        "Dark",
+        "system"
+      ],
       "title": "theme style"
     },
     "transition": {

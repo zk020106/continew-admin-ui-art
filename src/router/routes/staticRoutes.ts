@@ -37,6 +37,12 @@ export const staticRoutes: AppRouteRecordRaw[] = [
     meta: { title: 'menus.forgetPassword.title', isHideTab: true }
   },
   {
+    path: '/social/callback',
+    name: 'SocialCallback',
+    component: () => import('@views/auth/social/index.vue'),
+    meta: { title: 'menus.login.title', isHideTab: true }
+  },
+  {
     path: '/403',
     name: 'Exception403',
     component: () => import('@views/exception/403/index.vue'),

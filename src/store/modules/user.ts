@@ -45,7 +45,7 @@ import {
   accountLogin as fetchAccountLogin,
   emailLogin as fetchEmailLogin,
   phoneLogin as fetchPhoneLogin,
-  socialAuth as fetchSocialAuth,
+  socialLogin as fetchSocialLogin,
   getUserInfo as fetchUserInfo
 } from '@/apis/auth'
 import { LanguageEnum } from '@/enums/appEnum'
@@ -212,7 +212,7 @@ export const useUserStore = defineStore(
 
     // 三方账号登录
     const socialLogin = async (source: string, req: any) => {
-      const res: any = await fetchSocialAuth({
+      const res: any = await fetchSocialLogin({
         ...req,
         source,
         clientId,
@@ -269,7 +269,7 @@ export const useUserStore = defineStore(
       resetRouterState(500)
       // 跳转到登录页，携带当前路由作为 redirect 参数
       const currentRoute = router.currentRoute.value
-      const redirect = currentRoute.path !== '/login' ? currentRoute.fullPath : undefined
+      const redirect = currentRoute.path !== '/auth/login' ? currentRoute.fullPath : undefined
       router.push({
         name: 'Login',
         query: redirect ? { redirect } : undefined

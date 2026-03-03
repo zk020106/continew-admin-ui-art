@@ -569,7 +569,10 @@
     "captcha": "验证码",
     "error": {
       "captchaExpired": "验证码已过期，请刷新验证码",
-      "passwordEncrypt": "密码加密失败"
+      "passwordEncrypt": "密码加密失败",
+      "invalidEmail": "请输入正确的邮箱",
+      "invalidPhone": "请输入正确的手机号",
+      "socialAuthFailed": "获取第三方授权地址失败"
     },
     "expired": "已过期,请刷新",
     "forgetPwd": "忘记密码",
@@ -580,12 +583,35 @@
     "noAccount": "还没有账号？",
     "placeholder": {
       "captcha": "请输入验证码",
+      "email": "请输入邮箱",
+      "emailCaptcha": "请输入邮箱验证码",
       "password": "请输入密码",
+      "phone": "请输入手机号",
+      "phoneCaptcha": "请输入短信验证码",
       "slider": "请拖动滑块完成验证",
       "tenantCode": "请输入租户编码",
       "username": "请输入账号"
     },
     "register": "注册",
+    "otherLogin": "其他登录方式",
+    "sendCaptcha": "发送验证码",
+    "sendingCaptcha": "发送中...",
+    "resendCaptchaIn": "{seconds}s 后重发",
+    "socialProcessing": "第三方登录处理中，请稍候...",
+    "tabs": {
+      "account": "账号登录",
+      "email": "邮箱登录",
+      "phone": "手机号登录"
+    },
+    "oauth": {
+      "gitee": "Gitee",
+      "github": "GitHub",
+      "wechat": "微信"
+    },
+    "message": {
+      "emailSent": "验证码已发送到邮箱",
+      "smsSent": "验证码已发送到手机"
+    },
     "rememberPwd": "记住密码",
     "sliderSuccessText": "验证成功",
     "sliderText": "按住滑块拖动",
