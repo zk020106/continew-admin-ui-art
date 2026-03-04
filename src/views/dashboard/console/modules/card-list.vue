@@ -2,10 +2,10 @@
   <ElRow :gutter="20" class="flex">
     <ElCol v-for="(item, index) in dataList" :key="index" :sm="12" :md="6" :lg="6">
       <div class="art-card relative flex flex-col justify-center h-35 px-5 mb-5 max-sm:mb-4">
-        <span class="text-g-700 text-sm">{{ item.des }}</span>
+        <span class="text-g-700 text-sm">{{ t(item.desKey) }}</span>
         <ArtCountTo class="text-[26px] font-medium mt-2" :target="item.num" :duration="1300" />
         <div class="flex-c mt-1">
-          <span class="text-xs text-g-600">较上周</span>
+          <span class="text-xs text-g-600">{{ t('pages.dashboardConsole.cardList.weekCompare') }}</span>
           <span
             class="ml-1 text-xs font-semibold"
             :class="[!item.change.includes('+') ? 'text-danger' : 'text-success']"
@@ -24,14 +24,17 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 interface CardDataItem {
-  des: string
+  desKey: string
   icon: string
   startVal: number
   duration: number
   num: number
   change: string
 }
+const { t } = useI18n()
 
 /**
  * 卡片统计数据列表
@@ -39,7 +42,7 @@ interface CardDataItem {
  */
 const dataList = reactive<CardDataItem[]>([
   {
-    des: '总访问次数',
+    desKey: 'pages.dashboardConsole.cardList.totalVisits',
     icon: 'ri:pie-chart-line',
     startVal: 0,
     duration: 1000,
@@ -47,7 +50,7 @@ const dataList = reactive<CardDataItem[]>([
     change: '+20%'
   },
   {
-    des: '在线访客数',
+    desKey: 'pages.dashboardConsole.cardList.onlineVisitors',
     icon: 'ri:group-line',
     startVal: 0,
     duration: 1000,
@@ -55,7 +58,7 @@ const dataList = reactive<CardDataItem[]>([
     change: '+10%'
   },
   {
-    des: '点击量',
+    desKey: 'pages.dashboardConsole.cardList.clicks',
     icon: 'ri:fire-line',
     startVal: 0,
     duration: 1000,
@@ -63,7 +66,7 @@ const dataList = reactive<CardDataItem[]>([
     change: '-12%'
   },
   {
-    des: '新用户',
+    desKey: 'pages.dashboardConsole.cardList.newUsers',
     icon: 'ri:progress-2-line',
     startVal: 0,
     duration: 1000,

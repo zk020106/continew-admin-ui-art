@@ -2,13 +2,13 @@
   <div class="art-card p-5 h-128 overflow-hidden mb-5 max-sm:mb-4">
     <div class="art-card-header">
       <div class="title">
-        <h4>新用户</h4>
-        <p>这个月增长<span class="text-success">+20%</span></p>
+        <h4>{{ t('pages.dashboardConsole.newUser.title') }}</h4>
+        <p>{{ t('pages.dashboardConsole.newUser.growthThisMonth') }}<span class="text-success">+20%</span></p>
       </div>
       <ElRadioGroup v-model="radio2">
-        <ElRadioButton value="本月" label="本月"></ElRadioButton>
-        <ElRadioButton value="上月" label="上月"></ElRadioButton>
-        <ElRadioButton value="今年" label="今年"></ElRadioButton>
+        <ElRadioButton value="thisMonth" :label="t('pages.dashboardConsole.newUser.filter.thisMonth')"></ElRadioButton>
+        <ElRadioButton value="lastMonth" :label="t('pages.dashboardConsole.newUser.filter.lastMonth')"></ElRadioButton>
+        <ElRadioButton value="thisYear" :label="t('pages.dashboardConsole.newUser.filter.thisYear')"></ElRadioButton>
       </ElRadioGroup>
     </div>
     <ArtTable
@@ -22,29 +22,44 @@
       :header-cell-style="{ background: 'transparent' }"
     >
       <template #default>
-        <ElTableColumn label="头像" prop="avatar" width="150px">
+        <ElTableColumn :label="t('pages.dashboardConsole.newUser.columns.avatar')" prop="avatar" width="150px">
           <template #default="scope">
             <div style="display: flex; align-items: center">
               <img class="size-9 rounded-lg" :src="scope.row.avatar" alt="avatar" />
-              <span class="ml-2">{{ scope.row.username }}</span>
+              <span class="ml-2">{{ t(scope.row.usernameKey) }}</span>
             </div>
           </template>
         </ElTableColumn>
-        <ElTableColumn label="地区" prop="province" />
-        <ElTableColumn label="性别" prop="avatar">
+        <ElTableColumn :label="t('pages.dashboardConsole.newUser.columns.region')" prop="provinceKey">
+          <template #default="scope">
+            <span>{{ t(scope.row.provinceKey) }}</span>
+          </template>
+        </ElTableColumn>
+        <ElTableColumn :label="t('pages.dashboardConsole.newUser.columns.gender')" prop="avatar">
           <template #default="scope">
             <div style="display: flex; align-items: center">
-              <span style="margin-left: 10px">{{ scope.row.sex === 1 ? '男' : '女' }}</span>
+              <span style="margin-left: 10px">
+                {{
+                  scope.row.sex === 1
+                    ? t('pages.dashboardConsole.newUser.gender.male')
+                    : t('pages.dashboardConsole.newUser.gender.female')
+                }}
+              </span>
             </div>
           </template>
         </ElTableColumn>
-        <ElTableColumn label="进度" width="240">
+        <ElTableColumn :label="t('pages.dashboardConsole.newUser.columns.progress')" width="240">
           <template #default="scope">
             <ElProgress
               :percentage="scope.row.pro"
               :color="scope.row.color"
               :stroke-width="4"
-              :aria-label="`${scope.row.username}的完成进度: ${scope.row.pro}%`"
+              :aria-label="
+                t('pages.dashboardConsole.newUser.progressAria', {
+                  name: t(scope.row.usernameKey),
+                  progress: scope.row.pro,
+                })
+              "
             />
           </template>
         </ElTableColumn>
@@ -55,6 +70,7 @@
 
 /* eslint-disable ts/no-use-before-define */
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import avatar1 from '@/assets/images/avatar/avatar1.webp'
 import avatar2 from '@/assets/images/avatar/avatar2.webp'
 import avatar3 from '@/assets/images/avatar/avatar3.webp'
@@ -63,8 +79,8 @@ import avatar5 from '@/assets/images/avatar/avatar5.webp'
 import avatar6 from '@/assets/images/avatar/avatar6.webp'
 
 interface UserTableItem {
-  username: string
-  province: string
+  usernameKey: string
+  provinceKey: string
   sex: 0 | 1
   age: number
   percentage: number
@@ -74,8 +90,9 @@ interface UserTableItem {
 }
 
 const ANIMATION_DELAY = 100
+const { t } = useI18n()
 
-const radio2 = ref('本月')
+const radio2 = ref<'thisMonth' | 'lastMonth' | 'thisYear'>('thisMonth')
 
 /**
  * 新用户表格数据
@@ -83,8 +100,8 @@ const radio2 = ref('本月')
  */
 const tableData = reactive<UserTableItem[]>([
   {
-    username: '中小鱼',
-    province: '北京',
+    usernameKey: 'pages.dashboardConsole.newUser.users.fish',
+    provinceKey: 'pages.dashboardConsole.newUser.provinces.beijing',
     sex: 0,
     age: 22,
     percentage: 60,
@@ -93,8 +110,8 @@ const tableData = reactive<UserTableItem[]>([
     avatar: avatar1
   },
   {
-    username: '何小荷',
-    province: '深圳',
+    usernameKey: 'pages.dashboardConsole.newUser.users.he',
+    provinceKey: 'pages.dashboardConsole.newUser.provinces.shenzhen',
     sex: 1,
     age: 21,
     percentage: 20,
@@ -103,8 +120,8 @@ const tableData = reactive<UserTableItem[]>([
     avatar: avatar2
   },
   {
-    username: '誶誶淰',
-    province: '上海',
+    usernameKey: 'pages.dashboardConsole.newUser.users.sui',
+    provinceKey: 'pages.dashboardConsole.newUser.provinces.shanghai',
     sex: 1,
     age: 23,
     percentage: 60,
@@ -113,8 +130,8 @@ const tableData = reactive<UserTableItem[]>([
     avatar: avatar3
   },
   {
-    username: '发呆草',
-    province: '长沙',
+    usernameKey: 'pages.dashboardConsole.newUser.users.dai',
+    provinceKey: 'pages.dashboardConsole.newUser.provinces.changsha',
     sex: 0,
     age: 28,
     percentage: 50,
@@ -123,8 +140,8 @@ const tableData = reactive<UserTableItem[]>([
     avatar: avatar4
   },
   {
-    username: '甜筒',
-    province: '浙江',
+    usernameKey: 'pages.dashboardConsole.newUser.users.cone',
+    provinceKey: 'pages.dashboardConsole.newUser.provinces.zhejiang',
     sex: 1,
     age: 26,
     percentage: 70,
@@ -133,8 +150,8 @@ const tableData = reactive<UserTableItem[]>([
     avatar: avatar5
   },
   {
-    username: '冷月呆呆',
-    province: '湖北',
+    usernameKey: 'pages.dashboardConsole.newUser.users.moon',
+    provinceKey: 'pages.dashboardConsole.newUser.provinces.hubei',
     sex: 1,
     age: 25,
     percentage: 90,

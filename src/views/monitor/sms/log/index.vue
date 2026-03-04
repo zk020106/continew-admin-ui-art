@@ -14,6 +14,7 @@
         <CaForm
           v-model="queryForm"
           search
+          label-width="88px"
           :columns="queryFormColumns"
           @search="search"
           @reset="reset"
@@ -36,17 +37,13 @@
       <template #action="{ row }">
         <ElSpace>
           <ElPopconfirm
+            v-if="hasAuth('system:smsLog:delete')"
             :title="t('pages.smsLog.message.confirmDelete')"
             :confirm-button-props="{ type: 'danger' }"
             @confirm="onDelete(row)"
           >
             <template #reference>
-              <ElButton
-                v-auth="['system:smsLog:delete']"
-                type="danger"
-                link
-                :disabled="row.disabled"
-              >
+              <ElButton type="danger" link :disabled="row.disabled">
                 {{ t('common.button.delete') }}
               </ElButton>
             </template>
@@ -65,11 +62,12 @@ import { ElButton, ElMessage, ElPopconfirm, ElSpace } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { deleteSmsLog, exportSmsLog, listSmsLog } from '@/apis/system/smsLog'
-import { useDevice, useDownload, useResetReactive, useTable } from '@/hooks'
+import { useAuth, useDevice, useDownload, useResetReactive, useTable } from '@/hooks'
 
 defineOptions({ name: 'MonitorSmsLog' })
 
 const { t } = useI18n()
+const { hasAuth } = useAuth()
 const { isMobile } = useDevice()
 const route = useRoute()
 
@@ -87,7 +85,8 @@ const queryFormColumns = computed(
         gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
         props: {
           placeholder: t('pages.smsLog.search.configIdPlaceholder'),
-          clearable: true
+          clearable: true,
+          name: 'configId'
         }
       },
       {
@@ -97,7 +96,8 @@ const queryFormColumns = computed(
         gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
         props: {
           placeholder: t('pages.smsLog.search.phonePlaceholder'),
-          clearable: true
+          clearable: true,
+          name: 'phone'
         }
       },
       {
@@ -111,7 +111,8 @@ const queryFormColumns = computed(
             { label: t('pages.smsLog.field.statusFailure'), value: 2 }
           ],
           placeholder: t('pages.smsLog.search.statusPlaceholder'),
-          clearable: true
+          clearable: true,
+          name: 'status'
         }
       }
     ] as FormColumnItem<SmsLogQuery>[]

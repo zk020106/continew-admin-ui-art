@@ -57,8 +57,8 @@
           <ElCol :span="24">
             <ElFormItem :label="t('role.form.status')" prop="status">
               <ElRadioGroup v-model="form.status">
-                <ElRadio :label="1">{{ t('common.statusEnabled') }}</ElRadio>
-                <ElRadio :label="0">{{ t('common.statusDisabled') }}</ElRadio>
+                <ElRadio :value="1">{{ t('common.statusEnabled') }}</ElRadio>
+                <ElRadio :value="0">{{ t('common.statusDisabled') }}</ElRadio>
               </ElRadioGroup>
             </ElFormItem>
           </ElCol>

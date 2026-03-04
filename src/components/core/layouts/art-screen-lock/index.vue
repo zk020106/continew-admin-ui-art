@@ -27,6 +27,7 @@
             ref="formRef"
             :model="formData"
             :rules="rules"
+            label-width="0"
             class="w-[90%]"
             @submit.prevent="handleLock"
           >
@@ -66,6 +67,7 @@
           ref="unlockFormRef"
           :model="unlockForm"
           :rules="rules"
+          label-width="0"
           class="w-full !px-2.5"
           @submit.prevent="handleUnlock"
         >

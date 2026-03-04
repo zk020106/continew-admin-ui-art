@@ -1,29 +1,29 @@
 <template>
-  <ElDrawer v-model="visible" title="公告详情" :size="width >= 560 ? 560 : '100%'">
+  <ElDrawer v-model="visible" :title="t('pages.noticeManagement.detailTitle')" :size="width >= 560 ? 560 : '100%'">
     <div v-loading="loading">
       <ElDescriptions :column="2" border>
-        <ElDescriptionsItem label="ID" :span="2">{{ dataDetail?.id }}</ElDescriptionsItem>
-        <ElDescriptionsItem label="标题">{{ dataDetail?.title }}</ElDescriptionsItem>
-        <ElDescriptionsItem label="分类">
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.id')" :span="2">{{ dataDetail?.id }}</ElDescriptionsItem>
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.title')">{{ dataDetail?.title }}</ElDescriptionsItem>
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.type')">
           <CaCellTag :value="dataDetail?.type" :data="notice_type" />
         </ElDescriptionsItem>
-        <ElDescriptionsItem label="通知范围">
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.noticeScope')">
           <CaCellTag :value="dataDetail?.noticeScope" :data="notice_scope_enum" />
         </ElDescriptionsItem>
-        <ElDescriptionsItem label="通知方式">
-          <span v-if="!dataDetail?.noticeMethods?.length">无</span>
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.noticeMethods')">
+          <span v-if="!dataDetail?.noticeMethods?.length">{{ t('common.empty') }}</span>
           <CaCellTags v-else :data="formatNoticeMethods(dataDetail.noticeMethods)" />
         </ElDescriptionsItem>
-        <ElDescriptionsItem label="是否定时">{{ dataDetail?.isTiming ? '是' : '否' }}</ElDescriptionsItem>
-        <ElDescriptionsItem label="发布时间">{{ dataDetail?.publishTime || '-' }}</ElDescriptionsItem>
-        <ElDescriptionsItem label="是否置顶">{{ dataDetail?.isTop ? '是' : '否' }}</ElDescriptionsItem>
-        <ElDescriptionsItem label="状态">
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.isTiming')">{{ dataDetail?.isTiming ? t('common.true') : t('common.false') }}</ElDescriptionsItem>
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.publishTime')">{{ dataDetail?.publishTime || '-' }}</ElDescriptionsItem>
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.isTop')">{{ dataDetail?.isTop ? t('common.true') : t('common.false') }}</ElDescriptionsItem>
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.status')">
           <CaCellTag :value="dataDetail?.status" :data="notice_status_enum" />
         </ElDescriptionsItem>
-        <ElDescriptionsItem label="创建人">{{ dataDetail?.createUserString || '-' }}</ElDescriptionsItem>
-        <ElDescriptionsItem label="创建时间">{{ dataDetail?.createTime || '-' }}</ElDescriptionsItem>
-        <ElDescriptionsItem label="修改人">{{ dataDetail?.updateUserString || '-' }}</ElDescriptionsItem>
-        <ElDescriptionsItem label="修改时间">{{ dataDetail?.updateTime || '-' }}</ElDescriptionsItem>
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.createUser')">{{ dataDetail?.createUserString || '-' }}</ElDescriptionsItem>
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.createTime')">{{ dataDetail?.createTime || '-' }}</ElDescriptionsItem>
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.updateUser')">{{ dataDetail?.updateUserString || '-' }}</ElDescriptionsItem>
+        <ElDescriptionsItem :label="t('pages.noticeManagement.field.updateTime')">{{ dataDetail?.updateTime || '-' }}</ElDescriptionsItem>
       </ElDescriptions>
     </div>
   </ElDrawer>
@@ -33,6 +33,7 @@
 import type { NoticeDetailResp } from '@/apis/system'
 import type { LabelValueState } from '@/types/global'
 import { useWindowSize } from '@vueuse/core'
+import { useI18n } from 'vue-i18n'
 import { getNotice } from '@/apis/system'
 import { CaCellTag, CaCellTags } from '@/components/base/CaCell'
 import { useDict } from '@/hooks'
@@ -40,6 +41,7 @@ import { useDict } from '@/hooks'
 defineOptions({ name: 'SystemNoticeDetailDrawer' })
 
 const { width } = useWindowSize()
+const { t } = useI18n()
 const { notice_type, notice_scope_enum, notice_method_enum, notice_status_enum } = useDict(
   'notice_type',
   'notice_scope_enum',

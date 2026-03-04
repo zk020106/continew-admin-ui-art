@@ -46,24 +46,20 @@ const { t } = useI18n()
 
 // 文件类型枚举（使用数字，与 API 返回类型一致）
 enum FileType {
-  FOLDER = 0,
-  IMAGE = 1,
-  VIDEO = 2,
-  AUDIO = 3,
-  DOCUMENT = 5,
-  ARCHIVE = 6,
-  CODE = 7
+  OTHER = 1,
+  IMAGE = 2,
+  DOCUMENT = 3,
+  VIDEO = 4,
+  AUDIO = 5
 }
 
 // 类型配置
 const typeConfig: Record<number, { label: string, color: string }> = {
+  [FileType.OTHER]: { label: t('file.statistics.other'), color: '#909399' },
   [FileType.IMAGE]: { label: t('file.statistics.image'), color: '#409EFF' },
-  [FileType.VIDEO]: { label: t('file.statistics.video'), color: '#67C23A' },
-  [FileType.AUDIO]: { label: t('file.statistics.audio'), color: '#E6A23C' },
   [FileType.DOCUMENT]: { label: t('file.statistics.document'), color: '#909399' },
-  [FileType.ARCHIVE]: { label: t('file.statistics.archive'), color: '#F56C6C' },
-  [FileType.CODE]: { label: t('file.statistics.code'), color: '#F7DF1E' },
-  [FileType.FOLDER]: { label: t('file.statistics.folder'), color: '#FFA000' }
+  [FileType.VIDEO]: { label: t('file.statistics.video'), color: '#67C23A' },
+  [FileType.AUDIO]: { label: t('file.statistics.audio'), color: '#E6A23C' }
 }
 
 // 图表数据

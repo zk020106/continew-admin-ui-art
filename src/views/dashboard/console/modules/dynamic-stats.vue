@@ -2,8 +2,8 @@
   <div class="art-card h-128 p-5 mb-5 max-sm:mb-4">
     <div class="art-card-header">
       <div class="title">
-        <h4>动态</h4>
-        <p>新增<span class="text-success">+6</span></p>
+        <h4>{{ t('pages.dashboardConsole.dynamic.title') }}</h4>
+        <p>{{ t('pages.dashboardConsole.dynamic.newlyAdded') }}<span class="text-success">+6</span></p>
       </div>
     </div>
 
@@ -14,9 +14,9 @@
           :key="index"
           class="h-17.5 leading-17.5 border-b border-g-300 text-sm overflow-hidden last:border-b-0"
         >
-          <span class="text-g-800 font-medium">{{ item.username }}</span>
-          <span class="mx-2 text-g-600">{{ item.type }}</span>
-          <span class="text-theme">{{ item.target }}</span>
+          <span class="text-g-800 font-medium">{{ t(item.usernameKey) }}</span>
+          <span class="mx-2 text-g-600">{{ t(item.typeKey) }}</span>
+          <span class="text-theme">{{ t(item.targetKey) }}</span>
         </div>
       </ElScrollbar>
     </div>
@@ -25,11 +25,14 @@
 
 /* eslint-disable ts/no-use-before-define */
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 interface DynamicItem {
-  username: string
-  type: string
-  target: string
+  usernameKey: string
+  typeKey: string
+  targetKey: string
 }
+const { t } = useI18n()
 
 /**
  * 用户动态列表
@@ -37,44 +40,44 @@ interface DynamicItem {
  */
 const list = reactive<DynamicItem[]>([
   {
-    username: '中小鱼',
-    type: '关注了',
-    target: '誶誶淰'
+    usernameKey: 'pages.dashboardConsole.dynamic.users.fish',
+    typeKey: 'pages.dashboardConsole.dynamic.actions.followed',
+    targetKey: 'pages.dashboardConsole.dynamic.targets.sui'
   },
   {
-    username: '何小荷',
-    type: '发表文章',
-    target: 'Vue3 + Typescript + Vite 项目实战笔记'
+    usernameKey: 'pages.dashboardConsole.dynamic.users.he',
+    typeKey: 'pages.dashboardConsole.dynamic.actions.publishedArticle',
+    targetKey: 'pages.dashboardConsole.dynamic.targets.vueArticle'
   },
   {
-    username: '中小鱼',
-    type: '关注了',
-    target: '誶誶淰'
+    usernameKey: 'pages.dashboardConsole.dynamic.users.fish',
+    typeKey: 'pages.dashboardConsole.dynamic.actions.followed',
+    targetKey: 'pages.dashboardConsole.dynamic.targets.sui'
   },
   {
-    username: '何小荷',
-    type: '发表文章',
-    target: 'Vue3 + Typescript + Vite 项目实战笔记'
+    usernameKey: 'pages.dashboardConsole.dynamic.users.he',
+    typeKey: 'pages.dashboardConsole.dynamic.actions.publishedArticle',
+    targetKey: 'pages.dashboardConsole.dynamic.targets.vueArticle'
   },
   {
-    username: '誶誶淰',
-    type: '提出问题',
-    target: '主题可以配置吗'
+    usernameKey: 'pages.dashboardConsole.dynamic.users.sui',
+    typeKey: 'pages.dashboardConsole.dynamic.actions.askedQuestion',
+    targetKey: 'pages.dashboardConsole.dynamic.targets.themeQuestion'
   },
   {
-    username: '发呆草',
-    type: '兑换了物品',
-    target: '《奇特的一生》'
+    usernameKey: 'pages.dashboardConsole.dynamic.users.dai',
+    typeKey: 'pages.dashboardConsole.dynamic.actions.exchangedItem',
+    targetKey: 'pages.dashboardConsole.dynamic.targets.strangeLife'
   },
   {
-    username: '甜筒',
-    type: '关闭了问题',
-    target: '发呆草'
+    usernameKey: 'pages.dashboardConsole.dynamic.users.cone',
+    typeKey: 'pages.dashboardConsole.dynamic.actions.closedQuestion',
+    targetKey: 'pages.dashboardConsole.dynamic.targets.dai'
   },
   {
-    username: '冷月呆呆',
-    type: '兑换了物品',
-    target: '《高效人士的七个习惯》'
+    usernameKey: 'pages.dashboardConsole.dynamic.users.moon',
+    typeKey: 'pages.dashboardConsole.dynamic.actions.exchangedItem',
+    targetKey: 'pages.dashboardConsole.dynamic.targets.sevenHabits'
   }
 ])
 </script>

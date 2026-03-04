@@ -16,8 +16,8 @@
           v-model="form.LOGIN_CAPTCHA_ENABLED"
           :active-value="1"
           :inactive-value="0"
-          active-text="是"
-          inactive-text="否"
+          :active-text="t('common.true')"
+          :inactive-text="t('common.false')"
         />
       </ElFormItem>
     </ElForm>
@@ -25,23 +25,23 @@
       <ElSpace>
         <ElButton v-if="!isUpdate" type="primary" @click="onUpdate">
           <ElIcon><Edit /></ElIcon>
-          修改
+          {{ t('common.edit') }}
         </ElButton>
         <ElButton v-if="!isUpdate" @click="onResetValue">
           <ElIcon><RefreshLeft /></ElIcon>
-          恢复默认
+          {{ t('common.restoreDefault') }}
         </ElButton>
         <ElButton v-if="isUpdate" type="primary" @click="handleSave">
           <ElIcon><Select /></ElIcon>
-          保存
+          {{ t('common.save') }}
         </ElButton>
         <ElButton v-if="isUpdate" @click="reset">
           <ElIcon><Refresh /></ElIcon>
-          重置
+          {{ t('common.reset') }}
         </ElButton>
         <ElButton v-if="isUpdate" @click="handleCancel">
           <ElIcon><Close /></ElIcon>
-          取消
+          {{ t('common.cancel') }}
         </ElButton>
       </ElSpace>
     </div>
@@ -53,6 +53,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import type { LoginConfig, OptionReq, OptionResp } from '@/apis/system/option'
 import { Close, Edit, Refresh, RefreshLeft, Select } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import {
   listOption,
   resetOptionValue,
@@ -63,6 +64,7 @@ import { useResetReactive } from '@/hooks'
 
 defineOptions({ name: 'LoginConfig' })
 
+const { t } = useI18n()
 const loading = ref<boolean>(false)
 const formRef = ref<FormInstance>()
 
@@ -71,7 +73,7 @@ const [form] = useResetReactive({
 })
 
 const rules: FormRules = {
-  LOGIN_CAPTCHA_ENABLED: [{ required: true, message: '请选择' }]
+  LOGIN_CAPTCHA_ENABLED: [{ required: true, message: t('common.placeholder.select') }]
 }
 
 const loginConfig = ref<LoginConfig>({
@@ -129,7 +131,7 @@ const handleSave = async () => {
         } as OptionReq
       })
     )
-    ElMessage.success('保存成功')
+    ElMessage.success(t('common.successSave'))
     isUpdate.value = false
     await getDataList()
   } catch (error) {
@@ -140,7 +142,7 @@ const handleSave = async () => {
 const handleResetValue = async () => {
   try {
     await resetOptionValue(queryForm)
-    ElMessage.success('恢复成功')
+    ElMessage.success(t('common.successRestore'))
     await getDataList()
   } catch (error) {
     console.error('Failed to reset login config:', error)
@@ -148,10 +150,10 @@ const handleResetValue = async () => {
 }
 
 const onResetValue = () => {
-  ElMessageBox.confirm('确认恢复登录配置为默认值吗？', '警告', {
+  ElMessageBox.confirm(t('system.config.login.resetConfirm'), t('common.warning'), {
     type: 'warning',
-    confirmButtonText: '确认',
-    cancelButtonText: '取消'
+    confirmButtonText: t('common.confirm'),
+    cancelButtonText: t('common.cancel')
   })
     .then(async () => {
       await handleResetValue()

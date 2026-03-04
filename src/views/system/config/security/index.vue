@@ -21,7 +21,7 @@
           :max="10"
           controls-position="right"
         />
-        <span class="unit">次</span>
+        <span class="unit">{{ t('system.config.security.passwordErrorLockCountUnit') }}</span>
       </ElFormItem>
 
       <ElFormItem prop="PASSWORD_ERROR_LOCK_MINUTES">
@@ -37,7 +37,7 @@
           :max="1440"
           controls-position="right"
         />
-        <span class="unit">分钟</span>
+        <span class="unit">{{ t('system.config.security.passwordErrorLockMinutesUnit') }}</span>
       </ElFormItem>
 
       <ElFormItem prop="PASSWORD_EXPIRATION_DAYS">
@@ -53,7 +53,7 @@
           :max="999"
           controls-position="right"
         />
-        <span class="unit">天</span>
+        <span class="unit">{{ t('system.config.security.passwordExpirationDaysUnit') }}</span>
       </ElFormItem>
 
       <ElFormItem prop="PASSWORD_EXPIRATION_WARNING_DAYS">
@@ -69,7 +69,7 @@
           :max="998"
           controls-position="right"
         />
-        <span class="unit">天</span>
+        <span class="unit">{{ t('system.config.security.passwordExpirationWarningDaysUnit') }}</span>
       </ElFormItem>
 
       <ElFormItem prop="PASSWORD_REPETITION_TIMES">
@@ -85,7 +85,7 @@
           :max="32"
           controls-position="right"
         />
-        <span class="unit">次</span>
+        <span class="unit">{{ t('system.config.security.passwordRepetitionTimesUnit') }}</span>
       </ElFormItem>
 
       <ElFormItem prop="PASSWORD_MIN_LENGTH">
@@ -114,8 +114,8 @@
           v-model="form.PASSWORD_ALLOW_CONTAIN_USERNAME"
           :active-value="1"
           :inactive-value="0"
-          active-text="是"
-          inactive-text="否"
+          :active-text="t('common.true')"
+          :inactive-text="t('common.false')"
         />
       </ElFormItem>
 
@@ -130,8 +130,8 @@
           v-model="form.PASSWORD_REQUIRE_SYMBOLS"
           :active-value="1"
           :inactive-value="0"
-          active-text="是"
-          inactive-text="否"
+          :active-text="t('common.true')"
+          :inactive-text="t('common.false')"
         />
       </ElFormItem>
     </ElForm>
@@ -139,23 +139,23 @@
       <ElSpace>
         <ElButton v-if="!isUpdate" type="primary" @click="onUpdate">
           <ElIcon><Edit /></ElIcon>
-          修改
+          {{ t('common.edit') }}
         </ElButton>
         <ElButton v-if="!isUpdate" @click="onResetValue">
           <ElIcon><RefreshLeft /></ElIcon>
-          恢复默认
+          {{ t('common.restoreDefault') }}
         </ElButton>
         <ElButton v-if="isUpdate" type="primary" @click="handleSave">
           <ElIcon><Select /></ElIcon>
-          保存
+          {{ t('common.save') }}
         </ElButton>
         <ElButton v-if="isUpdate" @click="reset">
           <ElIcon><Refresh /></ElIcon>
-          重置
+          {{ t('common.reset') }}
         </ElButton>
         <ElButton v-if="isUpdate" @click="handleCancel">
           <ElIcon><Close /></ElIcon>
-          取消
+          {{ t('common.cancel') }}
         </ElButton>
       </ElSpace>
     </div>
@@ -167,6 +167,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import type { OptionReq, OptionResp, SecurityConfig } from '@/apis/system/option'
 import { Close, Edit, Refresh, RefreshLeft, Select } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import {
   listOption,
   resetOptionValue,
@@ -177,6 +178,7 @@ import { useResetReactive } from '@/hooks'
 
 defineOptions({ name: 'SecurityConfig' })
 
+const { t } = useI18n()
 const loading = ref<boolean>(false)
 const formRef = ref<FormInstance>()
 
@@ -192,15 +194,15 @@ const [form] = useResetReactive({
 })
 
 const rules: FormRules = {
-  PASSWORD_ERROR_LOCK_COUNT: [{ required: true, message: '请输入值' }],
-  PASSWORD_ERROR_LOCK_MINUTES: [{ required: true, message: '请输入值' }],
-  PASSWORD_EXPIRATION_DAYS: [{ required: true, message: '请输入值' }],
+  PASSWORD_ERROR_LOCK_COUNT: [{ required: true, message: t('table.searchBar.searchInputPlaceholder') }],
+  PASSWORD_ERROR_LOCK_MINUTES: [{ required: true, message: t('table.searchBar.searchInputPlaceholder') }],
+  PASSWORD_EXPIRATION_DAYS: [{ required: true, message: t('table.searchBar.searchInputPlaceholder') }],
   PASSWORD_EXPIRATION_WARNING_DAYS: [
-    { required: true, message: '请输入值' },
+    { required: true, message: t('table.searchBar.searchInputPlaceholder') },
     {
       validator: (_rule, value, callback) => {
         if (form.PASSWORD_EXPIRATION_DAYS > 0 && value >= form.PASSWORD_EXPIRATION_DAYS) {
-          callback(new Error('密码到期提醒时间应小于密码有效期'))
+          callback(new Error(t('system.config.security.warningLessThanExpiry')))
         } else {
           callback()
         }
@@ -208,8 +210,8 @@ const rules: FormRules = {
       trigger: 'change'
     }
   ],
-  PASSWORD_REPETITION_TIMES: [{ required: true, message: '请输入值' }],
-  PASSWORD_MIN_LENGTH: [{ required: true, message: '请输入值' }]
+  PASSWORD_REPETITION_TIMES: [{ required: true, message: t('table.searchBar.searchInputPlaceholder') }],
+  PASSWORD_MIN_LENGTH: [{ required: true, message: t('table.searchBar.searchInputPlaceholder') }]
 }
 
 const securityConfig = ref<SecurityConfig>({
@@ -289,7 +291,7 @@ const handleSave = async () => {
         } as OptionReq
       })
     )
-    ElMessage.success('保存成功')
+    ElMessage.success(t('common.successSave'))
     isUpdate.value = false
     await getDataList()
   } catch (error) {
@@ -300,7 +302,7 @@ const handleSave = async () => {
 const handleResetValue = async () => {
   try {
     await resetOptionValue(queryForm)
-    ElMessage.success('恢复成功')
+    ElMessage.success(t('common.successRestore'))
     await getDataList()
   } catch (error) {
     console.error('Failed to reset security config:', error)
@@ -308,10 +310,10 @@ const handleResetValue = async () => {
 }
 
 const onResetValue = () => {
-  ElMessageBox.confirm('确认恢复安全配置为默认值吗？', '警告', {
+  ElMessageBox.confirm(t('system.config.security.resetConfirm'), t('common.warning'), {
     type: 'warning',
-    confirmButtonText: '确认',
-    cancelButtonText: '取消'
+    confirmButtonText: t('common.confirm'),
+    cancelButtonText: t('common.cancel')
   })
     .then(async () => {
       await handleResetValue()

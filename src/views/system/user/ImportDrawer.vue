@@ -1,7 +1,7 @@
 <template>
   <ElDrawer
     v-model="visible"
-    :title="t('system.user.import.title')"
+    :title="t('pages.user.import.title')"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :size="width >= 600 ? 600 : '100%'"
@@ -9,17 +9,17 @@
   >
     <ElForm ref="formRef" :model="form" size="large" label-width="auto">
       <ElAlert v-if="!form.disabled" type="info" :closable="false" style="margin-bottom: 15px">
-        <template #title> {{ t('system.user.import.alert') }} </template>
+        <template #title> {{ t('pages.user.import.alert') }} </template>
         <template #default>
           <ElLink type="primary" @click="downloadTemplate">
             <ElIcon><Document /></ElIcon>
-            {{ t('system.user.import.downloadTemplate') }}
+            {{ t('pages.user.import.downloadTemplate') }}
           </ElLink>
         </template>
       </ElAlert>
 
       <fieldset>
-        <legend>{{ t('system.user.import.step1.title') }}</legend>
+        <legend>{{ t('pages.user.import.step1.title') }}</legend>
         <div class="file-box">
           <ElUpload
             drag
@@ -30,9 +30,9 @@
             accept=".xls, .xlsx, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           >
             <ElIcon class="el-icon--upload"><UploadFilled /></ElIcon>
-            <div class="el-upload__text" v-html="t('system.user.import.step1.uploadText')" />
+            <div class="el-upload__text">{{ t('pages.user.import.step1.uploadText') }}</div>
             <template #tip>
-              <div class="el-upload__tip">{{ t('system.user.import.step1.uploadTip') }}</div>
+              <div class="el-upload__tip">{{ t('pages.user.import.step1.uploadTip') }}</div>
             </template>
           </ElUpload>
         </div>
@@ -40,11 +40,11 @@
           <div class="file-box">
             <ElSpace :size="20">
               <ElStatistic
-                :title="t('system.user.import.step1.totalRows')"
+                :title="t('pages.user.import.step1.totalRows')"
                 :value="dataResult.totalRows"
               />
               <ElStatistic
-                :title="t('system.user.import.step1.validRows')"
+                :title="t('pages.user.import.step1.validRows')"
                 :value="dataResult.validRows"
               />
             </ElSpace>
@@ -52,15 +52,15 @@
           <div class="file-box">
             <ElSpace :size="20">
               <ElStatistic
-                :title="t('system.user.import.step1.duplicateUserRows')"
+                :title="t('pages.user.import.step1.duplicateUserRows')"
                 :value="dataResult.duplicateUserRows"
               />
               <ElStatistic
-                :title="t('system.user.import.step1.duplicateEmailRows')"
+                :title="t('pages.user.import.step1.duplicateEmailRows')"
                 :value="dataResult.duplicateEmailRows"
               />
               <ElStatistic
-                :title="t('system.user.import.step1.duplicatePhoneRows')"
+                :title="t('pages.user.import.step1.duplicatePhoneRows')"
                 :value="dataResult.duplicatePhoneRows"
               />
             </ElSpace>
@@ -69,27 +69,27 @@
       </fieldset>
 
       <fieldset>
-        <legend>{{ t('system.user.import.step2.title') }}</legend>
-        <ElFormItem :label="t('system.user.import.step2.duplicateUser')">
+        <legend>{{ t('pages.user.import.step2.title') }}</legend>
+        <ElFormItem :label="t('pages.user.import.step2.duplicateUser')">
           <ElRadioGroup v-model="form.duplicateUser">
-            <ElRadioButton :value="1">{{ t('system.user.import.step2.skip') }}</ElRadioButton>
-            <ElRadioButton :value="3">{{ t('system.user.import.step2.stop') }}</ElRadioButton>
-            <ElRadioButton :value="2">{{ t('system.user.import.step2.update') }}</ElRadioButton>
+            <ElRadioButton :value="1">{{ t('pages.user.import.step2.skip') }}</ElRadioButton>
+            <ElRadioButton :value="3">{{ t('pages.user.import.step2.stop') }}</ElRadioButton>
+            <ElRadioButton :value="2">{{ t('pages.user.import.step2.update') }}</ElRadioButton>
           </ElRadioGroup>
         </ElFormItem>
-        <ElFormItem :label="t('system.user.import.step2.duplicateEmail')">
+        <ElFormItem :label="t('pages.user.import.step2.duplicateEmail')">
           <ElRadioGroup v-model="form.duplicateEmail">
-            <ElRadioButton :value="1">{{ t('system.user.import.step2.skip') }}</ElRadioButton>
-            <ElRadioButton :value="3">{{ t('system.user.import.step2.stop') }}</ElRadioButton>
+            <ElRadioButton :value="1">{{ t('pages.user.import.step2.skip') }}</ElRadioButton>
+            <ElRadioButton :value="3">{{ t('pages.user.import.step2.stop') }}</ElRadioButton>
           </ElRadioGroup>
         </ElFormItem>
-        <ElFormItem :label="t('system.user.import.step2.duplicatePhone')">
+        <ElFormItem :label="t('pages.user.import.step2.duplicatePhone')">
           <ElRadioGroup v-model="form.duplicatePhone">
-            <ElRadioButton :value="1">{{ t('system.user.import.step2.skip') }}</ElRadioButton>
-            <ElRadioButton :value="3">{{ t('system.user.import.step2.stop') }}</ElRadioButton>
+            <ElRadioButton :value="1">{{ t('pages.user.import.step2.skip') }}</ElRadioButton>
+            <ElRadioButton :value="3">{{ t('pages.user.import.step2.stop') }}</ElRadioButton>
           </ElRadioGroup>
         </ElFormItem>
-        <ElFormItem :label="t('system.user.import.step2.defaultStatus')">
+        <ElFormItem :label="t('pages.user.import.step2.defaultStatus')">
           <ElSwitch
             v-model="form.defaultStatus"
             :active-value="1"
@@ -104,10 +104,10 @@
     <template #footer>
       <CaButton type="cancel" @click="visible = false">
 {{
-        t('system.user.import.button.cancel')
+        t('pages.user.import.button.cancel')
       }}
 </CaButton>
-      <CaButton type="confirm" @click="save">{{ t('system.user.import.button.confirm') }}</CaButton>
+      <CaButton type="confirm" @click="save">{{ t('pages.user.import.button.confirm') }}</CaButton>
     </template>
   </ElDrawer>
 </template>
@@ -172,7 +172,7 @@ const handleUpload = (options: UploadRequestOptions) => {
   return parseImportUser(formData)
     .then((res) => {
       dataResult.value = res.data
-      ElMessage.success(t('system.user.import.message.uploadSuccess'))
+      ElMessage.success(t('pages.user.import.message.uploadSuccess'))
       onSuccess(res)
     })
     .catch((error) => {
@@ -184,13 +184,13 @@ const handleUpload = (options: UploadRequestOptions) => {
 const save = async () => {
   try {
     if (!dataResult.value.importKey) {
-      ElMessage.warning(t('system.user.import.message.pleaseUploadFirst'))
+      ElMessage.warning(t('pages.user.import.message.pleaseUploadFirst'))
       return false
     }
     form.importKey = dataResult.value.importKey
     const res = await importUser(form)
     ElMessage.success(
-      t('system.user.import.message.importSuccess', {
+      t('pages.user.import.message.importSuccess', {
         insertRows: res.data.insertRows,
         updateRows: res.data.updateRows
       })

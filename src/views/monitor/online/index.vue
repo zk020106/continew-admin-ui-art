@@ -14,6 +14,7 @@
         <CaForm
           v-model="queryForm"
           search
+          label-width="88px"
           :columns="queryFormColumns"
           @search="search"
           @reset="reset"
@@ -27,17 +28,13 @@
       <template #action="{ row }">
         <ElSpace>
           <ElPopconfirm
+            v-if="hasAuth('monitor:online:kickout')"
             :title="t('pages.onlineUser.message.confirmKickout')"
             :confirm-button-props="{ type: 'danger' }"
             @confirm="handleKickout(row.token)"
           >
             <template #reference>
-              <ElButton
-                v-auth="['monitor:online:kickout']"
-                type="danger"
-                link
-                :disabled="currentToken === row.token"
-              >
+              <ElButton type="danger" link :disabled="currentToken === row.token">
                 {{ t('pages.onlineUser.button.kickout') }}
               </ElButton>
             </template>
@@ -55,12 +52,13 @@ import type { TableColumnItem } from '@/components/base/CaTable/type'
 import { ElButton, ElMessage, ElPopconfirm, ElSpace } from 'element-plus'
 import { useI18n } from 'vue-i18n'
 import { kickout, listOnlineUser } from '@/apis/monitor'
-import { useDevice, useResetReactive, useTable } from '@/hooks'
+import { useAuth, useDevice, useResetReactive, useTable } from '@/hooks'
 import { useUserStore } from '@/store/modules/user'
 
 defineOptions({ name: 'MonitorOnline' })
 
 const { t } = useI18n()
+const { hasAuth } = useAuth()
 const { isMobile } = useDevice()
 const userStore = useUserStore()
 const currentToken = computed(() => userStore.accessToken)
@@ -79,7 +77,8 @@ const queryFormColumns = computed(
         gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
         props: {
           placeholder: t('pages.onlineUser.search.nicknamePlaceholder'),
-          clearable: true
+          clearable: true,
+          name: 'nickname'
         }
       },
       {
@@ -89,7 +88,8 @@ const queryFormColumns = computed(
         gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
         props: {
           type: 'daterange',
-          clearable: true
+          clearable: true,
+          name: 'loginTime'
         }
       }
     ] as FormColumnItem<OnlineUserQuery>[]

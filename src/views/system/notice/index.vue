@@ -130,7 +130,7 @@ const queryFormColumns = computed(
         field: 'type',
         gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
         props: {
-          options: notice_type,
+          options: notice_type.value,
           placeholder: '请选择分类',
           clearable: true
         }

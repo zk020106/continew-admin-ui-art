@@ -13,6 +13,7 @@
           <ElCheckbox
             :model-value="allSelected"
             :indeterminate="indeterminate"
+            :name="selectAllCheckboxName"
             @change="handleSelectAll"
           >
             {{ $t('table.selectAll') }}
@@ -42,6 +43,7 @@
               <ElCheckbox
                 :model-value="column.visible !== false"
                 :disabled="isDisabled(column)"
+                :name="getColumnCheckboxName(column, index)"
                 @change="(val) => setVisible(column, val)"
                 @click.stop
               >
@@ -204,16 +206,28 @@ watch(
  * 是否全选
  * 当所有非禁用列都可见时返回 true
  */
-const allSelected = computed(() => localColumns.value.every((c) => c.visible !== false))
+const allSelected = computed(() => localColumns.value.every((c: any) => c.visible !== false))
 
 /**
  * 是否处于不确定状态（部分选中）
  * 当有列可见但不是全部可见时返回 true，用于控制全选复选框的样式
  */
 const indeterminate = computed(() => {
-  const visible = localColumns.value.filter((c) => c.visible !== false).length
+  const visible = localColumns.value.filter((c: any) => c.visible !== false).length
   return visible > 0 && visible < localColumns.value.length
 })
+
+const checkboxNamePrefix = computed(() => {
+  return `ca-table-column-setting-${props.tableId ?? 'default'}`
+})
+
+const selectAllCheckboxName = computed(() => {
+  return `${checkboxNamePrefix.value}-all`
+})
+
+const getColumnCheckboxName = (column: TableColumnItem, index: number) => {
+  return `${checkboxNamePrefix.value}-${String(column.prop ?? index)}`
+}
 
 /* ================= 下拉框生命周期 ================= */
 

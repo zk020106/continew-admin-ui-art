@@ -8,68 +8,76 @@
     @close="handleClose"
   >
     <ElForm ref="formRef" :model="form" :rules="rules" label-width="110px">
-      <ElFormItem label="名称" prop="name">
+      <ElFormItem :label="t('system.config.storage.name')" prop="name">
         <ElInput v-model="form.name" maxlength="100" show-word-limit />
       </ElFormItem>
-      <ElFormItem label="编码" prop="code">
+      <ElFormItem :label="t('system.config.storage.code')" prop="code">
         <ElInput v-model="form.code" maxlength="30" :disabled="isUpdate" />
       </ElFormItem>
 
       <template v-if="form.type === 2">
-        <ElFormItem label="Access Key" prop="accessKey">
+        <ElFormItem :label="t('system.config.storage.accessKey')" prop="accessKey">
           <ElInput v-model="form.accessKey" />
         </ElFormItem>
-        <ElFormItem label="Secret Key" prop="secretKey">
+        <ElFormItem :label="t('system.config.storage.secretKey')" prop="secretKey">
           <ElInput
             v-model="form.secretKey"
             type="password"
             show-password
-            :placeholder="isUpdate ? '保持 Secret Key 为空将不更改' : '请输入 Secret Key'"
+            :placeholder="
+              isUpdate
+                ? t('system.config.storage.secretKeyPlaceholderKeep')
+                : t('system.config.storage.secretKeyPlaceholderInput')
+            "
           />
         </ElFormItem>
-        <ElFormItem label="Endpoint" prop="endpoint">
-          <ElInput v-model="form.endpoint" placeholder="如: oss-cn-hangzhou.aliyuncs.com" />
+        <ElFormItem :label="t('system.config.storage.endpoint')" prop="endpoint">
+          <ElInput v-model="form.endpoint" :placeholder="t('system.config.storage.endpointPlaceholder')" />
         </ElFormItem>
-        <ElFormItem label="Bucket" prop="bucketName">
+        <ElFormItem :label="t('system.config.storage.bucketName')" prop="bucketName">
           <ElInput v-model="form.bucketName" />
         </ElFormItem>
-        <ElFormItem label="域名" prop="domain">
-          <ElInput v-model="form.domain" placeholder="可选，自定义域名" />
+        <ElFormItem :label="t('system.config.storage.domain')" prop="domain">
+          <ElInput v-model="form.domain" :placeholder="t('system.config.storage.domainOptionalPlaceholder')" />
         </ElFormItem>
       </template>
 
       <template v-else>
-        <ElFormItem label="存储路径" prop="bucketName">
-          <ElInput v-model="form.bucketName" placeholder="如: /data/storage" />
+        <ElFormItem :label="t('system.config.storage.path')" prop="bucketName">
+          <ElInput v-model="form.bucketName" :placeholder="t('system.config.storage.pathPlaceholder')" />
         </ElFormItem>
-        <ElFormItem label="访问路径" prop="domain">
-          <ElInput v-model="form.domain" placeholder="如: http://localhost:9000" />
+        <ElFormItem :label="t('system.config.storage.accessPath')" prop="domain">
+          <ElInput v-model="form.domain" :placeholder="t('system.config.storage.accessPathPlaceholder')" />
         </ElFormItem>
       </template>
 
-      <ElFormItem label="启用回收站" prop="recycleBinEnabled">
+      <ElFormItem :label="t('system.config.storage.recycleBinEnabled')" prop="recycleBinEnabled">
         <ElSwitch
           v-model="form.recycleBinEnabled"
           :active-value="true"
           :inactive-value="false"
-          active-text="启用"
-          inactive-text="禁用"
+          :active-text="t('common.statusEnabled')"
+          :inactive-text="t('common.statusDisabled')"
           :disabled="isUpdate"
           inline-prompt
         />
       </ElFormItem>
-      <ElFormItem v-if="form.recycleBinEnabled" label="回收站路径" prop="recycleBinPath">
+      <ElFormItem
+        v-if="form.recycleBinEnabled"
+        :label="t('system.config.storage.recycleBinPath')"
+        prop="recycleBinPath"
+      >
         <ElInput
           v-model="form.recycleBinPath"
           :disabled="isUpdate"
-          placeholder="如: .RECYCLE.BIN/"
+          :placeholder="t('system.config.storage.recycleBinPathPlaceholder')"
         />
       </ElFormItem>
 
-      <ElFormItem label="排序" prop="sort">
+      <ElFormItem :label="t('system.config.storage.sort')" prop="sort">
         <ElInputNumber v-model="form.sort" :min="1" :max="9999" controls-position="right" />
       </ElFormItem>
-      <ElFormItem label="描述" prop="description">
+      <ElFormItem :label="t('system.config.storage.description')" prop="description">
         <ElInput
           v-model="form.description"
           type="textarea"
@@ -78,21 +86,21 @@
           show-word-limit
         />
       </ElFormItem>
-      <ElFormItem label="状态" prop="status">
+      <ElFormItem :label="t('common.status')" prop="status">
         <ElSwitch
           v-model="form.status"
           :active-value="1"
           :inactive-value="2"
-          active-text="启用"
-          inactive-text="禁用"
+          :active-text="t('common.statusEnabled')"
+          :inactive-text="t('common.statusDisabled')"
           inline-prompt
         />
       </ElFormItem>
     </ElForm>
 
     <template #footer>
-      <ElButton @click="visible = false">取消</ElButton>
-      <ElButton type="primary" :loading="saveLoading" @click="handleSave">确定</ElButton>
+      <ElButton @click="visible = false">{{ t('common.cancel') }}</ElButton>
+      <ElButton type="primary" :loading="saveLoading" @click="handleSave">{{ t('common.confirm') }}</ElButton>
     </template>
   </ElDialog>
 </template>
@@ -101,6 +109,7 @@
 import type { FormInstance, FormRules } from 'element-plus'
 import type { StorageReq } from '@/apis/system/type'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { addStorage, getStorage, updateStorage } from '@/apis/system/storage'
 import { useResetReactive } from '@/hooks'
 import { encryptByRsa } from '@/utils/encrypt'
@@ -125,6 +134,7 @@ interface StorageFormModel {
 const emit = defineEmits<{
   (e: 'save-success'): void
 }>()
+const { t } = useI18n()
 
 const dataId = ref('')
 const visible = ref(false)
@@ -132,8 +142,16 @@ const saveLoading = ref(false)
 const formRef = ref<FormInstance>()
 
 const isUpdate = computed(() => !!dataId.value)
-const storageType = computed(() => (form.type === 2 ? '对象存储' : '本地存储'))
-const title = computed(() => (isUpdate.value ? `修改${storageType.value}` : `新增${storageType.value}`))
+const title = computed(() => {
+  if (form.type === 2) {
+    return isUpdate.value
+      ? t('system.config.storage.editOssTitle')
+      : t('system.config.storage.addOssTitle')
+  }
+  return isUpdate.value
+    ? t('system.config.storage.editLocalTitle')
+    : t('system.config.storage.addLocalTitle')
+})
 
 const [form, resetForm] = useResetReactive<StorageFormModel>({
   type: 2,
@@ -153,14 +171,30 @@ const [form, resetForm] = useResetReactive<StorageFormModel>({
 })
 
 const rules: FormRules<StorageFormModel> = {
-  name: [{ required: true, message: '请输入名称', trigger: 'blur' }],
-  code: [{ required: true, message: '请输入编码', trigger: 'blur' }],
+  name: [
+    {
+      required: true,
+      message: t('common.placeholder.inputWithLabel', { label: t('system.config.storage.name') }),
+      trigger: 'blur'
+    }
+  ],
+  code: [
+    {
+      required: true,
+      message: t('common.placeholder.inputWithLabel', { label: t('system.config.storage.code') }),
+      trigger: 'blur'
+    }
+  ],
   accessKey: [
     {
       trigger: 'blur',
       validator: (_rule, value, callback) => {
         if (form.type === 2 && !value) {
-          callback(new Error('请输入 Access Key'))
+          callback(
+            new Error(
+              t('common.placeholder.inputWithLabel', { label: t('system.config.storage.accessKey') })
+            )
+          )
           return
         }
         callback()
@@ -172,7 +206,11 @@ const rules: FormRules<StorageFormModel> = {
       trigger: 'blur',
       validator: (_rule, value, callback) => {
         if (form.type === 2 && !isUpdate.value && !value) {
-          callback(new Error('请输入 Secret Key'))
+          callback(
+            new Error(
+              t('common.placeholder.inputWithLabel', { label: t('system.config.storage.secretKey') })
+            )
+          )
           return
         }
         callback()
@@ -184,20 +222,47 @@ const rules: FormRules<StorageFormModel> = {
       trigger: 'blur',
       validator: (_rule, value, callback) => {
         if (form.type === 2 && !value) {
-          callback(new Error('请输入 Endpoint'))
+          callback(
+            new Error(
+              t('common.placeholder.inputWithLabel', { label: t('system.config.storage.endpoint') })
+            )
+          )
           return
         }
         callback()
       }
     }
   ],
-  bucketName: [{ required: true, message: '请输入 Bucket/存储路径', trigger: 'blur' }],
+  bucketName: [
+    {
+      trigger: 'blur',
+      validator: (_rule, value, callback) => {
+        if (!value) {
+          callback(
+            new Error(
+              t('common.placeholder.inputWithLabel', {
+                label: form.type === 2
+                  ? t('system.config.storage.bucketName')
+                  : t('system.config.storage.path')
+              })
+            )
+          )
+          return
+        }
+        callback()
+      }
+    }
+  ],
   domain: [
     {
       trigger: 'blur',
       validator: (_rule, value, callback) => {
         if (form.type === 1 && !value) {
-          callback(new Error('请输入访问路径'))
+          callback(
+            new Error(
+              t('common.placeholder.inputWithLabel', { label: t('system.config.storage.accessPath') })
+            )
+          )
           return
         }
         callback()
@@ -209,7 +274,11 @@ const rules: FormRules<StorageFormModel> = {
       trigger: 'blur',
       validator: (_rule, value, callback) => {
         if (form.recycleBinEnabled && !value) {
-          callback(new Error('请输入回收站路径'))
+          callback(
+            new Error(
+              t('common.placeholder.inputWithLabel', { label: t('system.config.storage.recycleBinPath') })
+            )
+          )
           return
         }
         callback()
@@ -253,10 +322,10 @@ const handleSave = async () => {
     const payload = buildPayload()
     if (isUpdate.value) {
       await updateStorage(payload, dataId.value)
-      ElMessage.success('修改成功')
+      ElMessage.success(t('message.updateSuccess'))
     } else {
       await addStorage(payload)
-      ElMessage.success('新增成功')
+      ElMessage.success(t('message.addSuccess'))
     }
     emit('save-success')
     visible.value = false

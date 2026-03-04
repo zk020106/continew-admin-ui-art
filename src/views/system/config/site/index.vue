@@ -15,7 +15,7 @@
           <template #trigger>
             <ElButton v-if="!logoFile.url" type="primary" size="small">
               <ElIcon><Plus /></ElIcon>
-              上传
+              {{ t('common.button.upload') }}
             </ElButton>
             <div v-else class="image-preview logo">
               <ElImage :src="logoFile.url" fit="contain" />
@@ -35,7 +35,7 @@
           <template #trigger>
             <ElButton v-if="!faviconFile.url" type="primary" size="small">
               <ElIcon><Plus /></ElIcon>
-              上传
+              {{ t('common.button.upload') }}
             </ElButton>
             <div v-else class="image-preview favicon">
               <ElImage :src="faviconFile.url" fit="contain" />
@@ -84,23 +84,23 @@
       <ElSpace>
         <ElButton v-if="!isUpdate" type="primary" @click="onUpdate">
           <ElIcon><Edit /></ElIcon>
-          修改
+          {{ t('common.edit') }}
         </ElButton>
         <ElButton v-if="!isUpdate" @click="onResetValue">
           <ElIcon><RefreshLeft /></ElIcon>
-          恢复默认
+          {{ t('common.restoreDefault') }}
         </ElButton>
         <ElButton v-if="isUpdate" type="primary" @click="handleSave">
           <ElIcon><Select /></ElIcon>
-          保存
+          {{ t('common.save') }}
         </ElButton>
         <ElButton v-if="isUpdate" @click="reset">
           <ElIcon><Refresh /></ElIcon>
-          重置
+          {{ t('common.reset') }}
         </ElButton>
         <ElButton v-if="isUpdate" @click="handleCancel">
           <ElIcon><Close /></ElIcon>
-          取消
+          {{ t('common.cancel') }}
         </ElButton>
       </ElSpace>
     </div>
@@ -112,6 +112,7 @@ import type { FormInstance, FormRules, UploadRequestOptions } from 'element-plus
 import type { OptionReq, OptionResp, SiteConfig } from '@/apis/system/option'
 import { Close, Edit, Plus, Refresh, RefreshLeft, Select } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import {
   listOption,
   resetOptionValue,
@@ -123,6 +124,7 @@ import { fileToBase64 } from '@/utils/encrypt'
 
 defineOptions({ name: 'SiteConfig' })
 
+const { t } = useI18n()
 const loading = ref<boolean>(false)
 const formRef = ref<FormInstance>()
 
@@ -138,7 +140,7 @@ const [form, resetForm] = useResetReactive({
 
 // 表单验证规则
 const rules: FormRules = {
-  SITE_TITLE: [{ required: true, message: '请输入系统名称', trigger: 'blur' }]
+  SITE_TITLE: [{ required: true, message: t('system.config.site.siteTitlePlaceholder'), trigger: 'blur' }]
 }
 
 // 配置元数据 - 存储完整的 OptionResp（包含 id, name, code, value, description）
@@ -226,7 +228,7 @@ const handleSave = async () => {
         } as OptionReq
       })
     )
-    ElMessage.success('保存成功')
+    ElMessage.success(t('common.successSave'))
     await getDataList()
   } catch (error) {
     console.error('Failed to update site config:', error)
@@ -237,7 +239,7 @@ const handleSave = async () => {
 const handleResetValue = async () => {
   try {
     await resetOptionValue(queryForm)
-    ElMessage.success('恢复成功')
+    ElMessage.success(t('common.successRestore'))
     await getDataList()
   } catch (error) {
     console.error('Failed to reset site config:', error)
@@ -245,10 +247,10 @@ const handleResetValue = async () => {
 }
 
 const onResetValue = () => {
-  ElMessageBox.confirm('确认恢复基础配置为默认值吗？', '警告', {
+  ElMessageBox.confirm(t('system.config.site.resetConfirm'), t('common.warning'), {
     type: 'warning',
-    confirmButtonText: '确认',
-    cancelButtonText: '取消'
+    confirmButtonText: t('common.confirm'),
+    cancelButtonText: t('common.cancel')
   })
     .then(async () => {
       await handleResetValue()
@@ -263,11 +265,11 @@ const handleUpload = (field: 'SITE_LOGO' | 'SITE_FAVICON', fileRef: Ref<{ url?: 
       .then((res) => {
         form[field] = res
         fileRef.value.url = res
-        ElMessage.success('上传成功')
+        ElMessage.success(t('common.success'))
       })
       .catch((error) => {
         console.error('Upload failed:', error)
-        ElMessage.error('上传失败')
+        ElMessage.error(t('common.error'))
         return Promise.reject(error)
       })
   }

@@ -8,8 +8,8 @@
       </div>
       <div class="header-right">
         <ElRadioGroup v-model="isCascade">
-          <ElRadioButton :label="true">{{ t('role.nodeCascade') }}</ElRadioButton>
-          <ElRadioButton :label="false">{{ t('role.nodeIndependent') }}</ElRadioButton>
+          <ElRadioButton :value="true">{{ t('role.nodeCascade') }}</ElRadioButton>
+          <ElRadioButton :value="false">{{ t('role.nodeIndependent') }}</ElRadioButton>
         </ElRadioGroup>
       </div>
     </div>

@@ -9,7 +9,7 @@
     @close="reset"
   >
     <ElTabs v-model="activeTab">
-      <ElTabPane label="生成配置" name="gen">
+      <ElTabPane :label="t('pages.codeGenerator.config.tabs.gen')" name="gen">
         <CaForm
           ref="formRef"
           v-model="form"
@@ -18,10 +18,10 @@
         />
       </ElTabPane>
 
-      <ElTabPane label="字段配置" name="field">
+      <ElTabPane :label="t('pages.codeGenerator.config.tabs.field')" name="field">
         <div class="field-toolbar">
           <ElPopconfirm
-            title="是否确定同步最新数据表结构？同步后只要不点击保存，则不影响原有配置数据。"
+            :title="t('pages.codeGenerator.config.syncConfirm')"
             @confirm="handleSync"
           >
             <template #reference>
@@ -30,7 +30,7 @@
                 :disabled="syncDisabled"
                 :icon="Refresh"
               >
-                同步
+                {{ t('pages.codeGenerator.config.sync') }}
               </ElButton>
             </template>
           </ElPopconfirm>
@@ -62,17 +62,17 @@
 
             <ElTableColumn type="index" label="#" width="55" align="center" />
 
-            <ElTableColumn label="名称" min-width="150">
+            <ElTableColumn :label="t('pages.codeGenerator.field.name')" min-width="150">
               <template #default="{ row }">
                 <ElInput v-model="row.fieldName" />
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="类型" min-width="140">
+            <ElTableColumn :label="t('pages.codeGenerator.field.type')" min-width="140">
               <template #default="{ row }">
                 <ElSelect
                   v-model="row.fieldType"
-                  placeholder="请选择字段类型"
+                  :placeholder="t('pages.codeGenerator.config.placeholder.fieldType')"
                   filterable
                   allow-create
                   default-first-option
@@ -87,42 +87,42 @@
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="描述" min-width="180">
+            <ElTableColumn :label="t('pages.codeGenerator.field.comment')" min-width="180">
               <template #default="{ row }">
                 <ElInput v-model="row.comment" />
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="列表" width="70" align="center">
+            <ElTableColumn :label="t('pages.codeGenerator.field.list')" width="70" align="center">
               <template #default="{ row }">
                 <ElCheckbox v-model="row.showInList" />
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="表单" width="70" align="center">
+            <ElTableColumn :label="t('pages.codeGenerator.field.form')" width="70" align="center">
               <template #default="{ row }">
                 <ElCheckbox v-model="row.showInForm" @change="handleShowInFormChange(row)" />
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="必填" width="70" align="center">
+            <ElTableColumn :label="t('pages.codeGenerator.field.required')" width="70" align="center">
               <template #default="{ row }">
                 <ElCheckbox v-model="row.isRequired" :disabled="!row.showInForm" />
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="查询" width="70" align="center">
+            <ElTableColumn :label="t('pages.codeGenerator.field.query')" width="70" align="center">
               <template #default="{ row }">
                 <ElCheckbox v-model="row.showInQuery" @change="handleShowInQueryChange(row)" />
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="表单类型" min-width="160">
+            <ElTableColumn :label="t('pages.codeGenerator.field.formType')" min-width="160">
               <template #default="{ row }">
                 <ElSelect
                   v-if="row.showInForm || row.showInQuery"
                   v-model="row.formType"
-                  placeholder="请选择表单类型"
+                  :placeholder="t('pages.codeGenerator.config.placeholder.formType')"
                   clearable
                 >
                   <ElOption
@@ -132,16 +132,16 @@
                     :value="item.value"
                   />
                 </ElSelect>
-                <span v-else>无需设置</span>
+                <span v-else>{{ t('pages.codeGenerator.config.noNeed') }}</span>
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="查询方式" min-width="160">
+            <ElTableColumn :label="t('pages.codeGenerator.field.queryType')" min-width="160">
               <template #default="{ row }">
                 <ElSelect
                   v-if="row.showInQuery"
                   v-model="row.queryType"
-                  placeholder="请选择查询方式"
+                  :placeholder="t('pages.codeGenerator.config.placeholder.queryType')"
                   clearable
                 >
                   <ElOption
@@ -151,15 +151,15 @@
                     :value="item.value"
                   />
                 </ElSelect>
-                <span v-else>无需设置</span>
+                <span v-else>{{ t('pages.codeGenerator.config.noNeed') }}</span>
               </template>
             </ElTableColumn>
 
-            <ElTableColumn label="关联字典" min-width="170">
+            <ElTableColumn :label="t('pages.codeGenerator.field.dictCode')" min-width="170">
               <template #default="{ row }">
                 <ElSelect
                   v-model="row.dictCode"
-                  placeholder="请选择字典类型"
+                  :placeholder="t('pages.codeGenerator.config.placeholder.dictType')"
                   filterable
                   clearable
                 >
@@ -180,7 +180,7 @@
     <template #footer>
       <ElSpace>
         <CaButton type="cancel" @click="visible = false" />
-        <ElButton type="primary" :loading="saving" @click="handleSave">保存</ElButton>
+        <ElButton type="primary" :loading="saving" @click="handleSave">{{ t('common.save') }}</ElButton>
       </ElSpace>
     </template>
   </ElDrawer>
@@ -194,6 +194,7 @@ import { Rank, Refresh } from '@element-plus/icons-vue'
 import { useWindowSize } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
 import { VueDraggable } from 'vue-draggable-plus'
+import { useI18n } from 'vue-i18n'
 import {
   getGenConfig,
   listFieldConfig,
@@ -211,6 +212,7 @@ const emit = defineEmits<{
 }>()
 
 const { width } = useWindowSize()
+const { t } = useI18n()
 const { form_type_enum, query_type_enum } = useDict('form_type_enum', 'query_type_enum')
 
 const visible = ref(false)
@@ -256,51 +258,75 @@ const formColumns = computed(
     [
       {
         type: 'input',
-        label: '作者名称',
+        label: t('pages.codeGenerator.field.author'),
         field: 'author',
-        rules: [{ required: true, message: '请输入作者名称', trigger: 'blur' }],
+        rules: [
+          {
+            required: true,
+            message: t('common.placeholder.inputWithLabel', { label: t('pages.codeGenerator.field.author') }),
+            trigger: 'blur'
+          }
+        ],
         props: { maxlength: 100, clearable: true }
       },
       {
         type: 'input',
-        label: '业务名称',
+        label: t('pages.codeGenerator.field.businessName'),
         field: 'businessName',
-        rules: [{ required: true, message: '请输入业务名称', trigger: 'blur' }],
-        props: { placeholder: '自定义业务名称，例如：用户', maxlength: 50, clearable: true }
+        rules: [
+          {
+            required: true,
+            message: t('common.placeholder.inputWithLabel', { label: t('pages.codeGenerator.field.businessName') }),
+            trigger: 'blur'
+          }
+        ],
+        props: { placeholder: t('pages.codeGenerator.config.placeholder.businessName'), maxlength: 50, clearable: true }
       },
       {
         type: 'input',
-        label: '所属模块',
+        label: t('pages.codeGenerator.field.moduleName'),
         field: 'moduleName',
-        rules: [{ required: true, message: '请输入所属模块', trigger: 'blur' }],
-        props: { placeholder: '项目模块名称，例如：continew-system', maxlength: 60, clearable: true }
+        rules: [
+          {
+            required: true,
+            message: t('common.placeholder.inputWithLabel', { label: t('pages.codeGenerator.field.moduleName') }),
+            trigger: 'blur'
+          }
+        ],
+        props: { placeholder: t('pages.codeGenerator.config.placeholder.moduleName'), maxlength: 60, clearable: true }
       },
       {
         type: 'input',
-        label: '模块包名',
+        label: t('pages.codeGenerator.field.packageName'),
         field: 'packageName',
-        rules: [{ required: true, message: '请输入模块包名', trigger: 'blur' }],
+        rules: [
+          {
+            required: true,
+            message: t('common.placeholder.inputWithLabel', { label: t('pages.codeGenerator.field.packageName') }),
+            trigger: 'blur'
+          }
+        ],
         props: {
-          placeholder: '项目模块包名，例如：top.continew.admin.system',
+          placeholder: t('pages.codeGenerator.config.placeholder.packageName'),
           maxlength: 60,
           clearable: true
         }
       },
       {
         type: 'input',
-        label: '去表前缀',
+        label: t('pages.codeGenerator.field.tablePrefix'),
         field: 'tablePrefix',
-        props: { placeholder: '数据库表前缀，例如：sys_', maxlength: 20, clearable: true }
+        props: { placeholder: t('pages.codeGenerator.config.placeholder.tablePrefix'), maxlength: 20, clearable: true }
       },
       {
         type: 'switch',
-        label: '是否覆盖',
+        label: t('pages.codeGenerator.field.isOverride'),
         field: 'isOverride',
         props: {
           activeValue: true,
           inactiveValue: false,
-          activeText: '是',
-          inactiveText: '否'
+          activeText: t('common.true'),
+          inactiveText: t('common.false')
         }
       }
     ] as FormColumnItem<GenConfigResp>[]
@@ -308,7 +334,10 @@ const formColumns = computed(
 
 const drawerTitle = computed(() => {
   const comment = currentComment.value ? `（${currentComment.value}）` : ''
-  return `${currentTableName.value}${comment}配置`
+  return t('pages.codeGenerator.config.drawerTitle', {
+    tableName: currentTableName.value,
+    comment
+  })
 })
 
 const syncDisabled = computed(() => {
@@ -382,7 +411,7 @@ const handleSave = async () => {
 
   if (fieldDataList.value.some((item) => !item.fieldType)) {
     activeTab.value = 'field'
-    ElMessage.warning('字段类型不能为空')
+    ElMessage.warning(t('pages.codeGenerator.config.fieldTypeRequired'))
     return
   }
 
@@ -393,7 +422,7 @@ const handleSave = async () => {
       genConfig: { ...form.value },
       fieldConfigs: fieldDataList.value
     })
-    ElMessage.success('保存成功')
+    ElMessage.success(t('common.successSave'))
     visible.value = false
     emit('save-success')
   } finally {
@@ -425,7 +454,7 @@ defineExpose({ onOpen })
   }
 
   .drag-handle {
-    cursor: move;
     color: var(--el-text-color-secondary);
+    cursor: move;
   }
 </style>

@@ -2,12 +2,12 @@
   <div class="office-preview">
     <div v-if="loading" class="loading">
       <el-icon class="is-loading"><Loading /></el-icon>
-      <span>文档加载中...</span>
+      <span>{{ t('file.preview.loading') }}</span>
     </div>
     <div v-else-if="error" class="error">
       <ArtSvgIcon icon="ri:error-warning-line" :size="48" />
       <p>{{ error }}</p>
-      <el-button type="primary" @click="$emit('download')">下载查看</el-button>
+      <el-button type="primary" @click="$emit('download')">{{ t('file.preview.downloadView') }}</el-button>
     </div>
     <VueOfficeDocx
       v-else-if="type === 'word'"
@@ -35,6 +35,7 @@ import { Loading } from '@element-plus/icons-vue'
 import VueOfficeDocx from '@vue-office/docx'
 import VueOfficeExcel from '@vue-office/excel'
 import VueOfficePdf from '@vue-office/pdf'
+import { useI18n } from 'vue-i18n'
 import '@vue-office/docx/lib/index.css'
 import '@vue-office/excel/lib/index.css'
 
@@ -49,6 +50,7 @@ defineEmits<{
 
 const loading = ref(true)
 const error = ref('')
+const { t } = useI18n()
 
 const onRendered = () => {
   loading.value = false
@@ -58,10 +60,10 @@ const onError = (err: unknown) => {
   console.error('Office preview error:', err)
   loading.value = false
   if (err instanceof Error) {
-    error.value = err.message || '文档加载失败'
+    error.value = err.message || t('file.preview.loadFailed')
     return
   }
-  error.value = '文档加载失败'
+  error.value = t('file.preview.loadFailed')
 }
 </script>
 

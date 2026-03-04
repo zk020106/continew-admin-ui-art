@@ -10,36 +10,36 @@
             src="@imgs/user/avatar.webp"
           />
           <h2 class="mt-5 text-xl font-normal">{{ userInfo.username }}</h2>
-          <p class="mt-5 text-sm">专注于用户体验跟视觉设计</p>
+          <p class="mt-5 text-sm">{{ t('pages.userCenter.profile.tagline') }}</p>
 
           <div class="w-75 mx-auto mt-7.5 text-left">
             <div class="mt-2.5">
               <ArtSvgIcon icon="ri:mail-line" class="text-g-700" />
-              <span class="ml-2 text-sm">jdkjjfnndf@mall.com</span>
+              <span class="ml-2 text-sm">{{ t('pages.userCenter.profile.email') }}</span>
             </div>
             <div class="mt-2.5">
               <ArtSvgIcon icon="ri:user-3-line" class="text-g-700" />
-              <span class="ml-2 text-sm">交互专家</span>
+              <span class="ml-2 text-sm">{{ t('pages.userCenter.profile.role') }}</span>
             </div>
             <div class="mt-2.5">
               <ArtSvgIcon icon="ri:map-pin-line" class="text-g-700" />
-              <span class="ml-2 text-sm">广东省深圳市</span>
+              <span class="ml-2 text-sm">{{ t('pages.userCenter.profile.location') }}</span>
             </div>
             <div class="mt-2.5">
               <ArtSvgIcon icon="ri:dribbble-fill" class="text-g-700" />
-              <span class="ml-2 text-sm">字节跳动－某某平台部－UED</span>
+              <span class="ml-2 text-sm">{{ t('pages.userCenter.profile.organization') }}</span>
             </div>
           </div>
 
           <div class="mt-10">
-            <h3 class="text-sm font-medium">标签</h3>
+            <h3 class="text-sm font-medium">{{ t('pages.userCenter.profile.labelsTitle') }}</h3>
             <div class="flex flex-wrap justify-center mt-3.5">
               <div
                 v-for="item in lableList"
                 :key="item"
                 class="py-1 px-1.5 mr-2.5 mb-2.5 text-xs border border-g-300 rounded"
               >
-                {{ item }}
+                {{ t(item) }}
               </div>
             </div>
           </div>
@@ -47,7 +47,9 @@
       </div>
       <div class="flex-1 overflow-hidden max-md:w-full max-md:mt-3.5">
         <div class="art-card-sm">
-          <h1 class="p-4 text-xl font-normal border-b border-g-300">基本设置</h1>
+          <h1 class="p-4 text-xl font-normal border-b border-g-300">
+            {{ t('pages.userCenter.sections.basicSettings') }}
+          </h1>
 
           <ElForm
             ref="ruleFormRef"
@@ -58,11 +60,11 @@
             label-position="top"
           >
             <ElRow>
-              <ElFormItem label="昵称" prop="nikeName">
+              <ElFormItem :label="t('user.field.nickname')" prop="nikeName">
                 <ElInput v-model="form.nikeName" :disabled="!isEdit" />
               </ElFormItem>
-              <ElFormItem label="性别" prop="sex" class="ml-5">
-                <ElSelect v-model="form.sex" placeholder="Select" :disabled="!isEdit">
+              <ElFormItem :label="t('user.field.gender')" prop="sex" class="ml-5">
+                <ElSelect v-model="form.sex" :placeholder="t('common.placeholder.select')" :disabled="!isEdit">
                   <ElOption
                     v-for="item in options"
                     :key="item.value"
@@ -74,40 +76,42 @@
             </ElRow>
 
             <ElRow>
-              <ElFormItem label="昵称" prop="nikeName">
-                <ElInput v-model="form.nikeName" :disabled="!isEdit" />
+              <ElFormItem :label="t('pages.userCenter.form.realName')" prop="realName">
+                <ElInput v-model="form.realName" :disabled="!isEdit" />
               </ElFormItem>
-              <ElFormItem label="邮箱" prop="email" class="ml-5">
+              <ElFormItem :label="t('user.field.email')" prop="email" class="ml-5">
                 <ElInput v-model="form.email" :disabled="!isEdit" />
               </ElFormItem>
             </ElRow>
 
             <ElRow>
-              <ElFormItem label="手机" prop="mobile">
+              <ElFormItem :label="t('user.field.phone')" prop="mobile">
                 <ElInput v-model="form.mobile" :disabled="!isEdit" />
               </ElFormItem>
-              <ElFormItem label="地址" prop="address" class="ml-5">
+              <ElFormItem :label="t('pages.userCenter.form.address')" prop="address" class="ml-5">
                 <ElInput v-model="form.address" :disabled="!isEdit" />
               </ElFormItem>
             </ElRow>
 
-            <ElFormItem label="个人介绍" prop="des" class="h-32">
+            <ElFormItem :label="t('pages.userCenter.form.introduction')" prop="des" class="h-32">
               <ElInput v-model="form.des" type="textarea" :rows="4" :disabled="!isEdit" />
             </ElFormItem>
 
             <div class="flex-c justify-end [&_.el-button]:!w-27.5">
               <ElButton v-ripple type="primary" class="w-22.5" @click="edit">
-                {{ isEdit ? '保存' : '编辑' }}
+                {{ isEdit ? t('common.save') : t('common.edit') }}
               </ElButton>
             </div>
           </ElForm>
         </div>
 
         <div class="art-card-sm my-5">
-          <h1 class="p-4 text-xl font-normal border-b border-g-300">更改密码</h1>
+          <h1 class="p-4 text-xl font-normal border-b border-g-300">
+            {{ t('pages.userCenter.sections.changePassword') }}
+          </h1>
 
           <ElForm :model="pwdForm" class="box-border p-5" label-width="86px" label-position="top">
-            <ElFormItem label="当前密码" prop="password">
+            <ElFormItem :label="t('pages.userCenter.form.currentPassword')" prop="password">
               <ElInput
                 v-model="pwdForm.password"
                 type="password"
@@ -116,7 +120,7 @@
               />
             </ElFormItem>
 
-            <ElFormItem label="新密码" prop="newPassword">
+            <ElFormItem :label="t('pages.userCenter.form.newPassword')" prop="newPassword">
               <ElInput
                 v-model="pwdForm.newPassword"
                 type="password"
@@ -125,7 +129,7 @@
               />
             </ElFormItem>
 
-            <ElFormItem label="确认新密码" prop="confirmPassword">
+            <ElFormItem :label="t('pages.userCenter.form.confirmNewPassword')" prop="confirmPassword">
               <ElInput
                 v-model="pwdForm.confirmPassword"
                 type="password"
@@ -136,7 +140,7 @@
 
             <div class="flex-c justify-end [&_.el-button]:!w-27.5">
               <ElButton v-ripple type="primary" class="w-22.5" @click="editPwd">
-                {{ isEditPwd ? '保存' : '编辑' }}
+                {{ isEditPwd ? t('common.save') : t('common.edit') }}
               </ElButton>
             </div>
           </ElForm>
@@ -148,12 +152,14 @@
 
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/store/modules/user'
 
 defineOptions({ name: 'UserCenter' })
 
 const userStore = useUserStore()
 const userInfo = computed(() => userStore.getUserInfo)
+const { t } = useI18n()
 
 const isEdit = ref(false)
 const isEditPwd = ref(false)
@@ -164,13 +170,13 @@ const ruleFormRef = ref<FormInstance>()
  * 用户信息表单
  */
 const form = reactive({
-  realName: 'John Snow',
-  nikeName: '皮卡丘',
-  email: '59301283@mall.com',
-  mobile: '18888888888',
-  address: '广东省深圳市宝安区西乡街道101栋201',
+  realName: t('pages.userCenter.defaults.realName'),
+  nikeName: t('pages.userCenter.defaults.nickName'),
+  email: t('pages.userCenter.defaults.email'),
+  mobile: t('pages.userCenter.defaults.mobile'),
+  address: t('pages.userCenter.defaults.address'),
   sex: '2',
-  des: 'Art Design Pro 是一款兼具设计美学与高效开发的后台系统.'
+  des: t('pages.userCenter.defaults.introduction')
 })
 
 /**
@@ -187,31 +193,46 @@ const pwdForm = reactive({
  */
 const rules = reactive<FormRules>({
   realName: [
-    { required: true, message: '请输入姓名', trigger: 'blur' },
-    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+    {
+      required: true,
+      message: t('common.placeholder.inputWithLabel', { label: t('pages.userCenter.form.realName') }),
+      trigger: 'blur'
+    },
+    { min: 2, max: 50, message: t('pages.userCenter.validate.lengthRange', { min: 2, max: 50 }), trigger: 'blur' }
   ],
   nikeName: [
-    { required: true, message: '请输入昵称', trigger: 'blur' },
-    { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
+    {
+      required: true,
+      message: t('common.placeholder.inputWithLabel', { label: t('user.field.nickname') }),
+      trigger: 'blur'
+    },
+    { min: 2, max: 50, message: t('pages.userCenter.validate.lengthRange', { min: 2, max: 50 }), trigger: 'blur' }
   ],
-  email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
-  mobile: [{ required: true, message: '请输入手机号码', trigger: 'blur' }],
-  address: [{ required: true, message: '请输入地址', trigger: 'blur' }],
-  sex: [{ required: true, message: '请选择性别', trigger: 'blur' }]
+  email: [{ required: true, message: t('common.placeholder.inputWithLabel', { label: t('user.field.email') }), trigger: 'blur' }],
+  mobile: [{ required: true, message: t('common.placeholder.inputWithLabel', { label: t('user.field.phone') }), trigger: 'blur' }],
+  address: [{ required: true, message: t('common.placeholder.inputWithLabel', { label: t('pages.userCenter.form.address') }), trigger: 'blur' }],
+  sex: [{ required: true, message: t('common.placeholder.selectWithLabel', { label: t('user.field.gender') }), trigger: 'blur' }]
 })
 
 /**
  * 性别选项
  */
 const options = [
-  { value: '1', label: '男' },
-  { value: '2', label: '女' }
+  { value: '1', label: t('common.genderMale') },
+  { value: '2', label: t('common.genderFemale') }
 ]
 
 /**
  * 用户标签列表
  */
-const lableList: Array<string> = ['专注设计', '很有想法', '辣~', '大长腿', '川妹子', '海纳百川']
+const lableList: Array<string> = [
+  'pages.userCenter.labels.focusDesign',
+  'pages.userCenter.labels.creative',
+  'pages.userCenter.labels.passionate',
+  'pages.userCenter.labels.tall',
+  'pages.userCenter.labels.sichuanGirl',
+  'pages.userCenter.labels.openMind'
+]
 
 /**
  * 根据当前时间获取问候语
@@ -219,12 +240,12 @@ const lableList: Array<string> = ['专注设计', '很有想法', '辣~', '大�
 const getDate = () => {
   const h = new Date().getHours()
 
-  if (h >= 6 && h < 9) date.value = '早上好'
-  else if (h >= 9 && h < 11) date.value = '上午好'
-  else if (h >= 11 && h < 13) date.value = '中午好'
-  else if (h >= 13 && h < 18) date.value = '下午好'
-  else if (h >= 18 && h < 24) date.value = '晚上好'
-  else date.value = '很晚了，早点睡'
+  if (h >= 6 && h < 9) date.value = t('pages.userCenter.greetings.earlyMorning')
+  else if (h >= 9 && h < 11) date.value = t('pages.userCenter.greetings.morning')
+  else if (h >= 11 && h < 13) date.value = t('pages.userCenter.greetings.noon')
+  else if (h >= 13 && h < 18) date.value = t('pages.userCenter.greetings.afternoon')
+  else if (h >= 18 && h < 24) date.value = t('pages.userCenter.greetings.evening')
+  else date.value = t('pages.userCenter.greetings.lateNight')
 }
 
 onMounted(() => {

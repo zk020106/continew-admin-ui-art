@@ -49,7 +49,7 @@
         @click="getCaptcha"
       >
         <img
-          :src="captchaImgBase64"
+          :src="captchaImgBase64 || EMPTY_CAPTCHA_IMAGE"
           :alt="$t('login.captcha')"
           class="captcha"
         >
@@ -63,7 +63,7 @@
     </ElFormItem>
 
     <div class="flex-cb mt-2 text-sm">
-      <ElCheckbox v-model="formData.rememberPassword">
+      <ElCheckbox v-model="formData.rememberPassword" name="remember-password">
         {{ $t('login.rememberPwd') }}
       </ElCheckbox>
       <RouterLink
@@ -114,6 +114,7 @@ const formRef = ref<FormInstance>()
 const loading = ref(false)
 const isCaptchaEnabled = ref(true)
 const captchaImgBase64 = ref('')
+const EMPTY_CAPTCHA_IMAGE = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
 
 const loginConfig = useStorage('login-config', {
   rememberMe: true,

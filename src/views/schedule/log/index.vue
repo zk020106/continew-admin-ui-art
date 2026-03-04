@@ -14,6 +14,7 @@
         <CaQueryForm
           v-model="queryForm"
           mode="change-search"
+          label-width="88px"
           :immediate="false"
           :columns="queryFormColumns"
         />
@@ -33,24 +34,27 @@
 
       <template #action="{ row }">
         <ElSpace>
-          <ElPopconfirm :title="$t('schedule.log.message.stopConfirm')" @ok="onStop(row)">
+          <ElPopconfirm
+            v-if="row.taskBatchStatus === 2 && hasAuth('schedule:log:stop')"
+            :title="$t('schedule.log.message.stopConfirm')"
+            @ok="onStop(row)"
+          >
             <template #reference>
-              <ElLink v-if="row.taskBatchStatus === 2" v-auth="['schedule:log:stop']" type="danger">
+              <ElLink type="danger">
                 {{ $t('schedule.log.button.stop') }}
               </ElLink>
             </template>
           </ElPopconfirm>
-          <ElPopconfirm :title="$t('schedule.log.message.retryConfirm')" @ok="onRetry(row)">
+          <ElPopconfirm
+            v-if="
+              (row.taskBatchStatus === 4 || row.taskBatchStatus === 5 || row.taskBatchStatus === 6)
+              && hasAuth('schedule:log:retry')
+            "
+            :title="$t('schedule.log.message.retryConfirm')"
+            @ok="onRetry(row)"
+          >
             <template #reference>
-              <ElLink
-                v-if="
-                  row.taskBatchStatus === 4
-                  || row.taskBatchStatus === 5
-                  || row.taskBatchStatus === 6
-                "
-                v-auth="['schedule:log:retry']"
-                type="danger"
-              >
+              <ElLink type="danger">
                 {{ $t('schedule.log.button.retry') }}
               </ElLink>
             </template>
@@ -71,11 +75,12 @@ import { listGroup, listJobLog, retryJob, stopJob } from '@/apis/schedule'
 import CaButton from '@/components/base/CaButton/index.vue'
 import CaCellTag from '@/components/base/CaCell/CaCellTag.vue'
 import CaQueryForm from '@/components/base/CaQueryForm'
-import { useDict, useResetReactive, useTable } from '@/hooks'
+import { useAuth, useDict, useResetReactive, useTable } from '@/hooks'
 
 defineOptions({ name: 'ScheduleLog' })
 
 const { t } = useI18n()
+const { hasAuth } = useAuth()
 
 const { job_execute_reason_enum, job_execute_status_enum } = useDict(
   'job_execute_reason_enum',
@@ -108,6 +113,7 @@ const queryFormColumns = computed(
         props: {
           placeholder: t('schedule.log.search.groupNamePlaceholder'),
           clearable: true,
+          name: 'groupName',
           options: groupList.value,
           filterable: true
         }
@@ -119,7 +125,8 @@ const queryFormColumns = computed(
         gridItemProps: { span: { xs: 24, sm: 12, xxl: 6 } },
         props: {
           placeholder: t('schedule.log.search.jobNamePlaceholder'),
-          clearable: true
+          clearable: true,
+          name: 'jobName'
         }
       },
       {
@@ -130,6 +137,7 @@ const queryFormColumns = computed(
         props: {
           placeholder: t('schedule.log.search.taskBatchStatusPlaceholder'),
           clearable: true,
+          name: 'taskBatchStatus',
           options: job_execute_status_enum.value
         }
       },

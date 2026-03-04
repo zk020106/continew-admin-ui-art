@@ -2,8 +2,8 @@
   <div class="art-card h-128 p-5 mb-5 max-sm:mb-4">
     <div class="art-card-header">
       <div class="title">
-        <h4>代办事项</h4>
-        <p>待处理<span class="text-danger">3</span></p>
+        <h4>{{ t('pages.dashboardConsole.todoList.title') }}</h4>
+        <p>{{ t('pages.dashboardConsole.todoList.pending') }}<span class="text-danger">3</span></p>
       </div>
     </div>
 
@@ -15,8 +15,8 @@
           class="flex-cb h-17.5 border-b border-g-300 text-sm last:border-b-0"
         >
           <div>
-            <p class="text-sm">{{ item.username }}</p>
-            <p class="text-g-500 mt-1">{{ item.date }}</p>
+            <p class="text-sm">{{ t(item.taskKey) }}</p>
+            <p class="text-g-500 mt-1">{{ t(item.timeKey) }}</p>
           </div>
           <ElCheckbox v-model="item.complate" />
         </div>
@@ -27,11 +27,14 @@
 
 /* eslint-disable ts/no-use-before-define */
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
 interface TodoItem {
-  username: string
-  date: string
+  taskKey: string
+  timeKey: string
   complate: boolean
 }
+const { t } = useI18n()
 
 /**
  * 待办事项列表
@@ -39,33 +42,33 @@ interface TodoItem {
  */
 const list = reactive<TodoItem[]>([
   {
-    username: '查看今天工作内容',
-    date: '上午 09:30',
+    taskKey: 'pages.dashboardConsole.todoList.tasks.todayWork',
+    timeKey: 'pages.dashboardConsole.todoList.times.morning0930',
     complate: true
   },
   {
-    username: '回复邮件',
-    date: '上午 10:30',
+    taskKey: 'pages.dashboardConsole.todoList.tasks.replyEmail',
+    timeKey: 'pages.dashboardConsole.todoList.times.morning1030',
     complate: true
   },
   {
-    username: '工作汇报整理',
-    date: '上午 11:00',
+    taskKey: 'pages.dashboardConsole.todoList.tasks.reportSummary',
+    timeKey: 'pages.dashboardConsole.todoList.times.morning1100',
     complate: true
   },
   {
-    username: '产品需求会议',
-    date: '下午 02:00',
+    taskKey: 'pages.dashboardConsole.todoList.tasks.productMeeting',
+    timeKey: 'pages.dashboardConsole.todoList.times.afternoon0200',
     complate: false
   },
   {
-    username: '整理会议内容',
-    date: '下午 03:30',
+    taskKey: 'pages.dashboardConsole.todoList.tasks.organizeMeeting',
+    timeKey: 'pages.dashboardConsole.todoList.times.afternoon0330',
     complate: false
   },
   {
-    username: '明天工作计划',
-    date: '下午 06:30',
+    taskKey: 'pages.dashboardConsole.todoList.tasks.tomorrowPlan',
+    timeKey: 'pages.dashboardConsole.todoList.times.afternoon0630',
     complate: false
   }
 ])

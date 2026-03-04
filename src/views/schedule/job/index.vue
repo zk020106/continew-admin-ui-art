@@ -15,6 +15,7 @@
         <CaQueryForm
           v-model="queryForm"
           mode="change-search"
+          label-width="88px"
           :immediate="false"
           :columns="queryFormColumns"
         />
@@ -48,9 +49,13 @@
       </template>
       <template #action="{ row }">
         <ElSpace>
-          <ElPopconfirm :title="$t('schedule.job.message.executeRequestSent')" @ok="onTrigger(row)">
+          <ElPopconfirm
+            v-if="hasAuth('schedule:job:trigger')"
+            :title="$t('schedule.job.message.executeRequestSent')"
+            @ok="onTrigger(row)"
+          >
             <template #reference>
-              <ElLink v-auth="['schedule:job:trigger']" type="primary">
+              <ElLink type="primary">
 {{
                 $t('schedule.job.button.execute')
               }}
@@ -145,7 +150,8 @@ const queryFormColumns = computed(
         gridItemProps: { span: { xs: 24, sm: 12, xxl: 6 } },
         props: {
           placeholder: t('schedule.job.search.jobNamePlaceholder'),
-          clearable: true
+          clearable: true,
+          name: 'jobName'
         }
       },
       {
@@ -156,6 +162,7 @@ const queryFormColumns = computed(
         props: {
           placeholder: t('schedule.job.search.groupNamePlaceholder'),
           clearable: true,
+          name: 'groupName',
           options: groupList.value,
           filterable: true
         }

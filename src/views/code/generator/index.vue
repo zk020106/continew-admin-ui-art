@@ -26,12 +26,12 @@
         <ElAlert type="info" :closable="false" class="selected-alert">
           <template #title>
             <span v-if="selectedTableNames.length > 0">
-              已选中 {{ selectedTableNames.length }} 条记录(可跨页)
+              {{ t('pages.codeGenerator.selectedMessage', { count: selectedTableNames.length }) }}
             </span>
-            <span v-else>未选中任何记录</span>
+            <span v-else>{{ t('pages.codeGenerator.noSelection') }}</span>
           </template>
           <template v-if="selectedTableNames.length > 0" #default>
-            <ElLink type="primary" :underline="false" @click="clearSelected">清空</ElLink>
+            <ElLink type="primary" @click="clearSelected">{{ t('pages.codeGenerator.clear') }}</ElLink>
           </template>
         </ElAlert>
       </template>
@@ -41,11 +41,11 @@
           v-auth="['code:generator:preview']"
           type="primary"
           :disabled="selectedTableNames.length === 0"
-          :title="selectedTableNames.length === 0 ? '请选择' : ''"
+          :title="selectedTableNames.length === 0 ? t('common.placeholder.select') : ''"
           @click="onPreview(selectedTableNames)"
         >
           <ElIcon><Cpu /></ElIcon>
-          <span>批量生成</span>
+          <span>{{ t('pages.codeGenerator.batchGenerate') }}</span>
         </ElButton>
       </template>
 
@@ -54,20 +54,18 @@
           <ElLink
             v-auth="['code:generator:config']"
             type="primary"
-            :underline="false"
             @click="onConfig(row.tableName, row.comment)"
           >
-            配置
+            {{ t('pages.codeGenerator.action.config') }}
           </ElLink>
           <ElLink
             v-auth="['code:generator:preview']"
             type="primary"
-            :underline="false"
             :disabled="!row.createTime"
-            :title="row.createTime ? '生成' : '请先进行生成配置'"
+            :title="row.createTime ? t('pages.codeGenerator.action.generate') : t('pages.codeGenerator.generateHint')"
             @click="onPreview([row.tableName])"
           >
-            生成
+            {{ t('pages.codeGenerator.action.generate') }}
           </ElLink>
         </ElSpace>
       </template>
@@ -84,6 +82,7 @@ import type { FormColumnItem } from '@/components/base/CaForm/type'
 import type { TableColumnItem } from '@/components/base/CaTable/type'
 import { Cpu } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { downloadCode, generateCode, listGenConfig } from '@/apis/code/generator'
 import CaQueryForm from '@/components/base/CaQueryForm'
 import { useDevice, useDownload, useTable } from '@/hooks'
@@ -92,6 +91,7 @@ import GenPreviewModal from './GenPreviewModal.vue'
 
 defineOptions({ name: 'CodeGenerator' })
 
+const { t } = useI18n()
 const { isMobile } = useDevice()
 const tableRef = useTemplateRef('tableRef')
 const queryForm = ref<GenConfigPageQuery>({ tableName: undefined })
@@ -101,12 +101,12 @@ const queryFormColumns = computed(
     [
       {
         type: 'input',
-        label: '表名称',
+        label: t('pages.codeGenerator.field.tableName'),
         field: 'tableName',
         gridItemProps: { span: { xs: 24, sm: 24, md: 12, lg: 8 } },
         props: {
           clearable: true,
-          placeholder: '请输入表名称'
+          placeholder: t('common.placeholder.inputWithLabel', { label: t('pages.codeGenerator.field.tableName') })
         }
       }
     ] as FormColumnItem<GenConfigPageQuery>[]
@@ -131,7 +131,7 @@ const columns = computed(
         selectable: (row: GenConfigResp) => Boolean(row.createTime)
       },
       {
-        label: '序号',
+        label: t('common.index'),
         width: 66,
         align: 'center',
         render: ({ $index }) =>
@@ -139,21 +139,21 @@ const columns = computed(
         fixed: !isMobile.value ? 'left' : false
       },
       {
-        label: '表名称',
+        label: t('pages.codeGenerator.field.tableName'),
         prop: 'tableName',
         minWidth: 180,
         showOverflowTooltip: true,
         fixed: !isMobile.value ? 'left' : false
       },
-      { label: '描述', prop: 'comment', minWidth: 160, showOverflowTooltip: true },
-      { label: '类名前缀', prop: 'classNamePrefix', minWidth: 150, showOverflowTooltip: true },
-      { label: '作者名称', prop: 'author', minWidth: 120, showOverflowTooltip: true },
-      { label: '所属模块', prop: 'moduleName', minWidth: 150, showOverflowTooltip: true },
-      { label: '模块包名', prop: 'packageName', minWidth: 220, showOverflowTooltip: true },
-      { label: '配置时间', prop: 'createTime', width: 180 },
-      { label: '修改时间', prop: 'updateTime', width: 180 },
+      { label: t('pages.codeGenerator.field.comment'), prop: 'comment', minWidth: 160, showOverflowTooltip: true },
+      { label: t('pages.codeGenerator.field.classNamePrefix'), prop: 'classNamePrefix', minWidth: 150, showOverflowTooltip: true },
+      { label: t('pages.codeGenerator.field.author'), prop: 'author', minWidth: 120, showOverflowTooltip: true },
+      { label: t('pages.codeGenerator.field.moduleName'), prop: 'moduleName', minWidth: 150, showOverflowTooltip: true },
+      { label: t('pages.codeGenerator.field.packageName'), prop: 'packageName', minWidth: 220, showOverflowTooltip: true },
+      { label: t('pages.codeGenerator.field.createTime'), prop: 'createTime', width: 180 },
+      { label: t('pages.codeGenerator.field.updateTime'), prop: 'updateTime', width: 180 },
       {
-        label: '操作',
+        label: t('common.action'),
         prop: 'action',
         slotName: 'action',
         width: 140,
@@ -212,7 +212,7 @@ const onConfig = (tableName: string, comment: string) => {
 const genPreviewModalRef = useTemplateRef('genPreviewModalRef')
 const onPreview = (tableNames: string[]) => {
   if (!tableNames.length) {
-    ElMessage.warning('请先选择数据')
+    ElMessage.warning(t('pages.codeGenerator.selectDataFirst'))
     return
   }
   genPreviewModalRef.value?.onOpen(tableNames)
@@ -225,7 +225,7 @@ const onDownload = async (tableNames: string[]) => {
 const onGenerate = async (tableNames: string[]) => {
   const res = await generateCode(tableNames)
   if (res.data?.code === '0') {
-    ElMessage.success('代码生成成功')
+    ElMessage.success(t('pages.codeGenerator.generateSuccess'))
   }
 }
 </script>

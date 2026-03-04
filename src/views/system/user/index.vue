@@ -223,7 +223,7 @@ const _reset = () => {
 // 删除
 const onDelete = (row: { id: string, nickname: any, username: any }) => {
   return handleDelete(() => deleteUser(row.id), {
-    content: t('system.user.message.deleteConfirm', {
+    content: t('pages.user.message.deleteConfirm', {
       nickname: row.nickname,
       username: row.username
     })

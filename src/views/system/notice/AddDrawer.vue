@@ -11,13 +11,13 @@
       <ElForm ref="formRef" :model="form" :rules="rules" label-width="88px">
         <ElRow :gutter="16">
           <ElCol :span="24">
-            <ElFormItem label="标题" prop="title">
+            <ElFormItem :label="t('pages.noticeManagement.field.title')" prop="title">
               <ElInput v-model="form.title" clearable maxlength="150" show-word-limit />
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
-            <ElFormItem label="分类" prop="type">
-              <ElSelect v-model="form.type" placeholder="请选择分类" clearable>
+            <ElFormItem :label="t('pages.noticeManagement.field.type')" prop="type">
+              <ElSelect v-model="form.type" :placeholder="t('pages.noticeManagement.placeholder.type')" clearable>
                 <ElOption
                   v-for="item in notice_type"
                   :key="item.value"
@@ -28,7 +28,7 @@
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
-            <ElFormItem label="通知范围" prop="noticeScope">
+            <ElFormItem :label="t('pages.noticeManagement.field.noticeScope')" prop="noticeScope">
               <ElRadioGroup v-model="form.noticeScope" :disabled="isPublished">
                 <ElRadio
                   v-for="item in notice_scope_enum"
@@ -41,27 +41,17 @@
             </ElFormItem>
           </ElCol>
           <ElCol v-if="form.noticeScope !== 1" :span="24">
-            <ElFormItem label="指定用户" prop="noticeUsers">
-              <ElSelect
+            <ElFormItem :label="t('pages.noticeManagement.field.noticeUsers')" prop="noticeUsers">
+              <CaUserSelector
                 v-model="form.noticeUsers"
-                multiple
-                filterable
-                clearable
-                collapse-tags
-                collapse-tags-tooltip
-                placeholder="请选择指定用户"
-              >
-                <ElOption
-                  v-for="item in userOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="String(item.value)"
-                />
-              </ElSelect>
+                :disabled="isPublished"
+                :placeholder="t('pages.noticeManagement.placeholder.noticeUsers')"
+                @change="handleNoticeUsersChange"
+              />
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
-            <ElFormItem label="通知方式" prop="noticeMethods">
+            <ElFormItem :label="t('pages.noticeManagement.field.noticeMethods')" prop="noticeMethods">
               <ElCheckboxGroup v-model="form.noticeMethods" :disabled="isPublished">
                 <ElCheckbox
                   v-for="item in notice_method_enum"
@@ -74,43 +64,47 @@
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
-            <ElFormItem label="置顶" prop="isTop">
+            <ElFormItem :label="t('pages.noticeManagement.field.isTop')" prop="isTop">
               <ElSwitch
                 v-model="form.isTop"
                 :active-value="true"
                 :inactive-value="false"
-                active-text="是"
-                inactive-text="否"
+                :active-text="t('common.true')"
+                :inactive-text="t('common.false')"
               />
             </ElFormItem>
           </ElCol>
           <ElCol :span="12">
-            <ElFormItem label="定时发布" prop="isTiming">
+            <ElFormItem :label="t('pages.noticeManagement.field.isTiming')" prop="isTiming">
               <ElSwitch
                 v-model="form.isTiming"
                 :disabled="isPublished"
                 :active-value="true"
                 :inactive-value="false"
-                active-text="是"
-                inactive-text="否"
+                :active-text="t('common.true')"
+                :inactive-text="t('common.false')"
               />
             </ElFormItem>
           </ElCol>
           <ElCol v-if="form.isTiming" :span="12">
-            <ElFormItem label="发布时间" prop="publishTime">
+            <ElFormItem :label="t('pages.noticeManagement.field.publishTime')" prop="publishTime">
               <ElDatePicker
                 v-model="form.publishTime"
                 type="datetime"
                 value-format="YYYY-MM-DD HH:mm:ss"
                 format="YYYY-MM-DD HH:mm:ss"
-                placeholder="请选择发布时间"
+                :placeholder="t('pages.noticeManagement.placeholder.publishTime')"
               />
             </ElFormItem>
           </ElCol>
         </ElRow>
 
-        <ElFormItem label="内容" prop="content">
-          <ArtWangEditor v-model="form.content" height="320px" placeholder="请输入公告内容..." />
+        <ElFormItem :label="t('pages.noticeManagement.field.content')" prop="content">
+          <ArtWangEditor
+            v-model="form.content"
+            height="320px"
+            :placeholder="t('pages.noticeManagement.placeholder.content')"
+          />
         </ElFormItem>
       </ElForm>
     </div>
@@ -123,10 +117,10 @@
           :loading="saving"
           @click="save(true)"
         >
-          草稿
+          {{ t('pages.noticeManagement.button.draft') }}
         </ElButton>
         <ElButton type="primary" :loading="saving" @click="save(false)">
-          {{ isUpdate && isPublished ? '保存' : '发布' }}
+          {{ isUpdate && isPublished ? t('common.save') : t('pages.noticeManagement.button.publish') }}
         </ElButton>
       </ElSpace>
     </template>
@@ -136,10 +130,11 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus'
 import type { NoticeReq } from '@/apis/system'
-import type { LabelValueState } from '@/types/global'
 import { useWindowSize } from '@vueuse/core'
-import { addNotice, getNotice, listUserDict, updateNotice } from '@/apis/system'
+import { useI18n } from 'vue-i18n'
+import { addNotice, getNotice, updateNotice } from '@/apis/system'
 import CaButton from '@/components/base/CaButton/index.vue'
+import CaUserSelector from '@/components/base/CaUserSelector/index.vue'
 import ArtWangEditor from '@/components/core/forms/art-wang-editor/index.vue'
 import { useDict, useResetReactive } from '@/hooks'
 
@@ -163,6 +158,7 @@ const emit = defineEmits<{
 }>()
 
 const { width } = useWindowSize()
+const { t } = useI18n()
 const { notice_type, notice_scope_enum, notice_method_enum } = useDict(
   'notice_type',
   'notice_scope_enum',
@@ -173,7 +169,6 @@ const dataId = ref('')
 const visible = ref(false)
 const loading = ref(false)
 const saving = ref(false)
-const userOptions = ref<LabelValueState[]>([])
 const formRef = ref<FormInstance>()
 
 const [form, resetForm] = useResetReactive<NoticeFormModel>({
@@ -191,18 +186,42 @@ const [form, resetForm] = useResetReactive<NoticeFormModel>({
 
 const isUpdate = computed(() => !!dataId.value)
 const isPublished = computed(() => Number(form.status) === 3)
-const title = computed(() => (isUpdate.value ? '修改公告' : '新增公告'))
+const title = computed(() =>
+  isUpdate.value ? t('pages.noticeManagement.title.edit') : t('pages.noticeManagement.title.add')
+)
 
 const rules = reactive<FormRules<NoticeFormModel>>({
-  title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
-  type: [{ required: true, message: '请选择分类', trigger: 'change' }],
-  noticeScope: [{ required: true, message: '请选择通知范围', trigger: 'change' }],
+  title: [
+    {
+      required: true,
+      message: t('common.placeholder.inputWithLabel', { label: t('pages.noticeManagement.field.title') }),
+      trigger: 'blur'
+    }
+  ],
+  type: [
+    {
+      required: true,
+      message: t('common.placeholder.selectWithLabel', { label: t('pages.noticeManagement.field.type') }),
+      trigger: 'change'
+    }
+  ],
+  noticeScope: [
+    {
+      required: true,
+      message: t('common.placeholder.selectWithLabel', { label: t('pages.noticeManagement.field.noticeScope') }),
+      trigger: 'change'
+    }
+  ],
   noticeUsers: [
     {
       trigger: 'change',
       validator: (_rule, value, callback) => {
         if (form.noticeScope !== 1 && (!value || value.length === 0)) {
-          callback(new Error('请选择指定用户'))
+          callback(
+            new Error(
+              t('common.placeholder.selectWithLabel', { label: t('pages.noticeManagement.field.noticeUsers') })
+            )
+          )
           return
         }
         callback()
@@ -214,7 +233,11 @@ const rules = reactive<FormRules<NoticeFormModel>>({
       trigger: 'change',
       validator: (_rule, value, callback) => {
         if (!value || value.length === 0) {
-          callback(new Error('请选择通知方式'))
+          callback(
+            new Error(
+              t('common.placeholder.selectWithLabel', { label: t('pages.noticeManagement.field.noticeMethods') })
+            )
+          )
           return
         }
         callback()
@@ -226,7 +249,7 @@ const rules = reactive<FormRules<NoticeFormModel>>({
       trigger: 'change',
       validator: (_rule, value, callback) => {
         if (form.isTiming && !value) {
-          callback(new Error('请选择发布时间'))
+          callback(new Error(t('pages.noticeManagement.message.publishTimeRequired')))
           return
         }
         callback()
@@ -242,7 +265,11 @@ const rules = reactive<FormRules<NoticeFormModel>>({
           .replace(/&nbsp;/g, '')
           .trim()
         if (!text) {
-          callback(new Error('请输入公告内容'))
+          callback(
+            new Error(
+              t('common.placeholder.inputWithLabel', { label: t('pages.noticeManagement.field.content') })
+            )
+          )
           return
         }
         callback()
@@ -257,10 +284,8 @@ const reset = () => {
   dataId.value = ''
 }
 
-const fetchUserOptions = async () => {
-  if (userOptions.value.length) return
-  const data = await listUserDict()
-  userOptions.value = data.map((item) => ({ ...item, value: String(item.value) }))
+const handleNoticeUsersChange = () => {
+  formRef.value?.validateField('noticeUsers')
 }
 
 const buildPayload = (isDraft: boolean): NoticeReq => {
@@ -286,10 +311,10 @@ const save = async (isDraft: boolean) => {
     const payload = buildPayload(isDraft)
     if (isUpdate.value) {
       await updateNotice(payload, dataId.value)
-      ElMessage.success('修改成功')
+      ElMessage.success(t('message.updateSuccess'))
     } else {
       await addNotice(payload)
-      ElMessage.success('新增成功')
+      ElMessage.success(t('message.addSuccess'))
     }
     visible.value = false
     emit('save-success')
@@ -304,7 +329,6 @@ const save = async (isDraft: boolean) => {
 
 const onAdd = async () => {
   reset()
-  await fetchUserOptions()
   visible.value = true
 }
 
@@ -313,7 +337,6 @@ const onUpdate = async (id: string) => {
   dataId.value = id
   loading.value = true
   try {
-    await fetchUserOptions()
     const data = await getNotice(id)
     Object.assign(form, {
       ...data,
@@ -330,6 +353,15 @@ const onUpdate = async (id: string) => {
     loading.value = false
   }
 }
+
+watch(
+  () => form.noticeScope,
+  (value) => {
+    if (value === 1) {
+      formRef.value?.clearValidate('noticeUsers')
+    }
+  }
+)
 
 defineExpose({ onAdd, onUpdate })
 </script>

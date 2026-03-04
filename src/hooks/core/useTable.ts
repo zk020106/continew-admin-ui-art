@@ -167,7 +167,7 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
    * @returns Promise<boolean> 删除是否成功
    */
   const handleDelete = async <R = any>(
-    deleteApi: () => Promise<ApiRes<R>>,
+    deleteApi: () => Promise<ApiRes<R> | R | null | undefined>,
     options?: {
       /** 标题 */
       title?: string
@@ -204,30 +204,33 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
     const executeDelete = async (): Promise<boolean> => {
       try {
         const res = await deleteApi()
-        if (res.success) {
-          // 计算删除后的页码
-          const deleteCount = multiple ? selectedKeys.value.length : 1
-          const remainingCount = pagination.total - deleteCount
-          const totalPage = Math.max(1, Math.ceil(remainingCount / pagination.pageSize))
+        const hasSuccessField = !!res && typeof res === 'object' && 'success' in res
+        const requestSuccess = hasSuccessField ? Boolean((res as ApiRes<R>).success) : true
 
-          // 如果当前页码超出范围，调整到最后一页
-          if (pagination.current > totalPage) {
-            pagination.current = totalPage
-          }
-
-          // 清空选择
-          if (multiple) {
-            clearSelection()
-          }
-
-          ElMessage.success(successTip)
-          await getTableData()
-          return true
-        } else {
-          const errorMsg = res.msg || t('message.deleteFailed')
+        if (!requestSuccess) {
+          const errorMsg = (res as ApiRes<R>)?.msg || t('message.deleteFailed')
           ElMessage.error(errorMsg)
           return false
         }
+
+        // 计算删除后的页码
+        const deleteCount = multiple ? selectedKeys.value.length : 1
+        const remainingCount = pagination.total - deleteCount
+        const totalPage = Math.max(1, Math.ceil(remainingCount / pagination.pageSize))
+
+        // 如果当前页码超出范围，调整到最后一页
+        if (pagination.current > totalPage) {
+          pagination.current = totalPage
+        }
+
+        // 清空选择
+        if (multiple) {
+          clearSelection()
+        }
+
+        ElMessage.success(successTip)
+        await getTableData()
+        return true
       } catch (error) {
         const errorMsg = error instanceof Error ? error.message : t('message.deleteFailed')
         ElMessage.error(errorMsg)
@@ -265,7 +268,7 @@ export function useTable<T extends U, U = T>(api: Api<T>, options?: Options<T, U
    * @param options 删除选项
    */
   const handleBatchDelete = async <R = any>(
-    deleteApi: (ids: (string | number)[]) => Promise<ApiRes<R>>,
+    deleteApi: (ids: (string | number)[]) => Promise<ApiRes<R> | R | null | undefined>,
     options?: {
       title?: string
       successTip?: string

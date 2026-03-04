@@ -8,12 +8,12 @@
   >
     <!-- 当前路径 -->
     <div class="current-path">
-      <span class="path-label">目标位置:</span>
+      <span class="path-label">{{ t('file.modal.move.targetLocation') }}</span>
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
           <span class="breadcrumb-link" @click="navigateTo('/')">
             <ArtSvgIcon icon="ri:home-4-line" :size="14" />
-            根目录
+            {{ t('file.sidebar.rootDirectory') }}
           </span>
         </el-breadcrumb-item>
         <el-breadcrumb-item v-for="(item, index) in pathSegments" :key="index">
@@ -48,7 +48,7 @@
 
     <!-- 文件列表 -->
     <div v-if="currentFolder" class="file-list">
-      <div class="file-list-header">当前文件夹内容:</div>
+      <div class="file-list-header">{{ t('file.modal.move.currentFolderContent') }}</div>
       <div class="file-list-content">
         <div
           v-for="folder in currentFolder.children?.filter((f: any) => f.type === 0)"
@@ -63,15 +63,15 @@
           v-if="!currentFolder.children?.filter((f: any) => f.type === 0).length"
           class="empty-tip"
         >
-          此文件夹为空
+          {{ t('file.modal.move.emptyFolder') }}
         </div>
       </div>
     </div>
 
     <template #footer>
-      <el-button @click="handleClose">取消</el-button>
+      <el-button @click="handleClose">{{ t('common.cancel') }}</el-button>
       <el-button type="primary" :loading="loading" :disabled="!selectedPath" @click="handleSubmit">
-        确定
+        {{ t('common.confirm') }}
       </el-button>
     </template>
   </el-dialog>
@@ -79,6 +79,7 @@
 
 <script setup lang="ts">
 import type { FileItem } from '@/apis/system/file'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   modelValue: boolean
@@ -90,6 +91,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', visible: boolean): void
   (e: 'confirm', targetPath: string): void
 }>()
+const { t } = useI18n()
 
 const visible = computed({
   get: () => props.modelValue,
@@ -98,9 +100,13 @@ const visible = computed({
 
 const title = computed(() => {
   const count = props.files.length
-  const action = props.mode === 'move' ? '移动' : '复制'
-  const target = count === 1 ? props.files[0]?.originalName : `${count} 个文件`
-  return `${action} ${target} 到...`
+  const action = props.mode === 'move'
+    ? t('file.modal.move.action.move')
+    : t('file.modal.move.action.copy')
+  const target = count === 1
+    ? props.files[0]?.originalName
+    : t('file.modal.move.multipleFiles', { count })
+  return t('file.modal.move.title', { action, target })
 })
 
 const loading = ref(false)

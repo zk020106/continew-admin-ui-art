@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="visible"
-    title="分享文件"
+    :title="t('file.modal.share.title')"
     width="520px"
     :close-on-click-modal="false"
     @close="handleClose"
@@ -19,7 +19,7 @@
         <div class="file-details">
           <div class="file-name">{{ file.originalName }}</div>
           <div class="file-meta">
-            {{ file.type === 0 ? '文件夹' : formatSize(file.size) }}
+            {{ file.type === 0 ? t('file.modal.share.folder') : formatSize(file.size) }}
           </div>
         </div>
       </div>
@@ -27,12 +27,12 @@
       <!-- 分享选项 -->
       <el-tabs v-model="activeTab" class="share-tabs">
         <!-- 链接分享 -->
-        <el-tab-pane label="链接分享" name="link">
+        <el-tab-pane :label="t('file.modal.share.tabs.link')" name="link">
           <div class="share-section">
             <!-- 分享链接 -->
             <div class="share-link-box">
               <div class="link-input-wrapper">
-                <el-input v-model="shareUrl" readonly placeholder="生成分享链接后显示">
+                <el-input v-model="shareUrl" readonly :placeholder="t('file.modal.share.shareLinkPlaceholder')">
                   <template #append>
                     <el-button :disabled="!shareUrl" @click="copyShareLink">
                       <ArtSvgIcon icon="ri:file-copy-line" :size="16" />
@@ -47,56 +47,58 @@
                 @click="generateShareLink"
               >
                 <ArtSvgIcon icon="ri:link" :size="16" />
-                生成分享链接
+                {{ t('file.modal.share.generateShareLink') }}
               </el-button>
             </div>
 
             <!-- 分享设置 -->
             <div v-if="shareUrl" class="share-settings">
               <div class="setting-item">
-                <span class="setting-label">访问密码</span>
+                <span class="setting-label">{{ t('file.modal.share.settings.password') }}</span>
                 <el-switch v-model="needPassword" @change="handlePasswordChange" />
               </div>
 
               <div v-if="needPassword" class="setting-item setting-item-indent">
                 <el-input
                   v-model="password"
-                  placeholder="设置访问密码"
+                  :placeholder="t('file.modal.share.settings.passwordPlaceholder')"
                   maxlength="6"
                   show-word-limit
                   style="width: 200px"
                 >
                   <template #append>
-                    <el-button @click="randomPassword">随机</el-button>
+                    <el-button @click="randomPassword">{{ t('file.modal.share.settings.random') }}</el-button>
                   </template>
                 </el-input>
               </div>
 
               <div class="setting-item">
-                <span class="setting-label">有效期</span>
-                <el-select v-model="expireDays" placeholder="请选择" style="width: 150px">
-                  <el-option label="永久有效" :value="0" />
-                  <el-option label="1 天" :value="1" />
-                  <el-option label="7 天" :value="7" />
-                  <el-option label="30 天" :value="30" />
+                <span class="setting-label">{{ t('file.modal.share.settings.expireDays') }}</span>
+                <el-select v-model="expireDays" :placeholder="t('file.modal.share.settings.expirePlaceholder')" style="width: 150px">
+                  <el-option :label="t('file.modal.share.settings.expireOptions.never')" :value="0" />
+                  <el-option :label="t('file.modal.share.settings.expireOptions.day1')" :value="1" />
+                  <el-option :label="t('file.modal.share.settings.expireOptions.day7')" :value="7" />
+                  <el-option :label="t('file.modal.share.settings.expireOptions.day30')" :value="30" />
                 </el-select>
               </div>
 
               <div v-if="expireDays > 0" class="setting-item setting-item-indent">
-                <span class="setting-value"> 链接将于 {{ formatDate(expireDays) }} 后失效 </span>
+                <span class="setting-value">
+                  {{ t('file.modal.share.settings.expireTip', { date: formatDate(expireDays) }) }}
+                </span>
               </div>
             </div>
           </div>
         </el-tab-pane>
 
         <!-- 用户分享 -->
-        <el-tab-pane label="发送给用户" name="user">
+        <el-tab-pane :label="t('file.modal.share.tabs.user')" name="user">
           <div class="share-section">
             <el-select
               v-model="selectedUsers"
               multiple
               filterable
-              placeholder="选择用户"
+              :placeholder="t('file.modal.share.userPlaceholder')"
               style="width: 100%"
             >
               <el-option
@@ -116,7 +118,7 @@
               <el-input
                 v-model="message"
                 type="textarea"
-                placeholder="添加留言（可选）"
+                :placeholder="t('file.modal.share.messagePlaceholder')"
                 :rows="3"
                 maxlength="200"
                 show-word-limit
@@ -125,7 +127,7 @@
 
             <el-button type="primary" :disabled="selectedUsers.length === 0" @click="sendToUsers">
               <ArtSvgIcon icon="ri:send-plane-fill" :size="16" />
-              发送
+              {{ t('file.modal.share.send') }}
             </el-button>
           </div>
         </el-tab-pane>
@@ -133,7 +135,7 @@
     </div>
 
     <template #footer>
-      <el-button @click="handleClose">关闭</el-button>
+      <el-button @click="handleClose">{{ t('file.modal.share.close') }}</el-button>
     </template>
   </el-dialog>
 </template>
@@ -141,6 +143,7 @@
 <script setup lang="ts">
 import type { FileItem } from '@/apis/system/file'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { getFileIconByType } from '../../utils/fileIcons'
 
 interface User {
@@ -157,6 +160,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', visible: boolean): void
 }>()
+const { t } = useI18n()
 
 const visible = computed({
   get: () => props.modelValue,
@@ -174,9 +178,9 @@ const message = ref('')
 
 // 模拟用户数据
 const users = ref<User[]>([
-  { id: '1', nickname: '张三', avatar: '' },
-  { id: '2', nickname: '李四', avatar: '' },
-  { id: '3', nickname: '王五', avatar: '' }
+  { id: '1', nickname: t('file.modal.share.mockUsers.user1'), avatar: '' },
+  { id: '2', nickname: t('file.modal.share.mockUsers.user2'), avatar: '' },
+  { id: '3', nickname: t('file.modal.share.mockUsers.user3'), avatar: '' }
 ])
 
 // 格式化文件大小
@@ -211,9 +215,9 @@ const generateShareLink = async () => {
     // 临时模拟
     await new Promise((resolve) => setTimeout(resolve, 1000))
     shareUrl.value = `https://example.com/share/${Date.now()}`
-    ElMessage.success('分享链接生成成功')
+    ElMessage.success(t('file.modal.share.success.generate'))
   } catch (error: any) {
-    ElMessage.error(error.message || '生成分享链接失败')
+    ElMessage.error(error.message || t('file.modal.share.error.generate'))
   } finally {
     generating.value = false
   }
@@ -223,9 +227,9 @@ const generateShareLink = async () => {
 const copyShareLink = async () => {
   try {
     await navigator.clipboard.writeText(shareUrl.value)
-    ElMessage.success('链接已复制到剪贴板')
+    ElMessage.success(t('file.modal.share.success.copy'))
   } catch {
-    ElMessage.error('复制失败，请手动复制')
+    ElMessage.error(t('file.modal.share.error.copy'))
   }
 }
 
@@ -249,9 +253,9 @@ const handlePasswordChange = (enabled: string | number | boolean) => {
 const sendToUsers = async () => {
   try {
     // TODO: 调用 API 发送给用户
-    ElMessage.success(`已发送给 ${selectedUsers.value.length} 个用户`)
+    ElMessage.success(t('file.modal.share.success.send', { count: selectedUsers.value.length }))
   } catch (error: any) {
-    ElMessage.error(error.message || '发送失败')
+    ElMessage.error(error.message || t('file.modal.share.error.send'))
   }
 }
 

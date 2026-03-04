@@ -9,11 +9,11 @@
       <div class="preview-header">
         <span>{{ dialogTitle }}</span>
         <ElSpace>
-          <ElLink v-auth="['code:generator:generate']" type="primary" :underline="false" @click="onDownload">
-            下载源码
+          <ElLink v-auth="['code:generator:generate']" type="primary" @click="onDownload">
+            {{ t('pages.codeGenerator.preview.downloadSource') }}
           </ElLink>
-          <ElLink v-auth="['code:generator:generate']" type="primary" :underline="false" @click="onGenerate">
-            生成源码
+          <ElLink v-auth="['code:generator:generate']" type="primary" @click="onGenerate">
+            {{ t('pages.codeGenerator.preview.generateSource') }}
           </ElLink>
         </ElSpace>
       </div>
@@ -53,11 +53,11 @@
           <span class="code-path">{{ currentFilePath }}</span>
           <ElLink
             type="primary"
-            :underline="false"
+
             :disabled="!currentPreview"
             @click="onCopy"
           >
-            复制
+            {{ t('pages.codeGenerator.preview.copy') }}
           </ElLink>
         </div>
 
@@ -75,6 +75,7 @@ import type { GeneratePreviewResp } from '@/apis/code'
 import { useClipboard, useWindowSize } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
 import hljs from 'highlight.js'
+import { useI18n } from 'vue-i18n'
 import { genPreview } from '@/apis/code/generator'
 import 'highlight.js/styles/github-dark.css'
 
@@ -94,6 +95,7 @@ const emit = defineEmits<{
 
 const { width } = useWindowSize()
 const { copy } = useClipboard()
+const { t } = useI18n()
 const treeRef = ref<InstanceType<typeof ElTree>>()
 
 const visible = ref(false)
@@ -115,15 +117,15 @@ const previewContentStyle = computed(() => {
 
 const dialogTitle = computed(() => {
   if (previewTableNames.value.length === 1) {
-    return `生成 ${previewTableNames.value[0]} 表预览`
+    return t('pages.codeGenerator.preview.singleTitle', { table: previewTableNames.value[0] })
   }
-  return '批量生成预览'
+  return t('pages.codeGenerator.preview.batchTitle')
 })
 
 const getPathSeparator = (path: string) => (path.includes('/') ? '/' : '\\')
 
 const currentFilePath = computed(() => {
-  if (!currentPreview.value) return '暂无文件'
+  if (!currentPreview.value) return t('pages.codeGenerator.preview.noFile')
   return `${currentPreview.value.path}${getPathSeparator(currentPreview.value.path)}${currentPreview.value.fileName}`
 })
 
@@ -258,7 +260,7 @@ const handleNodeClick = (node: PreviewTreeNode) => {
 const onCopy = async () => {
   if (!currentPreview.value?.content) return
   await copy(currentPreview.value.content)
-  ElMessage.success('复制成功')
+  ElMessage.success(t('common.copySuccess'))
 }
 
 const onDownload = () => {
@@ -306,7 +308,7 @@ const onOpen = async (tableNames: string[]) => {
   const data = await genPreview(tableNames)
   previewList.value = data || []
   if (!previewList.value.length) {
-    ElMessage.warning('暂无可预览内容')
+    ElMessage.warning(t('pages.codeGenerator.preview.noPreviewContent'))
     return
   }
 
@@ -397,9 +399,9 @@ defineExpose({ onOpen })
 
   .code-path {
     overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 13px;
     color: var(--el-text-color-regular);
-    text-overflow: ellipsis;
     white-space: nowrap;
   }
 

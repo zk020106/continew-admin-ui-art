@@ -50,17 +50,17 @@
         />
       </ElFormItem>
       <ElFormItem :label="t('system.config.sms.weight')" prop="weight">
-        <ElInputNumber v-model="formData.weight" :min="1" :max="100" />
+        <ElInputNumber v-model="weightModel" :min="1" :max="100" />
       </ElFormItem>
       <ElFormItem :label="t('system.config.sms.retryInterval')" prop="retryInterval">
-        <ElInputNumber v-model="formData.retryInterval" :min="0" />
+        <ElInputNumber v-model="retryIntervalModel" :min="0" />
         <span class="unit">{{ t('system.config.sms.retryIntervalUnit') }}</span>
       </ElFormItem>
       <ElFormItem :label="t('system.config.sms.maxRetries')" prop="maxRetries">
-        <ElInputNumber v-model="formData.maxRetries" :min="0" />
+        <ElInputNumber v-model="maxRetriesModel" :min="0" />
       </ElFormItem>
       <ElFormItem :label="t('system.config.sms.maximum')" prop="maximum">
-        <ElInputNumber v-model="formData.maximum" :min="1" />
+        <ElInputNumber v-model="maximumModel" :min="1" />
       </ElFormItem>
       <ElFormItem :label="t('system.config.sms.supplierConfig')" prop="supplierConfig">
         <ElInput
@@ -124,6 +124,44 @@ const formData = ref<SmsConfigReq>({
   supplierConfig: '',
   status: 1,
   isDefault: false
+})
+
+const parseNumericString = (value?: string) => {
+  if (value == null || value === '') return undefined
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : undefined
+}
+
+const toNumericString = (value?: number | null) => {
+  return value == null ? undefined : String(value)
+}
+
+const weightModel = computed<number | undefined>({
+  get: () => parseNumericString(formData.value.weight),
+  set: (value) => {
+    formData.value.weight = toNumericString(value)
+  }
+})
+
+const retryIntervalModel = computed<number | undefined>({
+  get: () => parseNumericString(formData.value.retryInterval),
+  set: (value) => {
+    formData.value.retryInterval = toNumericString(value)
+  }
+})
+
+const maxRetriesModel = computed<number | undefined>({
+  get: () => parseNumericString(formData.value.maxRetries),
+  set: (value) => {
+    formData.value.maxRetries = toNumericString(value)
+  }
+})
+
+const maximumModel = computed<number | undefined>({
+  get: () => parseNumericString(formData.value.maximum),
+  set: (value) => {
+    formData.value.maximum = toNumericString(value)
+  }
 })
 
 const formRules = computed(() => ({

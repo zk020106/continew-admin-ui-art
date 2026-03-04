@@ -35,7 +35,7 @@
                   command="delete"
                   divided
                 >
-                  {{ t('common.delete') }}
+                  {{ t('common.button.delete') }}
                 </ElDropdownItem>
               </ElDropdownMenu>
             </template>
@@ -213,7 +213,7 @@ const handleDelete = async (item: StorageResp) => {
       t('common.tips'),
       {
         type: 'warning',
-        confirmButtonText: t('common.delete'),
+        confirmButtonText: t('common.button.delete'),
         confirmButtonType: 'danger'
       }
     )
