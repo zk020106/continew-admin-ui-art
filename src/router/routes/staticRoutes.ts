@@ -43,6 +43,20 @@ export const staticRoutes: AppRouteRecordRaw[] = [
     meta: { title: 'menus.login.title', isHideTab: true }
   },
   {
+    path: '/user',
+    name: 'UserStatic',
+    component: () => import('@views/index/index.vue'),
+    meta: { title: '用户', isHide: true },
+    children: [
+      {
+        path: '/user/message',
+        name: 'UserMessageStatic',
+        component: () => import('@views/user/message/index.vue'),
+        meta: { title: '消息中心', isHide: true }
+      }
+    ]
+  },
+  {
     path: '/403',
     name: 'Exception403',
     component: () => import('@views/exception/403/index.vue'),

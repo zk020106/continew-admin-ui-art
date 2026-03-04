@@ -16,7 +16,7 @@ export function listMessage(query: T.MessagePageQuery) {
 }
 
 /** @desc 获取用户消息详情 */
-export function getUserMessage(id: number) {
+export function getUserMessage(id: string | number) {
   return http.get<T.MessageResp>(`${BASE_URL}/${id}`)
 }
 

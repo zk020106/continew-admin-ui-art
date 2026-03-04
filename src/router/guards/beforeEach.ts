@@ -237,6 +237,18 @@ async function handleDynamicRoutes(
     // 8. 验证工作标签页
     useWorktabStore().validateWorktabs(router)
 
+    // 静态路由直接放行，不走后端菜单权限校验
+    if (isStaticRoute(to.path)) {
+      closeLoading()
+      next({
+        path: to.path,
+        query: to.query,
+        hash: to.hash,
+        replace: true
+      })
+      return
+    }
+
     // 9. 验证目标路径权限
     const { homePath } = useCommon()
     const { path: validatedPath, hasPermission } = RoutePermissionValidator.validatePath(
