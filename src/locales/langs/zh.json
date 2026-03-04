@@ -64,7 +64,9 @@
     "noData": "暂无数据",
     "notAllow": "不允许",
     "placeholder": {
+      "inputWithLabel": "请输入{label}",
       "select": "请选择",
+      "selectWithLabel": "请选择{label}",
       "status": "请选择状态"
     },
     "reset": "重置",
@@ -405,6 +407,25 @@
     "500": "抱歉，服务器出错了",
     "gohome": "返回首页"
   },
+  "resultPage": {
+    "success": {
+      "title": "提交成功",
+      "message": "提交结果页用于反馈一系列操作任务的处理结果，如果仅是简单操作，使用 Message 全局提示反馈即可。灰色区域可以显示一些补充的信息。",
+      "description": "已提交申请，等待部门审核。",
+      "backEdit": "返回修改",
+      "view": "查看",
+      "print": "打印"
+    },
+    "fail": {
+      "title": "提交失败",
+      "message": "请核对并修改以下信息后，再重新提交。",
+      "errorTitle": "您提交的内容有如下错误：",
+      "errorAccountFrozen": "您的账户已被冻结",
+      "errorQualification": "您的账户还不具备申请资格",
+      "backEdit": "返回修改",
+      "view": "查看"
+    }
+  },
   "file": {
     "breadcrumb": {
       "root": "根目录"
@@ -493,10 +514,67 @@
           "keepExtension": "请保留文件扩展名 .{extension}",
           "required": "请输入新名称"
         }
+      },
+      "move": {
+        "title": "{action} {target} 到...",
+        "targetLocation": "目标位置:",
+        "currentFolderContent": "当前文件夹内容:",
+        "emptyFolder": "此文件夹为空",
+        "multipleFiles": "{count} 个文件",
+        "action": {
+          "move": "移动",
+          "copy": "复制"
+        }
+      },
+      "share": {
+        "title": "分享文件",
+        "folder": "文件夹",
+        "tabs": {
+          "link": "链接分享",
+          "user": "发送给用户"
+        },
+        "shareLinkPlaceholder": "生成分享链接后显示",
+        "generateShareLink": "生成分享链接",
+        "userPlaceholder": "选择用户",
+        "messagePlaceholder": "添加留言（可选）",
+        "send": "发送",
+        "close": "关闭",
+        "mockUsers": {
+          "user1": "张三",
+          "user2": "李四",
+          "user3": "王五"
+        },
+        "settings": {
+          "password": "访问密码",
+          "passwordPlaceholder": "设置访问密码",
+          "random": "随机",
+          "expireDays": "有效期",
+          "expirePlaceholder": "请选择",
+          "expireTip": "链接将于 {date} 后失效",
+          "expireOptions": {
+            "never": "永久有效",
+            "day1": "1 天",
+            "day7": "7 天",
+            "day30": "30 天"
+          }
+        },
+        "success": {
+          "generate": "分享链接生成成功",
+          "copy": "链接已复制到剪贴板",
+          "send": "已发送给 {count} 个用户"
+        },
+        "error": {
+          "generate": "生成分享链接失败",
+          "copy": "复制失败，请手动复制",
+          "send": "发送失败"
+        }
       }
     },
     "preview": {
-      "unsupported": "该文件类型暂不支持预览"
+      "unsupported": "该文件类型暂不支持预览",
+      "loading": "文档加载中...",
+      "downloadView": "下载查看",
+      "loadFailed": "文档加载失败"
     },
     "sidebar": {
       "allFiles": "全部文件",
@@ -793,9 +871,15 @@
     "updateSuccess": "修改成功"
   },
   "notice": {
-    "bar": ["通知", "消息", "代办"],
+    "bar": [
+      "通知",
+      "消息",
+      "代办"
+    ],
     "btnRead": "标为已读",
-    "text": ["暂无"],
+    "text": [
+      "暂无"
+    ],
     "title": "通知",
     "viewAll": "查看全部"
   },
@@ -824,6 +908,295 @@
         "descriptionPlaceholder": "请输入名称/描述"
       },
       "title": "应用管理"
+    },
+    "codeGenerator": {
+      "selectedMessage": "已选中 {count} 条记录(可跨页)",
+      "noSelection": "未选中任何记录",
+      "clear": "清空",
+      "batchGenerate": "批量生成",
+      "selectDataFirst": "请先选择数据",
+      "generateHint": "请先进行生成配置",
+      "generateSuccess": "代码生成成功",
+      "action": {
+        "config": "配置",
+        "generate": "生成"
+      },
+      "field": {
+        "tableName": "表名称",
+        "comment": "描述",
+        "classNamePrefix": "类名前缀",
+        "author": "作者名称",
+        "moduleName": "所属模块",
+        "packageName": "模块包名",
+        "createTime": "配置时间",
+        "updateTime": "修改时间",
+        "name": "名称",
+        "type": "类型",
+        "list": "列表",
+        "form": "表单",
+        "required": "必填",
+        "query": "查询",
+        "formType": "表单类型",
+        "queryType": "查询方式",
+        "dictCode": "关联字典",
+        "businessName": "业务名称",
+        "tablePrefix": "去表前缀",
+        "isOverride": "是否覆盖"
+      },
+      "config": {
+        "tabs": {
+          "gen": "生成配置",
+          "field": "字段配置"
+        },
+        "syncConfirm": "是否确定同步最新数据表结构？同步后只要不点击保存，则不影响原有配置数据。",
+        "sync": "同步",
+        "noNeed": "无需设置",
+        "fieldTypeRequired": "字段类型不能为空",
+        "drawerTitle": "{tableName}{comment}配置",
+        "placeholder": {
+          "fieldType": "请选择字段类型",
+          "formType": "请选择表单类型",
+          "queryType": "请选择查询方式",
+          "dictType": "请选择字典类型",
+          "businessName": "自定义业务名称，例如：用户",
+          "moduleName": "项目模块名称，例如：continew-system",
+          "packageName": "项目模块包名，例如：top.continew.admin.system",
+          "tablePrefix": "数据库表前缀，例如：sys_"
+        }
+      },
+      "preview": {
+        "downloadSource": "下载源码",
+        "generateSource": "生成源码",
+        "copy": "复制",
+        "singleTitle": "生成 {table} 表预览",
+        "batchTitle": "批量生成预览",
+        "noFile": "暂无文件",
+        "noPreviewContent": "暂无可预览内容"
+      }
+    },
+    "noticeManagement": {
+      "button": {
+        "draft": "草稿",
+        "publish": "发布"
+      },
+      "detailTitle": "公告详情",
+      "field": {
+        "content": "内容",
+        "createTime": "创建时间",
+        "createUser": "创建人",
+        "id": "ID",
+        "isTiming": "是否定时",
+        "isTop": "是否置顶",
+        "noticeMethods": "通知方式",
+        "noticeScope": "通知范围",
+        "noticeUsers": "指定用户",
+        "publishTime": "发布时间",
+        "status": "状态",
+        "title": "标题",
+        "type": "分类",
+        "updateTime": "修改时间",
+        "updateUser": "修改人"
+      },
+      "message": {
+        "publishTimeRequired": "请选择发布时间"
+      },
+      "placeholder": {
+        "content": "请输入公告内容...",
+        "noticeUsers": "请选择指定用户",
+        "publishTime": "请选择发布时间",
+        "type": "请选择分类"
+      },
+      "preview": {
+        "publishTime": "发布时间：",
+        "publisher": "发布人：",
+        "updateTime": "更新时间："
+      },
+      "title": {
+        "add": "新增公告",
+        "edit": "修改公告",
+        "preview": "查看公告"
+      }
+    },
+    "dashboardConsole": {
+      "aboutProject": {
+        "title": "关于项目",
+        "description1": "{systemName} 是一款兼具设计美学与高效开发的后台系统",
+        "description2": "使用了 Vue3、TypeScript、Vite、Element Plus 等前沿技术",
+        "links": {
+          "website": "项目官网",
+          "docs": "文档",
+          "github": "Github",
+          "bilibili": "哔哩哔哩"
+        }
+      },
+      "months": {
+        "jan": "1月",
+        "feb": "2月",
+        "mar": "3月",
+        "apr": "4月",
+        "may": "5月",
+        "jun": "6月",
+        "jul": "7月",
+        "aug": "8月",
+        "sep": "9月",
+        "oct": "10月",
+        "nov": "11月",
+        "dec": "12月"
+      },
+      "activeUser": {
+        "title": "用户概述",
+        "weekCompare": "比上周",
+        "description": "我们为您创建了多个选项，可将它们组合在一起并定制为像素完美的页面",
+        "stats": {
+          "totalUsers": "总用户量",
+          "totalVisits": "总访问量",
+          "dailyVisits": "日访问量",
+          "weekOverWeek": "周同比"
+        }
+      },
+      "cardList": {
+        "weekCompare": "较上周",
+        "totalVisits": "总访问次数",
+        "onlineVisitors": "在线访客数",
+        "clicks": "点击量",
+        "newUsers": "新用户"
+      },
+      "dynamic": {
+        "title": "动态",
+        "newlyAdded": "新增",
+        "users": {
+          "fish": "中小鱼",
+          "he": "何小荷",
+          "sui": "誶誶淰",
+          "dai": "发呆草",
+          "cone": "甜筒",
+          "moon": "冷月呆呆"
+        },
+        "actions": {
+          "followed": "关注了",
+          "publishedArticle": "发表文章",
+          "askedQuestion": "提出问题",
+          "exchangedItem": "兑换了物品",
+          "closedQuestion": "关闭了问题"
+        },
+        "targets": {
+          "sui": "誶誶淰",
+          "vueArticle": "Vue3 + Typescript + Vite 项目实战笔记",
+          "themeQuestion": "主题可以配置吗",
+          "strangeLife": "《奇特的一生》",
+          "dai": "发呆草",
+          "sevenHabits": "《高效人士的七个习惯》"
+        }
+      },
+      "newUser": {
+        "title": "新用户",
+        "growthThisMonth": "这个月增长",
+        "filter": {
+          "thisMonth": "本月",
+          "lastMonth": "上月",
+          "thisYear": "今年"
+        },
+        "columns": {
+          "avatar": "头像",
+          "region": "地区",
+          "gender": "性别",
+          "progress": "进度"
+        },
+        "gender": {
+          "male": "男",
+          "female": "女"
+        },
+        "progressAria": "{name}的完成进度: {progress}%",
+        "users": {
+          "fish": "中小鱼",
+          "he": "何小荷",
+          "sui": "誶誶淰",
+          "dai": "发呆草",
+          "cone": "甜筒",
+          "moon": "冷月呆呆"
+        },
+        "provinces": {
+          "beijing": "北京",
+          "shenzhen": "深圳",
+          "shanghai": "上海",
+          "changsha": "长沙",
+          "zhejiang": "浙江",
+          "hubei": "湖北"
+        }
+      },
+      "salesOverview": {
+        "title": "访问量",
+        "growthThisYear": "今年增长"
+      },
+      "todoList": {
+        "title": "代办事项",
+        "pending": "待处理",
+        "tasks": {
+          "todayWork": "查看今天工作内容",
+          "replyEmail": "回复邮件",
+          "reportSummary": "工作汇报整理",
+          "productMeeting": "产品需求会议",
+          "organizeMeeting": "整理会议内容",
+          "tomorrowPlan": "明天工作计划"
+        },
+        "times": {
+          "morning0930": "上午 09:30",
+          "morning1030": "上午 10:30",
+          "morning1100": "上午 11:00",
+          "afternoon0200": "下午 02:00",
+          "afternoon0330": "下午 03:30",
+          "afternoon0630": "下午 06:30"
+        }
+      }
+    },
+    "userCenter": {
+      "profile": {
+        "tagline": "专注于用户体验跟视觉设计",
+        "email": "jdkjjfnndf@mall.com",
+        "role": "交互专家",
+        "location": "广东省深圳市",
+        "organization": "字节跳动－某某平台部－UED",
+        "labelsTitle": "标签"
+      },
+      "sections": {
+        "basicSettings": "基本设置",
+        "changePassword": "更改密码"
+      },
+      "form": {
+        "realName": "姓名",
+        "address": "地址",
+        "introduction": "个人介绍",
+        "currentPassword": "当前密码",
+        "newPassword": "新密码",
+        "confirmNewPassword": "确认新密码"
+      },
+      "validate": {
+        "lengthRange": "长度在 {min} 到 {max} 个字符"
+      },
+      "labels": {
+        "focusDesign": "专注设计",
+        "creative": "很有想法",
+        "passionate": "辣~",
+        "tall": "大长腿",
+        "sichuanGirl": "川妹子",
+        "openMind": "海纳百川"
+      },
+      "greetings": {
+        "earlyMorning": "早上好",
+        "morning": "上午好",
+        "noon": "中午好",
+        "afternoon": "下午好",
+        "evening": "晚上好",
+        "lateNight": "很晚了，早点睡"
+      },
+      "defaults": {
+        "realName": "John Snow",
+        "nickName": "皮卡丘",
+        "email": "59301283@mall.com",
+        "mobile": "18888888888",
+        "address": "广东省深圳市宝安区西乡街道101栋201",
+        "introduction": "Art Design Pro 是一款兼具设计美学与高效开发的后台系统."
+      }
     },
     "onlineUser": {
       "button": {
@@ -1010,7 +1383,7 @@
           "duplicateUserRows": "已存在用户",
           "title": "1.解析数据",
           "totalRows": "总计行数",
-          "uploadText": "将文件拖到此处，或<em>点击上传</em>",
+          "uploadText": "将文件拖到此处，或点击上传",
           "uploadTip": "仅支持xls、xlsx格式",
           "validRows": "正常行数"
         },
@@ -1358,21 +1731,32 @@
       "title": "基础配置"
     },
     "box": {
-      "list": ["边框", "阴影"],
+      "list": [
+        "边框",
+        "阴影"
+      ],
       "title": "盒子样式"
     },
     "color": {
       "title": "系统主题色"
     },
     "container": {
-      "list": ["铺满", "定宽"],
+      "list": [
+        "铺满",
+        "定宽"
+      ],
       "title": "容器宽度"
     },
     "menu": {
       "title": "菜单风格"
     },
     "menuType": {
-      "list": ["垂直", "水平", "混合", "双列"],
+      "list": [
+        "垂直",
+        "水平",
+        "混合",
+        "双列"
+      ],
       "title": "菜单布局"
     },
     "tabStyle": {
@@ -1381,7 +1765,11 @@
       "google": "谷歌"
     },
     "theme": {
-      "list": ["浅色", "深色", "系统"],
+      "list": [
+        "浅色",
+        "深色",
+        "系统"
+      ],
       "title": "主题风格"
     },
     "transition": {
@@ -1518,6 +1906,7 @@
       "storage": {
         "accessKey": "Access Key",
         "accessPath": "访问路径",
+        "accessPathPlaceholder": "如: http://localhost:9000",
         "addLocalTitle": "新增本地存储",
         "addOssTitle": "新增对象存储",
         "all": "全部",
@@ -1535,6 +1924,7 @@
         "empty": "暂无数据",
         "enableConfirm": "是否确定启用{type}「{name}({code})」？",
         "endpoint": "Endpoint",
+        "endpointPlaceholder": "如: oss-cn-hangzhou.aliyuncs.com",
         "isDefault": "默认存储",
         "local": "本地存储",
         "localStorage": "本地存储",
@@ -1542,13 +1932,21 @@
         "object": "对象存储",
         "objectStorage": "对象存储",
         "path": "存储路径",
+        "pathPlaceholder": "如: /data/storage",
         "recycleBinEnabled": "启用回收站",
         "recycleBinPath": "回收站路径",
+        "recycleBinPathPlaceholder": "如: .RECYCLE.BIN/",
         "searchPlaceholder": "搜索名称/编码",
+        "secretKey": "Secret Key",
+        "secretKeyPlaceholderInput": "请输入 Secret Key",
+        "secretKeyPlaceholderKeep": "保持 Secret Key 为空将不更改",
         "setDefault": "设为默认",
         "setDefaultConfirm": "是否确定将{type}「{name}({code})」设为默认存储？",
+        "sort": "排序",
         "statusConfirm": "是否确定{action}{type}「{name}({code})」？",
-        "type": "存储类型"
+        "type": "存储类型",
+        "description": "描述",
+        "domainOptionalPlaceholder": "可选，自定义域名"
       },
       "tabs": {
         "client": "客户端配置",
