@@ -419,6 +419,8 @@ watch(
   @reference '@styles/core/tailwind.css';
 
   .art-notification-panel {
+    z-index: 4000 !important;
+
     @apply absolute
     top-12.5
     right-3.5
@@ -433,7 +435,6 @@ watch(
     max-[640px]:right-0
     max-[640px]:w-full
     max-[640px]:h-[80vh];
-    z-index: 101 !important;
   }
 
   .bar-active {
@@ -454,6 +455,6 @@ watch(
   }
 
   .empty-wrap {
-    @apply box-border flex-cc flex-col h-full min-h-[220px];
+    @apply box-border flex items-center justify-center flex-col h-full min-h-[220px];
   }
 </style>
