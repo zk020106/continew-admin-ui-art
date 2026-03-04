@@ -460,6 +460,12 @@ const openChat = (): void => {
     animation: shake 0.5s ease-in-out;
   }
 
+  .notice-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .chat-button:hover :deep(.art-svg-icon) {
     animation: shake 0.5s ease-in-out;
   }

@@ -80,16 +80,11 @@
         </ul>
 
         <!-- 空状态 -->
-        <div
-          v-show="currentTabIsEmpty"
-          class="relative top-25 h-full text-g-500 text-center !bg-transparent"
-        >
+        <div v-show="currentTabIsEmpty" class="empty-wrap text-g-500 text-center !bg-transparent">
           <ArtSvgIcon icon="system-uicons:inbox" class="text-5xl" />
-          <p class="mt-3.5 text-xs !bg-transparent"
-            >
-{{ $t('notice.text[0]') }}{{ barList[barActiveIndex].name }}
-</p
-          >
+          <p class="mt-3.5 text-xs !bg-transparent">
+            {{ $t('notice.text[0]') }}{{ barList[barActiveIndex].name }}
+          </p>
         </div>
       </div>
 
@@ -425,8 +420,8 @@ watch(
 
   .art-notification-panel {
     @apply absolute
-    top-14.5
-    right-5
+    top-12.5
+    right-3.5
     w-90
     h-125
     overflow-hidden
@@ -438,6 +433,7 @@ watch(
     max-[640px]:right-0
     max-[640px]:w-full
     max-[640px]:h-[80vh];
+    z-index: 101 !important;
   }
 
   .bar-active {
@@ -455,5 +451,9 @@ watch(
 
   .dark .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: #222 !important;
+  }
+
+  .empty-wrap {
+    @apply box-border flex-cc flex-col h-full min-h-[220px];
   }
 </style>
