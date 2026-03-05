@@ -6,6 +6,7 @@ dist-ssr
 .cursorrules
 .claude/skills
 .agents
+.codex
 
 # Auto-generated files
 src/types/import/auto-imports.d.ts
