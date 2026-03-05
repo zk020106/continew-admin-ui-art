@@ -10,11 +10,11 @@
       <div class="summary-row">
         <div class="summary-item">
           <span class="summary-label">{{ t('file.statistics.totalUsageLabel') }}</span>
-          <span class="summary-value">{{ formatSize(statistics.size) }}</span>
+          <span class="summary-value">{{ formatSize(safeSize) }}</span>
         </div>
         <div class="summary-item">
           <span class="summary-label">{{ t('file.statistics.totalFiles') }}</span>
-          <span class="summary-value">{{ statistics.number }}</span>
+          <span class="summary-value">{{ safeNumber }}</span>
         </div>
       </div>
 
@@ -62,17 +62,24 @@ const typeConfig: Record<number, { label: string, color: string }> = {
   [FileType.AUDIO]: { label: t('file.statistics.audio'), color: '#E6A23C' }
 }
 
+const toSafeNumber = (value: unknown): number => {
+  const parsed = typeof value === 'number' ? value : Number(value)
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0
+}
+
+const safeSize = computed(() => toSafeNumber(props.statistics?.size))
+const safeNumber = computed(() => toSafeNumber(props.statistics?.number))
+
 // 图表数据
 const chartData = computed(() => {
   const config = props.statistics.data || []
-  const total = props.statistics.number || 1
 
   const data = config
     .map((item) => {
       const typeConf = typeConfig[Number(item.type)]
       return {
         name: typeConf?.label || t('file.statistics.other'),
-        value: item.number,
+        value: toSafeNumber(item.number),
         itemStyle: { color: typeConf?.color }
       }
     })
@@ -88,10 +95,10 @@ const chartColors = computed(() => {
 
 // 格式化文件大小
 const formatSize = (bytes: number): string => {
-  if (bytes === 0) return '0 B'
+  if (bytes <= 0) return '0 B'
   const k = 1024
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), sizes.length - 1)
   return `${Number.parseFloat((bytes / k ** i).toFixed(1))} ${sizes[i]}`
 }
 </script>

@@ -46,15 +46,28 @@ export default ({ mode }: { mode: string }) => {
     },
     // 路径别名
     resolve: {
-      alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url)),
-        '@views': resolvePath('src/views'),
-        '@imgs': resolvePath('src/assets/images'),
-        '@icons': resolvePath('src/assets/icons'),
-        '@utils': resolvePath('src/utils'),
-        '@stores': resolvePath('src/store'),
-        '@styles': resolvePath('src/assets/styles')
-      }
+      alias: [
+        { find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) },
+        { find: '@views', replacement: resolvePath('src/views') },
+        { find: '@imgs', replacement: resolvePath('src/assets/images') },
+        { find: '@icons', replacement: resolvePath('src/assets/icons') },
+        { find: '@utils', replacement: resolvePath('src/utils') },
+        { find: '@stores', replacement: resolvePath('src/store') },
+        { find: '@styles', replacement: resolvePath('src/assets/styles') },
+        // 仅替换包根路径，避免误改写 @vue-office/* 的子路径导入（如样式文件）
+        {
+          find: /^@vue-office\/pdf$/,
+          replacement: path.resolve(__dirname, 'node_modules/@vue-office/pdf/lib/v3/vue-office-pdf.mjs')
+        },
+        {
+          find: /^@vue-office\/excel$/,
+          replacement: path.resolve(__dirname, 'node_modules/@vue-office/excel/lib/v3/vue-office-excel.mjs')
+        },
+        {
+          find: /^@vue-office\/docx$/,
+          replacement: path.resolve(__dirname, 'node_modules/@vue-office/docx/lib/v3/vue-office-docx.mjs')
+        }
+      ]
     },
     build: {
       target: 'es2015',

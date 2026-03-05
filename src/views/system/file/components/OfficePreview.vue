@@ -36,8 +36,8 @@ import VueOfficeDocx from '@vue-office/docx'
 import VueOfficeExcel from '@vue-office/excel'
 import VueOfficePdf from '@vue-office/pdf'
 import { useI18n } from 'vue-i18n'
-import '@vue-office/docx/lib/index.css'
-import '@vue-office/excel/lib/index.css'
+import '@vue-office/docx/lib/v3/index.css'
+import '@vue-office/excel/lib/v3/index.css'
 
 const props = defineProps<{
   fileUrl: string

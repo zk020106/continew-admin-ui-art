@@ -2,7 +2,7 @@
   <div class="role-user-container">
     <!-- 搜索区域 -->
     <div class="role-user-header">
-      <CaForm
+      <CaQueryForm
         v-model="searchForm"
         :columns="searchColumns"
         @search="handleSearch"
@@ -22,8 +22,8 @@
             {{ t('role.batchUnassign') }}
           </ElButton>
         </template>
-      </CaForm>
-    </div>
+      </CaQueryForm>
+</div>
 
     <!-- 表格区域 -->
     <div class="role-user-content">

@@ -104,6 +104,20 @@
     "vue-img-cutter": "^3.0.7",
     "vue-tsc": "~2.1.10"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@vue-office/docx",
+      "@vue-office/excel",
+      "@vue-office/pdf"
+    ],
+    "ignoredBuiltDependencies": [
+      "@parcel/watcher",
+      "es5-ext",
+      "esbuild",
+      "simple-git-hooks",
+      "vue-demi"
+    ]
+  },
   "lint-staged": {
     "*.{js,ts,vue}": [
       "eslint --fix"

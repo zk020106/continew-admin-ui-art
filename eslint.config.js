@@ -66,6 +66,7 @@ export default antfu(
       'vue/no-template-shadow': 0, // 模板变量遮蔽
       'vue/no-unused-refs': 0, // 未使用的 ref
       'vue/no-parsing-error': 0, // 解析错误
+      'pnpm/json-prefer-workspace-settings': 0, // 允许在 package.json 中保留 pnpm 配置
       'jsdoc/check-param-names': 0, // JSDoc 参数检查
       'no-useless-return': 0, // 无用的 return
       'unused-imports/no-unused-imports': 0, // 未使用的导入
