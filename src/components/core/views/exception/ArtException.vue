@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import { useCommon } from '@/hooks/core/useCommon'
+import { RoutesAlias } from '@/router/routesAlias'
 
 withDefaults(
   defineProps<{
@@ -39,7 +40,20 @@ interface ExceptionData {
 
 const { homePath } = useCommon()
 
-const backHome = () => {
-  router.push(homePath.value)
+const backHome = async () => {
+  const targetPath = homePath.value?.trim() || RoutesAlias.Login
+
+  try {
+    await router.push(targetPath)
+  } catch (error) {
+    console.warn('[Exception] backHome navigation failed:', error)
+    await router.push(RoutesAlias.Login)
+    return
+  }
+
+  // 后端异常时，回首页可能再次被守卫重定向到 500，这里降级到登录页避免循环
+  if (targetPath !== RoutesAlias.Login && router.currentRoute.value.name === 'Exception500') {
+    await router.push(RoutesAlias.Login)
+  }
 }
 </script>
