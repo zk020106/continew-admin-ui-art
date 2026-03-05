@@ -4,7 +4,7 @@
     :title="title"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    :size="500"
+    size="min(500px, 100vw)"
     destroy-on-close
     draggable
     @close="reset"

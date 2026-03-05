@@ -2,13 +2,14 @@
 
 /* 授权页右侧区域 */
 .auth-right-wrap {
-  @apply absolute inset-0 w-[440px] h-[650px] py-[5px] m-auto overflow-hidden
-    max-sm:px-7 max-sm:w-full
+  @apply absolute inset-0 m-auto w-[440px] min-h-[650px] py-[5px] overflow-hidden
+    max-md:w-full max-md:max-w-[460px] max-md:min-h-0 max-md:h-[calc(100dvh-24px)]
+    max-md:px-6 max-md:py-4 max-md:overflow-y-auto max-sm:px-4
     animate-[slideInRight_0.6s_cubic-bezier(0.25,0.46,0.45,0.94)_forwards]
     max-md:animate-none;
 
   .form {
-    @apply h-full py-[40px];
+    @apply h-full py-[40px] max-md:h-auto max-md:py-6;
   }
 
   .title {

@@ -1,5 +1,5 @@
 <template>
-  <ElDrawer v-model="visible" :title="drawerTitle" :size="500" @close="handleClose">
+  <ElDrawer v-model="visible" :title="drawerTitle" size="min(500px, 100vw)" @close="handleClose">
     <ElForm
       ref="formRef"
       :model="form"

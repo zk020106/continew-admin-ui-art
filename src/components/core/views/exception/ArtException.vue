@@ -1,8 +1,8 @@
 <template>
-  <div class="page-content !border-0 !bg-transparent min-h-screen flex-cc">
-    <div class="flex-cc max-md:!block max-md:text-center">
-      <ThemeSvg :src="data.imgUrl" size="100%" class="!w-100" />
-      <div class="ml-15 w-75 max-md:mx-auto max-md:mt-10 max-md:w-full max-md:text-center">
+  <div class="page-content !border-0 !bg-transparent min-h-screen flex-cc px-4 py-8">
+    <div class="w-full max-w-5xl flex-cc max-md:!block max-md:text-center">
+      <ThemeSvg :src="data.imgUrl" size="100%" class="w-full max-w-[22rem] md:max-w-[25rem]" />
+      <div class="w-full md:ml-15 md:w-75 max-md:mx-auto max-md:mt-8 max-md:text-center">
         <p class="text-xl leading-7 text-g-600 max-md:text-lg">{{ data.desc }}</p>
         <ElButton v-ripple type="primary" size="large" class="mt-5" @click="backHome">
 {{
