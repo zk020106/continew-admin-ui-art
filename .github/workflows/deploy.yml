@@ -39,6 +39,42 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Inject Vite env from GitHub Variables/Secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          export_var() {
+            local key="$1"
+            local value="$2"
+            if [ -n "$value" ]; then
+              echo "$key=$value" >> "$GITHUB_ENV"
+              echo "Injected $key"
+            else
+              echo "Skipped $key (empty)"
+            fi
+          }
+
+          # 优先使用 Variables，不存在时回退到 Secrets；都为空时保持 .env.production 默认值
+          export_var "VITE_BASE_URL" "${{ vars.VITE_BASE_URL }}"
+          export_var "VITE_API_URL" "${{ vars.VITE_API_URL || secrets.VITE_API_URL }}"
+          export_var "VITE_API_PROXY_URL" "${{ vars.VITE_API_PROXY_URL || secrets.VITE_API_PROXY_URL }}"
+          export_var "VITE_CLIENT_ID" "${{ vars.VITE_CLIENT_ID || secrets.VITE_CLIENT_ID }}"
+          export_var "VITE_WITH_CREDENTIALS" "${{ vars.VITE_WITH_CREDENTIALS }}"
+          export_var "VITE_ACCESS_MODE" "${{ vars.VITE_ACCESS_MODE }}"
+          export_var "VITE_DROP_CONSOLE" "${{ vars.VITE_DROP_CONSOLE }}"
+
+      - name: Verify injected env keys
+        shell: bash
+        run: |
+          for key in VITE_BASE_URL VITE_API_URL VITE_API_PROXY_URL VITE_CLIENT_ID VITE_WITH_CREDENTIALS VITE_ACCESS_MODE VITE_DROP_CONSOLE; do
+            if printenv "$key" >/dev/null 2>&1; then
+              echo "$key=SET"
+            else
+              echo "$key=UNSET"
+            fi
+          done
+
       - name: Build Vue App
         run: pnpm build
 
