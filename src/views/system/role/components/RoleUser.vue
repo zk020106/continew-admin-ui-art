@@ -114,7 +114,6 @@ const searchColumns = computed(
         label: t('role.page.user.search.nickname'),
         field: 'nickname',
         type: 'input',
-        span: 6,
         props: {
           placeholder: t('components.form.placeholder.input', {
             label: t('role.page.user.search.nickname')
@@ -126,7 +125,6 @@ const searchColumns = computed(
         label: t('role.page.user.search.username'),
         field: 'username',
         type: 'input',
-        span: 6,
         props: {
           placeholder: t('components.form.placeholder.input', {
             label: t('role.page.user.search.username')
@@ -138,7 +136,6 @@ const searchColumns = computed(
         label: t('role.page.user.search.description'),
         field: 'description',
         type: 'input',
-        span: 6,
         props: {
           placeholder: t('components.form.placeholder.input', {
             label: t('role.page.user.search.description')
