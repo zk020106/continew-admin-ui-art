@@ -131,7 +131,8 @@ async function handleRouteGuard(
   }
 
   // 2. 处理动态路由注册
-  if (!routeRegistry?.isRegistered() && userStore.isLogin) {
+  // 静态路由（如 500/404）不应触发动态路由拉取，避免后端不可用时循环请求
+  if (!routeRegistry?.isRegistered() && userStore.isLogin && !isStaticRoute(to.path)) {
     await handleDynamicRoutes(to, next, router, userStore)
     return
   }
