@@ -119,12 +119,12 @@ const appConfig: SystemConfig = {
   // 系统主色
   systemMainColor: [
     '#165dff',
-    '#B48DF3',
-    '#1D84FF',
-    '#60C041',
-    '#38C0FC',
-    '#F9901F',
-    '#FF80C8'
+    '#722ed1',
+    '#14c9c9',
+    '#00b42a',
+    '#ff7d00',
+    '#f53f3f',
+    '#f5319d'
   ] as const,
   // 快速入口配置
   fastEnter: fastEnterConfig,

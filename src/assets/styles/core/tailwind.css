@@ -4,38 +4,66 @@
 /* ==================== Light Mode Variables ==================== */
 :root {
   /* Base Colors */
-  --art-color: #ffffff;
+  --art-color: #fff;
   --theme-color: var(--main-color);
 
-  /* Theme Colors - OKLCH Format */
-  --art-primary: #165dff;
-  --art-secondary: #4080ff;
-  --art-error: #f53f3f;
-  --art-info: #00b42a;
-  --art-success: #00b42a;
-  --art-warning: #ff7d00;
-  --art-danger: #cb272d;
+  /* Arco Token Palette - Light */
+  --arco-primary-1: #e8f3ff;
+  --arco-primary-2: #bedaff;
+  --arco-primary-3: #94bfff;
+  --arco-primary-4: #6aa1ff;
+  --arco-primary-5: #4080ff;
+  --arco-primary-6: #165dff;
+  --arco-primary-7: #0e42d2;
+  --arco-primary-8: #072ca6;
+  --arco-primary-9: #031a79;
+  --arco-primary-10: #000d4d;
+
+  --arco-gray-1: #f7f8fa;
+  --arco-gray-2: #f2f3f5;
+  --arco-gray-3: #e5e6eb;
+  --arco-gray-4: #c9cdd4;
+  --arco-gray-5: #a9aeb8;
+  --arco-gray-6: #86909c;
+  --arco-gray-7: #6b7785;
+  --arco-gray-8: #4e5969;
+  --arco-gray-9: #272e3b;
+  --arco-gray-10: #1d2129;
+
+  --arco-success-6: #00b42a;
+  --arco-warning-6: #ff7d00;
+  --arco-danger-6: #f53f3f;
+  --arco-info-6: #14c9c9;
+
+  /* Theme Colors */
+  --art-primary: var(--arco-primary-6);
+  --art-secondary: var(--arco-primary-5);
+  --art-error: var(--arco-danger-6);
+  --art-info: var(--arco-info-6);
+  --art-success: var(--arco-success-6);
+  --art-warning: var(--arco-warning-6);
+  --art-danger: var(--arco-danger-6);
 
   /* Gray Scale - Light Mode */
-  --art-gray-100: #f9fafb;
-  --art-gray-200: #f2f4f5;
-  --art-gray-300: #e6eaeb;
-  --art-gray-400: #dbdfe1;
-  --art-gray-500: #949eb7;
-  --art-gray-600: #7987a1;
-  --art-gray-700: #4d5875;
-  --art-gray-800: #383853;
-  --art-gray-900: #323251;
+  --art-gray-100: var(--arco-gray-1);
+  --art-gray-200: var(--arco-gray-2);
+  --art-gray-300: var(--arco-gray-3);
+  --art-gray-400: var(--arco-gray-4);
+  --art-gray-500: var(--arco-gray-5);
+  --art-gray-600: var(--arco-gray-6);
+  --art-gray-700: var(--arco-gray-7);
+  --art-gray-800: var(--arco-gray-8);
+  --art-gray-900: var(--arco-gray-9);
 
   /* Border Colors */
-  --art-card-border: rgba(0, 0, 0, 0.08);
+  --art-card-border: rgb(0 0 0 / 8%);
 
   --default-border: #e2e8ee;
   --default-border-dashed: #dbdfe9;
 
   /* Background Colors */
   --default-bg-color: #fafbfc;
-  --default-box-color: #ffffff;
+  --default-box-color: #fff;
 
   /* Hover Color */
   --art-hover-color: #edeff0;
@@ -50,37 +78,49 @@
 /* ==================== Dark Mode Variables ==================== */
 .dark {
   /* Base Colors */
-  --art-color: #000000;
+  --art-color: #000;
+
+  /* Arco Token Palette - Dark */
+  --arco-gray-1: #17171a;
+  --arco-gray-2: #2e2e30;
+  --arco-gray-3: #484849;
+  --arco-gray-4: #5f5f60;
+  --arco-gray-5: #78787a;
+  --arco-gray-6: #929293;
+  --arco-gray-7: #ababac;
+  --arco-gray-8: #c5c5c5;
+  --arco-gray-9: #dfdfdf;
+  --arco-gray-10: #f6f6f6;
 
   /* Gray Scale - Dark Mode */
-  --art-gray-100: #110f0f;
-  --art-gray-200: #17171c;
-  --art-gray-300: #393946;
-  --art-gray-400: #505062;
-  --art-gray-500: #73738c;
-  --art-gray-600: #8f8fa3;
-  --art-gray-700: #ababba;
-  --art-gray-800: #c7c7d1;
-  --art-gray-900: #e3e3e8;
+  --art-gray-100: var(--arco-gray-1);
+  --art-gray-200: var(--arco-gray-2);
+  --art-gray-300: var(--arco-gray-3);
+  --art-gray-400: var(--arco-gray-4);
+  --art-gray-500: var(--arco-gray-5);
+  --art-gray-600: var(--arco-gray-6);
+  --art-gray-700: var(--arco-gray-7);
+  --art-gray-800: var(--arco-gray-8);
+  --art-gray-900: var(--arco-gray-9);
 
   /* Border Colors */
-  --art-card-border: rgba(255, 255, 255, 0.08);
+  --art-card-border: rgb(255 255 255 / 8%);
 
-  --default-border: rgba(255, 255, 255, 0.1);
-  --default-border-dashed: #363843;
+  --default-border: #333335;
+  --default-border-dashed: #484849;
 
   /* Background Colors */
-  --default-bg-color: #070707;
-  --default-box-color: #161618;
+  --default-bg-color: #17171a;
+  --default-box-color: #232324;
 
   /* Hover Color */
-  --art-hover-color: #252530;
+  --art-hover-color: #2a2a2b;
 
   /* Active Color */
-  --art-active-color: #202226;
+  --art-active-color: #313132;
 
   /* Element Component Active Color */
-  --art-el-active-color: #2e2e38;
+  --art-el-active-color: #313132;
 }
 
 /* ==================== Tailwind Theme Configuration ==================== */

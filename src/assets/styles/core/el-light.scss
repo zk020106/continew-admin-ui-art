@@ -5,6 +5,9 @@
   $colors: (
     'white': #ffffff,
     'black': #000000,
+    'primary': (
+      'base': #165dff
+    ),
     'success': (
       'base': #00b42a
     ),
@@ -12,7 +15,7 @@
       'base': #ff7d00
     ),
     'danger': (
-      'base': #cb272d
+      'base': #f53f3f
     ),
     'error': (
       'base': #f53f3f
