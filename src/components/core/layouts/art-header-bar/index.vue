@@ -1,7 +1,7 @@
 <!-- 顶部栏 -->
 <template>
   <div
-    class="w-full bg-[var(--default-bg-color)]"
+    class="w-full bg-(--default-bg-color)"
     :class="[
       tabStyle === 'tab-card' || tabStyle === 'tab-google' ? 'mb-5 max-sm:mb-3 !bg-box' : '',
     ]"
@@ -10,7 +10,7 @@
       class="relative box-border flex-b h-15 leading-15 select-none"
       :class="[
         tabStyle === 'tab-card' || tabStyle === 'tab-google'
-          ? 'border-b border-[var(--art-card-border)]'
+          ? 'border-b border-(--art-card-border)'
           : '',
       ]"
     >

@@ -37,11 +37,11 @@
     }
 
     .oauth-item {
-      @apply flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-[var(--el-border-color)] text-[var(--el-text-color-primary)] transition-all duration-200;
+      @apply flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-(--el-border-color) text-(--el-text-color-primary) transition-all duration-200;
     }
 
     .oauth-item:hover {
-      @apply border-[var(--el-color-primary)] text-[var(--el-color-primary)];
+      @apply border-(--el-color-primary) text-(--el-color-primary);
       transform: translateY(-1px);
     }
 
