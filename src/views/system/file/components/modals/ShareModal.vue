@@ -6,19 +6,19 @@
     :close-on-click-modal="false"
     @close="handleClose"
   >
-    <div v-if="file" class="share-content">
+    <div v-if="file" class="flex flex-col gap-5">
       <!-- 文件信息 -->
-      <div class="file-info">
-        <div class="file-icon">
+      <div class="flex items-center gap-3 rounded-lg bg-(--el-fill-color-light) p-4">
+        <div class="flex size-[60px] items-center justify-center rounded-lg bg-(--el-bg-color)">
           <ArtSvgIcon
             :icon="getFileIconByType(file).icon"
             :size="40"
             :style="{ color: file.type === 0 ? undefined : getFileIconByType(file).color }"
           />
         </div>
-        <div class="file-details">
-          <div class="file-name">{{ file.originalName }}</div>
-          <div class="file-meta">
+        <div class="min-w-0 flex-1">
+          <div class="overflow-hidden text-ellipsis whitespace-nowrap text-sm font-medium text-(--el-text-color-primary)">{{ file.originalName }}</div>
+          <div class="mt-1 text-xs text-(--el-text-color-secondary)">
             {{ file.type === 0 ? t('file.modal.share.folder') : formatSize(file.size) }}
           </div>
         </div>
@@ -28,10 +28,10 @@
       <el-tabs v-model="activeTab" class="share-tabs">
         <!-- 链接分享 -->
         <el-tab-pane :label="t('file.modal.share.tabs.link')" name="link">
-          <div class="share-section">
+          <div class="flex flex-col gap-4">
             <!-- 分享链接 -->
-            <div class="share-link-box">
-              <div class="link-input-wrapper">
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center gap-2">
                 <el-input v-model="shareUrl" readonly :placeholder="t('file.modal.share.shareLinkPlaceholder')">
                   <template #append>
                     <el-button :disabled="!shareUrl" @click="copyShareLink">
@@ -52,19 +52,19 @@
             </div>
 
             <!-- 分享设置 -->
-            <div v-if="shareUrl" class="share-settings">
-              <div class="setting-item">
-                <span class="setting-label">{{ t('file.modal.share.settings.password') }}</span>
+            <div v-if="shareUrl" class="flex flex-col gap-3 rounded-md bg-(--el-fill-color-lighter) p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-[13px] text-(--el-text-color-primary)">{{ t('file.modal.share.settings.password') }}</span>
                 <el-switch v-model="needPassword" @change="handlePasswordChange" />
               </div>
 
-              <div v-if="needPassword" class="setting-item setting-item-indent">
+              <div v-if="needPassword" class="flex flex-col items-start gap-2 pl-5">
                 <el-input
+                  class="w-[200px]"
                   v-model="password"
                   :placeholder="t('file.modal.share.settings.passwordPlaceholder')"
                   maxlength="6"
                   show-word-limit
-                  style="width: 200px"
                 >
                   <template #append>
                     <el-button @click="randomPassword">{{ t('file.modal.share.settings.random') }}</el-button>
@@ -72,9 +72,13 @@
                 </el-input>
               </div>
 
-              <div class="setting-item">
-                <span class="setting-label">{{ t('file.modal.share.settings.expireDays') }}</span>
-                <el-select v-model="expireDays" :placeholder="t('file.modal.share.settings.expirePlaceholder')" style="width: 150px">
+              <div class="flex items-center justify-between">
+                <span class="text-[13px] text-(--el-text-color-primary)">{{ t('file.modal.share.settings.expireDays') }}</span>
+                <el-select
+                  v-model="expireDays"
+                  class="w-[150px]"
+                  :placeholder="t('file.modal.share.settings.expirePlaceholder')"
+                >
                   <el-option :label="t('file.modal.share.settings.expireOptions.never')" :value="0" />
                   <el-option :label="t('file.modal.share.settings.expireOptions.day1')" :value="1" />
                   <el-option :label="t('file.modal.share.settings.expireOptions.day7')" :value="7" />
@@ -82,8 +86,8 @@
                 </el-select>
               </div>
 
-              <div v-if="expireDays > 0" class="setting-item setting-item-indent">
-                <span class="setting-value">
+              <div v-if="expireDays > 0" class="flex flex-col items-start gap-2 pl-5">
+                <span class="text-xs text-(--el-text-color-secondary)">
                   {{ t('file.modal.share.settings.expireTip', { date: formatDate(expireDays) }) }}
                 </span>
               </div>
@@ -93,13 +97,13 @@
 
         <!-- 用户分享 -->
         <el-tab-pane :label="t('file.modal.share.tabs.user')" name="user">
-          <div class="share-section">
+          <div class="flex flex-col gap-4">
             <el-select
               v-model="selectedUsers"
               multiple
               filterable
+              class="w-full"
               :placeholder="t('file.modal.share.userPlaceholder')"
-              style="width: 100%"
             >
               <el-option
                 v-for="user in users"
@@ -107,7 +111,7 @@
                 :label="user.nickname"
                 :value="user.id"
               >
-                <div class="user-option">
+                <div class="flex items-center gap-2">
                   <el-avatar :size="24" :src="user.avatar" />
                   <span>{{ user.nickname }}</span>
                 </div>
@@ -273,116 +277,15 @@ const handleClose = () => {
 </script>
 
 <style lang="scss" scoped>
-  .share-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .file-info {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    padding: 16px;
-    background: var(--el-fill-color-light);
-    border-radius: 8px;
-  }
-
-  .file-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 60px;
-    height: 60px;
-    background: var(--el-bg-color);
-    border-radius: 8px;
-  }
-
-  .file-details {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .file-name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--el-text-color-primary);
-    white-space: nowrap;
-  }
-
-  .file-meta {
-    margin-top: 4px;
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
-  }
-
   .share-tabs {
     :deep(.el-tabs__content) {
       padding-top: 16px;
     }
   }
 
-  .share-section {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .share-link-box {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .link-input-wrapper {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .share-settings {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-    background: var(--el-fill-color-lighter);
-    border-radius: 6px;
-  }
-
-  .setting-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .setting-item-indent {
-    flex-direction: column;
-    gap: 8px;
-    align-items: flex-start;
-    padding-left: 20px;
-  }
-
-  .setting-label {
-    font-size: 13px;
-    color: var(--el-text-color-primary);
-  }
-
-  .setting-value {
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
-  }
-
   .share-message {
     :deep(.el-textarea__inner) {
       resize: none;
     }
-  }
-
-  .user-option {
-    display: flex;
-    gap: 8px;
-    align-items: center;
   }
 </style>

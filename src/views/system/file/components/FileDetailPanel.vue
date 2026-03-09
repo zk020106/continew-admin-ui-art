@@ -1,28 +1,34 @@
 <template>
-  <div class="file-detail-panel">
+  <div class="flex h-full flex-col border-l border-(--el-border-color-lighter) bg-(--el-bg-color)">
     <!-- 关闭按钮 -->
-    <div class="panel-close" @click="$emit('close')">
+    <div
+      class="absolute right-2 top-2 z-[1] flex size-7 cursor-pointer items-center justify-center rounded text-(--el-text-color-secondary) transition-all duration-200 hover:bg-(--el-fill-color) hover:text-(--el-text-color-primary)"
+      @click="$emit('close')"
+    >
       <ArtSvgIcon icon="ri:close-line" :size="18" />
     </div>
 
     <!-- 内容 -->
-    <div v-if="selectedFile" class="panel-content">
+    <div v-if="selectedFile" class="flex h-full flex-col gap-5 overflow-y-auto p-4">
       <!-- 文件预览图 -->
-      <div class="preview-section">
-        <div class="preview-icon">
+      <div class="flex flex-col items-center border-b border-(--el-border-color-lighter) pb-4">
+        <div class="mb-3 flex size-20 items-center justify-center rounded-lg bg-(--el-fill-color-lighter)">
           <ArtSvgIcon
             :icon="getFileIconByType(selectedFile).icon"
             :size="64"
-            :class="{ 'is-folder': selectedFile.type === 0 }"
+            :class="{ 'text-(--el-color-warning)': selectedFile.type === 0 }"
             :style="{
               color: selectedFile.type === 0 ? undefined : getFileIconByType(selectedFile).color,
             }"
           />
         </div>
-        <div class="preview-name" :title="selectedFile.originalName">
+        <div
+          class="mb-1 w-full overflow-hidden text-ellipsis whitespace-nowrap text-center text-sm font-medium text-(--el-text-color-primary)"
+          :title="selectedFile.originalName"
+        >
           {{ selectedFile.originalName }}
         </div>
-        <div class="preview-type">
+        <div class="text-xs text-(--el-text-color-secondary)">
           {{
             selectedFile.type === 0
               ? t('file.list.folder')
@@ -32,44 +38,47 @@
       </div>
 
       <!-- 文件信息 -->
-      <div class="info-section">
-        <div class="section-title">{{ t('file.detail.fileInfo') }}</div>
+      <div>
+        <div class="mb-3 text-xs font-medium text-(--el-text-color-secondary)">{{ t('file.detail.fileInfo') }}</div>
 
-        <div class="info-list">
-          <div class="info-item">
-            <span class="info-label">{{ t('file.detail.type') }}</span>
-            <span class="info-value">{{
+        <div class="flex flex-col gap-3">
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-(--el-text-color-secondary)">{{ t('file.detail.type') }}</span>
+            <span class="break-all text-[13px] text-(--el-text-color-primary)">{{
               selectedFile.type === 0
                 ? t('file.list.folder')
                 : getFileTypeLabel(selectedFile.extension)
             }}</span>
           </div>
 
-          <div v-if="selectedFile.type !== 0" class="info-item">
-            <span class="info-label">{{ t('file.detail.size') }}</span>
-            <span class="info-value">{{ formatSize(selectedFile.size) }}</span>
+          <div v-if="selectedFile.type !== 0" class="flex flex-col gap-1">
+            <span class="text-xs text-(--el-text-color-secondary)">{{ t('file.detail.size') }}</span>
+            <span class="break-all text-[13px] text-(--el-text-color-primary)">{{ formatSize(selectedFile.size) }}</span>
           </div>
 
-          <div class="info-item">
-            <span class="info-label">{{ t('file.detail.location') }}</span>
-            <span class="info-value" :title="selectedFile.path">{{
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-(--el-text-color-secondary)">{{ t('file.detail.location') }}</span>
+            <span class="break-all text-[13px] text-(--el-text-color-primary)" :title="selectedFile.path">{{
               formatPath(selectedFile.path)
             }}</span>
           </div>
 
-          <div class="info-item">
-            <span class="info-label">{{ t('file.detail.createTime') }}</span>
-            <span class="info-value">{{ formatDateTime(selectedFile.createTime) }}</span>
+          <div class="flex flex-col gap-1">
+            <span class="text-xs text-(--el-text-color-secondary)">{{ t('file.detail.createTime') }}</span>
+            <span class="break-all text-[13px] text-(--el-text-color-primary)">{{ formatDateTime(selectedFile.createTime) }}</span>
           </div>
 
-          <div v-if="selectedFile.updateTime" class="info-item">
-            <span class="info-label">{{ t('file.detail.modifyTime') }}</span>
-            <span class="info-value">{{ formatDateTime(selectedFile.updateTime) }}</span>
+          <div v-if="selectedFile.updateTime" class="flex flex-col gap-1">
+            <span class="text-xs text-(--el-text-color-secondary)">{{ t('file.detail.modifyTime') }}</span>
+            <span class="break-all text-[13px] text-(--el-text-color-primary)">{{ formatDateTime(selectedFile.updateTime) }}</span>
           </div>
 
-          <div v-if="selectedFile.sha256" class="info-item">
-            <span class="info-label">{{ t('file.detail.sha256') }}</span>
-            <span class="info-value hash" :title="selectedFile.sha256">
+          <div v-if="selectedFile.sha256" class="flex flex-col gap-1">
+            <span class="text-xs text-(--el-text-color-secondary)">{{ t('file.detail.sha256') }}</span>
+            <span
+              class="break-all font-mono text-[11px] text-(--el-text-color-secondary)"
+              :title="selectedFile.sha256"
+            >
               {{ formatHash(selectedFile.sha256) }}
             </span>
           </div>
@@ -77,9 +86,10 @@
       </div>
 
       <!-- 操作按钮 -->
-      <div class="action-section">
+      <div class="flex flex-col gap-2 border-t border-(--el-border-color-lighter) pt-4">
         <el-button
           v-if="selectedFile.type !== 0"
+          class="!w-full !justify-start"
           type="primary"
           size="small"
           @click="$emit('download', selectedFile)"
@@ -90,6 +100,7 @@
 
         <el-button
           v-if="canPreviewFile(selectedFile)"
+          class="!w-full !justify-start"
           size="small"
           @click="$emit('preview', selectedFile)"
         >
@@ -103,7 +114,7 @@
         </el-button> -->
 
         <el-dropdown trigger="click" @command="(cmd) => handleMoreCommand(cmd, selectedFile!)">
-          <el-button size="small">
+          <el-button class="!w-full !justify-start" size="small">
             <ArtSvgIcon icon="ri:more-2-fill" :size="16" />
           </el-button>
           <template #dropdown>
@@ -131,9 +142,9 @@
     </div>
 
     <!-- 空状态 -->
-    <div v-else class="panel-empty">
+    <div v-else class="flex h-full flex-col items-center justify-center gap-3 text-(--el-text-color-placeholder)">
       <ArtSvgIcon icon="ri:file-info-line" :size="48" color="var(--el-text-color-placeholder)" />
-      <p>{{ t('file.detail.selectFile') }}</p>
+      <p class="text-[13px]">{{ t('file.detail.selectFile') }}</p>
     </div>
   </div>
 </template>
@@ -254,147 +265,3 @@ const handleMoreCommand = (command: string, file: FileItem) => {
 }
 </script>
 
-<style lang="scss" scoped>
-  .file-detail-panel {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background: var(--el-bg-color);
-    border-left: 1px solid var(--el-border-color-lighter);
-  }
-
-  .panel-close {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    color: var(--el-text-color-secondary);
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
-
-    &:hover {
-      color: var(--el-text-color-primary);
-      background: var(--el-fill-color);
-    }
-  }
-
-  .panel-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    height: 100%;
-    padding: 16px;
-    overflow-y: auto;
-  }
-
-  .preview-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 16px;
-    border-bottom: 1px solid var(--el-border-color-lighter);
-  }
-
-  .preview-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 80px;
-    height: 80px;
-    margin-bottom: 12px;
-    background: var(--el-fill-color-lighter);
-    border-radius: 8px;
-
-    .is-folder {
-      color: var(--el-color-warning);
-    }
-  }
-
-  .preview-name {
-    width: 100%;
-    margin-bottom: 4px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--el-text-color-primary);
-    text-align: center;
-    white-space: nowrap;
-  }
-
-  .preview-type {
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
-  }
-
-  .info-section {
-    .section-title {
-      margin-bottom: 12px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--el-text-color-secondary);
-    }
-  }
-
-  .info-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .info-label {
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
-  }
-
-  .info-value {
-    font-size: 13px;
-    color: var(--el-text-color-primary);
-    word-break: break-all;
-
-    &.hash {
-      font-family: monospace;
-      font-size: 11px;
-      color: var(--el-text-color-secondary);
-    }
-  }
-
-  .action-section {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding-top: 16px;
-    border-top: 1px solid var(--el-border-color-lighter);
-
-    .el-button {
-      justify-content: flex-start;
-      width: 100%;
-    }
-  }
-
-  .panel-empty {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: var(--el-text-color-placeholder);
-
-    p {
-      font-size: 13px;
-    }
-  }
-</style>
