@@ -1,18 +1,22 @@
 <template>
-  <div class="file-breadcrumb">
+  <div class="px-4 py-3">
     <el-breadcrumb separator="/">
       <el-breadcrumb-item>
-        <span class="breadcrumb-root" @click="$emit('navigate', '/')">
+        <span
+          class="inline-flex cursor-pointer items-center gap-1 text-(--el-text-color-primary) hover:text-(--el-color-primary)"
+          @click="$emit('navigate', '/')"
+        >
           <ArtSvgIcon icon="ri:home-4-line" /> {{ t('file.breadcrumb.root') }}
         </span>
       </el-breadcrumb-item>
       <template v-for="(item, index) in pathList" :key="index">
         <el-breadcrumb-item>
           <span
-            :class="{
-              'breadcrumb-current': index === pathList.length - 1,
-              'breadcrumb-link': index < pathList.length - 1,
-            }"
+            :class="
+              index === pathList.length - 1
+                ? 'cursor-default text-(--el-text-color-regular)'
+                : 'cursor-pointer hover:text-(--el-color-primary)'
+            "
             @click="index < pathList.length - 1 && $emit('navigate', item.path)"
           >
             {{ item.name }}
@@ -60,36 +64,3 @@ const getPathList = (currentPath: string): BreadcrumbItem[] => {
 // 使用计算属性
 const pathList = computed(() => getPathList(props.path))
 </script>
-
-<style lang="scss" scoped>
-  .file-breadcrumb {
-    padding: 12px 16px;
-    // background: var(--el-fill-color-light);
-    // border-bottom: 1px solid var(--el-border-color-lighter);
-  }
-
-  .breadcrumb-root {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-    color: var(--el-text-color-primary);
-    cursor: pointer;
-
-    &:hover {
-      color: var(--el-color-primary);
-    }
-  }
-
-  .breadcrumb-link {
-    cursor: pointer;
-
-    &:hover {
-      color: var(--el-color-primary);
-    }
-  }
-
-  .breadcrumb-current {
-    color: var(--el-text-color-regular);
-    cursor: default;
-  }
-</style>

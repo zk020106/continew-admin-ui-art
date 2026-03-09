@@ -1,13 +1,13 @@
 <template>
-  <div class="file-header">
+  <div class="flex flex-col border-b border-(--el-border-color-lighter) bg-(--el-bg-color)">
     <!-- 面包屑导航 -->
-    <div class="breadcrumb-section">
+    <div class="border-b border-(--el-border-color-lighter) bg-(--el-fill-color-light) px-4 py-2">
       <FileBreadcrumb :path="currentPath" @navigate="$emit('navigate', $event)" />
     </div>
 
     <!-- 工具栏 -->
-    <div class="toolbar-section">
-      <div class="toolbar-left">
+    <div class="flex items-center justify-between gap-4 px-4 py-3">
+      <div class="flex items-center gap-2">
         <!-- 返回/前进 -->
         <el-button-group>
           <el-button :disabled="!canGoBack" @click="$emit('go-back')">
@@ -42,14 +42,14 @@
         </el-button>
       </div>
 
-      <div class="toolbar-center">
+      <div class="max-w-[400px] flex-1">
         <!-- 搜索 -->
         <el-input
           v-model="searchKeyword"
           :placeholder="t('file.header.searchPlaceholder')"
           prefix-icon="Search"
           clearable
-          class="search-input"
+          class="w-full"
           @keyup.enter="handleSearch"
           @clear="handleSearch"
         >
@@ -59,7 +59,7 @@
         </el-input>
       </div>
 
-      <div class="toolbar-right">
+      <div class="flex items-center gap-2">
         <!-- 排序 -->
         <el-dropdown trigger="click" @command="handleSortCommand">
           <el-button>
@@ -74,7 +74,7 @@
                 :command="option.value"
                 :class="{ 'is-active': sortField === option.value }"
               >
-                <span class="sort-label">{{ option.label }}</span>
+                <span class="inline-block min-w-[60px]">{{ option.label }}</span>
                 <ArtSvgIcon
                   v-if="sortField === option.value"
                   :icon="sortOrder === 'asc' ? 'ri:arrow-up-line' : 'ri:arrow-down-line'"
@@ -127,8 +127,11 @@
     </div>
 
     <!-- 筛选栏 -->
-    <div v-if="hasFilters" class="filter-bar">
-      <div class="filter-items">
+    <div
+      v-if="hasFilters"
+      class="flex items-center justify-between border-t border-(--el-border-color-lighter) bg-(--el-fill-color-lighter) px-4 py-2"
+    >
+      <div class="flex flex-wrap items-center gap-2">
         <el-tag
           v-for="filter in activeFilters"
           :key="filter.key"
@@ -249,66 +252,8 @@ const handleClearFilters = () => {
 </script>
 
 <style lang="scss" scoped>
-  .file-header {
-    display: flex;
-    flex-direction: column;
-    background: var(--el-bg-color);
-    border-bottom: 1px solid var(--el-border-color-lighter);
-  }
-
-  .breadcrumb-section {
-    padding: 8px 16px;
-    background: var(--el-fill-color-light);
-    border-bottom: 1px solid var(--el-border-color-lighter);
-  }
-
-  .toolbar-section {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-  }
-
-  .toolbar-left,
-  .toolbar-right {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .toolbar-center {
-    flex: 1;
-    max-width: 400px;
-  }
-
-  .search-input {
-    width: 100%;
-  }
-
-  .filter-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 16px;
-    background: var(--el-fill-color-lighter);
-    border-top: 1px solid var(--el-border-color-lighter);
-  }
-
-  .filter-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-  }
-
   :deep(.el-dropdown-menu__item.is-active) {
     color: var(--el-color-primary);
     background: var(--el-color-primary-light-9);
-  }
-
-  .sort-label {
-    display: inline-block;
-    min-width: 60px;
   }
 </style>
