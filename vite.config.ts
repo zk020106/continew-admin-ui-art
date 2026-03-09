@@ -23,7 +23,16 @@ const chunkGroups: Array<{ name: string, patterns: string[] }> = [
       'node_modules/@vueuse/'
     ]
   },
-  { name: 'vendor-element-plus', patterns: ['element-plus'] },
+  {
+    name: 'vendor-element-plus',
+    patterns: [
+      'element-plus',
+      '@element-plus',
+      'dayjs',
+      'lodash-es',
+      'lodash-unified'
+    ]
+  },
   { name: 'vendor-echarts', patterns: ['echarts'] },
   { name: 'vendor-office', patterns: ['@vue-office', 'xlsx', 'pdfjs-dist'] },
   { name: 'vendor-editor', patterns: ['@wangeditor', 'wangeditor', 'highlight.js'] },
@@ -31,7 +40,7 @@ const chunkGroups: Array<{ name: string, patterns: string[] }> = [
   { name: 'vendor-tree', patterns: ['vue3-tree-org'] },
   { name: 'vendor-crypto', patterns: ['crypto-js'] },
   { name: 'vendor-http', patterns: ['axios'] },
-  { name: 'vendor-utils', patterns: ['lodash-es', 'qrcode.vue', 'cron-parser'] }
+  { name: 'vendor-utils', patterns: ['qrcode.vue', 'cron-parser'] }
 ]
 
 export default ({ mode }: { mode: string }) => {
