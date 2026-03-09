@@ -7,17 +7,23 @@
     @close="handleClose"
   >
     <!-- 当前路径 -->
-    <div class="current-path">
-      <span class="path-label">{{ t('file.modal.move.targetLocation') }}</span>
+    <div class="mb-4 flex items-center gap-2 rounded-md bg-(--el-fill-color-light) p-3">
+      <span class="shrink-0 text-[13px] font-medium text-(--el-text-color-secondary)">{{ t('file.modal.move.targetLocation') }}</span>
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
-          <span class="breadcrumb-link" @click="navigateTo('/')">
+          <span
+            class="inline-flex cursor-pointer items-center gap-1 text-(--el-text-color-primary) hover:text-(--el-color-primary)"
+            @click="navigateTo('/')"
+          >
             <ArtSvgIcon icon="ri:home-4-line" :size="14" />
             {{ t('file.sidebar.rootDirectory') }}
           </span>
         </el-breadcrumb-item>
         <el-breadcrumb-item v-for="(item, index) in pathSegments" :key="index">
-          <span class="breadcrumb-link" @click="navigateTo(item.path)">
+          <span
+            class="cursor-pointer text-(--el-text-color-primary) hover:text-(--el-color-primary)"
+            @click="navigateTo(item.path)"
+          >
             {{ item.name }}
           </span>
         </el-breadcrumb-item>
@@ -25,7 +31,7 @@
     </div>
 
     <!-- 文件夹树 -->
-    <div class="folder-tree-container">
+    <div class="h-[300px] overflow-y-auto rounded-md border border-(--el-border-color-lighter) p-2">
       <el-tree
         ref="treeRef"
         v-loading="loading"
@@ -38,30 +44,34 @@
         @node-click="handleNodeClick"
       >
         <template #default="{ node }">
-          <div class="tree-node">
+          <div class="flex items-center gap-1.5">
             <ArtSvgIcon icon="ri:folder-fill" :size="16" />
-            <span class="node-label">{{ node.label }}</span>
+            <span class="text-[13px]">{{ node.label }}</span>
           </div>
         </template>
       </el-tree>
     </div>
 
     <!-- 文件列表 -->
-    <div v-if="currentFolder" class="file-list">
-      <div class="file-list-header">{{ t('file.modal.move.currentFolderContent') }}</div>
-      <div class="file-list-content">
+    <div v-if="currentFolder" class="mt-4">
+      <div class="mb-2 text-xs text-(--el-text-color-secondary)">{{ t('file.modal.move.currentFolderContent') }}</div>
+      <div class="grid max-h-[150px] grid-cols-[repeat(auto-fill,minmax(120px,1fr))] gap-2 overflow-y-auto rounded-md bg-(--el-fill-color-lighter) p-2">
         <div
           v-for="folder in currentFolder.children?.filter((f: any) => f.type === 0)"
           :key="folder.id"
-          class="file-item" :class="[{ 'is-selected': selectedPath === folder.path }]"
+          :class="
+            selectedPath === folder.path
+              ? 'flex cursor-pointer items-center gap-2 rounded px-2 py-2 text-(--el-color-primary) bg-(--el-color-primary-light-9)'
+              : 'flex cursor-pointer items-center gap-2 rounded px-2 py-2 transition-all duration-200 hover:bg-(--el-fill-color)'
+          "
           @click="selectFolder(folder)"
         >
           <ArtSvgIcon icon="ri:folder-fill" :size="20" />
-          <span class="file-name">{{ folder.originalName }}</span>
+          <span class="overflow-hidden text-ellipsis whitespace-nowrap text-[13px]">{{ folder.originalName }}</span>
         </div>
         <div
           v-if="!currentFolder.children?.filter((f: any) => f.type === 0).length"
-          class="empty-tip"
+          class="col-[1/-1] p-5 text-center text-[13px] text-(--el-text-color-secondary)"
         >
           {{ t('file.modal.move.emptyFolder') }}
         </div>
@@ -185,122 +195,20 @@ watch(
 </script>
 
 <style lang="scss" scoped>
-  .current-path {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    padding: 12px;
-    margin-bottom: 16px;
-    background: var(--el-fill-color-light);
-    border-radius: 6px;
+  :deep(.el-tree) {
+    background: transparent;
   }
 
-  .path-label {
-    flex-shrink: 0;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--el-text-color-secondary);
-  }
-
-  .breadcrumb-link {
-    display: inline-flex;
-    gap: 4px;
-    align-items: center;
-    color: var(--el-text-color-primary);
-    cursor: pointer;
+  :deep(.el-tree-node__content) {
+    height: 32px;
 
     &:hover {
-      color: var(--el-color-primary);
+      background: var(--el-fill-color-light);
     }
   }
 
-  .folder-tree-container {
-    height: 300px;
-    padding: 8px;
-    overflow-y: auto;
-    border: 1px solid var(--el-border-color-lighter);
-    border-radius: 6px;
-
-    :deep(.el-tree) {
-      background: transparent;
-    }
-
-    :deep(.el-tree-node__content) {
-      height: 32px;
-
-      &:hover {
-        background: var(--el-fill-color-light);
-      }
-    }
-
-    :deep(.is-current > .el-tree-node__content) {
-      color: var(--el-color-primary);
-      background: var(--el-color-primary-light-9);
-    }
-
-    .tree-node {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-
-      .node-label {
-        font-size: 13px;
-      }
-    }
-  }
-
-  .file-list {
-    margin-top: 16px;
-  }
-
-  .file-list-header {
-    margin-bottom: 8px;
-    font-size: 12px;
-    color: var(--el-text-color-secondary);
-  }
-
-  .file-list-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 8px;
-    max-height: 150px;
-    padding: 8px;
-    overflow-y: auto;
-    background: var(--el-fill-color-lighter);
-    border-radius: 6px;
-  }
-
-  .file-item {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    padding: 8px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
-
-    &:hover {
-      background: var(--el-fill-color);
-    }
-
-    &.is-selected {
-      color: var(--el-color-primary);
-      background: var(--el-color-primary-light-9);
-    }
-
-    .file-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-  }
-
-  .empty-tip {
-    grid-column: 1 / -1;
-    padding: 20px;
-    font-size: 13px;
-    color: var(--el-text-color-secondary);
-    text-align: center;
+  :deep(.is-current > .el-tree-node__content) {
+    color: var(--el-color-primary);
+    background: var(--el-color-primary-light-9);
   }
 </style>

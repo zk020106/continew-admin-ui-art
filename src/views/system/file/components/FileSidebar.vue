@@ -1,44 +1,56 @@
 <template>
-  <div class="file-sidebar">
+  <div class="flex h-full flex-col overflow-y-auto">
     <!-- 存储空间卡片 -->
-    <StorageUsageCard v-if="!loading" class="storage-card" :statistics="statistics" />
-    <div v-else class="storage-card storage-loading">
+    <StorageUsageCard
+      v-if="!loading"
+      class="shrink-0 border-b border-(--el-border-color-lighter) p-4"
+      :statistics="statistics"
+    />
+    <div v-else class="shrink-0 border-b border-(--el-border-color-lighter) p-4">
       <ElSkeleton :rows="3" animated />
     </div>
 
     <!-- 快速访问 -->
-    <div class="sidebar-section">
-      <div class="section-title">{{ t('file.sidebar.quickAccess') }}</div>
-      <div class="quick-access-list">
+    <div class="shrink-0 border-b border-(--el-border-color-lighter) px-4 py-3">
+      <div class="mb-2 flex items-center justify-between text-[13px] font-medium text-(--el-text-color-secondary)">{{ t('file.sidebar.quickAccess') }}</div>
+      <div class="flex flex-col gap-1">
         <div
           v-for="item in quickAccessItems"
           :key="item.path"
-          class="quick-access-item" :class="[{ active: currentPath === item.path }]"
+          :class="
+            currentPath === item.path
+              ? 'flex cursor-pointer items-center gap-2 rounded px-3 py-2 text-(--el-color-primary) bg-(--el-color-primary-light-9)'
+              : 'flex cursor-pointer items-center gap-2 rounded px-3 py-2 transition-all duration-200 hover:bg-(--el-fill-color)'
+          "
           @click="$emit('navigate', item.path)"
         >
           <ArtSvgIcon :icon="item.icon" :size="18" />
-          <span class="item-label">{{ item.label }}</span>
+          <span class="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[13px]">{{ item.label }}</span>
         </div>
       </div>
     </div>
 
     <!-- 最近访问 -->
-    <div class="sidebar-section">
-      <div class="section-title">
+    <div class="shrink-0 border-b border-(--el-border-color-lighter) px-4 py-3">
+      <div class="mb-2 flex items-center justify-between text-[13px] font-medium text-(--el-text-color-secondary)">
         <span>{{ t('file.sidebar.recentAccess') }}</span>
         <el-button text size="small" @click="clearRecentPaths">
           <ArtSvgIcon icon="ri:delete-bin-line" :size="14" />
         </el-button>
       </div>
-      <div class="recent-list">
+      <div class="flex flex-col gap-1">
         <div
           v-for="(path, index) in recentPaths"
           :key="index"
-          class="recent-item" :class="[{ active: currentPath === path }]"
+          :class="
+            currentPath === path
+              ? 'flex cursor-pointer items-center gap-2 rounded px-3 py-2 text-(--el-color-primary) bg-(--el-color-primary-light-9)'
+              : 'flex cursor-pointer items-center gap-2 rounded px-3 py-2 transition-all duration-200 hover:bg-(--el-fill-color)'
+          "
           @click="$emit('navigate', path)"
         >
           <ArtSvgIcon icon="ri:time-line" :size="16" />
-          <span class="item-label" :title="path">{{ getDisplayName(path) }}</span>
+          <span class="flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[13px]" :title="path">{{ getDisplayName(path) }}</span>
         </div>
       </div>
     </div>
@@ -105,81 +117,6 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-  .file-sidebar {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow-y: auto;
-  }
-
-  .storage-card {
-    flex-shrink: 0;
-    padding: 16px;
-    border-bottom: 1px solid var(--el-border-color-lighter);
-  }
-
-  .storage-loading {
-    padding: 16px;
-  }
-
-  .sidebar-section {
-    flex-shrink: 0;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--el-border-color-lighter);
-
-    &.directory-tree-section {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      overflow: hidden;
-    }
-  }
-
-  .section-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--el-text-color-secondary);
-  }
-
-  .quick-access-list,
-  .recent-list {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .quick-access-item,
-  .recent-item {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    padding: 8px 12px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
-
-    &:hover {
-      background: var(--el-fill-color);
-    }
-
-    &.active {
-      color: var(--el-color-primary);
-      background: var(--el-color-primary-light-9);
-    }
-
-    .item-label {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-  }
-
   .directory-tree {
     flex: 1;
     overflow-y: auto;
