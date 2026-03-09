@@ -41,7 +41,7 @@
 
     <div style="margin-top: 24px">
       <ElButton
-        class="w-full custom-height"
+        class="w-full login-submit-button"
         type="primary"
         :loading="loading"
         @click="handleSubmit"

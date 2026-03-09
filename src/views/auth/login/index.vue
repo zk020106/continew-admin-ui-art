@@ -11,89 +11,121 @@
           <h3 class="title">{{ $t('login.title') }}</h3>
           <p class="sub-title">{{ $t('login.subTitle') }}</p>
 
-          <ElTabs
-            v-model="activeTab"
-            class="login-tabs"
-          >
-            <ElTabPane
-              :label="$t('login.tabs.account')"
-              name="account"
+          <div class="login-panel-stack">
+            <section
+              v-show="viewMode === 'account'"
+              class="login-panel"
             >
               <AccountLoginForm
                 v-model="tenantCode"
                 :need-tenant-code="needTenantCode"
                 @success="handleLoginSuccess"
               />
-            </ElTabPane>
-            <ElTabPane
-              :label="$t('login.tabs.phone')"
-              name="phone"
+
+              <div class="login-entry-actions">
+                <button
+                  class="login-entry-button"
+                  type="button"
+                  @click="viewMode = 'phone'"
+                >
+                  {{ $t('login.actions.phone') }}
+                </button>
+                <button
+                  class="login-entry-button"
+                  type="button"
+                  @click="viewMode = 'email'"
+                >
+                  {{ $t('login.actions.email') }}
+                </button>
+              </div>
+
+              <div class="oauth-panel">
+                <ElDivider>{{ $t('login.otherLogin') }}</ElDivider>
+                <div class="oauth-list">
+                  <button
+                    class="oauth-item"
+                    type="button"
+                    :title="$t('login.oauth.gitee')"
+                    @click="handleOauth('gitee')"
+                  >
+                    <ArtSvgIcon
+                      icon="gitee"
+                      class="oauth-icon"
+                    />
+                  </button>
+                  <button
+                    class="oauth-item"
+                    type="button"
+                    :title="$t('login.oauth.github')"
+                    @click="handleOauth('github')"
+                  >
+                    <ArtSvgIcon
+                      icon="github"
+                      class="oauth-icon"
+                    />
+                  </button>
+                  <button
+                    class="oauth-item"
+                    type="button"
+                    :title="$t('login.oauth.wechat')"
+                    @click="handleOauth('wechat_open')"
+                  >
+                    <ArtSvgIcon
+                      icon="wechat"
+                      class="oauth-icon"
+                    />
+                  </button>
+                </div>
+              </div>
+
+              <div class="login-register-tip mt-5 text-sm text-gray-600">
+                <span>{{ $t('login.noAccount') }}</span>
+                <RouterLink
+                  class="text-theme"
+                  :to="{ name: 'Register' }"
+                >
+                  {{ $t('login.register') }}
+                </RouterLink>
+              </div>
+            </section>
+
+            <section
+              v-show="viewMode === 'phone'"
+              class="login-panel"
             >
               <PhoneLoginForm
                 v-model="tenantCode"
                 :need-tenant-code="needTenantCode"
                 @success="handleLoginSuccess"
               />
-            </ElTabPane>
-            <ElTabPane
-              :label="$t('login.tabs.email')"
-              name="email"
+
+              <button
+                class="login-back-button"
+                type="button"
+                @click="viewMode = 'account'"
+              >
+                {{ $t('login.actions.backToAccount') }}
+              </button>
+            </section>
+
+            <section
+              v-show="viewMode === 'email'"
+              class="login-panel"
             >
               <EmailLoginForm
                 v-model="tenantCode"
                 :need-tenant-code="needTenantCode"
                 @success="handleLoginSuccess"
               />
-            </ElTabPane>
-          </ElTabs>
 
-          <div class="oauth-panel">
-            <ElDivider>{{ $t('login.otherLogin') }}</ElDivider>
-            <div class="oauth-list">
               <button
-                class="oauth-item"
+                class="login-back-button"
                 type="button"
-                :title="$t('login.oauth.gitee')"
-                @click="handleOauth('gitee')"
+                @click="viewMode = 'account'"
               >
-                <ArtSvgIcon
-                  icon="gitee"
-                  class="oauth-icon"
-                />
+                {{ $t('login.actions.backToAccount') }}
               </button>
-              <button
-                class="oauth-item"
-                type="button"
-                :title="$t('login.oauth.github')"
-                @click="handleOauth('github')"
-              >
-                <ArtSvgIcon
-                  icon="github"
-                  class="oauth-icon"
-                />
-              </button>
-              <button
-                class="oauth-item"
-                type="button"
-                :title="$t('login.oauth.wechat')"
-                @click="handleOauth('wechat_open')"
-              >
-                <ArtSvgIcon
-                  icon="wechat"
-                  class="oauth-icon"
-                />
-              </button>
-            </div>
-          </div>
-
-          <div class="mt-5 text-sm text-gray-600">
-            <span>{{ $t('login.noAccount') }}</span>
-            <RouterLink
-              class="text-theme"
-              :to="{ name: 'Register' }"
-            >
-              {{ $t('login.register') }}
-            </RouterLink>
+            </section>
           </div>
         </div>
       </div>
@@ -123,7 +155,7 @@ const tenantStore = useTenantStore()
 const router = useRouter()
 const route = useRoute()
 
-const activeTab = ref<'account' | 'phone' | 'email'>('account')
+const viewMode = ref<'account' | 'phone' | 'email'>('account')
 const tenantCode = ref('')
 const needTenantCode = computed(() => tenantStore.needInputTenantCode)
 

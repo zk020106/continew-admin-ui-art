@@ -643,6 +643,11 @@
     }
   },
   "login": {
+    "actions": {
+      "backToAccount": "Back to account login",
+      "email": "Email login",
+      "phone": "Phone login"
+    },
     "btnText": "Log in",
     "captcha": "Verification code",
     "error": {
