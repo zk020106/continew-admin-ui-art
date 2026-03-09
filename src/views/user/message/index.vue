@@ -55,12 +55,12 @@
       width="680px"
       destroy-on-close
     >
-      <div v-loading="detailLoading" class="message-detail">
-        <div class="message-meta">
+      <div v-loading="detailLoading">
+        <div class="mb-3 flex gap-4 text-[13px] text-(--el-text-color-secondary)">
           <span>发送时间：{{ currentMessage?.createTime || '-' }}</span>
           <span>状态：{{ currentMessage?.isRead ? '已读' : '未读' }}</span>
         </div>
-        <div class="message-content">
+        <div class="min-h-[120px] whitespace-pre-wrap leading-[1.8] text-(--el-text-color-primary)">
           {{ currentMessage?.content || '-' }}
         </div>
       </div>
@@ -212,21 +212,3 @@ const reset = () => {
 }
 </script>
 
-<style scoped lang="scss">
-  .message-detail {
-    .message-meta {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 12px;
-      font-size: 13px;
-      color: var(--el-text-color-secondary);
-    }
-
-    .message-content {
-      min-height: 120px;
-      line-height: 1.8;
-      color: var(--el-text-color-primary);
-      white-space: pre-wrap;
-    }
-  }
-</style>

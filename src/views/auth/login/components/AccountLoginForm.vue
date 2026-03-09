@@ -74,7 +74,7 @@
       </RouterLink>
     </div>
 
-    <div style="margin-top: 24px">
+    <div class="mt-6">
       <ElButton
         class="w-full login-submit-button"
         type="primary"
