@@ -8,7 +8,13 @@
     @refresh="search"
   >
     <template #top>
-      <CaQueryForm v-model="queryForm" mode="click-search" :columns="queryFormColumns" />
+      <CaQueryForm
+        v-model="queryForm"
+        mode="click-search"
+        :columns="queryFormColumns"
+        @search="search"
+        @reset="reset"
+      />
     </template>
     <template #toolbar-left>
       <ElButton type="primary" @click="onAdd">

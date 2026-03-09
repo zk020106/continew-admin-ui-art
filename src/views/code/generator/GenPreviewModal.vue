@@ -74,9 +74,9 @@ import type { ElTree } from 'element-plus'
 import type { GeneratePreviewResp } from '@/apis/code'
 import { useClipboard, useWindowSize } from '@vueuse/core'
 import { ElMessage } from 'element-plus'
-import hljs from 'highlight.js'
 import { useI18n } from 'vue-i18n'
 import { genPreview } from '@/apis/code/generator'
+import hljs from '@/utils/ui/highlight'
 import 'highlight.js/styles/github-dark.css'
 
 defineOptions({ name: 'CodeGeneratorPreviewModal' })

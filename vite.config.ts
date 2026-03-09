@@ -12,6 +12,28 @@ import viteCompression from 'vite-plugin-compression'
 import vueDevTools from 'vite-plugin-vue-devtools'
 // import { visualizer } from 'rollup-plugin-visualizer'
 
+const chunkGroups: Array<{ name: string, patterns: string[] }> = [
+  {
+    name: 'vendor-framework',
+    patterns: [
+      'node_modules/vue/',
+      'node_modules/vue-router/',
+      'node_modules/pinia/',
+      'node_modules/vue-i18n/',
+      'node_modules/@vueuse/'
+    ]
+  },
+  { name: 'vendor-element-plus', patterns: ['element-plus'] },
+  { name: 'vendor-echarts', patterns: ['echarts'] },
+  { name: 'vendor-office', patterns: ['@vue-office', 'xlsx', 'pdfjs-dist'] },
+  { name: 'vendor-editor', patterns: ['@wangeditor', 'wangeditor', 'highlight.js'] },
+  { name: 'vendor-media', patterns: ['xgplayer'] },
+  { name: 'vendor-tree', patterns: ['vue3-tree-org'] },
+  { name: 'vendor-crypto', patterns: ['crypto-js'] },
+  { name: 'vendor-http', patterns: ['axios'] },
+  { name: 'vendor-utils', patterns: ['lodash-es', 'qrcode.vue', 'cron-parser'] }
+]
+
 export default ({ mode }: { mode: string }) => {
   const root = process.cwd()
   const env = loadEnv(mode, root)
@@ -79,18 +101,13 @@ export default ({ mode }: { mode: string }) => {
         output: {
           // 手动分包策略
           manualChunks(id) {
-            if (id.includes('node_modules')) {
-              if (id.includes('echarts')) {
-                return 'vendor-echarts'
-              }
-              if (id.includes('element-plus')) {
-                return 'vendor-element-plus'
-              }
-              if (id.includes('@vue-office') || id.includes('xlsx')) {
-                return 'vendor-office'
-              }
-              return 'vendor'
-            }
+            if (!id.includes('node_modules')) return
+
+            const group = chunkGroups.find(({ patterns }) =>
+              patterns.some((pattern) => id.includes(pattern))
+            )
+
+            return group?.name
           },
           // 优化 chunk 命名
           chunkFileNames: 'js/[name]-[hash].js',

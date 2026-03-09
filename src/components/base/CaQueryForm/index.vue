@@ -80,7 +80,7 @@ const props = withDefaults(defineProps<CaQueryFormProps>(), {
   labelWidth: 'auto',
   scrollToError: true,
   showMessage: true,
-  gridItemProps: () => ({ span: { xs: 24, sm: 24, md: 24, lg: 24, xl: 24, xxl: 24 } }),
+  gridItemProps: () => ({ span: { xs: 24, sm: 12, md: 12, lg: 12, xl: 8, xxl: 8 } }),
   fc: () => ({})
 })
 

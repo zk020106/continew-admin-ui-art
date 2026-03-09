@@ -42,7 +42,7 @@
  */
 
 import type { App, Directive } from 'vue'
-import hljs from 'highlight.js'
+import hljs from '@/utils/ui/highlight'
 
 // 高亮代码
 function highlightCode(block: HTMLElement) {
@@ -222,8 +222,8 @@ const highlightDirective: Directive<HTMLElement> = {
       subtree: true
     })
 
-    // 将 observer 存储到元素上，以便在 unmounted 时清理
-    ;(el as any)._highlightObserver = observer
+      // 将 observer 存储到元素上，以便在 unmounted 时清理
+      ; (el as any)._highlightObserver = observer
   },
 
   updated(el: HTMLElement) {

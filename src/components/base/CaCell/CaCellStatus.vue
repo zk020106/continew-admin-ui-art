@@ -1,11 +1,11 @@
 <template>
   <span v-if="props.status === 1" class="status-item success">
     <el-icon><SuccessFilled /></el-icon>
-    <span>{{ $t('common.statusEnabled') }}</span>
+    <span>{{ props.text ?? $t('common.statusEnabled') }}</span>
   </span>
   <span v-else-if="props.status === 2" class="status-item warning">
     <el-icon><WarningFilled /></el-icon>
-    <span>{{ $t('common.statusDisabled') }}</span>
+    <span>{{ props.text ?? $t('common.statusDisabled') }}</span>
   </span>
 </template>
 
@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 interface Props {
   status?: number | undefined
+  text?: string
 }
 </script>
 
