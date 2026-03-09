@@ -831,6 +831,10 @@
       "log": "Mission log",
       "task": "Task management"
     },
+    "user": {
+      "title": "User",
+      "messageCenter": "Message Center"
+    },
     "system": {
       "config": {
         "client": "Client configuration",
@@ -889,6 +893,29 @@
     "viewAll": "View all"
   },
   "pages": {
+    "userMessageCenter": {
+      "button": {
+        "readAll": "Mark all as read"
+      },
+      "field": {
+        "title": "Title",
+        "status": "Status",
+        "createTime": "Sent time",
+        "action": "Action"
+      },
+      "status": {
+        "read": "Read",
+        "unread": "Unread"
+      },
+      "action": {
+        "view": "View",
+        "markRead": "Mark as read"
+      },
+      "dialog": {
+        "title": "Message Details",
+        "createTime": "Sent time"
+      }
+    },
     "appManagement": {
       "button": {
         "resetSecret": "Reset key"

@@ -831,6 +831,10 @@
       "log": "任务日志",
       "task": "任务管理"
     },
+    "user": {
+      "title": "用户",
+      "messageCenter": "消息中心"
+    },
     "system": {
       "config": {
         "client": "客户端配置",
@@ -889,6 +893,29 @@
     "viewAll": "查看全部"
   },
   "pages": {
+    "userMessageCenter": {
+      "button": {
+        "readAll": "全部已读"
+      },
+      "field": {
+        "title": "标题",
+        "status": "状态",
+        "createTime": "发送时间",
+        "action": "操作"
+      },
+      "status": {
+        "read": "已读",
+        "unread": "未读"
+      },
+      "action": {
+        "view": "查看",
+        "markRead": "标记已读"
+      },
+      "dialog": {
+        "title": "消息详情",
+        "createTime": "发送时间"
+      }
+    },
     "appManagement": {
       "button": {
         "resetSecret": "重置密钥"

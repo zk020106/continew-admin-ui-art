@@ -29,7 +29,7 @@
       </ul>
 
       <div v-else class="box-border flex h-full flex-col items-center justify-center">
-        <ElEmpty description="暂无数据" :image-size="72" />
+        <ElEmpty :description="t('common.noData')" :image-size="72" />
       </div>
     </div>
 
@@ -179,5 +179,4 @@ watch(
   .dark .scrollbar-thin::-webkit-scrollbar-thumb {
     background-color: #222 !important;
   }
-
 </style>

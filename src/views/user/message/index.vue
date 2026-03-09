@@ -22,7 +22,7 @@
 
       <template #toolbar-left>
         <ElButton type="primary" @click="onReadAll">
-          全部已读
+          {{ t('pages.userMessageCenter.button.readAll') }}
         </ElButton>
       </template>
 
@@ -33,17 +33,17 @@
       </template>
 
       <template #isRead="{ row }">
-        <ElTag v-if="row.isRead" size="small">已读</ElTag>
-        <ElTag v-else type="danger" size="small">未读</ElTag>
+        <ElTag v-if="row.isRead" size="small">{{ t('pages.userMessageCenter.status.read') }}</ElTag>
+        <ElTag v-else type="danger" size="small">{{ t('pages.userMessageCenter.status.unread') }}</ElTag>
       </template>
 
       <template #action="{ row }">
         <ElSpace>
           <ElLink type="primary" @click="onView(row)">
-            查看
+            {{ t('pages.userMessageCenter.action.view') }}
           </ElLink>
           <ElLink v-if="!row.isRead" type="primary" @click="onRead(row)">
-            标记已读
+            {{ t('pages.userMessageCenter.action.markRead') }}
           </ElLink>
         </ElSpace>
       </template>
@@ -51,14 +51,17 @@
 
     <ElDialog
       v-model="detailVisible"
-      :title="currentMessage?.title || '消息详情'"
+      :title="currentMessage?.title || t('pages.userMessageCenter.dialog.title')"
       width="680px"
       destroy-on-close
     >
       <div v-loading="detailLoading">
         <div class="mb-3 flex gap-4 text-[13px] text-(--el-text-color-secondary)">
-          <span>发送时间：{{ currentMessage?.createTime || '-' }}</span>
-          <span>状态：{{ currentMessage?.isRead ? '已读' : '未读' }}</span>
+          <span>{{ t('pages.userMessageCenter.dialog.createTime') }}: {{ currentMessage?.createTime || '-' }}</span>
+          <span>
+            {{ t('pages.userMessageCenter.field.status') }}:
+            {{ currentMessage?.isRead ? t('pages.userMessageCenter.status.read') : t('pages.userMessageCenter.status.unread') }}
+          </span>
         </div>
         <div class="min-h-[120px] whitespace-pre-wrap leading-[1.8] text-(--el-text-color-primary)">
           {{ currentMessage?.content || '-' }}
@@ -73,12 +76,14 @@ import type { MessagePageQuery, MessageResp } from '@/apis/system'
 import type { FormColumnItem } from '@/components/base/CaForm/type'
 import type { TableColumnItem } from '@/components/base/CaTable/type'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { getUserMessage, listMessage, readAllMessage, readMessage } from '@/apis/system'
 import CaQueryForm from '@/components/base/CaQueryForm'
 import { useDevice, useResetReactive, useTable } from '@/hooks'
 
 defineOptions({ name: 'UserMessageCenter' })
 
+const { t } = useI18n()
 const { isMobile } = useDevice()
 
 const [queryForm, resetForm] = useResetReactive<MessagePageQuery>({
@@ -90,25 +95,29 @@ const queryFormColumns = computed(
     [
       {
         type: 'input',
-        label: '标题',
+        label: t('pages.userMessageCenter.field.title'),
         field: 'title',
         gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
         props: {
-          placeholder: '请输入标题关键字',
+          placeholder: t('common.placeholder.inputWithLabel', {
+            label: t('pages.userMessageCenter.field.title')
+          }),
           clearable: true
         }
       },
       {
         type: 'select',
-        label: '状态',
+        label: t('pages.userMessageCenter.field.status'),
         field: 'isRead',
         gridItemProps: { span: { xs: 24, sm: 12, xxl: 8 } },
         props: {
           options: [
-            { label: '未读', value: false },
-            { label: '已读', value: true }
+            { label: t('pages.userMessageCenter.status.unread'), value: false },
+            { label: t('pages.userMessageCenter.status.read'), value: true }
           ],
-          placeholder: '请选择状态',
+          placeholder: t('common.placeholder.selectWithLabel', {
+            label: t('pages.userMessageCenter.field.status')
+          }),
           clearable: true
         }
       }
@@ -124,7 +133,7 @@ const columns = computed(
   () =>
     [
       {
-        label: '序号',
+        label: t('common.index'),
         width: 66,
         align: 'center',
         render: ({ $index }) =>
@@ -132,26 +141,26 @@ const columns = computed(
         fixed: !isMobile.value ? 'left' : false
       },
       {
-        label: '标题',
+        label: t('pages.userMessageCenter.field.title'),
         prop: 'title',
         slotName: 'title',
         minWidth: 260,
         fixed: !isMobile.value ? 'left' : false
       },
       {
-        label: '状态',
+        label: t('pages.userMessageCenter.field.status'),
         prop: 'isRead',
         slotName: 'isRead',
         width: 100,
         align: 'center'
       },
       {
-        label: '发送时间',
+        label: t('pages.userMessageCenter.field.createTime'),
         prop: 'createTime',
         width: 180
       },
       {
-        label: '操作',
+        label: t('pages.userMessageCenter.field.action'),
         prop: 'action',
         slotName: 'action',
         width: 160,
@@ -178,7 +187,7 @@ const loadMessageDetail = async (id: string) => {
 const onRead = async (row: MessageResp) => {
   if (row.isRead) return
   await readMessage([String(row.id)])
-  ElMessage.success('操作成功')
+  ElMessage.success(t('message.updateSuccess'))
   row.isRead = true
   if (queryForm.isRead === false) {
     search()
@@ -187,7 +196,7 @@ const onRead = async (row: MessageResp) => {
 
 const onReadAll = async () => {
   await readAllMessage()
-  ElMessage.success('操作成功')
+  ElMessage.success(t('message.updateSuccess'))
   search()
 }
 
@@ -211,4 +220,3 @@ const reset = () => {
   search()
 }
 </script>
-

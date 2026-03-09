@@ -7,8 +7,8 @@ import type { AppRouteRecordRaw } from '@/utils'
  * isHideTab: true 表示不在标签页中显示
  *
  * 注意事项：
- * 1、path、name 不要和动态路由冲突，否则会导致路由冲突无法访问
- * 2、静态路由不管是否登录都可以访问
+ * 1. path、name 不要和动态路由冲突，否则会导致路由冲突无法访问
+ * 2. 静态路由不管是否登录都可以访问
  */
 export const staticRoutes: AppRouteRecordRaw[] = [
   {
@@ -39,13 +39,13 @@ export const staticRoutes: AppRouteRecordRaw[] = [
     path: '/user',
     name: 'UserStatic',
     component: () => import('@views/index/index.vue'),
-    meta: { title: '用户', isHide: true },
+    meta: { title: 'menus.user.title', isHide: true },
     children: [
       {
         path: '/user/message',
         name: 'UserMessageStatic',
         component: () => import('@views/user/message/index.vue'),
-        meta: { title: '消息中心', isHide: true }
+        meta: { title: 'menus.user.messageCenter', isHide: true }
       }
     ]
   },
